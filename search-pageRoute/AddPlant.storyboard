@@ -1,94 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="HUb-kv-U7o">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="qOz-6i-Rrm">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--PlantSite-->
-        <scene sceneID="Flz-S1-Eal">
-            <objects>
-                <viewController storyboardIdentifier="PlantLightView" title="PlantSite" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ys1-Ni-G06" customClass="PlantSiteViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="s6p-5W-eHr">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="UMW-Fi-fuC">
-                                <rect key="frame" x="0.0" y="256" width="393" height="428"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="0cU-vl-2ih">
-                                    <size key="itemSize" width="128" height="128"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="tqe-HW-mw0" customClass="addplantbuttonCollectionViewCell" customModule="search_pageRoute" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Syw-mu-3Py">
-                                            <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </collectionViewCellContentView>
-                                    </collectionViewCell>
-                                </cells>
-                            </collectionView>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.16" translatesAutoresizingMaskIntoConstraints="NO" id="GVg-7U-w3B">
-                                <rect key="frame" x="36" y="714" width="321" height="4"/>
-                                <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                            </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 1 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FWj-nE-f9t">
-                                <rect key="frame" x="16" y="738" width="361" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where is the Plant placed?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b8I-9j-53j">
-                                <rect key="frame" x="16" y="172" width="361" height="34"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="2is-qK-u5l"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="b8I-9j-53j" firstAttribute="leading" secondItem="2is-qK-u5l" secondAttribute="leading" constant="16" id="17K-Nl-LwP"/>
-                            <constraint firstItem="b8I-9j-53j" firstAttribute="top" secondItem="2is-qK-u5l" secondAttribute="top" id="98I-Zl-PTa"/>
-                            <constraint firstItem="2is-qK-u5l" firstAttribute="trailing" secondItem="b8I-9j-53j" secondAttribute="trailing" constant="16" id="9iL-0G-o1j"/>
-                            <constraint firstItem="FWj-nE-f9t" firstAttribute="leading" secondItem="2is-qK-u5l" secondAttribute="leading" constant="16" id="9jL-xB-sb3"/>
-                            <constraint firstItem="UMW-Fi-fuC" firstAttribute="trailing" secondItem="2is-qK-u5l" secondAttribute="trailing" id="Hub-kA-FMA"/>
-                            <constraint firstItem="UMW-Fi-fuC" firstAttribute="top" secondItem="b8I-9j-53j" secondAttribute="bottom" constant="50" id="JrV-yE-qbN"/>
-                            <constraint firstItem="FWj-nE-f9t" firstAttribute="top" secondItem="GVg-7U-w3B" secondAttribute="bottom" constant="20" id="Le7-Rs-txw"/>
-                            <constraint firstItem="2is-qK-u5l" firstAttribute="trailing" secondItem="GVg-7U-w3B" secondAttribute="trailing" constant="36" id="SYi-5D-wSN"/>
-                            <constraint firstItem="GVg-7U-w3B" firstAttribute="top" secondItem="UMW-Fi-fuC" secondAttribute="bottom" constant="30" id="VCK-xp-2cc"/>
-                            <constraint firstItem="GVg-7U-w3B" firstAttribute="leading" secondItem="2is-qK-u5l" secondAttribute="leading" constant="36" id="Z6V-Zz-naT"/>
-                            <constraint firstItem="2is-qK-u5l" firstAttribute="bottom" secondItem="UMW-Fi-fuC" secondAttribute="bottom" constant="100" id="aIG-Ci-t2g"/>
-                            <constraint firstItem="2is-qK-u5l" firstAttribute="trailing" secondItem="FWj-nE-f9t" secondAttribute="trailing" constant="16" id="emP-lE-kni"/>
-                            <constraint firstItem="UMW-Fi-fuC" firstAttribute="leading" secondItem="2is-qK-u5l" secondAttribute="leading" id="hqN-Cv-xo8"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="8E0-oj-4mo">
-                        <barButtonItem key="rightBarButtonItem" title="Next" id="j54-zs-xKv">
-                            <connections>
-                                <action selector="nextButtonTapped:" destination="ys1-Ni-G06" id="uz1-J5-Fof"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="nextButton" destination="j54-zs-xKv" id="c0N-H3-2S2"/>
-                        <outlet property="siteOptionsCollectionView" destination="UMW-Fi-fuC" id="AqH-7W-yza"/>
-                        <segue destination="S7K-ST-SJp" kind="show" identifier="toNextScreen" id="hDz-k4-TQB"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KCf-yX-V52" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3768.7022900763359" y="752.81690140845069"/>
-        </scene>
         <!--View Controller-->
         <scene sceneID="8ev-ay-thi">
             <objects>
@@ -284,7 +204,7 @@ site get?</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bgb-mm-fC5">
-                                <rect key="frame" x="16" y="279" width="361" height="405"/>
+                                <rect key="frame" x="16" y="331" width="361" height="353"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7js-zG-LJW">
                                     <size key="itemSize" width="128" height="128"/>
@@ -304,7 +224,7 @@ site get?</string>
                                 </cells>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qsH-oO-uNC">
-                                <rect key="frame" x="16" y="172" width="361" height="67"/>
+                                <rect key="frame" x="16" y="224" width="361" height="67"/>
                                 <string key="text">When was this plant last 
 repotted?</string>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
@@ -535,7 +455,7 @@ this plant?</string>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="ys1-Ni-G06" kind="relationship" relationship="rootViewController" id="HFa-V6-fvs"/>
+                        <segue destination="qOz-6i-Rrm" kind="relationship" relationship="rootViewController" id="c3d-B1-1k2"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Du0-GI-1KT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -627,6 +547,86 @@ garden</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zML-IZ-fAX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="8938" y="92"/>
+        </scene>
+        <!--PlantSite-->
+        <scene sceneID="RWX-O6-Lxy">
+            <objects>
+                <viewController storyboardIdentifier="PlantSiteView" title="PlantSite" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qOz-6i-Rrm" customClass="PlantSiteViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="k2h-mn-RxK">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frm-LA-zf8">
+                                <rect key="frame" x="0.0" y="256" width="393" height="428"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Key-It-pRY">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KKq-hA-fu6" customClass="addplantbuttonCollectionViewCell" customModule="PlantApp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="RdB-4Q-9zF">
+                                            <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.15999999642372131" translatesAutoresizingMaskIntoConstraints="NO" id="S6R-p4-VBm">
+                                <rect key="frame" x="36" y="714" width="321" height="4"/>
+                                <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 1 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vI5-bD-3oj">
+                                <rect key="frame" x="16" y="738" width="361" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where is the Plant placed?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mem-UJ-wNh">
+                                <rect key="frame" x="16" y="172" width="361" height="34"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="qea-md-sOd"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="S6R-p4-VBm" firstAttribute="top" secondItem="frm-LA-zf8" secondAttribute="bottom" constant="30" id="6bB-qd-m0n"/>
+                            <constraint firstItem="frm-LA-zf8" firstAttribute="leading" secondItem="qea-md-sOd" secondAttribute="leading" id="80R-lV-kXz"/>
+                            <constraint firstItem="mem-UJ-wNh" firstAttribute="leading" secondItem="qea-md-sOd" secondAttribute="leading" constant="16" id="9lP-cm-dcK"/>
+                            <constraint firstItem="S6R-p4-VBm" firstAttribute="leading" secondItem="qea-md-sOd" secondAttribute="leading" constant="36" id="A7V-1b-lOX"/>
+                            <constraint firstItem="qea-md-sOd" firstAttribute="trailing" secondItem="mem-UJ-wNh" secondAttribute="trailing" constant="16" id="GOb-qF-eTQ"/>
+                            <constraint firstItem="qea-md-sOd" firstAttribute="bottom" secondItem="frm-LA-zf8" secondAttribute="bottom" constant="100" id="OOa-mZ-H8z"/>
+                            <constraint firstItem="qea-md-sOd" firstAttribute="trailing" secondItem="vI5-bD-3oj" secondAttribute="trailing" constant="16" id="WRv-xN-hcY"/>
+                            <constraint firstItem="qea-md-sOd" firstAttribute="trailing" secondItem="S6R-p4-VBm" secondAttribute="trailing" constant="36" id="dgz-a1-zrl"/>
+                            <constraint firstItem="vI5-bD-3oj" firstAttribute="leading" secondItem="qea-md-sOd" secondAttribute="leading" constant="16" id="f1x-7L-2i8"/>
+                            <constraint firstItem="frm-LA-zf8" firstAttribute="top" secondItem="mem-UJ-wNh" secondAttribute="bottom" constant="50" id="nDN-hG-1cE"/>
+                            <constraint firstItem="mem-UJ-wNh" firstAttribute="top" secondItem="qea-md-sOd" secondAttribute="top" id="qZN-pq-CL9"/>
+                            <constraint firstItem="vI5-bD-3oj" firstAttribute="top" secondItem="S6R-p4-VBm" secondAttribute="bottom" constant="20" id="tpl-Ez-Bmr"/>
+                            <constraint firstItem="frm-LA-zf8" firstAttribute="trailing" secondItem="qea-md-sOd" secondAttribute="trailing" id="wvj-Bs-cFv"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="k9T-HG-9c3">
+                        <barButtonItem key="rightBarButtonItem" title="Next" id="9mb-as-qPf">
+                            <connections>
+                                <action selector="nextButtonTapped:" destination="qOz-6i-Rrm" id="H8W-Q8-Ieg"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="nextButton" destination="9mb-as-qPf" id="aLi-Vl-6dK"/>
+                        <outlet property="siteOptionsCollectionView" destination="frm-LA-zf8" id="eGA-sp-797"/>
+                        <segue destination="S7K-ST-SJp" kind="show" identifier="toNextScreen" id="2Yc-ls-jqb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vhV-bU-6hs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3720" y="92"/>
         </scene>
     </scenes>
     <resources>

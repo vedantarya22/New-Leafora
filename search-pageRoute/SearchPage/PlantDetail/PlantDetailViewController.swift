@@ -14,7 +14,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     var currentPlant: Plant? {
         plants.first
     }
-   
+    
     
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -23,45 +23,50 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         // Load plants from JSON
-//        plants = JSONLoader.loadPlants(from: "plantData")
-
+        //        plants = JSONLoader.loadPlants(from: "plantData")
+        
         print("Plants loaded:", plants.count)
-//        print(plants)
+        //        print(plants)
         
         loadSpecificPlant()
         
-//        setupGradient()
+        //        setupGradient()
         setupCollectionView()
     }
     
+    @IBAction func addButtonTapped(_ sender: UIBarButtonItem) {
+        navigateToAddPlantQuestionnaire()
+    }
+    
+    
     func loadSpecificPlant() {
-            // Load ALL plants first
-            let allPlants = JSONLoader.loadPlants(from: "plantData")
+        // Load ALL plants first
+        let allPlants = JSONLoader.loadPlants(from: "plantData")
         print("DEBUG: Received Plant ID from Search: '\(plantId ?? "NIL")'")
-            
-            // Check if an ID was passed
-            if let id = plantId {
-                // Filter to find the matching plant
-                if let foundPlant = allPlants.first(where: { $0.plantId == id }) {
-                    self.plants = [foundPlant] // Set array to contain ONLY the selected plant
-                } else {
-                    print("Error: Plant with ID \(id) not found.")
-                    self.plants = [] // Or handle error state
-                }
+        
+        // Check if an ID was passed
+        if let id = plantId {
+            // Filter to find the matching plant
+            if let foundPlant = allPlants.first(where: { $0.plantId == id }) {
+                self.plants = [foundPlant] // Set array to contain ONLY the selected plant
             } else {
-                // Fallback: If no ID passed, maybe show all or empty
-                print("No Plant ID passed, defaulting to first plant in JSON")
-                if let first = allPlants.first {
-                    self.plants = [first]
-                }
+                print("Error: Plant with ID \(id) not found.")
+                self.plants = [] // Or handle error state
             }
+        } else {
+            // Fallback: If no ID passed, maybe show all or empty
+            print("No Plant ID passed, defaulting to first plant in JSON")
+            if let first = allPlants.first {
+                self.plants = [first]
+            }
+        }
         
         collectionView.reloadData()
-            
-            // Set Title
-            self.title = currentPlant?.plantName
-            print("Detail View Loaded for: \(currentPlant?.plantName ?? "Unknown")")
-        }
+        
+        // Set Title
+        self.title = currentPlant?.plantName
+        print("Detail View Loaded for: \(currentPlant?.plantName ?? "Unknown")")
+    }
     
     
     private func setupCollectionView(){
@@ -71,8 +76,8 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         collectionView.register(UINib(nibName: "HeroImageCell", bundle: nil),
                                 forCellWithReuseIdentifier: "HeroImageCell")
         
-//        collectionView.register(UINib(nibName: "PlantTitleCell", bundle: nil),
-//                                forCellWithReuseIdentifier: "PlantTitleCell")
+        //        collectionView.register(UINib(nibName: "PlantTitleCell", bundle: nil),
+        //                                forCellWithReuseIdentifier: "PlantTitleCell")
         
         collectionView.register(UINib(nibName: "PlantAboutCell", bundle: nil),
                                 forCellWithReuseIdentifier: "PlantAboutCell")
@@ -109,62 +114,62 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 )
                 
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                       item.contentInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
+                item.contentInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
                 
                 let groupSize = NSCollectionLayoutSize(
-                               widthDimension: .fractionalWidth(1),
-                               heightDimension: .absolute(120)
-                           )
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(120)
+                )
                 let group = NSCollectionLayoutGroup.horizontal(
-                               layoutSize: groupSize,
-                               subitems: [item]
-                           )
+                    layoutSize: groupSize,
+                    subitems: [item]
+                )
                 let sectionLayout = NSCollectionLayoutSection(group: group)
                 sectionLayout.contentInsets = .init(top: 8, leading: 16, bottom: 8, trailing: 16)
-
-                          return sectionLayout
+                
+                return sectionLayout
             }
             
             if section == .heroImage {
-
+                
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(260)
                 )
-
+                
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
+                
                 let group = NSCollectionLayoutGroup.vertical(
                     layoutSize: itemSize,
                     subitems: [item]
                 )
-
+                
                 let sectionLayout = NSCollectionLayoutSection(group: group)
-
+                
                 // ONLY left & right margin
                 sectionLayout.contentInsets = .init(top: 0, leading: 8, bottom: 16, trailing: 8)
-
+                
                 return sectionLayout
             }
             
             if section == .buttons {
-                        let itemSize = NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(60) // Standard button height
-                        )
-                        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(60) // Standard button height
+                )
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = .init(top: 2, leading: 12, bottom: 2, trailing: 12)
-                        
-                        let group = NSCollectionLayoutGroup.vertical(
-                            layoutSize: itemSize,
-                            subitems: [item]
-                        )
-                        
-                        let sectionLayout = NSCollectionLayoutSection(group: group)
-                        sectionLayout.contentInsets = .init(top: 4, leading: 0, bottom: 16, trailing: 0)
                 
-                        return sectionLayout
-                    }
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: itemSize,
+                    subitems: [item]
+                )
+                
+                let sectionLayout = NSCollectionLayoutSection(group: group)
+                sectionLayout.contentInsets = .init(top: 4, leading: 0, bottom: 16, trailing: 0)
+                
+                return sectionLayout
+            }
             
             
             let itemSize = NSCollectionLayoutSize(
@@ -174,7 +179,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = .init(top: 4, leading: 8, bottom: 4, trailing: 8)
-     
+            
             
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: itemSize,
@@ -220,17 +225,17 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         case .soil:
             return 2
         case .issues:
-             return plants[0].commonIssues.count
+            return plants[0].commonIssues.count
         case .buttons :
-            return 2
+            return 1
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         guard let plant = currentPlant else {
-                    return UICollectionViewCell() // Return empty cell if data is missing to prevent crash
-                }
+            return UICollectionViewCell() // Return empty cell if data is missing to prevent crash
+        }
         let section = PlantDetailSection(rawValue: indexPath.section)!
         
         switch section {
@@ -241,20 +246,20 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 for: indexPath) as! HeroImageCell
             cell.configure(with: plant )
             return cell
-//            
-//        case .titleInfo:
-//            let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: "PlantTitleCell",
-//                for: indexPath) as! PlantTitleCell
-//            let plant = plants[0]
-//            cell.configure(with: plant)
-//            return cell
+            //            
+            //        case .titleInfo:
+            //            let cell = collectionView.dequeueReusableCell(
+            //                withReuseIdentifier: "PlantTitleCell",
+            //                for: indexPath) as! PlantTitleCell
+            //            let plant = plants[0]
+            //            cell.configure(with: plant)
+            //            return cell
             
         case .about:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantAboutCell",
                 for: indexPath) as! PlantAboutCell
-          
+            
             cell.configure(with : plant)
             return cell
             
@@ -262,13 +267,13 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "FeatureCell",
                 for: indexPath) as! FeatureCell
-
-               let features: [FeatureType] = [.light, .petFriendly, .toxic]
-
-               cell.configure(
-                   type: features[indexPath.item],
-                   plant: plant
-               )
+            
+            let features: [FeatureType] = [.light, .petFriendly, .toxic]
+            
+            cell.configure(
+                type: features[indexPath.item],
+                plant: plant
+            )
             return cell
             
         case .care:
@@ -279,26 +284,26 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             let row = plant.careCycle.rows[indexPath.row]
             let isFirst = indexPath.item == 0
             let isLast = indexPath.item == plant.careCycle.rows.count - 1
-
+            
             cell.configure(
-                   type: row.type,
-                   value: row.value,
-                   isLast: isLast
-               )
+                type: row.type,
+                value: row.value,
+                isLast: isLast
+            )
             cell.applyCorners(isFirst: isFirst, isLast: isLast)
-
+            
             return cell
             
         case .soil:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantSoilCell",
                 for: indexPath) as! PlantSoilCell
-              let values = plant.soilType.values
+            let values = plant.soilType.values
             
             let isFirst = indexPath.item == 0
             let isLast = indexPath.item == values.count - 1
-
-              cell.configure(value:values[indexPath.item],isLast: isLast)
+            
+            cell.configure(value:values[indexPath.item],isLast: isLast)
             cell.applyCorners(isFirst: isFirst, isLast: isLast)
             return cell
             
@@ -306,43 +311,37 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantIssueCell",
                 for: indexPath) as! PlantIssueCell
-    
-            let issues = plant.commonIssues
-               let isFirst = indexPath.item == 0
-               let isLast = indexPath.item == issues.count - 1
-
-               cell.configure(issue: issues[indexPath.item],isLast: isLast)
-               cell.applyCorners(isFirst: isFirst, isLast: isLast)
-
-            return cell
             
-        case .buttons:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "PlantActionButtonCell",
-                for: indexPath
-            ) as! PlantActionButtonCell
-
-            if indexPath.row == 0 {
-                cell.configure(type: .addPlant)
-                cell.onTap = {
-                    print("✅ Add Plant button tapped")
-                }
-            } else {
-                cell.configure(type: .visualizeAR)
-                cell.onTap = {
-                    print("🧩 AR View button tapped")
-                }
-            }
+            let issues = plant.commonIssues
+            let isFirst = indexPath.item == 0
+            let isLast = indexPath.item == issues.count - 1
+            
+            cell.configure(issue: issues[indexPath.item],isLast: isLast)
+            cell.applyCorners(isFirst: isFirst, isLast: isLast)
+            
             return cell
-
+        case .buttons:
+                    let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: "PlantActionButtonCell",
+                        for: indexPath
+                    ) as! PlantActionButtonCell
+                    
+                    // CHANGED: Only show AR button (index 0 is now the only button)
+                    cell.configure(type: .visualizeAR)
+                    cell.onTap = {
+                        print("🧩 AR View button tapped")
+                    }
+                    return cell
             
         }
         
+        
+        
+        
     }
     
-
     
- 
+    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(
@@ -352,6 +351,32 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         header.titleLabel.text = section.headerTitle
         
         return header
+    }
+    
+    
+    
+    func navigateToAddPlantQuestionnaire() {
+        guard let plantId = currentPlant?.plantId else {
+            print("❌ No plant ID available")
+            return
+        }
+        
+        // Instantiate the Add-Plant_Ques storyboard
+        let storyboard = UIStoryboard(name: "AddPlant", bundle: nil)
+        
+        // Get the initial view controller
+        if let addPlantVC = storyboard.instantiateInitialViewController() as? PlantSiteViewController{
+            
+            // Pass only the plant ID
+            addPlantVC.plantId = plantId
+            
+            // Navigate
+            navigationController?.pushViewController(addPlantVC, animated: true)
+            
+            print("✅ Navigating to Add Plant Questionnaire with Plant ID: \(plantId)")
+        } else {
+            print("❌ Could not instantiate Add-Plant_Ques storyboard")
+        }
     }
     
 }

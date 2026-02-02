@@ -47,7 +47,14 @@
                             <constraint firstAttribute="bottom" secondItem="UF4-Aq-VX2" secondAttribute="bottom" id="dcc-jc-TGc"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Aloevera" id="kCq-Z3-BTA"/>
+                    <navigationItem key="navigationItem" title="Aloevera" id="kCq-Z3-BTA">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="zM6-xR-0az">
+                            <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1571044922" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="addButtonTapped:" destination="BYZ-38-t0r" id="Giz-KS-d2j"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="UF4-Aq-VX2" id="LO7-Vr-pFU"/>
                     </connections>
@@ -117,6 +124,7 @@
                     <navigationItem key="navigationItem" title="Search" id="vdZ-Kn-6Ff"/>
                     <connections>
                         <segue destination="Qbd-IZ-3Zw" kind="presentation" id="8r5-2g-CDb"/>
+                        <segue destination="BYZ-38-t0r" kind="show" id="WFw-tp-7dK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e3S-c3-253" sceneMemberID="firstResponder"/>
