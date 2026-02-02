@@ -1,0 +1,48 @@
+# Xcode
+.DS_Store
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+
+# Build products
+build/
+DerivedData/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Xcode previews
+*.preview-thumbnails/
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Temporary files
+*.swp
+*.tmp
+
+# Certificates & profiles (never commit)
+*.p12
+*.cer
+*.mobileprovision

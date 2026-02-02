@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CareTaskCell" id="gTV-IL-0wX" customClass="CareTaskCell" customModule="homescreen1" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drop.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="abc-Icon-123">
+                        <rect key="frame" x="20" y="13.666666666666666" width="28" height="28.666666666666671"/>
+                        <color key="tintColor" red="0.1019607843" green="0.1843137255" blue="0.1019607843" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="ico-ht"/>
+                            <constraint firstAttribute="width" constant="28" id="ico-wd"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-Title-456">
+                        <rect key="frame" x="59.999999999999993" y="17.666666666666668" width="70.333333333333314" height="21.000000000000004"/>
+                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                        <color key="textColor" red="0.1019607843" green="0.1843137255" blue="0.1019607843" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="chev-Right-789">
+                        <rect key="frame" x="342.66666666666669" y="20" width="12.333333333333314" height="16.333333333333329"/>
+                        <color key="tintColor" systemColor="tertiaryLabelColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="chv-ht"/>
+                            <constraint firstAttribute="width" constant="12.5" id="chv-wd"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-Count-000">
+                        <rect key="frame" x="324.33333333333331" y="17.666666666666668" width="10.333333333333314" height="21.000000000000004"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="abc-Icon-123" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="20" id="c1"/>
+                <constraint firstItem="abc-Icon-123" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="c2"/>
+                <constraint firstItem="lbl-Title-456" firstAttribute="leading" secondItem="abc-Icon-123" secondAttribute="trailing" constant="12" id="c3"/>
+                <constraint firstItem="lbl-Title-456" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="c4"/>
+                <constraint firstAttribute="trailing" secondItem="chev-Right-789" secondAttribute="trailing" constant="20" id="c5"/>
+                <constraint firstItem="chev-Right-789" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="c6"/>
+                <constraint firstItem="chev-Right-789" firstAttribute="leading" secondItem="lbl-Count-000" secondAttribute="trailing" constant="8" id="c7"/>
+                <constraint firstItem="lbl-Count-000" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="c8"/>
+            </constraints>
+            <connections>
+                <outlet property="countLabel" destination="lbl-Count-000" id="out-count"/>
+                <outlet property="iconImageView" destination="abc-Icon-123" id="out-icon"/>
+                <outlet property="titleLabel" destination="lbl-Title-456" id="out-title"/>
+            </connections>
+            <point key="canvasLocation" x="130.53435114503816" y="-11.267605633802818"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="chevron.right" catalog="system" width="97" height="128"/>
+        <image name="drop.fill" catalog="system" width="96" height="128"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tertiaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PlantRowCell" id="gTV-IL-0wX" customClass="PlantRowCell" customModule="homescreen1" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="90"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="393" height="90"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="done-bg">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="90"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="check-icon">
+                                <rect key="frame" x="347" y="30.666666666666664" width="30" height="28.666666666666664"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="h30"/>
+                                    <constraint firstAttribute="width" constant="30" id="w30"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemGreenColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="check-icon" secondAttribute="trailing" constant="16" id="c-icon"/>
+                            <constraint firstItem="check-icon" firstAttribute="centerY" secondItem="done-bg" secondAttribute="centerY" id="center-icon"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="main-container">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="90"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="img-01">
+                                <rect key="frame" x="16" y="15" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="h60"/>
+                                    <constraint firstAttribute="width" constant="60" id="w60"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Plant Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-name">
+                                <rect key="frame" x="92" y="22" width="285" height="22"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Care Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-detail">
+                                <rect key="frame" x="92" y="48" width="285" height="17"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="img-01" firstAttribute="leading" secondItem="main-container" secondAttribute="leading" constant="16" id="f1"/>
+                            <constraint firstItem="img-01" firstAttribute="centerY" secondItem="main-container" secondAttribute="centerY" id="f2"/>
+                            <constraint firstItem="lbl-name" firstAttribute="leading" secondItem="img-01" secondAttribute="trailing" constant="16" id="f3"/>
+                            <constraint firstAttribute="trailing" secondItem="lbl-name" secondAttribute="trailing" constant="16" id="f4"/>
+                            <constraint firstItem="lbl-name" firstAttribute="top" secondItem="main-container" secondAttribute="top" constant="22" id="f5"/>
+                            <constraint firstItem="lbl-detail" firstAttribute="leading" secondItem="lbl-name" secondAttribute="leading" id="f6"/>
+                            <constraint firstItem="lbl-detail" firstAttribute="trailing" secondItem="lbl-name" secondAttribute="trailing" id="f7"/>
+                            <constraint firstItem="lbl-detail" firstAttribute="top" secondItem="lbl-name" secondAttribute="bottom" constant="4" id="f8"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="line-sep">
+                        <rect key="frame" x="8" y="88" width="377" height="1"/>
+                        <color key="backgroundColor" systemColor="separatorColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="h1"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="line-sep" secondAttribute="bottom" constant="1" id="846-h7-9np"/>
+                <constraint firstAttribute="bottom" secondItem="done-bg" secondAttribute="bottom" id="b1"/>
+                <constraint firstItem="done-bg" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="b2"/>
+                <constraint firstAttribute="trailing" secondItem="done-bg" secondAttribute="trailing" id="b3"/>
+                <constraint firstItem="done-bg" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="b4"/>
+                <constraint firstAttribute="trailing" secondItem="line-sep" secondAttribute="trailing" constant="8" id="fnA-O3-hdP"/>
+                <constraint firstAttribute="bottom" secondItem="main-container" secondAttribute="bottom" id="m1"/>
+                <constraint firstItem="main-container" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="m2"/>
+                <constraint firstAttribute="trailing" secondItem="main-container" secondAttribute="trailing" id="m3"/>
+                <constraint firstItem="main-container" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="m4"/>
+                <constraint firstItem="line-sep" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="8" id="q1m-GL-Exe"/>
+            </constraints>
+            <connections>
+                <outlet property="detailLabel" destination="lbl-detail" id="o1"/>
+                <outlet property="doneBackgroundView" destination="done-bg" id="5dV-zz-mf8"/>
+                <outlet property="mainContainerView" destination="main-container" id="o4"/>
+                <outlet property="nameLabel" destination="lbl-name" id="o2"/>
+                <outlet property="plantImageView" destination="img-01" id="o3"/>
+            </connections>
+            <point key="canvasLocation" x="140" y="129"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="checkmark.circle.fill" catalog="system" width="128" height="123"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="separatorColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

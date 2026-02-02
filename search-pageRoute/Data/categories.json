@@ -1,0 +1,125 @@
+{
+  "categories": [
+    {
+        "id": "money_plant",
+        "normalizedKey": "money_plant",
+        "title": "Recommended",
+        "asset_name": "MoneyPlant",
+        "gradient": {
+          "top": "#B4F8C8",
+          "bottom": "#4CAF50"
+        }
+      },
+    {
+      "id": "flowering",
+      "normalizedKey": "flowering",
+      "title": "Flowering",
+      "asset_name": "Flowering",
+      "gradient": {
+        "top": "#FFD3A5",
+        "bottom": "#F4A261"
+      }
+    },
+    {
+      "id": "indoor",
+      "normalizedKey": "indoor",
+      "title": "Indoor",
+      "asset_name": "Indoor",
+      "gradient": {
+        "top": "#D9FBE5",
+        "bottom": "#9ED5C5"
+      }
+    },
+    {
+      "id": "low_light",
+      "normalizedKey": "low_light",
+      "title": "Low Light",
+      "asset_name": "LowLight",
+      "gradient": {
+        "top": "#D6E4F0",
+        "bottom": "#8DA9C4"
+      }
+    },
+    {
+      "id": "pet_friendly",
+      "normalizedKey": "pet_friendly",
+      "title": "Pet Safe",
+      "asset_name": "Pet",
+      "gradient": {
+        "top": "#FFE4E1",
+        "bottom": "#FFB7A5"
+      }
+    },
+    {
+      "id": "aromatic",
+      "normalizedKey": "aromatic",
+      "title": "Aromatic",
+      "asset_name": "Aromatic",
+      "gradient": {
+        "top": "#A8E063",
+        "bottom": "#56AB2F"
+      }
+    },
+    {
+      "id": "medicinal",
+      "normalizedKey": "medicinal",
+      "title": "Medicinal",
+      "asset_name": "Medicinal",
+      "gradient": {
+        "top": "#B7F8DB",
+        "bottom": "#7ED7C1"
+      }
+    },
+    {
+      "id": "fruit",
+      "normalizedKey": "fruit",
+      "title": "Fruit",
+      "asset_name": "Fruit",
+      "gradient": {
+        "top": "#F6D365",
+        "bottom": "#C05621"
+      }
+    },
+    {
+      "id": "hanging",
+      "normalizedKey": "hanging",
+      "title": "Hanging",
+      "asset_name": "Hanging",
+      "gradient": {
+        "top": "#E0F7FA",
+        "bottom": "#A5DEE5"
+      }
+    },
+    {
+      "id": "good_luck",
+      "normalizedKey": "good_luck",
+      "title": "Good Luck",
+      "asset_name": "Luck",
+      "gradient": {
+        "top": "#C7EDE6",
+        "bottom": "#5FB3A2"
+      }
+    },
+    {
+      "id": "outdoor",
+      "normalizedKey": "outdoor",
+      "title": "Outdoor",
+      "asset_name": "Outdoor",
+      "gradient": {
+        "top": "#6BCF9B",
+        "bottom": "#2D6A4F"
+      }
+    },
+    {
+      "id": "easy_care",
+      "normalizedKey": "low_maintenance",
+      "title": "Easy Care",
+      "asset_name": "Easy",
+      "gradient": {
+        "top": "#CFF5D2",
+        "bottom": "#8BCF9B"
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,263 @@
+{
+  "plants": [
+    {
+      "plant_id": "aloe_vera",
+      "plant_name": "Aloe Vera",
+      "scientific_name": "Aloe barbadensis miller",
+      "description": "A hardy succulent known for healing gel and minimal watering needs.",
+      "category": ["medicinal", "indoor", "low_maintenance"],
+      "tags": ["medicinal", "low maintenance"],
+      "image_name": "aloe_vera",
+      "care_cycle": {
+        "watering": "Every 2-3 weeks",
+        "repotting": "Every 12 months",
+        "fertilizing": "Every 2 months",
+        "pruning": "Every 6 months"
+      },
+      "soil_type": {
+        "characteristics": "Well-draining sandy soil",
+        "soil_used": "Cactus mix"
+      },
+      "benefits": ["Heals burns", "Easy care", "Air purification"],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "Bright indirect sunlight",
+      "care_difficulty": "easy",
+      "common_issues": ["Root rot", "Soft leaves"]
+    },
+
+    {
+      "plant_id": "money_plant",
+      "plant_name": "Money Plant",
+      "scientific_name": "Epipremnum aureum",
+      "description": "Fast-growing indoor vine known for prosperity and air cleaning.",
+      "category": ["indoor", "hanging", "good_luck"],
+      "tags": ["vastu friendly", "air purifying"],
+      "image_name": "money_plant",
+      "care_cycle": {
+        "watering": "Once a week",
+        "repotting": "Every 10 months",
+        "fertilizing": "Monthly",
+        "pruning": "Every 2 months"
+      },
+      "soil_type": {
+        "characteristics": "Moist well-draining soil",
+        "soil_used": "Potting mix"
+      },
+      "benefits": ["Improves air quality", "Decorative look"],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "Low to bright indirect",
+      "care_difficulty": "easy",
+      "common_issues": ["Yellow leaves", "Leggy growth"]
+    },
+
+    {
+      "plant_id": "snake_plant",
+      "plant_name": "Snake Plant",
+      "scientific_name": "Sansevieria trifasciata",
+      "description": "Tough low-light plant that releases oxygen at night.",
+      "category": ["indoor", "low_light", "low_maintenance"],
+      "tags": ["low light", "air purifying"],
+      "image_name": "snake_plant",
+      "care_cycle": {
+        "watering": "Every 2 weeks",
+        "repotting": "Every 18 months",
+        "fertilizing": "Every 2 months",
+        "pruning": "When damaged"
+      },
+      "soil_type": {
+        "characteristics": "Loose fast-draining soil",
+        "soil_used": "Succulent mix"
+      },
+      "benefits": ["Improves sleep air", "Very hardy"],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "Low to medium light",
+      "care_difficulty": "easy",
+      "common_issues": ["Root rot", "Wrinkled leaves"]
+    },
+
+    {
+      "plant_id": "areca_palm",
+      "plant_name": "Areca Palm",
+      "scientific_name": "Dypsis lutescens",
+      "description": "Elegant palm that humidifies indoor spaces.",
+      "category": ["indoor", "pet_friendly"],
+      "tags": ["pet friendly", "air purifying"],
+      "image_name": "areca_palm",
+      "care_cycle": {
+        "watering": "Twice a week",
+        "repotting": "Yearly",
+        "fertilizing": "Monthly",
+        "pruning": "Every 3 months"
+      },
+      "soil_type": {
+        "characteristics": "Light moisture retaining soil",
+        "soil_used": "Peat mix"
+      },
+      "benefits": ["Pet safe", "Humidifies air"],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "Bright indirect",
+      "care_difficulty": "moderate",
+      "common_issues": ["Brown tips", "Dry air stress"]
+    },
+
+    {
+      "plant_id": "tulsi",
+      "plant_name": "Tulsi",
+      "scientific_name": "Ocimum tenuiflorum",
+      "description": "Sacred medicinal herb used in Ayurveda.",
+      "category": ["medicinal", "aromatic", "outdoor"],
+      "tags": ["medicinal", "vastu friendly"],
+      "image_name": "tulsi",
+      "care_cycle": {
+        "watering": "Every 2 days",
+        "repotting": "Every 8 months",
+        "fertilizing": "Monthly",
+        "pruning": "Monthly"
+      },
+      "soil_type": {
+        "characteristics": "Fertile draining soil",
+        "soil_used": "Garden soil + compost"
+      },
+      "benefits": ["Boosts immunity", "Reduces stress"],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "Full sunlight",
+      "care_difficulty": "easy",
+      "common_issues": ["Wilting", "Pests"]
+    },
+
+    {
+      "plant_id": "rose",
+      "plant_name": "Rose",
+      "scientific_name": "Rosa spp.",
+      "description": "Beautiful flowering shrub with fragrant blooms.",
+      "category": ["flowering", "outdoor"],
+      "tags": ["decorative", "fragrant"],
+      "image_name": "rose",
+      "care_cycle": {
+        "watering": "3 times a week",
+        "repotting": "Yearly",
+        "fertilizing": "Every 15 days",
+        "pruning": "Seasonally"
+      },
+      "soil_type": {
+        "characteristics": "Rich fertile soil",
+        "soil_used": "Garden soil + manure"
+      },
+      "benefits": ["Beautifies space", "Boosts mood"],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "Full sunlight",
+      "care_difficulty": "advanced",
+      "common_issues": ["Black spots", "Aphids"]
+    },
+
+    {
+      "plant_id": "mint",
+      "plant_name": "Mint",
+      "scientific_name": "Mentha",
+      "description": "Fast-growing aromatic culinary herb.",
+      "category": ["medicinal", "aromatic", "outdoor"],
+      "tags": ["edible", "fast growing"],
+      "image_name": "mint",
+      "care_cycle": {
+        "watering": "Every 2 days",
+        "repotting": "Every 6 months",
+        "fertilizing": "Monthly",
+        "pruning": "Frequently"
+      },
+      "soil_type": {
+        "characteristics": "Moist fertile soil",
+        "soil_used": "Garden soil"
+      },
+      "benefits": ["Aids digestion", "Fresh flavor"],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "Partial sunlight",
+      "care_difficulty": "easy",
+      "common_issues": ["Overgrowth", "Wilting"]
+    },
+
+    {
+      "plant_id": "jasmine",
+      "plant_name": "Jasmine",
+      "scientific_name": "Jasminum",
+      "description": "Flowering plant with strong sweet fragrance.",
+      "category": ["flowering", "aromatic", "outdoor"],
+      "tags": ["fragrant", "decorative"],
+      "image_name": "jasmine",
+      "care_cycle": {
+        "watering": "Twice a week",
+        "repotting": "Yearly",
+        "fertilizing": "Monthly",
+        "pruning": "After flowering"
+      },
+      "soil_type": {
+        "characteristics": "Loose fertile soil",
+        "soil_used": "Garden soil + compost"
+      },
+      "benefits": ["Pleasant fragrance", "Garden beauty"],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "Full sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": ["Bud drop", "Pests"]
+    },
+
+    {
+      "plant_id": "peace_lily",
+      "plant_name": "Peace Lily",
+      "scientific_name": "Spathiphyllum",
+      "description": "Elegant indoor plant with white flowers and air-cleaning power.",
+      "category": ["indoor", "flowering"],
+      "tags": ["air purifying", "decorative"],
+      "image_name": "peace_lily",
+      "care_cycle": {
+        "watering": "Once a week",
+        "repotting": "Yearly",
+        "fertilizing": "Every 2 months",
+        "pruning": "When leaves die"
+      },
+      "soil_type": {
+        "characteristics": "Moist rich soil",
+        "soil_used": "Potting mix"
+      },
+      "benefits": ["Purifies air", "Beautiful blooms"],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "Low to medium light",
+      "care_difficulty": "moderate",
+      "common_issues": ["Drooping leaves", "Brown tips"]
+    },
+
+    {
+      "plant_id": "lemon_tree",
+      "plant_name": "Lemon Plant",
+      "scientific_name": "Citrus limon",
+      "description": "Fruit-bearing citrus plant with fragrant flowers.",
+      "category": ["fruit", "outdoor"],
+      "tags": ["edible fruit", "fragrant"],
+      "image_name": "lemon",
+      "care_cycle": {
+        "watering": "Twice a week",
+        "repotting": "Every 2 years",
+        "fertilizing": "Monthly",
+        "pruning": "Seasonally"
+      },
+      "soil_type": {
+        "characteristics": "Well-draining fertile soil",
+        "soil_used": "Garden soil + compost"
+      },
+      "benefits": ["Fresh lemons", "Garden freshness"],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "Full sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": ["Leaf curl", "Fruit drop"]
+    }
+  ]
+}

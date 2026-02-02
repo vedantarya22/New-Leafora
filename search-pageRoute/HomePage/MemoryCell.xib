@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MemoryCell" id="gTV-IL-0wX" customClass="MemoryCell" customModule="homescreen1" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="404" height="207"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="404" height="207"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0qX-L3-PFK">
+                        <rect key="frame" x="0.0" y="0.0" width="404" height="207"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pnc-e2-95S">
+                                <rect key="frame" x="0.0" y="0.0" width="404" height="173"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="173" id="kFB-4n-EBL"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jhO-rS-aBM">
+                                <rect key="frame" x="16" y="178.66666666666666" width="372" height="20.333333333333343"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="jhO-rS-aBM" secondAttribute="trailing" constant="16" id="2BG-rv-IFk"/>
+                            <constraint firstAttribute="bottom" secondItem="jhO-rS-aBM" secondAttribute="bottom" constant="8" id="3rd-Ha-4z3"/>
+                            <constraint firstItem="jhO-rS-aBM" firstAttribute="leading" secondItem="0qX-L3-PFK" secondAttribute="leading" constant="16" id="Ymd-Bg-aqU"/>
+                            <constraint firstItem="Pnc-e2-95S" firstAttribute="top" secondItem="0qX-L3-PFK" secondAttribute="top" id="awC-kH-big"/>
+                            <constraint firstAttribute="trailing" secondItem="Pnc-e2-95S" secondAttribute="trailing" id="nVF-7d-Leq"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="16"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="0qX-L3-PFK" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="2cd-54-2Z4"/>
+                <constraint firstAttribute="trailing" secondItem="0qX-L3-PFK" secondAttribute="trailing" id="3gr-e9-qwt"/>
+                <constraint firstItem="0qX-L3-PFK" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Bwk-hR-Tut"/>
+                <constraint firstAttribute="bottom" secondItem="0qX-L3-PFK" secondAttribute="bottom" id="TU3-9E-vzY"/>
+            </constraints>
+            <size key="customSize" width="404" height="207"/>
+            <connections>
+                <outlet property="cardView" destination="0qX-L3-PFK" id="thT-3z-lD1"/>
+                <outlet property="dateLabel" destination="jhO-rS-aBM" id="CIv-Dx-gvv"/>
+                <outlet property="imageView" destination="Pnc-e2-95S" id="jRi-pU-Jwk"/>
+            </connections>
+            <point key="canvasLocation" x="409.16030534351142" y="182.04225352112678"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
