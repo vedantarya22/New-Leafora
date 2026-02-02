@@ -41,8 +41,8 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     func loadData() {
-        CommunityDataStore.shared.fetchAllUsers { [weak self] users in
-            let currentUserID = CommunityDataStore.shared.currentLoggedInUserID
+        UserSession.shared.fetchAllUsers { [weak self] users in
+            let currentUserID = UserSession.shared.currentLoggedInUserID
             guard let self = self else { return }
             self.allUsers = users.filter { $0.id != currentUserID }
             self.tableView.reloadData()
@@ -114,7 +114,7 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         cell.nameLabel.text = user.name
         cell.messageLabel.text = user.searchSubtitle
         
-        let imageName = CommunityDataStore.shared.profileImageString(for: user.id)
+        let imageName = UserSession.shared.profileImageString(for: user.id)
         cell.avatarImageView.configureImage(with: imageName)
         cell.avatarImageView.tintColor = .label
 

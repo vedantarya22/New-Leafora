@@ -64,7 +64,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // 2. Setup Header Data (If user is passed)
         if let user = user {
             headerNameLabel.text = user.name
-            let imageName = CommunityDataStore.shared.profileImageString(for: user.id)
+            let imageName = UserSession.shared.profileImageString(for: user.id)
                 headerImageView.configureImage(with: imageName)
             
         }

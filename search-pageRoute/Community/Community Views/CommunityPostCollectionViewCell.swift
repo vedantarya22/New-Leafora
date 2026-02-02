@@ -79,50 +79,22 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         
         // Configure images
         if let author = post.author {
-            let imageName = CommunityDataStore.shared.profileImageString(for: author.id)
+            let imageName = UserSession.shared.profileImageString(for: author.id)
             profileImageView.configureImage(with: imageName)
         }
         postImageView.configureImage(with: post.postImageString)
         
-        // Add this temporarily at the bottom of configure()
-        timestampLabel.text = "TEST TIME"
-        timestampLabel.isHidden = false
         // MARK: - TIME LOGIC
-            // 1. Safely unwrap the string. If it's nil, use empty string.
-            let dateString = post.timestamp
-            
-            // 2. Check if empty immediately
-            if dateString.isEmpty {
-                timestampLabel.text = "Just now"
-            } else {
-                // 3. Try ISO8601 Format (Most common)
-                let isoFormatter = ISO8601DateFormatter()
-                isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-                
-                if let date = isoFormatter.date(from: dateString) {
-                    timestampLabel.text = date.timeAgoDisplay()
-                } else {
-                    // 4. Fallback: Try Standard Date Format
-                    let simpleFormatter = DateFormatter()
-                    // If your backend sends "2025-01-25 14:30:00", change this to "yyyy-MM-dd HH:mm:ss"
-                    simpleFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-                    
-                    if let date = simpleFormatter.date(from: dateString) {
-                        timestampLabel.text = date.timeAgoDisplay()
-                    } else {
-                        // 5. FINAL SAFETY NET
-                        // If we can't convert it, show the raw string.
-                        // This ensures the label NEVER disappears.
-                        timestampLabel.text = dateString
-                    }
-                }
-            }
+        // We now rely on the Repository to have formatted this for us.
+        timestampLabel.text = post.displayTimestamp ?? "Just now"
+        timestampLabel.isHidden = false
+
         // Configure like button
         let likeImage = post.isLiked ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
         likeButton.setImage(likeImage, for: .normal)
         likeButton.tintColor = post.isLiked ? .systemRed : .label
         
-         //Configure save button
+        //Configure save button
         let saveImage = post.isSaved ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
         saveButton.setImage(saveImage, for: .normal)
     }

@@ -17,6 +17,33 @@ class profilePostsViewerController: UIViewController, UICollectionViewDelegate {
         super.viewDidLoad()
         setupData()
         setupCollectionView()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleSinglePostUpdate(_:)), name: .didUpdatePost, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handlePostsUpdate), name: .didUpdatePosts, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func handleSinglePostUpdate(_ notification: Notification) {
+        if let updatedPostId = notification.userInfo?["postId"] as? String,
+           updatedPostId == post?.id {
+            refreshPost()
+        }
+    }
+    
+    @objc func handlePostsUpdate() {
+        refreshPost()
+    }
+    
+    private func refreshPost() {
+        guard let currentId = post?.id else { return }
+        if let freshPost = PostRepository.shared.getPost(id: currentId) {
+            self.post = freshPost
+            self.posts = [freshPost]
+            self.collectionView.reloadData()
+        }
     }
     
     // MARK: - Setup
@@ -98,15 +125,9 @@ extension profilePostsViewerController: UICollectionViewDataSource {
         // MARK: - Handle Actions
         
         // 1. Like Action
-        cell.onLikeTapped = { [weak self] (isLiked, newCount) in
-            guard let self = self else { return }
-            
-            // Update local model
-            self.posts[indexPath.item].isLiked = isLiked
-            self.posts[indexPath.item].likesCount = newCount
-            
+        cell.onLikeTapped = { (isLiked, newCount) in
             // Update Database
-            CommunityDataStore.shared.updateLikeStatus(
+            PostRepository.shared.updateLikeStatus(
                 forPostId: currentPost.id,
                 isLiked: isLiked,
                 newCount: newCount
@@ -114,10 +135,8 @@ extension profilePostsViewerController: UICollectionViewDataSource {
         }
         
         // 2. Save Action
-        cell.onSaveTapped = { [weak self] in
-            guard let self = self else { return }
-            CommunityDataStore.shared.toggleSave(postId: currentPost.id)
-            self.posts[indexPath.item].isSaved.toggle()
+        cell.onSaveTapped = {
+            PostRepository.shared.toggleSave(postId: currentPost.id)
         }
         
         // 3. Comment Action

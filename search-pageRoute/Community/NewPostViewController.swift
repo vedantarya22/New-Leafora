@@ -23,7 +23,7 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
         setupCaptionTextView()
     
         // fetches user
-        CommunityDataStore.shared.fetchCurrentUser { [weak self] user in
+        UserSession.shared.fetchCurrentUser { [weak self] user in
             self?.currentUser = user
         }
     }
@@ -91,11 +91,11 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
         if captionTextView.text == placeholderText || captionTextView.text.isEmpty { showAlert(message: "Please write a caption!")
             return}
         
-        guard let image = selectedImageView.image, let user = currentUser else { return }
+        guard let image = selectedImageView.image, let _ = currentUser else { return }
         
         shareButton.isEnabled = false
         
-        CommunityDataStore.shared.addNewPost(caption: captionTextView.text, image: image, currentUser: user) { success in
+        PostRepository.shared.addNewPost(caption: captionTextView.text, image: image) { success in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.onPostSuccess?()
                 self.dismiss(animated: true)

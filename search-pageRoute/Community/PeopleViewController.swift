@@ -42,8 +42,8 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func loadData() {
-        CommunityDataStore.shared.fetchAllUsers { [weak self] users in
-            let currentUserID = CommunityDataStore.shared.currentLoggedInUserID
+        UserSession.shared.fetchAllUsers { [weak self] users in
+            let currentUserID = UserSession.shared.currentLoggedInUserID
             guard let self = self else { return }
             self.allUsers = users.filter { $0.id != currentUserID }
             self.tableView.reloadData()
@@ -107,7 +107,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.nameLabel.text = user.name
         cell.messageLabel.text = "Hey! How are your plants? 🌱"
         cell.timeLabel.text = "9:41 AM"
-        let imageName = CommunityDataStore.shared.profileImageString(for: user.id)
+        let imageName = UserSession.shared.profileImageString(for: user.id)
         cell.avatarImageView.configureImage(with: imageName)
         cell.avatarImageView.tintColor = .label
 
@@ -120,15 +120,15 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedUser = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "communityScreens", bundle: nil)
             let chatVC = storyboard.instantiateViewController(
                 withIdentifier: "ChatViewController"
             ) as! ChatViewController
         
         chatVC.user = selectedUser
         navigationController?.pushViewController(chatVC, animated: true)
-        //print("Selected: \(user.name)")
-        
-        //performSegue(withIdentifier: "OpenChat", sender: user)
+//        print("Selected: \(allUsers.name)")
+//        
+//        performSegue(withIdentifier: "OpenChat", sender: user)
     }
 }

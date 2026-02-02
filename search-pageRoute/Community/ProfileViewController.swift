@@ -8,6 +8,8 @@
  
 import UIKit
 
+import UIKit
+
 class ProfileViewController: UIViewController, UICollectionViewDelegate,
     UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
@@ -33,6 +35,16 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         setupUI()
         checkIsCurrentUser()
         updateUI()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDataUpdate), name: .didUpdatePosts, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func handleDataUpdate() {
+        refreshData()
     }
     
     func setupUI() {
@@ -45,29 +57,37 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     }
     
     func checkIsCurrentUser() {
-        //Fetch the "Logged In" user (Shubham/u2)
+        //Fetch the "Logged In" user
         if let passedUser = self.user {
-            self.isCurrentUser = CommunityDataStore.shared.isCurrentUser(userID: passedUser.id)
+            self.isCurrentUser = UserSession.shared.isCurrentUser(userID: passedUser.id)
         } else {
-            
             self.isCurrentUser = true
+            // If no user passed, assume current user and fetch details
+            UserSession.shared.fetchCurrentUser { [weak self] user in
+                self?.user = user
+                self?.updateUI()
+            }
         }
-        
     }
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
-        
+        refreshData()
+    }
+    
+    func refreshData() {
         guard let user = user else { return }
         
-        if sender.selectedSegmentIndex == 0 {
+        if postsSegmentedControl.selectedSegmentIndex == 0 {
             // Grid posts
-            CommunityDataStore.shared.fetchPosts(forUserId: user.id) { [weak self] posts in
+            PostRepository.shared.fetchPosts(forUserId: user.id) { [weak self] posts in
                 self?.userPosts = posts
                 self?.collectionView.reloadData()
             }
         } else {
             // Saved posts (ONLY current user)
-            CommunityDataStore.shared.fetchSavedPostsForCurrentUser { [weak self] posts in
+            // Ideally non-current users shouldn't see this segment or it should be hidden
+            // Logic below assumes if we are here we want saved posts
+            PostRepository.shared.fetchSavedPostsForCurrentUser { [weak self] posts in
                 self?.userPosts = posts
                 self?.collectionView.reloadData()
             }
@@ -84,7 +104,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         nameLabel.text = user.name
         handleLabel.text = "@\(user.username)"
         //statsLabel.text = user.searchSubtitle
-        let imageName = CommunityDataStore.shared.profileImageString(for: user.id)
+        let imageName = UserSession.shared.profileImageString(for: user.id)
         profileImageView.configureImage(with: imageName)
         
         
@@ -107,12 +127,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
             
         }
         
-        //Fetch Posts
-        CommunityDataStore.shared.fetchPosts(forUserId: user.id) {
-            [weak self] posts in
-            self?.userPosts = posts
-            self?.collectionView.reloadData()
-        }
+        refreshData()
         
         setupMenu()
     }

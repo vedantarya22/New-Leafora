@@ -16,6 +16,17 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
         super.viewDidLoad()
         setupCollectionView()
         loadData()
+        
+        // Subscribe to data updates
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDataUpdate), name: .didUpdatePosts, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func handleDataUpdate() {
+        loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -65,7 +76,7 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     
     // MARK: - Data Loading
     private func loadData() {
-        CommunityDataStore.shared.fetchAllPosts { [weak self] downloadedPosts in
+        PostRepository.shared.fetchAllPosts { [weak self] downloadedPosts in
             self?.posts = downloadedPosts
             self?.postsCollectionView.reloadData()
         }
@@ -119,17 +130,18 @@ extension CommunityViewController: UICollectionViewDataSource {
         
         // Handle like action
         cell.onLikeTapped = { [weak self] isLiked, newCount in
-            guard let self = self else { return }
-            guard let index = self.posts.firstIndex(where: { $0.id == post.id }) else { return }
-
-            self.posts[index].isLiked = isLiked
-            self.posts[index].likesCount = newCount
-
-            CommunityDataStore.shared.updateLikeStatus(
+            // Controller acts as delegate to Repository
+            PostRepository.shared.updateLikeStatus(
                 forPostId: post.id,
                 isLiked: isLiked,
                 newCount: newCount
             )
+            // No need to manually update local 'posts' array or reload row if we trust the Notification trigger
+            // But if we want instant optimistic UI, we could.
+            // However, the cell callback 'onLikeTapped' often comes from user interaction.
+            // The architectural goal says "Controllers should never directly modify Post properties".
+            // So we delegate to Repository. The Repository fires notification. We catch notification and reload.
+            // This ensures consistency.
         }
 
         
@@ -140,9 +152,8 @@ extension CommunityViewController: UICollectionViewDataSource {
         
         // Handle save action
         cell.onSaveTapped = { [weak self] in
-            guard let self = self else { return }
-            CommunityDataStore.shared.toggleSave(postId: post.id)
-            self.posts[indexPath.item].isSaved.toggle()
+            PostRepository.shared.toggleSave(postId: post.id)
+            // Local update is handled via notification reload or simply by next fetch
         }
         
         // Handle profile tap

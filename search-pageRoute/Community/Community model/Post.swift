@@ -29,6 +29,10 @@ struct Post: Codable {
     var author: User?
     var isLiked: Bool = false
     
+    // Computed/Decorated property for display
+    var displayTimestamp: String?
+
+    
     // List of comments for this post
     var comments: [Comment] = []
 }
