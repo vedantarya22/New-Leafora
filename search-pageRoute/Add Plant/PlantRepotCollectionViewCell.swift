@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Plant_Q4CollectionViewCell: UICollectionViewCell {
+class PlantRepotCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var optionBtn: UIButton!
     

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NaZ-8G-tfv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NaZ-8G-tfv">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -47,7 +47,14 @@
                             <constraint firstAttribute="bottom" secondItem="UF4-Aq-VX2" secondAttribute="bottom" id="dcc-jc-TGc"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Aloevera" id="kCq-Z3-BTA"/>
+                    <navigationItem key="navigationItem" title="Aloevera" id="kCq-Z3-BTA">
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="zM6-xR-0az">
+                            <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1571044922" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <connections>
+                                <action selector="addButtonTapped:" destination="BYZ-38-t0r" id="Giz-KS-d2j"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="UF4-Aq-VX2" id="LO7-Vr-pFU"/>
                     </connections>
@@ -117,6 +124,7 @@
                     <navigationItem key="navigationItem" title="Search" id="vdZ-Kn-6Ff"/>
                     <connections>
                         <segue destination="Qbd-IZ-3Zw" kind="presentation" id="8r5-2g-CDb"/>
+                        <segue destination="BYZ-38-t0r" kind="show" id="WFw-tp-7dK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e3S-c3-253" sceneMemberID="firstResponder"/>
@@ -237,6 +245,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="NaZ-8G-tfv" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0MM-cS-CF2">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>

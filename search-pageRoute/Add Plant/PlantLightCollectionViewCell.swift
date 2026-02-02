@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Add_plant_lightCollectionViewCell: UICollectionViewCell {
+class PlantLightCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var plantLightButton : UIButton!
     
