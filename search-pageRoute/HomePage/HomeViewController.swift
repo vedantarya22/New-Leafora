@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  homescreen1
-//
-//  Created by SDC-USER on 27/01/26.
-//
-
 import UIKit
 
 struct GardenMemory {
@@ -12,43 +5,44 @@ struct GardenMemory {
     let timestamp: Date
 }
 
-class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-
+class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+  
+    
+    
+    
+    
+    
     @IBOutlet weak var collectionView: UICollectionView!
     
-    // Gradient Layer (Moved inside the class)
-    let gradientLayer = CAGradientLayer()
+    let wateringBlue = UIColor(red: 0.00, green: 0.75, blue: 1.00, alpha: 1.0)
+    let pruningRed = UIColor(red: 1.00, green: 0.07, blue: 0.33, alpha: 1.0)
+    let fertilizingGreen = UIColor(red: 0.19, green: 0.82, blue: 0.35, alpha: 1.0)
+    let repottingOrange = UIColor(red: 1.00, green: 0.62, blue: 0.04, alpha: 1.0)
     
-    // Data Array for Photos
+    
+    let gradientLayer = CAGradientLayer()
     var memories: [GardenMemory] = []
     
-    // Data Models for Tasks
     struct Task { let name: String; let icon: String; let count: Int }
     let tasks = [
         Task(name: "Watering", icon: "drop.fill", count: 5),
         Task(name: "Pruning", icon: "scissors", count: 2),
-        Task(name: "Fertilizing", icon: "leaf.fill", count: 0)
+        Task(name: "Fertilizing", icon: "leaf.fill", count: 0),
+        Task(name: "Repotting", icon: "arrow.triangle.2.circlepath", count: 1)
     ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // 1. Set the Title to "Good Morning" (Replaces the old text cell)
-//        self.title = "Good Morning"
-//        self.tabBarItem.title = "Home"
+    
         navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.title = "Good Morning"
         
-        // 2. Setup Gradient
-        setupGradient()
-        
-        // 3. Register XIBs
-        // Removed "HomeHeaderCell" since we don't need it anymore
+        // Register XIBs
         let cells = ["CareTaskCell", "InsightCell", "MemoryCell"]
         cells.forEach { name in
             collectionView.register(UINib(nibName: name, bundle: nil), forCellWithReuseIdentifier: name)
         }
         
-        // Register Header
         collectionView.register(UINib(nibName: "HomeSectionHeaderView", bundle: nil),
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: "HomeSectionHeaderView")
@@ -56,50 +50,195 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
-        
-        // 4. Attach Layout
         collectionView.collectionViewLayout = createLayout()
     }
 
-    // Ensure gradient resizes if screen rotates
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
 
-    func setupGradient() {
-        // 1. Define the Colors
-        let topColor = UIColor(red: 0.80, green: 0.93, blue: 0.80, alpha: 1.0).cgColor
-        let bottomColor = UIColor.white.cgColor
+    // MARK: - Layout Logic
+    func createLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { sectionIndex, env in
+            switch sectionIndex {
+            case 0: return self.careGridLayout()
+            case 1: return self.gridLayout()
+            case 2: return self.scrollLayout()
+            default: return nil
+            }
+        }
+    }
+
+    func careGridLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(140))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 14, bottom: 20, trailing: 14)
+
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        header.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 0)
         
-        // 2. Setup the Layer
-        gradientLayer.colors = [topColor, bottomColor]
-        gradientLayer.locations = [0.0, 0.6]
-        gradientLayer.frame = view.bounds
+        section.boundarySupplementaryItems = [header]
+        return section
+    }
+
+    func gridLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(100)))
+        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 12)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100)), subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 8, leading: 20, bottom: 20, trailing: 8)
         
-        // 3. Remove old layers to avoid stacking
-        view.layer.sublayers?.filter { $0 is CAGradientLayer }.forEach { $0.removeFromSuperlayer() }
-        view.layer.insertSublayer(gradientLayer, at: 0)
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
+        return section
+    }
+
+    func scrollLayout() -> NSCollectionLayoutSection {
+        // Standard width for all items since the "Add" button is always present
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 15)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(160), heightDimension: .absolute(200))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = .init(top: 15, leading: 20, bottom: 30, trailing: 20)
+        
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
+        
+        return section
+    }
+
+    // MARK: - Data Source
+    func numberOfSections(in collectionView: UICollectionView) -> Int { return 3 }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0: return tasks.count
+        case 1: return 2
+        case 2: return memories.count + 1 // Always photos + 1 for the Add Button
+        default: return 0
+        }
     }
     
-    // MARK: - Actions
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch indexPath.section {
+            
+            
+        case 0:
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell", for: indexPath) as! CareTaskCell
+                    let task = tasks[indexPath.row]
+                    
+                    cell.titleLabel.text = task.name
+                    cell.countLabel.text = "\(task.count)"
+                    
+                    // Apply the specific Fitness color based on the task name
+                    let taskColor: UIColor
+                    switch task.name {
+                    case "Watering":
+                        taskColor = wateringBlue
+                    case "Pruning":
+                        taskColor = pruningRed
+                    case "Fertilizing":
+                        taskColor = fertilizingGreen
+                    case "Repotting":
+                        taskColor = repottingOrange
+                    default:
+                        taskColor = .systemGray
+                    }
+                    
+                    // Update label color to match the Fitness style
+                    cell.countLabel.textColor = taskColor
+                    
+                    // Configure the Progress Ring
+                    // Assuming 5 is the 'goal' for the day to calculate percentage
+                  
+                    
+                    return cell
+            
+        case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InsightCell", for: indexPath) as! InsightCell
+            cell.titleLabel.text = indexPath.row == 0 ? "Total Plants" : "Pending Tasks"
+            cell.valueLabel.text = indexPath.row == 0 ? "16" : "5"
+            cell.contentView.backgroundColor = UIColor(red: 0.76, green: 0.88, blue: 0.77, alpha: 1.0)
+            cell.contentView.layer.cornerRadius = 16
+            return cell
+            
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemoryCell", for: indexPath) as! MemoryCell
+            let isAddButton = indexPath.row == memories.count
+            
+            if isAddButton {
+                cell.configure(with: nil, isAddButton: true)
+            } else {
+                cell.configure(with: memories[indexPath.row], isAddButton: false)
+            }
+            return cell
+            
+            
+            
+        default: return UICollectionViewCell()
+        }
+    }
+
+    // MARK: - Delegate (Click Handling)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let generator = UISelectionFeedbackGenerator()
+        generator.selectionChanged()
+
+        switch indexPath.section {
+        case 0:
+            let taskName = tasks[indexPath.row].name
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let plantListVC = storyboard.instantiateViewController(withIdentifier: "PlantListViewController") as? PlantListViewController {
+                plantListVC.taskType = taskName
+                navigationController?.pushViewController(plantListVC, animated: true)
+            }
+        case 2:
+            // Check if the user tapped the trailing Add Button
+            if indexPath.row == memories.count {
+                self.openCamera()
+            } else {
+                print("Viewing memory at index: \(indexPath.row)")
+            }
+        default: break
+        }
+    }
+
+    // MARK: - Photo Actions
     func openCamera() {
-        let alert = UIAlertController(title: "Add Memory", message: "Choose a photo source", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Add Garden Memory", message: "Capture a moment or choose from your gallery", preferredStyle: .actionSheet)
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+            alert.addAction(UIAlertAction(title: "Take Photo", style: .default) { _ in
                 self.showImagePicker(source: .camera)
-            }
-            alert.addAction(cameraAction)
+            })
         }
         
-        let galleryAction = UIAlertAction(title: "Photo Gallery", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: "Photo Library", style: .default) { _ in
             self.showImagePicker(source: .photoLibrary)
-        }
-        alert.addAction(galleryAction)
+        })
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        alert.addAction(cancelAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = self.view
+            popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
         
         present(alert, animated: true)
     }
@@ -112,220 +251,53 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         present(picker, animated: true)
     }
 
-    // MARK: - Compositional Layout
-    func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, env in
-            switch sectionIndex {
-            // FIXED INDICES:
-            case 0: return self.listLayout(env)     // Was 1, Now 0 (Tasks)
-            case 1: return self.gridLayout()        // Was 2, Now 1 (Insights)
-            case 2: return self.scrollLayout()      // Was 3, Now 2 (Memories)
-            default: return nil
-            }
-        }
-    }
-    
-    // DELETED: func headerLayout() -> NSCollectionLayoutSection { ... } (Not needed)
-
-    // Layout 0: Tasks
-    func listLayout(_ env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
-        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-        config.headerMode = .supplementary
-        config.backgroundColor = .clear
-        let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20)
-        return section
-    }
-
-    // Layout 1: Grid
-    func gridLayout() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(100)))
-        item.contentInsets = .init(top: 0, leading: 5, bottom: 0, trailing: 5)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100)), subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10, leading: 15, bottom: 20, trailing: 15)
-        addHeader(to: section)
-        return section
-    }
-    
-    // Layout 2: Memories
-    func scrollLayout() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-        
-        // Card Size
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .absolute(150), heightDimension: .absolute(180)), subitems: [item])
-        
-        group.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 15)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = .init(top: 10, leading: 20, bottom: 30, trailing: 20)
-        
-        addHeader(to: section)
-        return section
-    }
-    
-    func addHeader(to section: NSCollectionLayoutSection) {
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(60))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-        
-        // Move text down slightly to create space
-        header.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: -5, trailing: 0)
-        
-        section.boundarySupplementaryItems = [header]
-    }
-    
-    // MARK: - Helper for Date Formatting
-    func formatTimeInterval(_ interval: TimeInterval) -> String {
-        let seconds = Int(interval)
-        let minutes = seconds / 60
-        let hours = minutes / 60
-        let days = hours / 24
-        
-        if seconds < 60 { return "Just now" }
-        else if minutes < 60 { return "\(minutes) min ago" }
-        else if hours < 24 { return "\(hours) hr ago" }
-        else { return "\(days) days ago" }
-    }
-
-    // MARK: - Data Source
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3 // Tasks, Insights, Memories
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0: return tasks.count          // Tasks
-        case 1: return 2                    // Insights
-        case 2: return memories.count + 1   // Memories (+1 for Add Button)
-        default: return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-            
-        case 0: // Tasks (Was 1)
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell", for: indexPath) as! CareTaskCell
-            let task = tasks[indexPath.row]
-            cell.titleLabel.text = task.name
-            cell.countLabel.text = "\(task.count)"
-            cell.iconImageView.image = UIImage(systemName: task.icon)
-            cell.iconImageView.contentMode = .scaleAspectFill
-            
-            if task.name == "Watering" { cell.iconImageView.tintColor = .systemTeal }
-            else if task.name == "Pruning" { cell.iconImageView.tintColor = .systemOrange }
-            else { cell.iconImageView.tintColor = UIColor(red: 0.3, green: 0.5, blue: 0.3, alpha: 1.0) }
-            
-            cell.iconImageView.contentMode = .scaleAspectFit
-                
-                cell.titleLabel.text = task.name
-                cell.countLabel.text = "\(task.count)"
-            return cell
-            
-        case 1: // Insights (Was 2)
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InsightCell", for: indexPath) as! InsightCell
-            if indexPath.row == 0 {
-                cell.titleLabel.text = "Total Plants"
-                cell.valueLabel.text = "16"
-            } else {
-                cell.titleLabel.text = "Pending Tasks"
-                cell.valueLabel.text = "5"
-            }
-            // Style
-            cell.contentView.backgroundColor = UIColor(red: 0.76, green: 0.88, blue: 0.77, alpha: 1.0)
-            cell.contentView.layer.cornerRadius = 16
-            cell.contentView.layer.masksToBounds = true
-            return cell
-            
-        case 2: // Memories (Was 3)
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MemoryCell", for: indexPath) as! MemoryCell
-            
-            // LOGIC: Is this the first cell?
-            if indexPath.row == 0 {
-                // --- SHOW ADD BUTTON ---
-                // NOTE: The CENTERING constraints for this button should be in MemoryCell.swift!
-                cell.imageView.image = UIImage(systemName: "plus.circle.fill")
-                cell.imageView.tintColor = UIColor(red: 0.3, green: 0.5, blue: 0.3, alpha: 1.0)
-                cell.imageView.contentMode = .center
-                cell.imageView.backgroundColor = .white
-                cell.dateLabel.text = "Add New"
-            } else {
-                // --- SHOW PHOTO ---
-                let memory = memories[indexPath.row - 1]
-                cell.imageView.image = memory.image
-                cell.imageView.contentMode = .scaleAspectFill
-                cell.imageView.backgroundColor = .clear
-                
-                let timeInterval = Date().timeIntervalSince(memory.timestamp)
-                cell.dateLabel.text = formatTimeInterval(timeInterval)
-            }
-            // Common Style
-            cell.imageView.layer.cornerRadius = 12
-            cell.imageView.clipsToBounds = true
-            return cell
-            
-        default: return UICollectionViewCell()
-        }
-    }
-    
-    // MARK: - Click Handling
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            let taskName = tasks[indexPath.row].name // "Watering", "Pruning", etc.
-            
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let plantListVC = storyboard.instantiateViewController(withIdentifier: "PlantListViewController") as? PlantListViewController {
-                plantListVC.taskType = taskName
-                navigationController?.pushViewController(plantListVC, animated: true)
-            }
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HomeSectionHeaderView", for: indexPath) as! HomeSectionHeaderView
-        
-        header.chevronButton.isHidden = true
-        header.didTapSeeAll = nil
-        
-        switch indexPath.section {
-        case 0: header.titleLabel.text = "Care Tasks"
-        case 1: header.titleLabel.text = "Garden Insights"
-        case 2:
-            header.titleLabel.text = "Memories"
-            header.chevronButton.isHidden = false
-            header.didTapSeeAll = { [weak self] in
-                self?.openAllMemories()
-            }
-        default: header.titleLabel.text = ""
-        }
-        
-        return header
-    }
-    
-    func openAllMemories() {
-        // Assuming you have this Controller created
-         let galleryVC = GalleryViewController()
-         galleryVC.memories = self.memories
-         present(galleryVC, animated: true)
-    }
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
         if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
-            let newMemory = GardenMemory(image: image, timestamp: Date())
-            memories.insert(newMemory, at: 0)
-            
-            // Reload Section 2 (Memories)
+            // We append to the end so photos appear left-to-right, followed by the button
+            memories.append(GardenMemory(image: image, timestamp: Date()))
             collectionView.reloadSections(IndexSet(integer: 2))
+            
+            // Scroll to the end to show the new photo and the shifted Add Button
+            let lastItem = IndexPath(item: memories.count, section: 2)
+            collectionView.scrollToItem(at: lastItem, at: .right, animated: true)
         }
         dismiss(animated: true)
     }
-}
+    
+    // MARK: - Headers
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HomeSectionHeaderView", for: indexPath) as! HomeSectionHeaderView
+        header.chevronButton.isHidden = true
+        
+        switch indexPath.section {
+        case 0:
+            header.titleLabel.text = "Care Tasks"
+            header.chevronButton.isHidden = false
+            header.didTapSeeAll = { [weak self] in self?.openCareTasksDetail() }
+        case 1:
+            header.titleLabel.text = "Garden Insights"
+        case 2:
+            header.titleLabel.text = "Memories"
+            header.chevronButton.isHidden = false
+            header.didTapSeeAll = { [weak self] in self?.openAllMemories() }
+        default: break
+        }
+        return header
+    }
 
-//// MARK: - Image Picker Logic
-//extension HomeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-//    
-//   
-//}
+    func openCareTasksDetail() {
+        // 1. Get the storyboard
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        // 2. Instantiate the VC (Make sure the Identifier in Storyboard is "PlantListViewController")
+        if let plantListVC = storyboard.instantiateViewController(withIdentifier: "PlantListViewController") as? PlantListViewController {
+            
+            // 3. Set the title or task type
+            plantListVC.taskType = "All Tasks"
+            
+            // 4. Push it onto the navigation stack
+            navigationController?.pushViewController(plantListVC, animated: true)
+        }
+    }
+    func openAllMemories() { /* Navigate to gallery */ }
+}
