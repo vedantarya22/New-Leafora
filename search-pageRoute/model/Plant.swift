@@ -31,6 +31,7 @@ struct Plant: Codable {
     let careDifficulty: String
     let commonIssues: [String]
     
+    
     enum CodingKeys: String, CodingKey {
         case plantId = "plant_id"
                 case plantName = "plant_name"

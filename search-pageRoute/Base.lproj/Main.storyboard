@@ -51,7 +51,7 @@
                         <barButtonItem key="rightBarButtonItem" title="Add" id="zM6-xR-0az">
                             <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1571044922" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <connections>
-                                <action selector="addButtonTapped:" destination="BYZ-38-t0r" id="Giz-KS-d2j"/>
+                                <action selector="addButtonTapped:" destination="BYZ-38-t0r" id="mj2-m1-LlG"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
