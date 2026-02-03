@@ -9,123 +9,147 @@ import Foundation
 internal import Combine
 import UIKit
 
-class PlantStore: ObservableObject {
-    
-    static let shared = PlantStore()
-    
-    
+final class PlantStore: ObservableObject {
 
+    static let shared = PlantStore()
+
+    // MARK: - Published Data
 
     @Published private(set) var plants: [UserPlant] = [] {
         didSet { savePlants() }
     }
 
+    // MARK: - File Storage URL
 
-    private let key = "savedPlants"
+    private var fileURL: URL {
+        FileManager.default
+            .urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("savedPlants.json")
+    }
+
+    // MARK: - Init
 
     private init() {
         loadPlants()
     }
 
-    // MARK: Add a new plant
+    // MARK: - Add / Update Plant
+
     func addPlant(_ plant: UserPlant) {
-        
+
         print("➡️ ADD REQUEST: plantId=\(plant.plantId), siteID=\(plant.siteID)")
 
-        if let index = plants.firstIndex(where: { $0.plantId == plant.plantId && $0.siteID == plant.siteID }) {
-            
+        if let index = plants.firstIndex(where: {
+            $0.plantId == plant.plantId && $0.siteID == plant.siteID
+        }) {
+
             let oldQty = plants[index].quantity
-              // Increase quantity instead of adding duplicate cell
             plants[index].quantity += plant.quantity
-            print("✅ UPDATED: qty \(oldQty) -> \(plants[index].quantity)")
+            print("✅ UPDATED: qty \(oldQty) → \(plants[index].quantity)")
 
+            if plant.imageData != nil {
+                plants[index].imageData = plant.imageData
+            }
 
-              // Optional: update image if new one is provided
-              if plant.imageData != nil {
-                  plants[index].imageData = plant.imageData
-              }
-
-          } else {
-              // First time plant added in this site
-              plants.append(plant)
-              print("🆕 NEW ENTRY CREATED: qty=\(plant.quantity)")
-          }
-        
-    }
-    var totalPlants: Int {
-            plants.count
+        } else {
+            plants.append(plant)
+            print("🆕 NEW ENTRY CREATED: qty=\(plant.quantity)")
         }
+    }
+
+    // MARK: - Stats
+
+    var totalPlants: Int {
+        plants.count
+    }
+
     var totalSpaces: Int {
         Set(plants.map { $0.siteID }).count
     }
 
+    // MARK: - Fetch
 
-    // MARK: Get plants for a specific site
     func plants(for siteID: UUID) -> [UserPlant] {
-        return plants.filter { $0.siteID == siteID }
+        plants.filter { $0.siteID == siteID }
     }
 
-    // MARK: Save
+    // MARK: - Persistence (Disk)
+
     private func savePlants() {
-        if let encoded = try? JSONEncoder().encode(plants) {
-            UserDefaults.standard.set(encoded, forKey: key)
+        do {
+            let data = try JSONEncoder().encode(plants)
+            try data.write(to: fileURL, options: [.atomic])
+        } catch {
+            print("❌ Failed to save plants:", error)
         }
     }
 
-        // MARK: Load
-        private func loadPlants() {
-            if let data = UserDefaults.standard.data(forKey: key),
-               let decoded = try? JSONDecoder().decode([UserPlant].self, from: data) {
-                plants = decoded
-            }
+    private func loadPlants() {
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { return }
+
+        do {
+            let data = try Data(contentsOf: fileURL)
+            plants = try JSONDecoder().decode([UserPlant].self, from: data)
+        } catch {
+            print("❌ Failed to load plants:", error)
         }
-    
-    
-//    func markTaskDone(userPlantID: UUID, careType: CareType) {
-//           guard let index = plants.firstIndex(where: { $0.id == userPlantID }) else { return }
-//
-//           switch careType {
-//           case .watering:
-//               plants[index].wateringDone = true
-//           case .trimming:
-//               plants[index].pruningDone = true
-//           case .fertilizing:
-//               plants[index].fertilizingDone = true
-//           case .repotting:
-//               plants[index].repottingDone = true
-//           }
-//       }
-//    
-    
     }
+
+    // MARK: - Task Completion
+
+    func markTaskDone(userPlantID: UUID, taskType: String) {
+
+        guard let index = plants.firstIndex(where: { $0.id == userPlantID }) else { return }
+
+        switch taskType.lowercased() {
+        case "watering":
+            plants[index].wateringDone = true
+        case "pruning":
+            plants[index].pruningDone = true
+        case "fertilizing":
+            plants[index].fertilizingDone = true
+        case "repotting":
+            plants[index].repottingDone = true
+        default:
+            break
+        }
+
+        print("✅ Task marked done in PlantStore")
+    }
+}
+
+//
+// MARK: - Helpers
+//
 
 extension JSONLoader {
 
     static func plant(by id: String) -> Plant? {
-        return loadPlants().first { $0.plantId == id }
+        loadPlants().first { $0.plantId == id }
     }
 }
-
 
 extension PlantStore {
 
     func hasUserAddedPlant(plantId: String) -> Bool {
-        return plants.contains { $0.plantId == plantId }
+        plants.contains { $0.plantId == plantId }
     }
-    
+
     func removeOnePlant(plantId: String, siteID: UUID) {
-           if let index = plants.firstIndex(where: { $0.plantId == plantId && $0.siteID == siteID }) {
+        if let index = plants.firstIndex(where: {
+            $0.plantId == plantId && $0.siteID == siteID
+        }) {
+            if plants[index].quantity > 1 {
+                plants[index].quantity -= 1
+            } else {
+                plants.remove(at: index)
+            }
+        }
+    }
 
-               if plants[index].quantity > 1 {
-                   plants[index].quantity -= 1
-               } else {
-                   plants.remove(at: index)
-               }
-           }
-       }
-    
     func removeAllPlants(plantId: String, siteID: UUID) {
-          plants.removeAll { $0.plantId == plantId && $0.siteID == siteID }
-      }
+        plants.removeAll {
+            $0.plantId == plantId && $0.siteID == siteID
+        }
+    }
 }
-

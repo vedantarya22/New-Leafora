@@ -79,14 +79,49 @@ class PlantRowCell: UICollectionViewCell {
         }
     }
 
-    func configure(with plant: Plant, task: String) {
-        nameLabel.text = plant.plantName
-        plantImageView.image = UIImage(named: plant.imageName) ?? UIImage(systemName: "leaf.fill")
-        
-        // Ensure cell is reset when it appears
+    func configure(with userPlant: UserPlant,
+                   task: String,
+                   allPlants: [Plant]) {
+
+        // ✅ Find matching plant using plantId
+        if let plant = allPlants.first(where: { $0.plantId == userPlant.plantId }) {
+
+            // ✅ Plant Name from JSON
+            nameLabel.text = plant.plantName
+
+            // ✅ Image Priority:
+            // 1. User saved image
+            // 2. JSON fallback
+            if let data = userPlant.imageData,
+               let savedImage = UIImage(data: data) {
+
+                plantImageView.image = savedImage
+
+            } else {
+                plantImageView.image =
+                    UIImage(named: plant.imageName)
+                    ?? UIImage(systemName: "leaf.fill")
+            }
+
+        } else {
+
+            // ❌ Plant not found
+            nameLabel.text = "Unknown Plant"
+            plantImageView.image = UIImage(systemName: "leaf.fill")
+        }
+
+        // ✅ Detail label
+        detailLabel.text = "Swipe to mark \(task) done"
+
+        // ✅ Reset swipe UI (important!)
         mainContainerView.transform = .identity
         mainContainerView.alpha = 1.0
     }
+
+
+
+
+
 }
 
 // MARK: - Gesture Delegate (The scrolling fix)
