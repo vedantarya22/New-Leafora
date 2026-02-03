@@ -63,11 +63,11 @@
             </objects>
             <point key="canvasLocation" x="-2095" y="1563"/>
         </scene>
-        <!--Item-->
+        <!--Search-->
         <scene sceneID="pJl-kz-yEc">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cd9-em-9Ri" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="b6O-bq-RJg"/>
+                    <tabBarItem key="tabBarItem" title="Search" image="magnifyingglass" catalog="system" id="b6O-bq-RJg"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="rPp-Aw-NCB">
                         <rect key="frame" x="0.0" y="118" width="393" height="106"/>
@@ -260,11 +260,11 @@
             </objects>
             <point key="canvasLocation" x="-2022" y="-196"/>
         </scene>
-        <!--Item-->
+        <!--Home-->
         <scene sceneID="RAx-2I-JrT">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mno-M4-Hgd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="GCs-e6-ISO"/>
+                    <tabBarItem key="tabBarItem" title="Home" image="house.fill" catalog="system" id="GCs-e6-ISO"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xR9-gU-Abj">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>
@@ -288,7 +288,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="zrn-Wb-SK7">
-                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="B33-BN-lIE">
                                     <size key="itemSize" width="128" height="128"/>
@@ -312,9 +312,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="zrn-Wb-SK7" firstAttribute="trailing" secondItem="Omx-ce-0vq" secondAttribute="trailing" id="1b9-xU-Gp7"/>
+                            <constraint firstItem="zrn-Wb-SK7" firstAttribute="top" secondItem="14v-A1-Ndh" secondAttribute="top" id="6Pi-ck-9bQ"/>
                             <constraint firstItem="zrn-Wb-SK7" firstAttribute="leading" secondItem="Omx-ce-0vq" secondAttribute="leading" id="CBM-Bw-CXU"/>
-                            <constraint firstItem="zrn-Wb-SK7" firstAttribute="top" secondItem="Omx-ce-0vq" secondAttribute="top" id="U6Y-qd-9rb"/>
-                            <constraint firstItem="zrn-Wb-SK7" firstAttribute="bottom" secondItem="Omx-ce-0vq" secondAttribute="bottom" id="tYi-Fz-emW"/>
+                            <constraint firstAttribute="bottom" secondItem="zrn-Wb-SK7" secondAttribute="bottom" id="NwC-Ec-psF"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="bLm-st-9Wc"/>
@@ -338,6 +338,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="house.fill" catalog="system" width="128" height="104"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

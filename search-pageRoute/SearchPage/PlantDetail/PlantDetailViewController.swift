@@ -246,14 +246,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 for: indexPath) as! HeroImageCell
             cell.configure(with: plant )
             return cell
-            //            
-            //        case .titleInfo:
-            //            let cell = collectionView.dequeueReusableCell(
-            //                withReuseIdentifier: "PlantTitleCell",
-            //                for: indexPath) as! PlantTitleCell
-            //            let plant = plants[0]
-            //            cell.configure(with: plant)
-            //            return cell
+         
             
         case .about:
             let cell = collectionView.dequeueReusableCell(

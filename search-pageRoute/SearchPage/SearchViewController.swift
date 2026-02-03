@@ -38,7 +38,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         //view.backgroundColor = .systemBackground
         
         setupUI()
-        setupGradient() // Add gradient
+//        setupGradient() // Add gradient
         setupFixedHeaderAndCollectionView()
         
         loadData()
@@ -54,19 +54,19 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         gradientLayer.frame = view.bounds
     }
     
-    private func setupGradient() {
-        // 1. Define the Colors
-        let topColor = UIColor(red: 0.80, green: 0.93, blue: 0.80, alpha: 1.0).cgColor
-        let bottomColor = UIColor.white.cgColor
-        
-        // 2. Setup the Layer
-        gradientLayer.colors = [topColor, bottomColor]
-        gradientLayer.locations = [0.0, 0.6] // Green stops at 60%, rest is white
-        gradientLayer.frame = view.bounds
-        
-        // 3. Add it behind everything
-        view.layer.insertSublayer(gradientLayer, at: 0)
-    }
+//    private func setupGradient() {
+//        // 1. Define the Colors
+//        let topColor = UIColor(red: 0.80, green: 0.93, blue: 0.80, alpha: 1.0).cgColor
+//        let bottomColor = UIColor.white.cgColor
+//        
+//        // 2. Setup the Layer
+//        gradientLayer.colors = [topColor, bottomColor]
+//        gradientLayer.locations = [0.0, 0.6] // Green stops at 60%, rest is white
+//        gradientLayer.frame = view.bounds
+//        
+//        // 3. Add it behind everything
+//        view.layer.insertSublayer(gradientLayer, at: 0)
+//    }
     
     private func loadData() {
         allPlants = JSONLoader.loadPlants(from: "plantData")

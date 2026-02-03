@@ -20,6 +20,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     let repottingOrange = UIColor(red: 1.00, green: 0.62, blue: 0.04, alpha: 1.0)
     
     
+    
+   
+    
+    
     let gradientLayer = CAGradientLayer()
     var memories: [GardenMemory] = []
     
