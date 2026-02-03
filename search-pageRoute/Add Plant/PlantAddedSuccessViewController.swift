@@ -25,17 +25,7 @@ class PlantAddedSuccessViewController: UIViewController {
     
     @IBAction func gardenButtonTapped(_ sender: UIButton) {
         
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//
-//            guard let tabBar = storyboard.instantiateInitialViewController() as? UITabBarController else {
-//                return
-//            }
-//
-//            tabBar.selectedIndex = 1  //my garden tab
-//
-//            tabBar.modalPresentationStyle = .fullScreen
-//            present(tabBar, animated: true)
-        
+
         tabBarController?.selectedIndex = 1
             navigationController?.popToRootViewController(animated: true)
     }

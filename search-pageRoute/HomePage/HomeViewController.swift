@@ -27,13 +27,22 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     let gradientLayer = CAGradientLayer()
     var memories: [GardenMemory] = []
     
-    struct Task { let name: String; let icon: String; let count: Int }
-    let tasks = [
-        Task(name: "Watering", icon: "drop.fill", count: 5),
-        Task(name: "Pruning", icon: "scissors", count: 2),
-        Task(name: "Fertilizing", icon: "leaf.fill", count: 0),
-        Task(name: "Repotting", icon: "arrow.triangle.2.circlepath", count: 1)
-    ]
+//    struct Task { let name: String; let icon: String; let count: Int }
+//    let tasks = [
+//        Task(name: "Watering", icon: "drop.fill", count: 5),
+//        Task(name: "Pruning", icon: "scissors", count: 2),
+//        Task(name: "Fertilizing", icon: "leaf.fill", count: 0),
+//        Task(name: "Repotting", icon: "arrow.triangle.2.circlepath", count: 1)
+//    ]
+    
+    
+        // will put it in modals later
+    
+    struct Task {
+        let name: String
+        let icon: String
+        let count: Int
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,6 +70,41 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
+    
+    func getCareTasks() -> [Task] {
+
+        let allPlants = PlantStore.shared.plants
+
+        // ✅ Count pending tasks (Done == false)
+        // ✅ Include quantity properly
+
+        let wateringCount = allPlants
+            .filter { $0.wateringDone == false }
+            .reduce(0) { $0 + $1.quantity }
+
+        let pruningCount = allPlants
+            .filter { $0.pruningDone == false }
+            .reduce(0) { $0 + $1.quantity }
+
+        let fertilizingCount = allPlants
+            .filter { $0.fertilizingDone == false }
+            .reduce(0) { $0 + $1.quantity }
+
+        let repottingCount = allPlants
+            .filter { $0.repottingDone == false }
+            .reduce(0) { $0 + $1.quantity }
+
+        return [
+            Task(name: "Watering", icon: "drop.fill", count: wateringCount),
+            Task(name: "Pruning", icon: "scissors", count: pruningCount),
+            Task(name: "Fertilizing", icon: "leaf.fill", count: fertilizingCount),
+            Task(name: "Repotting", icon: "arrow.triangle.2.circlepath", count: repottingCount)
+        ]
+    }
+
+
+    
+    
 
     // MARK: - Layout Logic
     func createLayout() -> UICollectionViewLayout {
@@ -125,13 +169,22 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         return section
     }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadSections(IndexSet(integer: 0))
+    }
+    
+    
+
 
     // MARK: - Data Source
     func numberOfSections(in collectionView: UICollectionView) -> Int { return 3 }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: return tasks.count
+        case 0: return  getCareTasks().count
         case 1: return 2
         case 2: return memories.count + 1 // Always photos + 1 for the Add Button
         default: return 0
@@ -144,7 +197,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             
         case 0:
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell", for: indexPath) as! CareTaskCell
-                    let task = tasks[indexPath.row]
+            let task = getCareTasks()[indexPath.row]
                     
                     cell.titleLabel.text = task.name
                     cell.countLabel.text = "\(task.count)"
@@ -205,7 +258,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
 
         switch indexPath.section {
         case 0:
-            let taskName = tasks[indexPath.row].name
+            let taskName = getCareTasks()[indexPath.row].name
+
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let plantListVC = storyboard.instantiateViewController(withIdentifier: "PlantListViewController") as? PlantListViewController {
                 plantListVC.taskType = taskName
