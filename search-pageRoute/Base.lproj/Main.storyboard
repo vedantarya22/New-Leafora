@@ -239,6 +239,16 @@
             </objects>
             <point key="canvasLocation" x="160" y="-196"/>
         </scene>
+        <!--MyGarden-->
+        <scene sceneID="dbK-bU-uW8">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="My_Garden" storyboardName="MyGarden" id="hZa-wa-K1F" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="2FH-Xx-Ncu"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eTN-rs-Xc1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2951" y="73"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="aFu-yx-DXV">
             <objects>
@@ -254,6 +264,7 @@
                         <segue destination="mno-M4-Hgd" kind="relationship" relationship="viewControllers" id="ctD-q7-Mky"/>
                         <segue destination="cd9-em-9Ri" kind="relationship" relationship="viewControllers" id="lp7-Lu-Lo5"/>
                         <segue destination="8fA-GB-8Lv" kind="relationship" relationship="viewControllers" id="hT2-FK-0t0"/>
+                        <segue destination="hZa-wa-K1F" kind="relationship" relationship="viewControllers" id="1rJ-Pd-AuE"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0FE-vN-gm1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
