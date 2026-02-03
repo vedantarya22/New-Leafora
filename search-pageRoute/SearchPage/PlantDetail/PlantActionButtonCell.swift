@@ -1,51 +1,43 @@
-//
-//  PlantActionButtonCell.swift
-//  search-pageRoute
-//
-//  Created by SDC-USER on 29/01/26.
-//
-
 import UIKit
 
-class PlantActionButtonCell: UICollectionViewCell {
+// Move this outside the class so 'PlantDetailViewController' can see it easily
+enum PlantActionType {
+    case visualizeAR
+}
 
-    @IBOutlet weak var plantActionButton: UIButton!
+class PlantActionButtonCell: UICollectionViewCell {
     
-    // A closure to send the tap event back to the View Controller
-        var onTap: (() -> Void)?
+    // Ensure this name matches EXACTLY what you connect in the XIB
+    @IBOutlet weak var actionButton: UIButton!
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        plantActionButton.layer.cornerRadius = 16 // Adjust for roundness
-                plantActionButton.clipsToBounds = true
+        setupNativeStyle()
     }
-    
-    
-    @IBAction func plantActionButtonTapped(_ sender: UIButton) {
-        onTap?()
-    }
-    
-    enum ActionType {
-            case addPlant
-            case visualizeAR
-        }
-    
-    func configure(type: ActionType){
-        
-        switch type {
-                case .addPlant:
-                    plantActionButton.setTitle("Add Plant", for: .normal)
-                    // Solid Green Style
-                    
-                case .visualizeAR:
-                    plantActionButton.setTitle("Visualize it in AR View", for: .normal)
 
-                }
-        
+    func configure(type: PlantActionType) {
+        // Keep the text concise and native
+        actionButton.setTitle("Visualize in AR View", for: .normal)
     }
-    
-    
-    
-  
 
+    private func setupNativeStyle() {
+        // iOS 15+ Native Configuration
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.cornerStyle = .capsule // Pill shape is modern iOS standard
+        config.baseBackgroundColor = .systemGreen
+        config.baseForegroundColor = .white
+        
+        // Add the SF Symbol icon
+        config.image = UIImage(systemName: "viewfinder.circle.fill")
+        config.imagePadding = 10
+        
+        actionButton.configuration = config
+        
+        // Set a fixed height so it isn't "big ass"
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            actionButton.heightAnchor.constraint(equalToConstant: 54)
+        ])
+    }
 }
