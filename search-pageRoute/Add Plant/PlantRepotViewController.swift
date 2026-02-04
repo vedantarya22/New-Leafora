@@ -36,11 +36,15 @@ class PlantRepotViewController: UIViewController,UICollectionViewDelegateFlowLay
             return          // Show alert
         }
         
-        //  Get the selected repotting option
-          let selectedRepotting = buttonData[selectedIndex!.row].title
-
-          // Save into session model
+        let selectedRepotting = buttonData[selectedIndex!.row].title
         session.repottingAnswer = selectedRepotting
+
+        // NEW: convert to actual date
+        session.lastRepottedDate = dateFromOptionText(selectedRepotting)
+
+        print("Saved repotting:", selectedRepotting)
+        print("Mapped date:", session.lastRepottedDate as Any)
+
         
 
           print("Saved repotting option:", selectedRepotting)
@@ -63,6 +67,34 @@ class PlantRepotViewController: UIViewController,UICollectionViewDelegateFlowLay
             let nib = UINib(nibName: "PlantRepotCollectionViewCell", bundle: nil)
             optionsCollectionView.register(nib, forCellWithReuseIdentifier: "PlantRepotCell")
         }
+    
+    func dateFromOptionText(_ text: String) -> Date? {
+
+        let today = Date()
+        let cal = Calendar.current
+
+        switch text {
+
+        case "Never/In nursery pot":
+            return nil
+
+        case "Last 7 days":
+            return cal.date(byAdding: .day, value: -7, to: today)
+
+        case "About 1 month ago":
+            return cal.date(byAdding: .month, value: -1, to: today)
+
+        case "About 3–6 months ago":
+            return cal.date(byAdding: .month, value: -4, to: today)
+
+        case "1 year ago or more":
+            return cal.date(byAdding: .year, value: -1, to: today)
+
+        default:
+            return nil
+        }
+    }
+
     
     // MARK: CollectionView Data Source
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

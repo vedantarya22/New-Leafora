@@ -52,11 +52,18 @@ struct Plant: Codable {
 }
 
 struct CareCycle: Codable {
-    let watering: String
-    let repotting: String
-    let fertilizing: String
-    let pruning: String
+    let watering: CareFrequency
+    let repotting: CareFrequency
+    let fertilizing: CareFrequency
+    let pruning: CareFrequency
 }
+
+struct CareFrequency: Codable {
+    let display: String
+    let days: Int
+}
+
+
 
 struct SoilType: Codable {
     let characteristics: String

@@ -102,20 +102,26 @@ final class PlantStore: ObservableObject {
         guard let index = plants.firstIndex(where: { $0.id == userPlantID }) else { return }
 
         switch taskType.lowercased() {
+
         case "watering":
-            plants[index].wateringDone = true
+            plants[index].lastWatered = Date()
+
         case "pruning":
-            plants[index].pruningDone = true
+            plants[index].lastPruned = Date()
+
         case "fertilizing":
-            plants[index].fertilizingDone = true
+            plants[index].lastFertilized = Date()
+
         case "repotting":
-            plants[index].repottingDone = true
+            plants[index].lastRepotted = Date()
+
         default:
             break
         }
 
-        print("✅ Task marked done in PlantStore")
+        print("✅ Task timestamp updated")
     }
+
 }
 
 //

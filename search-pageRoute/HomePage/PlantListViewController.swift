@@ -22,9 +22,17 @@ class PlantListViewController: UIViewController,
         collectionView.dataSource = self
         collectionView.delegate = self
 
-        loadAndFilterData()
+//        loadAndFilterData()
         allPlants = JSONLoader.loadPlants(from: "plantData")
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadAndFilterData()
+    }
+
+    
+    
 
     // MARK: - Collection Layout
 
@@ -144,27 +152,36 @@ class PlantListViewController: UIViewController,
 
         let allUserPlants = PlantStore.shared.plants
 
-        filteredPlants = allUserPlants.filter { userPlant in
+        filteredPlants = allUserPlants.flatMap { userPlant -> [UserPlant] in
+
+            let isDue: Bool
 
             switch taskType.lowercased() {
 
             case "watering":
-                return userPlant.wateringDone == false
+                isDue = TaskDueEngine.isDue(userPlant, task: .watering)
 
             case "pruning":
-                return userPlant.pruningDone == false
+                isDue = TaskDueEngine.isDue(userPlant, task: .pruning)
 
             case "fertilizing":
-                return userPlant.fertilizingDone == false
+                isDue = TaskDueEngine.isDue(userPlant, task: .fertilizing)
 
             case "repotting":
-                return userPlant.repottingDone == false
+                isDue = TaskDueEngine.isDue(userPlant, task: .repotting)
 
             default:
-                return true
+                isDue = true
             }
+
+            guard isDue else { return [] }
+
+            // 🔥 Expand by quantity into multiple task cells
+            return Array(repeating: userPlant, count: userPlant.quantity)
         }
 
         collectionView.reloadData()
     }
+
+
 }

@@ -33,10 +33,15 @@ class PlantWaterViewController: UIViewController,UICollectionViewDelegateFlowLay
             showSelectionAlert()
             return          // Show alert
         }
-        // Store selected watering option in the session model
-          let selectedWatering = buttonData[selectedIndex!.row].title
-
+        let selectedWatering = buttonData[selectedIndex!.row].title
         session.wateringAnswer = selectedWatering
+
+        // NEW: convert option → real date
+        session.lastWateredDate = dateFromWateringOptionText(selectedWatering)
+
+        print("Saved watering:", selectedWatering)
+        print("Mapped date:", session.lastWateredDate as Any)
+
         
 //     continue to next screen
             performSegue(withIdentifier: "toNextScreen", sender: self)

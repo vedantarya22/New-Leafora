@@ -187,25 +187,36 @@ class AddPlantImageViewController: UIViewController,
             )
         else { return }
         
+        let lastWaterDate = session.lastWateredDate
+        let lastRepotDate = session.lastRepottedDate
+
         let userPlant = UserPlant(
             id: UUID(),
-            plantId: session.plantId,  //link to plantModel
+            plantId: session.plantId,
             siteName: siteName,
-            siteID: savedSite.id,  // correct siteID
+            siteID: savedSite.id,
             imageData: session.imageData,
             lightRequirement: session.plantLight,
             watering: session.wateringAnswer,
             repotting: session.repottingAnswer,
             quantity: plantCountToAdd,
             isAddedToGarden: true,
-            wateringDone: false,
-            pruningDone: false,
-            fertilizingDone: false,
-            repottingDone: false,
-            
-            createdAt: Date()
-            
+
+//            // smart task states
+//            wateringDone: lastWaterDate != nil,
+//            pruningDone: false,
+//            fertilizingDone: false,
+//            repottingDone: lastRepotDate != nil,
+
+            createdAt: Date(),
+
+            // smart timestamps
+            lastWatered: lastWaterDate,
+            lastPruned: nil,
+            lastFertilized: nil,
+            lastRepotted: lastRepotDate
         )
+
         
         PlantStore.shared.addPlant(userPlant)
         print(" Plant saved:", session.plantId)

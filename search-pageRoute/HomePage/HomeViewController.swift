@@ -75,23 +75,20 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
 
         let allPlants = PlantStore.shared.plants
 
-        // ✅ Count pending tasks (Done == false)
-        // ✅ Include quantity properly
-
         let wateringCount = allPlants
-            .filter { $0.wateringDone == false }
+            .filter { TaskDueEngine.isDue($0, task: .watering) }
             .reduce(0) { $0 + $1.quantity }
 
         let pruningCount = allPlants
-            .filter { $0.pruningDone == false }
+            .filter { TaskDueEngine.isDue($0, task: .pruning) }
             .reduce(0) { $0 + $1.quantity }
 
         let fertilizingCount = allPlants
-            .filter { $0.fertilizingDone == false }
+            .filter { TaskDueEngine.isDue($0, task: .fertilizing) }
             .reduce(0) { $0 + $1.quantity }
 
         let repottingCount = allPlants
-            .filter { $0.repottingDone == false }
+            .filter { TaskDueEngine.isDue($0, task: .repotting) }
             .reduce(0) { $0 + $1.quantity }
 
         return [
@@ -101,6 +98,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             Task(name: "Repotting", icon: "arrow.triangle.2.circlepath", count: repottingCount)
         ]
     }
+
 
 
     
