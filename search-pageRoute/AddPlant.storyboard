@@ -204,7 +204,7 @@ site get?</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bgb-mm-fC5">
-                                <rect key="frame" x="16" y="331" width="361" height="353"/>
+                                <rect key="frame" x="16" y="279" width="361" height="405"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7js-zG-LJW">
                                     <size key="itemSize" width="128" height="128"/>
@@ -224,7 +224,7 @@ site get?</string>
                                 </cells>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qsH-oO-uNC">
-                                <rect key="frame" x="16" y="224" width="361" height="67"/>
+                                <rect key="frame" x="16" y="172" width="361" height="67"/>
                                 <string key="text">When was this plant last 
 repotted?</string>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
@@ -460,7 +460,7 @@ this plant?</string>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Du0-GI-1KT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2466" y="753"/>
+            <point key="canvasLocation" x="2439" y="393"/>
         </scene>
         <!--Plant Added Success View Controller-->
         <scene sceneID="OZk-r6-b8S">
@@ -566,7 +566,7 @@ garden</string>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KKq-hA-fu6" customClass="addplantbuttonCollectionViewCell" customModule="PlantApp" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KKq-hA-fu6" customClass="addplantbuttonCollectionViewCell" customModule="search_pageRoute" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="RdB-4Q-9zF">

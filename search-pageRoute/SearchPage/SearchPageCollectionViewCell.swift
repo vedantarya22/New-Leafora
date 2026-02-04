@@ -19,8 +19,8 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var scientificLabel: UILabel!
     
     // The two colored labels at the bottom
-    @IBOutlet weak var difficultyLabelView: UIView!
-    @IBOutlet weak var lightLabelView: UIView!
+//    @IBOutlet weak var difficultyLabelView: UIView!
+//    @IBOutlet weak var lightLabelView: UIView!
     @IBOutlet weak var difficultyLabel: UILabel!
     @IBOutlet weak var lightLabel: UILabel!
 
@@ -44,11 +44,11 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
         plantImageView.clipsToBounds = true
         
         // Rounding the tag labels
-        difficultyLabelView.layer.cornerRadius = 10
-        difficultyLabelView.layer.masksToBounds = true
-        
-        lightLabelView.layer.cornerRadius = 10
-        lightLabelView.layer.masksToBounds = true
+//        difficultyLabelView.layer.cornerRadius = 10
+//        difficultyLabelView.layer.masksToBounds = true
+//        
+//        lightLabelView.layer.cornerRadius = 10
+//        lightLabelView.layer.masksToBounds = true
     }
 //    
     // Call this from the ViewController to fill data
