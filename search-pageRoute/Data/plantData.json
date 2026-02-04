@@ -9,10 +9,10 @@
       "tags": ["medicinal", "low maintenance"],
       "image_name": "aloe_vera",
       "care_cycle": {
-        "watering": "Every 2-3 weeks",
-        "repotting": "Every 12 months",
-        "fertilizing": "Every 2 months",
-        "pruning": "Every 6 months"
+        "watering": { "display": "Every 2–3 weeks", "days": 18 },
+        "repotting": { "display": "Every 12 months", "days": 365 },
+        "fertilizing": { "display": "Every 2 months", "days": 60 },
+        "pruning": { "display": "Every 6 months", "days": 180 }
       },
       "soil_type": {
         "characteristics": "Well-draining sandy soil",
@@ -35,10 +35,10 @@
       "tags": ["vastu friendly", "air purifying"],
       "image_name": "money_plant",
       "care_cycle": {
-        "watering": "Once a week",
-        "repotting": "Every 10 months",
-        "fertilizing": "Monthly",
-        "pruning": "Every 2 months"
+        "watering": { "display": "Once a week", "days": 7 },
+        "repotting": { "display": "Every 10 months", "days": 300 },
+        "fertilizing": { "display": "Monthly", "days": 30 },
+        "pruning": { "display": "Every 2 months", "days": 60 }
       },
       "soil_type": {
         "characteristics": "Moist well-draining soil",
@@ -61,10 +61,10 @@
       "tags": ["low light", "air purifying"],
       "image_name": "snake_plant",
       "care_cycle": {
-        "watering": "Every 2 weeks",
-        "repotting": "Every 18 months",
-        "fertilizing": "Every 2 months",
-        "pruning": "When damaged"
+        "watering": { "display": "Every 2 weeks", "days": 14 },
+        "repotting": { "display": "Every 18 months", "days": 540 },
+        "fertilizing": { "display": "Every 2 months", "days": 60 },
+        "pruning": { "display": "When damaged", "days": 120 }
       },
       "soil_type": {
         "characteristics": "Loose fast-draining soil",
@@ -87,12 +87,12 @@
       "tags": ["pet friendly", "air purifying"],
       "image_name": "areca_palm",
       "care_cycle": {
-        "watering": "Twice a week",
-        "repotting": "Yearly",
-        "fertilizing": "Monthly",
-        "pruning": "Every 3 months"
+        "watering": { "display": "Twice a week", "days": 3 },
+        "repotting": { "display": "Yearly", "days": 365 },
+        "fertilizing": { "display": "Monthly", "days": 30 },
+        "pruning": { "display": "Every 3 months", "days": 90 }
       },
-      "soil_type": {
+    "soil_type": {
         "characteristics": "Light moisture retaining soil",
         "soil_used": "Peat mix"
       },
@@ -113,11 +113,12 @@
       "tags": ["medicinal", "vastu friendly"],
       "image_name": "tulsi",
       "care_cycle": {
-        "watering": "Every 2 days",
-        "repotting": "Every 8 months",
-        "fertilizing": "Monthly",
-        "pruning": "Monthly"
-      },
+        "watering": { "display": "Every 2 days", "days": 2 },
+        "repotting": { "display": "Every 8 months", "days": 240 },
+        "fertilizing": { "display": "Monthly", "days": 30 },
+        "pruning": { "display": "Monthly", "days": 30 }
+      }
+,
       "soil_type": {
         "characteristics": "Fertile draining soil",
         "soil_used": "Garden soil + compost"
@@ -139,10 +140,10 @@
       "tags": ["decorative", "fragrant"],
       "image_name": "rose",
       "care_cycle": {
-        "watering": "3 times a week",
-        "repotting": "Yearly",
-        "fertilizing": "Every 15 days",
-        "pruning": "Seasonally"
+        "watering": { "display": "3 times a week", "days": 2 },
+        "repotting": { "display": "Yearly", "days": 365 },
+        "fertilizing": { "display": "Every 15 days", "days": 15 },
+        "pruning": { "display": "Seasonally", "days": 90 }
       },
       "soil_type": {
         "characteristics": "Rich fertile soil",
@@ -165,10 +166,10 @@
       "tags": ["edible", "fast growing"],
       "image_name": "mint",
       "care_cycle": {
-        "watering": "Every 2 days",
-        "repotting": "Every 6 months",
-        "fertilizing": "Monthly",
-        "pruning": "Frequently"
+        "watering": { "display": "Every 2 days", "days": 2 },
+        "repotting": { "display": "Every 6 months", "days": 180 },
+        "fertilizing": { "display": "Monthly", "days": 30 },
+        "pruning": { "display": "Frequently", "days": 5 }
       },
       "soil_type": {
         "characteristics": "Moist fertile soil",
@@ -191,10 +192,10 @@
       "tags": ["fragrant", "decorative"],
       "image_name": "jasmine",
       "care_cycle": {
-        "watering": "Twice a week",
-        "repotting": "Yearly",
-        "fertilizing": "Monthly",
-        "pruning": "After flowering"
+        "watering": { "display": "Twice a week", "days": 3 },
+        "repotting": { "display": "Yearly", "days": 365 },
+        "fertilizing": { "display": "Monthly", "days": 30 },
+        "pruning": { "display": "After flowering", "days": 120 }
       },
       "soil_type": {
         "characteristics": "Loose fertile soil",
@@ -217,10 +218,10 @@
       "tags": ["air purifying", "decorative"],
       "image_name": "peace_lily",
       "care_cycle": {
-        "watering": "Once a week",
-        "repotting": "Yearly",
-        "fertilizing": "Every 2 months",
-        "pruning": "When leaves die"
+        "watering": { "display": "Once a week", "days": 7 },
+        "repotting": { "display": "Yearly", "days": 365 },
+        "fertilizing": { "display": "Every 2 months", "days": 60 },
+        "pruning": { "display": "When leaves die", "days": 120 }
       },
       "soil_type": {
         "characteristics": "Moist rich soil",
@@ -243,10 +244,10 @@
       "tags": ["edible fruit", "fragrant"],
       "image_name": "lemon",
       "care_cycle": {
-        "watering": "Twice a week",
-        "repotting": "Every 2 years",
-        "fertilizing": "Monthly",
-        "pruning": "Seasonally"
+        "watering": { "display": "Twice a week", "days": 3 },
+        "repotting": { "display": "Every 2 years", "days": 730 },
+        "fertilizing": { "display": "Monthly", "days": 30 },
+        "pruning": { "display": "Seasonally", "days": 90 }
       },
       "soil_type": {
         "characteristics": "Well-draining fertile soil",

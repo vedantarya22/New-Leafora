@@ -113,10 +113,27 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             return cell
             
         case 2: // Care Cycle
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantInfoCardCell", for: indexPath) as! PlantInfoCardCell
-            let careText = "• Water: \(plant.careCycle.watering)\n• Fertilizer: \(plant.careCycle.fertilizing)\n• Repotting: \(plant.careCycle.repotting)"
-            cell.configure(title: "Care Cycle", text: careText, iconName: "drop.fill", iconColor: .systemCyan)
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "PlantInfoCardCell",
+                for: indexPath
+            ) as! PlantInfoCardCell
+
+            let careText = """
+            • Water: \(plant.careCycle.watering.display)
+            • Fertilizer: \(plant.careCycle.fertilizing.display)
+            • Repotting: \(plant.careCycle.repotting.display)
+            • Pruning: \(plant.careCycle.pruning.display)
+            """
+
+            cell.configure(
+                title: "Care Cycle",
+                text: careText,
+                iconName: "drop.fill",
+                iconColor: .systemCyan
+            )
+
             return cell
+
             
         case 3: // Soil Type
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantInfoCardCell", for: indexPath) as! PlantInfoCardCell
