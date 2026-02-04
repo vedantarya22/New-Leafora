@@ -9,21 +9,33 @@ import Foundation
 
 class User: Codable {
     let id: String
-    let name: String            // "Vedant Arya"
-    let username: String                                     
+    var name: String            // "Vedant Arya"
+    var username: String
     var profileImageString: String
+    var email: String?
+    var phoneNumber: String?
+    var dateOfBirth: String?
     
     // Stats for Profile Page
     let plantCount: Int
-    var personality: String?
     
     
-    init(id: String, name: String, username: String, profileImageString: String, plantCount: Int) {
+    init(id: String,
+         name: String,
+         username: String,
+         profileImageString: String,
+         plantCount: Int,
+         email: String? = nil,
+         phoneNumber: String? = nil,
+         dateOfBirth: String? = nil) {
         self.id = id
         self.name = name
         self.username = username
         self.profileImageString = profileImageString
         self.plantCount = plantCount
+        self.email = email
+        self.phoneNumber = phoneNumber
+        self.dateOfBirth = dateOfBirth
     }
     
     // Helper for Profile Page Label ("@vedantarya.22")
@@ -34,5 +46,18 @@ class User: Codable {
     // Helper for Search Page ("12 Plants | 5 Friends")
     var searchSubtitle: String {
         return "\(plantCount) Plants"
+    }
+    
+    func copy() -> User {
+        return User(
+            id: self.id,
+            name: self.name,
+            username: self.username,
+            profileImageString: self.profileImageString,
+            plantCount: self.plantCount,
+            email: self.email,
+            phoneNumber: self.phoneNumber,
+            dateOfBirth: self.dateOfBirth
+        )
     }
 }

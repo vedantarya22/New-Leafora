@@ -30,6 +30,12 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     private var userPosts: [Post] = []
     
     // MARK: - Lifecycle
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Always refresh user data to ensure we show the latest (e.g. if edited in another tab)
+        refreshUser()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -45,6 +51,16 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     
     @objc func handleDataUpdate() {
         refreshData()
+    }
+    
+    func refreshUser() {
+        if let currentUserId = user?.id {
+             // Re-fetch object from session "source of truth"
+            if let freshUser = UserSession.shared.user(withId: currentUserId) {
+                self.user = freshUser
+                updateUI()
+            }
+        }
     }
     
     func setupUI() {
@@ -177,13 +193,13 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         
         func setupMenu() {
             //Define Actions for "My Profile"
-            //let editAction = UIAction(title: "Edit Profile", image: UIImage(systemName: "pencil"))*/ //{ [weak self] _ in
-            //                self?.openEditProfile()
-            //      }
+            let editAction = UIAction(title: "Edit Profile", image: UIImage(systemName: "pencil")) { [weak self] _ in
+                            self?.openPersonalInfoSettings()
+                  }
             
-            let settingsAction = UIAction(title: "Settings", image: UIImage(systemName: "gearshape")) { _ in
-                print("Settings tapped")
-            }
+//            let settingsAction = UIAction(title: "Settings", image: UIImage(systemName: "gearshape")) { _ in
+//                print("Settings tapped")
+//            }
             
             let blockAction = UIAction(title: "Block", image: UIImage(systemName: "hand.raised.slash"), attributes: .destructive) { _ in
                 print("Block tapped")
@@ -197,7 +213,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
             var menuItems: [UIAction] = []
             
             if isCurrentUser {
-                menuItems = [/*editAction,*/ settingsAction]
+                menuItems = [editAction, /*settingsAction*/]
             } else {
                 menuItems = [blockAction]
             }
@@ -207,16 +223,32 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
             menuButton.menu = demoMenu
         }
         
-        func openEditProfile() {
-            //open the Edit Screen
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let editVC = storyboard.instantiateViewController(
-                withIdentifier: "EditProfileViewController"
-            ) as? EditProfileViewController {
-                editVC.user = self.user
-                present(editVC, animated: true)
-            }
+//        func openEditProfile() {
+//            //open the Edit Screen
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            if let editVC = storyboard.instantiateViewController(
+//                withIdentifier: "EditProfileViewController"
+//            ) as? EditProfileViewController {
+//                editVC.user = self.user
+//                present(editVC, animated: true)
+//            }
+//        }
+    
+    @objc func openPersonalInfoSettings() {
+        // 1. Get the Profile storyboard
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        
+        // 2. Instantiate the Personal Info VC using its ID
+        if let personalInfoVC = storyboard.instantiateViewController(withIdentifier: "Personal_InfoViewController") as? Personal_InfoViewController {
+            
+            // 3. Push it onto the navigation stack
+            // (Make sure your Community VC is inside a Navigation Controller)
+            navigationController?.pushViewController(personalInfoVC, animated: true)
+            
+            // OR present it modally if you prefer:
+            // present(personalInfoVC, animated: true)
         }
+    }
         
         
         

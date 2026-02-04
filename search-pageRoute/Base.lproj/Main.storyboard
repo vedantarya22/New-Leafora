@@ -230,7 +230,14 @@
                             <constraint firstItem="NoY-jx-EEF" firstAttribute="trailing" secondItem="hXc-gG-HW7" secondAttribute="trailing" id="pwM-F6-2Bi"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Home" largeTitleDisplayMode="always" id="eoy-rg-qNT"/>
+                    <navigationItem key="navigationItem" title="Home" largeTitleDisplayMode="always" id="eoy-rg-qNT">
+                        <barButtonItem key="rightBarButtonItem" image="person.circle" catalog="system" id="ypw-Ns-KPr">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <segue destination="9FG-zb-qLY" kind="presentation" id="cJw-my-soD"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="hXc-gG-HW7" id="lp2-f7-h2B"/>
                     </connections>
@@ -336,7 +343,15 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Q1-e5-eCT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2078.6259541984732" y="-196.47887323943664"/>
+            <point key="canvasLocation" x="3570" y="-196"/>
+        </scene>
+        <!--Profile-->
+        <scene sceneID="EEc-t2-ScH">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Profile" id="9FG-zb-qLY" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gyH-vf-Kee" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2095" y="232"/>
         </scene>
         <!--communityScreens-->
         <scene sceneID="UVm-Tz-QEn">
@@ -425,6 +440,7 @@
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="leaf" catalog="system" width="128" height="111"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
+        <image name="person.circle" catalog="system" width="128" height="123"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

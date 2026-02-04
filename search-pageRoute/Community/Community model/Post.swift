@@ -35,4 +35,8 @@ struct Post: Codable {
     
     // List of comments for this post
     var comments: [Comment] = []
+    
+    enum CodingKeys: String, CodingKey {
+        case id, userId, postImageString, likesCount, caption, timestamp, isSaved, isLiked, comments
+    }
 }
