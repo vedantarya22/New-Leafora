@@ -37,6 +37,16 @@ class UserSession {
         return "person.circle"
     }
     
+    func user(withId id: String) -> User? {
+        return users.first(where: { $0.id == id })
+    }
+    
+    func updateUser(_ updatedUser: User) {
+        if let index = users.firstIndex(where: { $0.id == updatedUser.id }) {
+            users[index] = updatedUser
+        }
+    }
+    
     // MARK: - Seed Data
     private func seedDummyData() {
         let vedant = User(

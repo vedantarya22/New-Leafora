@@ -103,7 +103,7 @@ class EditProfileViewController: UIViewController, UIPickerViewDelegate, UIPicke
         usernameTextField.text = cleanUsername
         
         // Map personality
-        personalityTextField.text = user.personality
+        //personalityTextField.text = user.personality
     }
 
     // MARK: - Actions

@@ -70,6 +70,9 @@ class PostRepository {
     private func decorate(post: Post, forUserId userId: String) -> Post {
         var p = post
         
+        // 0. Hydrate Author
+        p.author = UserSession.shared.user(withId: p.userId)
+        
         // 1. Saved State
         let savedIDs = savedPostsByUser[userId] ?? []
         p.isSaved = savedIDs.contains(p.id)
@@ -219,9 +222,7 @@ class PostRepository {
             likesCount: 0,
             caption: caption,
             timestamp: timestamp,
-            // We want to store 'author' so we don't have to join tables manually every time
-            // In a real app backend, you'd probably just store userId and fetch user separately or use 'expand'
-            author: currentUser,
+            // author is no longer stored, it's hydrated at runtime
             isLiked: false,
             comments: []
         )
@@ -274,8 +275,7 @@ class PostRepository {
                 postImageString: "plant_vedant",
                 likesCount: 5,
                 caption: "New leaf alert! 🌿",
-                timestamp: dateAgo(hours: 2),
-                author: vedant
+                timestamp: dateAgo(hours: 2)
             )
             
             let p2 = Post(
@@ -284,8 +284,7 @@ class PostRepository {
                 postImageString: "plant_shubham",
                 likesCount: 3,
                 caption: "Watering day 💧",
-                timestamp: dateAgo(hours: 5),
-                author: shubham
+                timestamp: dateAgo(hours: 5)
             )
             
             let p3 = Post(
@@ -294,8 +293,7 @@ class PostRepository {
                 postImageString: "plant_arya",
                 likesCount: 12,
                 caption: "My balcony jungle is thriving 🌱",
-                timestamp: dateAgo(hours: 24),
-                author: arya
+                timestamp: dateAgo(hours: 24)
             )
             
             let p4 = Post(
@@ -304,8 +302,7 @@ class PostRepository {
                 postImageString: "plant_rohan",
                 likesCount: 8,
                 caption: "Repotted my monstera today 🪴",
-                timestamp: dateAgo(hours: 48),
-                author: rohan
+                timestamp: dateAgo(hours: 48)
             )
             
             let p5 = Post(
@@ -314,8 +311,7 @@ class PostRepository {
                 postImageString: "plant_neha",
                 likesCount: 21,
                 caption: "Sunlight + patience = happy plants ☀️",
-                timestamp: dateAgo(hours: 72),
-                author: neha
+                timestamp: dateAgo(hours: 72)
             )
             
             let p6 = Post(
@@ -324,8 +320,7 @@ class PostRepository {
                 postImageString: "plant_kabir",
                 likesCount: 2,
                 caption: "Still learning, but loving it 🌿",
-                timestamp: dateAgo(hours: 500),
-                author: kabir
+                timestamp: dateAgo(hours: 500)
             )
             
             self.posts = [p1, p2, p3, p4, p5, p6]
