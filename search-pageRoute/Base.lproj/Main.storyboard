@@ -348,6 +348,53 @@
             </objects>
             <point key="canvasLocation" x="947.32824427480909" y="398.59154929577466"/>
         </scene>
+        <!--Plant Instruction View Controller-->
+        <scene sceneID="bXP-2W-E08">
+            <objects>
+                <viewController storyboardIdentifier="PlantInstructionViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bdd-VX-1zE" customClass="PlantInstructionViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="vo8-x5-rrj">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="iKr-UK-Vxu">
+                                <rect key="frame" x="16" y="172" width="361" height="612"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="gzA-LM-EIQ">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="mD0-Zw-ZqA">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ZNj-hS-7rf">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Bp7-gz-CQ6"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottomMargin" secondItem="iKr-UK-Vxu" secondAttribute="bottom" id="F9S-Ce-zAv"/>
+                            <constraint firstItem="iKr-UK-Vxu" firstAttribute="leading" secondItem="vo8-x5-rrj" secondAttribute="leadingMargin" id="GlI-Df-IGT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="iKr-UK-Vxu" secondAttribute="trailing" id="Zf5-Ga-Otp"/>
+                            <constraint firstItem="iKr-UK-Vxu" firstAttribute="top" secondItem="vo8-x5-rrj" secondAttribute="topMargin" id="jJd-WV-EZP"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Pz3-Ky-5Zx"/>
+                    <connections>
+                        <outlet property="collectionView" destination="iKr-UK-Vxu" id="fOa-kv-HR2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kyk-1p-Oxb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1761.0687022900763" y="787.32394366197184"/>
+        </scene>
         <!--My Garden-->
         <scene sceneID="6aq-GC-a7J">
             <objects>
@@ -419,6 +466,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tm9-AZ-Fpb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3689.3129770992364" y="398.59154929577466"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="969-1z-2wq">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yUh-Kb-4KI" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="aLh-v2-4Ng">
+                        <rect key="frame" x="0.0" y="118" width="393" height="106"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="bdd-VX-1zE" kind="relationship" relationship="rootViewController" id="Exs-Ku-aJq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g9V-cB-mNH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="834.35114503816794" y="787.32394366197184"/>
         </scene>
     </scenes>
     <resources>

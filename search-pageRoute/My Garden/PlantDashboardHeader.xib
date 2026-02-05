@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U6b-Vx-4bR" customClass="PlantDashboardHeader" customModule="YourAppName" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="750"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <!-- Full Screen Hero Image -->
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="areca_palm" translatesAutoresizingMaskIntoConstraints="NO" id="mhE-5c-gQ7">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="750"/>
+                </imageView>
+                
+                <!-- Gradient Overlay for better text readability -->
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dGz-8E-fHN" userLabel="Gradient Overlay">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="750"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                
+                <!-- Back Button -->
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zTb-wd-8Ke">
+                    <rect key="frame" x="20" y="60" width="44" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="44" id="Dhb-Yc-6aH"/>
+                        <constraint firstAttribute="height" constant="44" id="mhp-xF-8Ke"/>
+                    </constraints>
+                    <color key="backgroundColor" white="1" alpha="0.3" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="22"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </button>
+                
+                <!-- White Card Container -->
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hJ3-7M-8fQ" userLabel="White Card">
+                    <rect key="frame" x="0.0" y="450" width="414" height="300"/>
+                    <subviews>
+                        <!-- Plant Name -->
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cherry Tomato" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHd-hZ-8fE">
+                            <rect key="frame" x="24" y="32" width="366" height="36"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        
+                        <!-- Variety Label -->
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sweet Delight Variety" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fHb-gZ-9fP">
+                            <rect key="frame" x="24" y="72" width="366" height="20"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <color key="textColor" red="0.60784313729999995" green="0.60784313729999995" blue="0.60784313729999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        
+                        <!-- Quick Info Section -->
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quick info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q8M-hZ-8fE">
+                            <rect key="frame" x="24" y="116" width="366" height="24"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        
+                        <!-- Info Cards Stack -->
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="bHJ-8f-Ksd">
+                            <rect key="frame" x="24" y="156" width="366" height="100"/>
+                            <subviews>
+                                <!-- Sunlight Card -->
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s1-card">
+                                    <rect key="frame" x="0.0" y="0.0" width="114" height="100"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s1-icon-bg">
+                                            <rect key="frame" x="12" y="12" width="36" height="36"/>
+                                            <color key="backgroundColor" red="0.48627450980000003" green="0.64705882349999999" blue="0.58431372550000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="36" id="s1w"/>
+                                                <constraint firstAttribute="height" constant="36" id="s1h"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="18"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Sunlight" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s1-title">
+                                            <rect key="frame" x="12" y="54" width="90" height="16"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Partial" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s1-value">
+                                            <rect key="frame" x="12" y="74" width="90" height="18"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.89411764710000003" green="0.93333333330000001" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstItem="s1-icon-bg" firstAttribute="leading" secondItem="s1-card" secondAttribute="leading" constant="12" id="s1-lead"/>
+                                        <constraint firstItem="s1-icon-bg" firstAttribute="top" secondItem="s1-card" secondAttribute="top" constant="12" id="s1-top"/>
+                                        <constraint firstItem="s1-title" firstAttribute="leading" secondItem="s1-card" secondAttribute="leading" constant="12" id="s1t-lead"/>
+                                        <constraint firstItem="s1-title" firstAttribute="top" secondItem="s1-icon-bg" secondAttribute="bottom" constant="6" id="s1t-top"/>
+                                        <constraint firstAttribute="trailing" secondItem="s1-title" secondAttribute="trailing" constant="12" id="s1t-trail"/>
+                                        <constraint firstItem="s1-value" firstAttribute="leading" secondItem="s1-card" secondAttribute="leading" constant="12" id="s1v-lead"/>
+                                        <constraint firstItem="s1-value" firstAttribute="top" secondItem="s1-title" secondAttribute="bottom" constant="4" id="s1v-top"/>
+                                        <constraint firstAttribute="trailing" secondItem="s1-value" secondAttribute="trailing" constant="12" id="s1v-trail"/>
+                                        <constraint firstAttribute="height" constant="100" id="s1-height"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="16"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                                
+                                <!-- Watering Card -->
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s2-card">
+                                    <rect key="frame" x="126" y="0.0" width="114" height="100"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s2-icon-bg">
+                                            <rect key="frame" x="12" y="12" width="36" height="36"/>
+                                            <color key="backgroundColor" red="0.48627450980000003" green="0.64705882349999999" blue="0.58431372550000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="36" id="s2w"/>
+                                                <constraint firstAttribute="height" constant="36" id="s2h"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="18"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Watering" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s2-title">
+                                            <rect key="frame" x="12" y="54" width="90" height="16"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="2 Days" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s2-value">
+                                            <rect key="frame" x="12" y="74" width="90" height="18"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.89411764710000003" green="0.93333333330000001" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstItem="s2-icon-bg" firstAttribute="leading" secondItem="s2-card" secondAttribute="leading" constant="12" id="s2-lead"/>
+                                        <constraint firstItem="s2-icon-bg" firstAttribute="top" secondItem="s2-card" secondAttribute="top" constant="12" id="s2-top"/>
+                                        <constraint firstItem="s2-title" firstAttribute="leading" secondItem="s2-card" secondAttribute="leading" constant="12" id="s2t-lead"/>
+                                        <constraint firstItem="s2-title" firstAttribute="top" secondItem="s2-icon-bg" secondAttribute="bottom" constant="6" id="s2t-top"/>
+                                        <constraint firstAttribute="trailing" secondItem="s2-title" secondAttribute="trailing" constant="12" id="s2t-trail"/>
+                                        <constraint firstItem="s2-value" firstAttribute="leading" secondItem="s2-card" secondAttribute="leading" constant="12" id="s2v-lead"/>
+                                        <constraint firstItem="s2-value" firstAttribute="top" secondItem="s2-title" secondAttribute="bottom" constant="4" id="s2v-top"/>
+                                        <constraint firstAttribute="trailing" secondItem="s2-value" secondAttribute="trailing" constant="12" id="s2v-trail"/>
+                                        <constraint firstAttribute="height" constant="100" id="s2-height"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="16"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                                
+                                <!-- Wind Card -->
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s3-card">
+                                    <rect key="frame" x="252" y="0.0" width="114" height="100"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s3-icon-bg">
+                                            <rect key="frame" x="12" y="12" width="36" height="36"/>
+                                            <color key="backgroundColor" red="0.48627450980000003" green="0.64705882349999999" blue="0.58431372550000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="36" id="s3w"/>
+                                                <constraint firstAttribute="height" constant="36" id="s3h"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="18"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Wind" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s3-title">
+                                            <rect key="frame" x="12" y="54" width="90" height="16"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Low" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s3-value">
+                                            <rect key="frame" x="12" y="74" width="90" height="18"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.89411764710000003" green="0.93333333330000001" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstItem="s3-icon-bg" firstAttribute="leading" secondItem="s3-card" secondAttribute="leading" constant="12" id="s3-lead"/>
+                                        <constraint firstItem="s3-icon-bg" firstAttribute="top" secondItem="s3-card" secondAttribute="top" constant="12" id="s3-top"/>
+                                        <constraint firstItem="s3-title" firstAttribute="leading" secondItem="s3-card" secondAttribute="leading" constant="12" id="s3t-lead"/>
+                                        <constraint firstItem="s3-title" firstAttribute="top" secondItem="s3-icon-bg" secondAttribute="bottom" constant="6" id="s3t-top"/>
+                                        <constraint firstAttribute="trailing" secondItem="s3-title" secondAttribute="trailing" constant="12" id="s3t-trail"/>
+                                        <constraint firstItem="s3-value" firstAttribute="leading" secondItem="s3-card" secondAttribute="leading" constant="12" id="s3v-lead"/>
+                                        <constraint firstItem="s3-value" firstAttribute="top" secondItem="s3-title" secondAttribute="bottom" constant="4" id="s3v-top"/>
+                                        <constraint firstAttribute="trailing" secondItem="s3-value" secondAttribute="trailing" constant="12" id="s3v-trail"/>
+                                        <constraint firstAttribute="height" constant="100" id="s3-height"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="16"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="100" id="stack-height"/>
+                            </constraints>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="GHd-hZ-8fE" firstAttribute="leading" secondItem="hJ3-7M-8fQ" secondAttribute="leading" constant="24" id="name-lead"/>
+                        <constraint firstItem="GHd-hZ-8fE" firstAttribute="top" secondItem="hJ3-7M-8fQ" secondAttribute="top" constant="32" id="name-top"/>
+                        <constraint firstAttribute="trailing" secondItem="GHd-hZ-8fE" secondAttribute="trailing" constant="24" id="name-trail"/>
+                        
+                        <constraint firstItem="fHb-gZ-9fP" firstAttribute="leading" secondItem="hJ3-7M-8fQ" secondAttribute="leading" constant="24" id="var-lead"/>
+                        <constraint firstItem="fHb-gZ-9fP" firstAttribute="top" secondItem="GHd-hZ-8fE" secondAttribute="bottom" constant="4" id="var-top"/>
+                        <constraint firstAttribute="trailing" secondItem="fHb-gZ-9fP" secondAttribute="trailing" constant="24" id="var-trail"/>
+                        
+                        <constraint firstItem="q8M-hZ-8fE" firstAttribute="leading" secondItem="hJ3-7M-8fQ" secondAttribute="leading" constant="24" id="quick-lead"/>
+                        <constraint firstItem="q8M-hZ-8fE" firstAttribute="top" secondItem="fHb-gZ-9fP" secondAttribute="bottom" constant="24" id="quick-top"/>
+                        <constraint firstAttribute="trailing" secondItem="q8M-hZ-8fE" secondAttribute="trailing" constant="24" id="quick-trail"/>
+                        
+                        <constraint firstItem="bHJ-8f-Ksd" firstAttribute="leading" secondItem="hJ3-7M-8fQ" secondAttribute="leading" constant="24" id="stack-lead"/>
+                        <constraint firstItem="bHJ-8f-Ksd" firstAttribute="top" secondItem="q8M-hZ-8fE" secondAttribute="bottom" constant="16" id="stack-top"/>
+                        <constraint firstAttribute="trailing" secondItem="bHJ-8f-Ksd" secondAttribute="trailing" constant="24" id="stack-trail"/>
+                        
+                        <constraint firstAttribute="height" constant="300" id="card-height"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="24"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskedCorners" value="YES"/>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <!-- Hero Image - Full Screen -->
+                <constraint firstItem="mhE-5c-gQ7" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="img-lead"/>
+                <constraint firstItem="mhE-5c-gQ7" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="img-top"/>
+                <constraint firstAttribute="trailing" secondItem="mhE-5c-gQ7" secondAttribute="trailing" id="img-trail"/>
+                <constraint firstAttribute="bottom" secondItem="mhE-5c-gQ7" secondAttribute="bottom" id="img-bottom"/>
+                
+                <!-- Gradient Overlay -->
+                <constraint firstItem="dGz-8E-fHN" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="grad-lead"/>
+                <constraint firstItem="dGz-8E-fHN" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="grad-top"/>
+                <constraint firstAttribute="trailing" secondItem="dGz-8E-fHN" secondAttribute="trailing" id="grad-trail"/>
+                <constraint firstAttribute="bottom" secondItem="dGz-8E-fHN" secondAttribute="bottom" id="grad-bottom"/>
+                
+                <!-- Back Button -->
+                <constraint firstItem="zTb-wd-8Ke" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" constant="20" id="back-lead"/>
+                <constraint firstItem="zTb-wd-8Ke" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" constant="60" id="back-top"/>
+                
+                <!-- White Card -->
+                <constraint firstItem="hJ3-7M-8fQ" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="card-lead"/>
+                <constraint firstAttribute="trailing" secondItem="hJ3-7M-8fQ" secondAttribute="trailing" id="card-trail"/>
+                <constraint firstAttribute="bottom" secondItem="hJ3-7M-8fQ" secondAttribute="bottom" id="card-bottom"/>
+            </constraints>
+            <connections>
+                <outlet property="heroImageView" destination="mhE-5c-gQ7" id="aUo-u8-mQ9"/>
+                <outlet property="nameLabel" destination="GHd-hZ-8fE" id="fWs-4h-P7c"/>
+                <outlet property="varietyLabel" destination="fHb-gZ-9fP" id="iiY-3z-Qca"/>
+                <outlet property="backButton" destination="zTb-wd-8Ke" id="bck-btn-out"/>
+                <outlet property="sunlightValueLabel" destination="s1-value" id="sun-val-out"/>
+                <outlet property="wateringValueLabel" destination="s2-value" id="wat-val-out"/>
+                <outlet property="windValueLabel" destination="s3-value" id="wind-val-out"/>
+            </connections>
+            <point key="canvasLocation" x="139.13043478260872" y="153.34821428571428"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="areca_palm" width="1024" height="1024"/>
+    </resources>
+</document>
