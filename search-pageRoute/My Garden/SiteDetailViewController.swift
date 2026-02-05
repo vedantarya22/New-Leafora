@@ -93,16 +93,18 @@ class SiteDetailViewController: UIViewController,UICollectionViewDataSource, UIC
         }
     
     private func loadPlantsForSite() {
-          guard let siteID = site?.id else { return }
-          
-          // Get all UserPlants for this site
-          userPlants = PlantStore.shared.plants(for: siteID)
-          
-          print("✅ Loaded \(userPlants.count) plants for site")
-          
-          // Handle empty state
-          updateEmptyState()
-      }
+        guard let siteID = site?.id else { return }
+        
+        // Use new grouping method
+        let grouped = PlantStore.shared.groupedPlants(for: siteID)
+        
+        // Convert to display format
+        userPlants = grouped.map { $0.plant }
+        
+        print("✅ Showing \(userPlants.count) plant types with total \(grouped.reduce(0) { $0 + $1.count }) plants")
+        
+        updateEmptyState()
+    }
     
     private func updateEmptyState() {
         if userPlants.isEmpty {
@@ -133,9 +135,19 @@ class SiteDetailViewController: UIViewController,UICollectionViewDataSource, UIC
           ) as! SiteDetailCollectionViewCell
           
           let userPlant = userPlants[indexPath.item]
+        
+        let allPlantsInSite = PlantStore.shared.plants(for: site!.id)
+            let sameTypePlants = allPlantsInSite.filter { $0.plantId == userPlant.plantId }
+            
           
           // Configure cell with user plant data
           cell.configure(userPlant: userPlant)
+        
+        if sameTypePlants.count > 1 {
+                let allPlants = JSONLoader.loadPlants(from: "plantData")
+                let plantName = allPlants.first(where: { $0.plantId == userPlant.plantId })?.plantName ?? "Unknown"
+                cell.nameLabel.text = "\(plantName) (×\(sameTypePlants.count))"
+            }
           
           return cell
       }

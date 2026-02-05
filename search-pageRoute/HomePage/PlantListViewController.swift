@@ -22,7 +22,7 @@ class PlantListViewController: UIViewController,
         collectionView.dataSource = self
         collectionView.delegate = self
 
-//        loadAndFilterData()
+
         allPlants = JSONLoader.loadPlants(from: "plantData")
     }
     
@@ -149,39 +149,36 @@ class PlantListViewController: UIViewController,
     // MARK: - Load + Filter Pending Plants
 
     func loadAndFilterData() {
+           // ✅ Get ALL individual plants (no grouping)
+           let allUserPlants = PlantStore.shared.allPlants()
 
-        let allUserPlants = PlantStore.shared.plants
+           // ✅ Filter plants that have tasks due
+           filteredPlants = allUserPlants.filter { userPlant in
+               let isDue: Bool
 
-        filteredPlants = allUserPlants.flatMap { userPlant -> [UserPlant] in
+               switch taskType.lowercased() {
+               case "watering":
+                   isDue = TaskDueEngine.isDue(userPlant, task: .watering)
 
-            let isDue: Bool
+               case "pruning":
+                   isDue = TaskDueEngine.isDue(userPlant, task: .pruning)
 
-            switch taskType.lowercased() {
+               case "fertilizing":
+                   isDue = TaskDueEngine.isDue(userPlant, task: .fertilizing)
 
-            case "watering":
-                isDue = TaskDueEngine.isDue(userPlant, task: .watering)
+               case "repotting":
+                   isDue = TaskDueEngine.isDue(userPlant, task: .repotting)
 
-            case "pruning":
-                isDue = TaskDueEngine.isDue(userPlant, task: .pruning)
+               default:
+                   isDue = true
+               }
 
-            case "fertilizing":
-                isDue = TaskDueEngine.isDue(userPlant, task: .fertilizing)
+               return isDue
+           }
 
-            case "repotting":
-                isDue = TaskDueEngine.isDue(userPlant, task: .repotting)
-
-            default:
-                isDue = true
-            }
-
-            guard isDue else { return [] }
-
-            // 🔥 Expand by quantity into multiple task cells
-            return Array(repeating: userPlant, count: userPlant.quantity)
-        }
-
-        collectionView.reloadData()
-    }
+           print("✅ Filtered \(filteredPlants.count) plants needing \(taskType)")
+           collectionView.reloadData()
+       }
 
 
 }

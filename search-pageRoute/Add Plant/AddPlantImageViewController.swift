@@ -168,7 +168,6 @@ class AddPlantImageViewController: UIViewController,
             // Create new site
             siteStore.addSite(
                 name: siteName,
-                //                color: siteColor,
                 icon: siteIcon
             )
             
@@ -190,36 +189,32 @@ class AddPlantImageViewController: UIViewController,
         let lastWaterDate = session.lastWateredDate
         let lastRepotDate = session.lastRepottedDate
 
-        let userPlant = UserPlant(
-            id: UUID(),
-            plantId: session.plantId,
-            siteName: siteName,
-            siteID: savedSite.id,
-            imageData: session.imageData,
-            lightRequirement: session.plantLight,
-            watering: session.wateringAnswer,
-            repotting: session.repottingAnswer,
-            quantity: plantCountToAdd,
-            isAddedToGarden: true,
+        for index in 1...plantCountToAdd {
+               let userPlant = UserPlant(
+                   id: UUID(),  // ✅ Each plant gets unique ID
+                   plantId: session.plantId,
+                   siteName: siteName,
+                   siteID: savedSite.id,
+                   imageData: session.imageData,
+                   lightRequirement: session.plantLight,
+                   watering: session.wateringAnswer,
+                   repotting: session.repottingAnswer,
+                   quantity: 1,  // ✅ Changed: Each object represents 1 plant
+                   isAddedToGarden: true,
+                   createdAt: Date(),
+                   
+                   // Smart timestamps
+                   lastWatered: lastWaterDate,
+                   lastPruned: nil,
+                   lastFertilized: nil,
+                   lastRepotted: lastRepotDate
+               )
+               
+               PlantStore.shared.addPlant(userPlant)
+               print("✅ Plant \(index)/\(plantCountToAdd) saved with ID:", userPlant.id)
+           }
 
-//            // smart task states
-//            wateringDone: lastWaterDate != nil,
-//            pruningDone: false,
-//            fertilizingDone: false,
-//            repottingDone: lastRepotDate != nil,
-
-            createdAt: Date(),
-
-            // smart timestamps
-            lastWatered: lastWaterDate,
-            lastPruned: nil,
-            lastFertilized: nil,
-            lastRepotted: lastRepotDate
-        )
-
-        
-        PlantStore.shared.addPlant(userPlant)
-        print(" Plant saved:", session.plantId)
+        print("✅ All \(plantCountToAdd) plants saved for:", session.plantId)
         
     }
 }
