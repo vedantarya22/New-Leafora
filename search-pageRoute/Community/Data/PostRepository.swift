@@ -310,7 +310,7 @@ class PostRepository {
                 userId: "u5",
                 postImageString: "plant_neha",
                 likesCount: 21,
-                caption: "Sunlight + patience = happy plants ☀️",
+                caption: "Sunlight & happy plants ☀️",
                 timestamp: dateAgo(hours: 72)
             )
             
