@@ -23,7 +23,14 @@ class PlantListViewController: UIViewController,
         collectionView.delegate = self
 
 
+        // ✅ Load JSON once - reuse everywhere
         allPlants = JSONLoader.loadPlants(from: "plantData")
+        
+        if allPlants.isEmpty {
+                print("⚠️ WARNING: No plants loaded from JSON! Check if 'plantData.json' exists in bundle")
+               } else {
+                   print("✅ Loaded \(allPlants.count) plant types from JSON")
+           }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -145,6 +152,61 @@ class PlantListViewController: UIViewController,
             taskType: taskType
         )
     }
+    
+    
+//    private func determineTaskToShow(for plant: UserPlant) -> String {
+//        guard let plantData = allPlants.first(where: { $0.plantId == plant.plantId }) else {
+//               return taskType.lowercased() == "urgent" || taskType.lowercased() == "missed" ? "Watering" : taskType
+//            }
+//          
+//          // For Urgent/Missed routes, find the most overdue task
+//          if taskType.lowercased() == "urgent" || taskType.lowercased() == "missed" {
+//              var mostOverdueTask = ""
+//              var maxOverdue = 0
+//              
+//              // Check watering
+//              if let lastWatered = plant.lastWatered {
+//                  let daysOverdue = daysSince(lastWatered) - plantData.careCycle.watering.days
+//                  if daysOverdue > maxOverdue {
+//                      maxOverdue = daysOverdue
+//                      mostOverdueTask = "Watering"
+//                  }
+//              }
+//              
+//              // Check fertilizing
+//              if let lastFertilized = plant.lastFertilized {
+//                  let daysOverdue = daysSince(lastFertilized) - plantData.careCycle.fertilizing.days
+//                  if daysOverdue > maxOverdue {
+//                      maxOverdue = daysOverdue
+//                      mostOverdueTask = "Fertilizing"
+//                  }
+//              }
+//              
+//              // Check pruning
+//              if let lastPruned = plant.lastPruned {
+//                  let daysOverdue = daysSince(lastPruned) - plantData.careCycle.pruning.days
+//                  if daysOverdue > maxOverdue {
+//                      maxOverdue = daysOverdue
+//                      mostOverdueTask = "Pruning"
+//                  }
+//              }
+//              
+//              // Check repotting
+//              if let lastRepotted = plant.lastRepotted {
+//                  let daysOverdue = daysSince(lastRepotted) - plantData.careCycle.repotting.days
+//                  if daysOverdue > maxOverdue {
+//                      maxOverdue = daysOverdue
+//                      mostOverdueTask = "Repotting"
+//                  }
+//              }
+//              
+//              return mostOverdueTask.isEmpty ? "Watering" : mostOverdueTask
+//          }
+//          
+//          // For specific task routes, return the task type
+//          return taskType
+//      }
+
 
     // MARK: - Load + Filter Pending Plants
 
@@ -168,6 +230,7 @@ class PlantListViewController: UIViewController,
 
                case "repotting":
                    isDue = TaskDueEngine.isDue(userPlant, task: .repotting)
+                   
 
                default:
                    isDue = true
@@ -179,6 +242,12 @@ class PlantListViewController: UIViewController,
            print("✅ Filtered \(filteredPlants.count) plants needing \(taskType)")
            collectionView.reloadData()
        }
+    
+ 
+//        private func daysSince(_ date: Date?) -> Int {
+//            guard let date else { return Int.max }
+//            return Calendar.current.dateComponents([.day], from: date, to: Date()).day ?? Int.max
+//        }
 
 
 }

@@ -11,7 +11,18 @@ class MyGardenViewController: UIViewController,UICollectionViewDelegate, UIColle
     
     @IBOutlet weak var myGardenCollectionView: UICollectionView!
     
-    @IBOutlet weak var emptyLabel: UILabel!
+    private let emptyStateLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No sites yet.\nAdd plants to get started "
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.textColor = .secondaryLabel
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     let siteStore = SiteStore.shared
 
     
@@ -19,18 +30,29 @@ class MyGardenViewController: UIViewController,UICollectionViewDelegate, UIColle
          super.viewDidLoad()
          
          setupCollectionView()
-//         updateEmptyState()
+        setupEmptyStateLabel()
+         updateEmptyState()
      }
      
-     override func viewWillAppear(_ animated: Bool) {
-         super.viewWillAppear(animated)
-         
-         // Reload data every time this screen appears
-         myGardenCollectionView.reloadData()
-//         updateEmptyState()
-         
-         print("✅ MyGarden: Sites count = \(siteStore.sites.count)")
-     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        myGardenCollectionView.reloadData()
+        updateEmptyState()
+    }
+
+    
+    private func setupEmptyStateLabel() {
+        view.addSubview(emptyStateLabel)
+
+        NSLayoutConstraint.activate([
+            emptyStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyStateLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 24),
+            emptyStateLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -24)
+        ])
+    }
+
     
     private func setupCollectionView() {
            myGardenCollectionView.delegate = self
@@ -74,17 +96,12 @@ class MyGardenViewController: UIViewController,UICollectionViewDelegate, UIColle
        }
     
     private func updateEmptyState() {
-            let isEmpty = siteStore.sites.isEmpty
-            
-            emptyLabel.isHidden = !isEmpty
-            myGardenCollectionView.isHidden = isEmpty
-            
-            if isEmpty {
-                emptyLabel.text = "No sites yet.\nAdd plants to get started!"
-                emptyLabel.textAlignment = .center
-                emptyLabel.numberOfLines = 0
-            }
-        }
+        let isEmpty = siteStore.sites.isEmpty
+
+        emptyStateLabel.isHidden = !isEmpty
+        myGardenCollectionView.isHidden = isEmpty
+    }
+
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
            return siteStore.sites.count

@@ -8,9 +8,9 @@
 import Foundation
 
 enum InsightLevel {
-    case good
     case warning
     case critical
+    case good
 
     var priority: Int {
         switch self {
