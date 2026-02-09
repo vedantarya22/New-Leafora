@@ -90,7 +90,7 @@ class CareTaskCell1: UICollectionViewCell {
                 
                 // Add colored left border for distinction
                 self.cardContainerView.layer.borderWidth = 2
-                self.cardContainerView.layer.borderColor = borderColor.cgColor
+                self.cardContainerView.layer.borderColor = UIColor.clear.cgColor
                 
                 // Dark text, colored icon
                 self.titleLabel.textColor = .label

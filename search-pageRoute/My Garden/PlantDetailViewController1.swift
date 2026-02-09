@@ -8,7 +8,7 @@ class PlantDetailViewController_New: UIViewController {
     // Tracks which care card is currently open
     private var expandedCareIndex: IndexPath?
     private var isBenefitsExpanded = false
-    
+    let gradientLayer = CAGradientLayer()
     // MARK: - Section Management
     enum Section: Int, CaseIterable {
         case hero = 0
@@ -30,8 +30,8 @@ class PlantDetailViewController_New: UIViewController {
     
     // MARK: - DUMMY DATA - Replace these with your real data later
     private var statsData: [(icon: String, title: String, value: String, color: UIColor)] = [
-        (icon: "drop.fill", title: "Water", value: "Every 2–3 weeks", color: UIColor.systemBlue),
-        (icon: "sun.max.fill", title: "Light", value: "Bright indirect", color: UIColor.systemYellow),
+        (icon: "drop.fill", title: "Water", value: "Every 2 days", color: UIColor.systemBlue),
+        (icon: "sun.max.fill", title: "Light", value: "Bright light", color: UIColor.systemYellow),
         (icon: "leaf.fill", title: "Difficulty", value: "Easy", color: UIColor.systemGreen),
         (icon: "leaf", title: "Quantity", value: "1 plant", color: UIColor.systemTeal)
     ]
@@ -109,15 +109,34 @@ class PlantDetailViewController_New: UIViewController {
     private var healthPercentage = 85
 
     override func viewDidLoad() {
-        self.plantImage = UIImage(named: "aloe_vera")
+        setupBotanicalBackground()
+        gradientLayer.frame = view.bounds
+        self.plantImage = UIImage(named: "areca_palm")
         super.viewDidLoad()
+        collectionView.backgroundColor = .clear
         setupCollectionView()
+        collectionView.backgroundView = nil
         setupNavigationBar()
     }
     
+    private func setupBotanicalBackground() {
+        // A soft, off-white to very pale sage green
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+
+        // Insert at index 0 so it stays behind the UICollectionView
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    
     private func setupNavigationBar() {
         // TODO: Replace with real plant name
-        title = "Aloe Vera"
+        title = "Areca palm"
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 
@@ -144,7 +163,7 @@ class PlantDetailViewController_New: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.collectionViewLayout = createLayout()
-        collectionView.backgroundColor = .systemGroupedBackground
+//        collectionView.backgroundColor = .systemGroupedBackground
     }
     
     // MARK: - Layout Configuration
@@ -177,12 +196,12 @@ class PlantDetailViewController_New: UIViewController {
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(0.45)
+            heightDimension: .fractionalHeight(0.4)
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 16, trailing: 16)
         return section
     }
     
@@ -328,12 +347,16 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
         switch sectionType {
         case .hero:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeroImageCell", for: indexPath) as! HeroImageCell
-            // TODO: Set your plant image here
+            
             if let data = userPlant?.imageData {
+                // Use the user's custom photo if available
                 cell.plantImageView.image = UIImage(data: data)
+            } else if let assetImage = UIImage(named: "areca_palm") {
+                // REPLACE "YourAssetNameHere" with the name in your Assets.xcassets
+                cell.plantImageView.image = assetImage
             } else {
-                // Placeholder if no image
-                cell.plantImageView.image = UIImage(systemName: "aloe_vera")
+                // Fallback to a system symbol if the asset is missing
+                cell.plantImageView.image = UIImage(systemName: "leaf.fill")
                 cell.plantImageView.tintColor = .systemGreen
             }
             return cell

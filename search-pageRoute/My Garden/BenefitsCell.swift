@@ -15,6 +15,7 @@ class BenefitsCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
+        iconImageView.isHidden = true
     }
     
     private func setupUI() {
@@ -42,7 +43,7 @@ class BenefitsCell: UICollectionViewCell {
         benefitsTextLabel.textColor = .label
         
         // Button styling
-        showMoreButton.setTitleColor(.systemPurple, for: .normal)
+        showMoreButton.setTitleColor(.systemGreen, for: .normal)
         showMoreButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
         showMoreButton.addTarget(self, action: #selector(toggleExpansion), for: .touchUpInside)
     }

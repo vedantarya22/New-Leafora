@@ -1,94 +1,61 @@
-//
-//  Plant_Q4CollectionViewCell.swift
-//  PlantApp
-//
-//  Created by SDC-USER on 08/12/25.
-//
-
 import UIKit
 
 class PlantRepotCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var optionBtn: UIButton!
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        
-        setupGlassBackground()
-        styleButton()
+        setupPlantAppStyle()
     }
     
-    
-    private func setupGlassBackground() {
-        // Simulated glass look without blur glow
-        optionBtn.backgroundColor = UIColor.systemGray5.withAlphaComponent(0.6)
+    private func setupPlantAppStyle() {
+        // 1. Creative Card Look
+        contentView.backgroundColor = .secondarySystemGroupedBackground
+        contentView.layer.cornerRadius = 24 // Softer, more organic corners
+        contentView.layer.borderWidth = 1.5
+        contentView.layer.borderColor = UIColor.systemGray6.cgColor
         
-        // Rounded design
-        optionBtn.layer.cornerRadius = 30
-        optionBtn.clipsToBounds = true
-        
+        // 2. Button as a passive Label
         optionBtn.isUserInteractionEnabled = false
-    }
-    
-    private func styleButton() {
-        // Simple frosted-light background (no blur halo)
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = .label
+        config.titleAlignment = .center
+        optionBtn.configuration = config
         
-        
-        optionBtn.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        optionBtn.setTitleColor(.label, for: .normal)
-        
-        // Remove all cell shadows
-        contentView.layer.shadowOpacity = 0
-        layer.shadowOpacity = 0
-        
-        
+        // 3. Shadow for depth
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 4
+        layer.shadowOpacity = 0.05
+        layer.masksToBounds = false
     }
     
     override var isSelected: Bool {
         didSet {
-            if isSelected {
-                setSelectedAppearance()
-            } else {
-                setDeselectedAppearance()
+            UIView.animate(withDuration: 0.2) {
+                if self.isSelected {
+                    // Selection Style: Soft Green with vibrant border
+                    self.contentView.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.1)
+                    self.contentView.layer.borderColor = UIColor.systemGreen.cgColor
+                    self.optionBtn.tintColor = .systemGreen
+                    self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98) // "Pressed" look
+                } else {
+                    self.contentView.backgroundColor = .secondarySystemGroupedBackground
+                    self.contentView.layer.borderColor = UIColor.systemGray6.cgColor
+                    self.optionBtn.tintColor = .label
+                    self.transform = .identity
+                }
             }
         }
-        
-    }
-    
-    func setSelectedAppearance() {
-        optionBtn.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.7)
-        
-        
-    }
-    
-    
-    
-    func setDeselectedAppearance() {
-        optionBtn.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        optionBtn.tintColor = .black
-        
-        
-        layer.borderWidth = 0
     }
     
     func animateSelection() {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.optionBtn.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        }) { _ in
-            UIView.animate(withDuration: 0.1) {
-                self.optionBtn.transform = .identity
-            }
-        }
+        let generator = UISelectionFeedbackGenerator()
+        generator.selectionChanged()
     }
-    
-    
     
     func configure(with title: String) {
         optionBtn.setTitle(title, for: .normal)
     }
-    
-    
-    
 }
