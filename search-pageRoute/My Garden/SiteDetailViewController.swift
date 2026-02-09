@@ -157,14 +157,16 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     // MARK: - Navigation
     
     private func navigateToPlantDetail(for userPlant: UserPlant) {
-        let detailVC = PlantDetailViewController1()
-        detailVC.userPlant = userPlant
-        
-        // Hide tab bar when pushing
-        detailVC.hidesBottomBarWhenPushed = true
-        
-        navigationController?.pushViewController(detailVC, animated: true)
-        
-        print("✅ Navigating to PlantDetailViewController")
+        let storyboard = UIStoryboard(name: "MyGarden", bundle: nil)
+         let detailVC = storyboard.instantiateViewController(withIdentifier: "PlantDetailViewController_New") as! PlantDetailViewController_New
+         
+         detailVC.userPlant = userPlant
+         
+         // Hide tab bar when pushing
+         detailVC.hidesBottomBarWhenPushed = true
+         
+         navigationController?.pushViewController(detailVC, animated: true)
+         
+         print("✅ Navigating to PlantDetailViewController")
     }
 }

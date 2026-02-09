@@ -1,240 +1,458 @@
 import UIKit
 
-class PlantDetailViewController1: UIViewController {
+class PlantDetailViewController_New: UIViewController {
     
-    // MARK: - Properties
+    @IBOutlet weak var collectionView: UICollectionView!
     var userPlant: UserPlant?
-    private var plant: Plant?
-    private var collectionView: UICollectionView!
+    var plantImage: UIImage?
+    // Tracks which care card is currently open
+    private var expandedCareIndex: IndexPath?
+    private var isBenefitsExpanded = false
     
-    private let heroImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
-        iv.backgroundColor = UIColor(red: 0.95, green: 0.97, blue: 0.95, alpha: 1.0)
-        return iv
-    }()
+    // MARK: - Section Management
+    enum Section: Int, CaseIterable {
+        case hero = 0
+        case stats = 1
+        case status = 2
+        case benefits = 3
+        case careGuide = 4
+        
+        var title: String {
+            switch self {
+            case .hero: return ""
+            case .stats: return ""
+            case .status: return "Plant Health"
+            case .benefits: return "Benefits"
+            case .careGuide: return "Care Guide"
+            }
+        }
+    }
     
-    private let gradientOverlay: CAGradientLayer = {
-        let gradient = CAGradientLayer()
-        gradient.colors = [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.4).cgColor]
-        gradient.locations = [0.6, 1.0]
-        return gradient
-    }()
+    // MARK: - DUMMY DATA - Replace these with your real data later
+    private var statsData: [(icon: String, title: String, value: String, color: UIColor)] = [
+        (icon: "drop.fill", title: "Water", value: "Every 2–3 weeks", color: UIColor.systemBlue),
+        (icon: "sun.max.fill", title: "Light", value: "Bright indirect", color: UIColor.systemYellow),
+        (icon: "leaf.fill", title: "Difficulty", value: "Easy", color: UIColor.systemGreen),
+        (icon: "leaf", title: "Quantity", value: "1 plant", color: UIColor.systemTeal)
+    ]
     
-    private let backButton: UIButton = {
-        let btn = UIButton(type: .system)
-        let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
-        btn.setImage(UIImage(systemName: "chevron.left", withConfiguration: config), for: .normal)
-        btn.tintColor = .white
-        btn.backgroundColor = UIColor.black.withAlphaComponent(0.2)
-        btn.layer.cornerRadius = 20
-        return btn
-    }()
+    private var benefitsText: String = """
+    A hardy succulent known for healing gel and minimal watering needs.
     
-    private let actionButton: UIButton = {
-        let btn = UIButton(type: .system)
-        btn.setTitle("Log Care Activity", for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
-        btn.backgroundColor = UIColor(red: 0.13, green: 0.35, blue: 0.24, alpha: 1.0)
-        btn.tintColor = .white
-        btn.layer.cornerRadius = 28
-        return btn
-    }()
+    • Heals burns and skin irritations
+    • Easy care and low maintenance
+    • Air purification properties
+    • Perfect for beginners
+    • Drought resistant
     
-    // MARK: - Lifecycle
+    ⚠️ Toxic to pets - keep away from animals
+    """
+    
+    private var careItems: [(icon: String, title: String, steps: String, color: UIColor)] = [
+        (
+            icon: "drop.fill",
+            title: "Watering",
+            steps: """
+            Schedule: Every 2–3 weeks
+            
+            • Check soil moisture before watering
+            • Water thoroughly until it drains
+            • Allow soil to dry completely between waterings
+            • Reduce watering in winter months
+            """,
+            color: UIColor.systemBlue
+        ),
+        (
+            icon: "leaf.fill",
+            title: "Fertilizing",
+            steps: """
+            Schedule: Every 2 months
+            
+            • Use diluted liquid fertilizer
+            • Apply during growing season (spring/summer)
+            • Reduce or skip in winter
+            • Follow package instructions carefully
+            """,
+            color: UIColor.systemGreen
+        ),
+        (
+            icon: "arrow.triangle.2.circlepath",
+            title: "Repotting",
+            steps: """
+            Schedule: Every 12 months
+            
+            • Check if roots are crowding the pot
+            • Use pot 2" larger than current
+            • Use well-draining cactus mix soil
+            • Best done in spring season
+            """,
+            color: UIColor.systemOrange
+        ),
+        (
+            icon: "scissors",
+            title: "Pruning",
+            steps: """
+            Schedule: Every 6 months
+            
+            • Remove dead or brown leaves
+            • Trim damaged or diseased parts
+            • Use clean, sharp tools
+            • Dispose of diseased material properly
+            """,
+            color: UIColor.systemPurple
+        )
+    ]
+    
+    // Dummy health data
+    private var healthStatus = "Healthy"
+    private var nextWateringText = "in 5 days"
+    private var healthPercentage = 85
+
     override func viewDidLoad() {
+        self.plantImage = UIImage(named: "aloe_vera")
         super.viewDidLoad()
-        setupUI()
-        loadPlantData()
-        animateEntrance()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        gradientOverlay.frame = heroImageView.bounds
-    }
-    
-    private func setupUI() {
-        view.backgroundColor = UIColor(red: 0.98, green: 0.99, blue: 0.98, alpha: 1.0)
-        setupHeroImage()
         setupCollectionView()
-        setupBackButton()
-        setupActionButton()
-    }
-
-    private func animateEntrance() {
-        heroImageView.alpha = 0
-        heroImageView.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-        UIView.animate(withDuration: 0.8, delay: 0, options: .curveEaseOut) {
-            self.heroImageView.alpha = 1
-            self.heroImageView.transform = .identity
-        }
+        setupNavigationBar()
     }
     
-    private func setupBackButton() {
-        view.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            backButton.widthAnchor.constraint(equalToConstant: 40),
-            backButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+    private func setupNavigationBar() {
+        // TODO: Replace with real plant name
+        title = "Aloe Vera"
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
 
-    private func setupActionButton() {
-        view.addSubview(actionButton)
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            actionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            actionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            actionButton.heightAnchor.constraint(equalToConstant: 56)
-        ])
-        actionButton.addTarget(self, action: #selector(actionTapped), for: .touchUpInside)
-    }
+    private func setupCollectionView() {
+        guard collectionView != nil else { return }
 
-    private func loadPlantData() {
-        guard let userPlant = userPlant else { return }
-        let allPlants = JSONLoader.loadPlants(from: "plantData")
-        self.plant = allPlants.first(where: { $0.plantId == userPlant.plantId })
+        // Register all cells
+        collectionView.register(UINib(nibName: "HeroImageCell", bundle: nil),
+                               forCellWithReuseIdentifier: "HeroImageCell")
+        collectionView.register(UINib(nibName: "StatCardCell", bundle: nil),
+                               forCellWithReuseIdentifier: "StatCardCell")
+        collectionView.register(UINib(nibName: "PlantStatusCell", bundle: nil),
+                               forCellWithReuseIdentifier: "PlantStatusCell")
+        collectionView.register(UINib(nibName: "BenefitsCell", bundle: nil),
+                               forCellWithReuseIdentifier: "BenefitsCell")
+        collectionView.register(UINib(nibName: "CareTaskCell1", bundle: nil),
+                               forCellWithReuseIdentifier: "CareTaskCell1")
         
-        if let imageData = userPlant.imageData {
-            heroImageView.image = UIImage(data: imageData)
-        } else if let plant = plant {
-            heroImageView.image = UIImage(named: plant.imageName)
-        }
-    }
-
-    @objc private func backTapped() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func actionTapped() {
-        let alert = UIAlertController(title: "Log Care", message: nil, preferredStyle: .actionSheet)
-        let tasks = [("💧 Watered", "watering"), ("✂️ Pruned", "pruning"), ("🌱 Fertilized", "fertilizing"), ("🪴 Repotted", "repotting")]
+        // Register headers
+        collectionView.register(UINib(nibName: "SectionHeaderView", bundle: nil),
+                               forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                               withReuseIdentifier: "SectionHeaderView")
         
-        for task in tasks {
-            alert.addAction(UIAlertAction(title: task.0, style: .default) { _ in
-                self.logCareActivity(type: task.1)
-            })
-        }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
-    }
-    
-    private func logCareActivity(type: String) {
-        guard var updatedPlant = userPlant else { return }
-        let now = Date()
-        
-        switch type {
-        case "watering": updatedPlant.lastWatered = now
-        case "pruning": updatedPlant.lastPruned = now
-        case "fertilizing": updatedPlant.lastFertilized = now
-        case "repotting": updatedPlant.lastRepotted = now
-        default: break
-        }
-        
-        self.userPlant = updatedPlant
-        PlantStore.shared.updatePlant(updatedPlant)
-        collectionView.reloadSections(IndexSet(integer: 1))
-    }
-}
-
-// MARK: - CollectionView DataSource & Layout
-extension PlantDetailViewController1: UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    private func setupHeroImage() {
-        view.addSubview(heroImageView)
-        heroImageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            heroImageView.topAnchor.constraint(equalTo: view.topAnchor),
-            heroImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            heroImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            heroImageView.heightAnchor.constraint(equalToConstant: 420)
-        ])
-        heroImageView.layer.addSublayer(gradientOverlay)
-    }
-
-    func setupCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
-        collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.contentInsetAdjustmentBehavior = .never
-        
-        // Use "CareTaskCell1" for both the XIB name and the ID to avoid confusion
-        collectionView.register(UINib(nibName: "CareTaskCell1", bundle: nil), forCellWithReuseIdentifier: "CareTaskCell1")
-        collectionView.register(UINib(nibName: "GuideSectionCell", bundle: nil), forCellWithReuseIdentifier: "GuideCell")
-        
-        view.insertSubview(collectionView, belowSubview: backButton)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        collectionView.collectionViewLayout = createLayout()
+        collectionView.backgroundColor = .systemGroupedBackground
     }
     
-    private func createCompositionalLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { (sectionIndex, _) in
-            if sectionIndex == 0 { return self.createHeaderSection() }
-            if sectionIndex == 1 { return self.createCareTasksSection() }
-            return self.createGuidesSection()
+    // MARK: - Layout Configuration
+    private func createLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { [weak self] (sectionIndex, environment) -> NSCollectionLayoutSection? in
+            guard let self = self, let sectionType = Section(rawValue: sectionIndex) else { return nil }
+            
+            switch sectionType {
+            case .hero:
+                return self.createHeroSection()
+            case .stats:
+                return self.createStatsSection()
+            case .status:
+                return self.createStatusSection()
+            case .benefits:
+                return self.createBenefitsSection()
+            case .careGuide:
+                return self.createCareGuideSection()
+            }
         }
     }
-
-    private func createHeaderSection() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(120)))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(120)), subitems: [item])
+    
+    // Hero image section - full width
+    private func createHeroSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(0.45)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 360, leading: 0, bottom: 20, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         return section
     }
-
-    private func createCareTasksSection() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(90)))
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(90)), subitems: [item])
+    
+    // Stats cards section - 2x2 grid
+    private func createStatsSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.5),
+            heightDimension: .absolute(100)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(100)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 0, leading: 20, bottom: 30, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 24, trailing: 8)
+        return section
+    }
+    
+    // Status section - single full-width card
+    private func createStatusSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
+        
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(50)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        section.boundarySupplementaryItems = [header]
+        
+        return section
+    }
+    
+    // Benefits section - expandable
+    private func createBenefitsSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(150)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(150)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
+        
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(50)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        section.boundarySupplementaryItems = [header]
+        
+        return section
+    }
+    
+    // Care guide section
+    private func createCareGuideSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(70)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(70)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 12
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 32, trailing: 16)
+        
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(50)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        section.boundarySupplementaryItems = [header]
+        
         return section
-    }
-
-    private func createGuidesSection() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .absolute(280), heightDimension: .absolute(180)), subitems: [item])
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = .init(top: 0, leading: 20, bottom: 120, trailing: 20)
-        section.interGroupSpacing = 16
-        return section
-    }
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int { return 3 }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return section == 1 ? 4 : 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section == 1 {
-            // CAST TO CareTaskCell1 TO ACCESS CONFIGURE
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell1", for: indexPath) as! CareTaskCell1
-            guard let p = plant, let up = userPlant else { return cell }
-            let tasks: [(String, String, Date?, Int)] = [
-                ("💧", "Watering", up.lastWatered, p.careCycle.watering.days),
-                ("✂️", "Pruning", up.lastPruned, p.careCycle.pruning.days),
-                ("🌱", "Fertilizing", up.lastFertilized, p.careCycle.fertilizing.days),
-                ("🪴", "Repotting", up.lastRepotted, p.careCycle.repotting.days)
-            ]
-            let t = tasks[indexPath.item]
-            cell.configure(icon: t.0, taskName: t.1, status: CareCountdown.status(lastDate: t.2, frequencyDays: t.3, taskName: t.1))
-            return cell
-        }
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "GuideCell", for: indexPath)
     }
 }
+
+// MARK: - Data Source
+extension PlantDetailViewController_New: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return Section.allCases.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let sectionType = Section(rawValue: section) else { return 0 }
+        
+        switch sectionType {
+        case .hero: return 1
+        case .stats: return statsData.count
+        case .status: return 1
+        case .benefits: return 1
+        case .careGuide: return careItems.count
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let sectionType = Section(rawValue: indexPath.section) else {
+            return UICollectionViewCell()
+        }
+        
+        switch sectionType {
+        case .hero:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeroImageCell", for: indexPath) as! HeroImageCell
+            // TODO: Set your plant image here
+            if let data = userPlant?.imageData {
+                cell.plantImageView.image = UIImage(data: data)
+            } else {
+                // Placeholder if no image
+                cell.plantImageView.image = UIImage(systemName: "aloe_vera")
+                cell.plantImageView.tintColor = .systemGreen
+            }
+            return cell
+            
+        case .stats:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StatCardCell", for: indexPath) as! StatCardCell
+            let stat = statsData[indexPath.item]
+            cell.configure(icon: stat.icon, title: stat.title, value: stat.value, color: stat.color)
+            return cell
+            
+        case .status:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantStatusCell", for: indexPath) as! PlantStatusCell
+            // TODO: Calculate real health data
+            cell.configure(status: healthStatus, nextWatering: nextWateringText, healthPercentage: healthPercentage)
+            return cell
+            
+        case .benefits:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BenefitsCell", for: indexPath) as! BenefitsCell
+            cell.configure(text: benefitsText, isExpanded: isBenefitsExpanded)
+            cell.onToggle = { [weak self] in
+                self?.toggleBenefits()
+            }
+            return cell
+            
+        case .careGuide:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell1", for: indexPath) as! CareTaskCell1
+            let item = careItems[indexPath.item]
+            let isExpanded = (expandedCareIndex == indexPath)
+            cell.configure(icon: item.icon, title: item.title, steps: item.steps, isExpanded: isExpanded)
+            return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let sectionType = Section(rawValue: indexPath.section),
+              !sectionType.title.isEmpty else {
+            return UICollectionReusableView()
+        }
+        
+        let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: "SectionHeaderView",
+            for: indexPath
+        ) as! SectionHeaderView
+        header.titleLabel.text = sectionType.title
+        return header
+    }
+}
+
+// MARK: - Delegate
+extension PlantDetailViewController_New: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let sectionType = Section(rawValue: indexPath.section) else { return }
+        
+        // Only allow interaction on Care Guide section
+        if sectionType == .careGuide {
+            toggleCareCard(at: indexPath)
+        }
+    }
+    
+    private func toggleCareCard(at indexPath: IndexPath) {
+        // Toggle expansion
+        if expandedCareIndex == indexPath {
+            expandedCareIndex = nil
+        } else {
+            expandedCareIndex = indexPath
+        }
+        
+        // Animate the height change
+        collectionView.performBatchUpdates({
+            collectionView.reloadItems(at: [indexPath])
+        }, completion: { _ in
+            if self.expandedCareIndex != nil {
+                self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            }
+        })
+    }
+    
+    private func toggleBenefits() {
+        isBenefitsExpanded.toggle()
+        
+        let indexPath = IndexPath(item: 0, section: Section.benefits.rawValue)
+        collectionView.performBatchUpdates({
+            collectionView.reloadItems(at: [indexPath])
+        }, completion: nil)
+    }
+}
+
+// MARK: - TODO: Replace Dummy Data with Real Data
+/*
+ 
+ HOW TO USE YOUR REAL DATA:
+ 
+ 1. Replace statsData array with your plant's real data:
+    statsData = [
+        (icon: "drop.fill", title: "Water", value: yourPlant.wateringSchedule, color: .systemBlue),
+        (icon: "sun.max.fill", title: "Light", value: yourPlant.lightNeeds, color: .systemYellow),
+        // ... etc
+    ]
+ 
+ 2. Replace benefitsText with your plant's benefits:
+    benefitsText = yourPlant.benefits
+ 
+ 3. Replace careItems with your plant's care instructions:
+    careItems = [
+        (icon: "drop.fill", title: "Watering", steps: yourPlant.wateringInstructions, color: .systemBlue),
+        // ... etc
+    ]
+ 
+ 4. Replace health data:
+    healthStatus = calculateHealthStatus()
+    nextWateringText = calculateNextWatering()
+    healthPercentage = calculateHealthPercentage()
+ 
+ 5. Replace title:
+    title = yourPlant.name
+ 
+ You can do this in viewDidLoad() or create a configure(with plant:) method.
+ 
+ */

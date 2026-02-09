@@ -37,10 +37,19 @@ class CareGuideCell: UICollectionViewCell {
         return lbl
     }()
     
+    // NEW: Due Date Label (Top Right)
+    private let dueLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.font = .systemFont(ofSize: 13, weight: .semibold)
+        lbl.textAlignment = .right
+        return lbl
+    }()
+    
+    // This label will hold either "Show More" OR the full steps
     private let statusLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = .systemFont(ofSize: 14, weight: .regular)
-        lbl.numberOfLines = 0 // Allows expansion
+        lbl.numberOfLines = 0 // Crucial for expanding
         return lbl
     }()
     
@@ -62,16 +71,18 @@ class CareGuideCell: UICollectionViewCell {
         containerView.addSubview(iconBackground)
         iconBackground.addSubview(iconImageView)
         containerView.addSubview(titleLabel)
+        containerView.addSubview(dueLabel) // Add new label
         containerView.addSubview(statusLabel)
         
         iconBackground.translatesAutoresizingMaskIntoConstraints = false
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        dueLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         
         // Dynamic Constraints
         NSLayoutConstraint.activate([
-            // Card Container (Inset slightly from edges for shadow breathing room)
+            // Card Container
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
@@ -89,38 +100,63 @@ class CareGuideCell: UICollectionViewCell {
             iconImageView.widthAnchor.constraint(equalToConstant: 20),
             iconImageView.heightAnchor.constraint(equalToConstant: 20),
             
-            // Title (Next to Icon)
+            // Title (Left)
             titleLabel.centerYAnchor.constraint(equalTo: iconBackground.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: iconBackground.trailingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            
+            // Due Label (Right)
+            dueLabel.centerYAnchor.constraint(equalTo: iconBackground.centerYAnchor),
+            dueLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            dueLabel.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8),
             
             // Status/Body Text (Below Icon)
             statusLabel.topAnchor.constraint(equalTo: iconBackground.bottomAnchor, constant: 12),
             statusLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
             statusLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            statusLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -16)
+            
+            // CRITICAL: This pulls the bottom of the card down to match the text
+            statusLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16)
         ])
     }
     
     // MARK: - Configuration
-    func configure(icon: String, title: String, color: UIColor, body: String, isExpanded: Bool) {
+    func configure(icon: String, title: String, dueText: String, color: UIColor, body: String, isExpanded: Bool) {
         
         iconImageView.image = UIImage(systemName: icon)
         titleLabel.text = title
+        dueLabel.text = dueText
+        dueLabel.textColor = color // Match the theme color
         
         // Theme Coloring
-        iconBackground.backgroundColor = color.withAlphaComponent(0.1) // Light pastel background
-        iconImageView.tintColor = color // Vibrant icon
+        iconBackground.backgroundColor = color.withAlphaComponent(0.1)
+        iconImageView.tintColor = color
         
         // Expansion Logic
         if isExpanded {
-            statusLabel.text = body
-            statusLabel.textColor = .secondaryLabel
-            containerView.layer.borderColor = color.cgColor
-            containerView.layer.borderWidth = 1
+            // Show full steps
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 4
+            let attrString = NSAttributedString(
+                string: body,
+                attributes: [
+                    .paragraphStyle: paragraphStyle,
+                    .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+                    .foregroundColor: UIColor.secondaryLabel
+                ]
+            )
+            statusLabel.attributedText = attrString
+            
+            // Highlight border when open
+            containerView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
+            containerView.layer.borderWidth = 1.5
+            
         } else {
-            statusLabel.text = "Show More..."
-            statusLabel.textColor = color // Make "Show More" colorful
+            // Show collapsed state
+            statusLabel.text = "Show Steps..."
+            statusLabel.textColor = color
+            statusLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+            
+            // Remove border
             containerView.layer.borderColor = UIColor.clear.cgColor
             containerView.layer.borderWidth = 0
         }

@@ -1,3 +1,13 @@
+//
+//  CareStepCard.swift
+//  search-pageRoute
+//
+//  Created by SDC-USER on 06/02/26.
+//
+
+import UIKit
+
+
 class CareStepCard: UIView {
     private let stack = UIStackView()
     private let header = UIStackView()
