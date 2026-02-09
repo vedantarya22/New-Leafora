@@ -75,11 +75,13 @@ class PlantRepotViewController: UIViewController,UICollectionViewDelegateFlowLay
 
         switch text {
 
+        case "Last 7 days":
+            return cal.date(byAdding: .day, value: -7, to: today)
+            
         case "Never/In nursery pot":
             return nil
 
-        case "Last 7 days":
-            return cal.date(byAdding: .day, value: -7, to: today)
+        
 
         case "About 1 month ago":
             return cal.date(byAdding: .month, value: -1, to: today)
@@ -144,18 +146,19 @@ class PlantRepotViewController: UIViewController,UICollectionViewDelegateFlowLay
         }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        // Save selected index
+        // 1. Save data
         selectedIndex = indexPath
+        let selectedRepotting = buttonData[indexPath.row].title
+        session.repottingAnswer = selectedRepotting
+        session.lastRepottedDate = dateFromOptionText(selectedRepotting)
         
-        // Refresh UI
-            collectionView.reloadData()
+        // 2. Trigger Haptics
+        if let cell = collectionView.cellForItem(at: indexPath) as? PlantRepotCollectionViewCell {
+            cell.animateSelection()
+        }
         
-        // Animate the selected cell after reload
-          if let cell = collectionView.cellForItem(at: indexPath) as? PlantRepotCollectionViewCell{
-              cell.animateSelection()
-          }
-        
+        // 3. Enable next button automatically
+        nextButton.isEnabled = true
     }
     
 

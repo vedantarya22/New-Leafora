@@ -97,7 +97,7 @@
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="CkZ-WR-i1c">
                         <barButtonItem key="rightBarButtonItem" title="Next" id="0Aa-5L-reo">
                             <connections>
-                                <action selector="nextButtonTapped:" destination="S7K-ST-SJp" id="Tkh-8E-bAt"/>
+                                <action selector="nextButtonTapped:" destination="S7K-ST-SJp" id="TyF-Fk-SB8"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

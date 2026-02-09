@@ -84,27 +84,28 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantLightCell", for: indexPath) as! PlantLightCollectionViewCell
         let item = buttonData[indexPath.row]
         
-        cell.plantLightButton.setTitle(item.light, for: .normal)
-        cell.plantLightButton.setImage(UIImage(systemName: item.image), for: .normal)
+        // Use modern UIButton Configuration for the icon + text layout
+        var config = UIButton.Configuration.plain()
+        config.title = item.light
+        config.image = UIImage(systemName: item.image)
+        config.imagePadding = 12
+        config.baseForegroundColor = .label
         
-        cell.layoutIfNeeded()
+        cell.plantLightButton.configuration = config
         
-        // Tell CollectionView which cell is selected
-           if let selected = selectedIndex, selected == indexPath {
-               collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-           } else {
-               collectionView.deselectItem(at: indexPath, animated: false)
-           }
-        
+        // Handle the initial state without reloadData
+        cell.isSelected = (selectedIndex == indexPath)
         
         return cell
-        
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         let sidePadding: CGFloat = 40
         let width = collectionView.frame.width - sidePadding
-          let height: CGFloat = 65
+        let height: CGFloat = 65
         
         return CGSize(width: width, height: height)
     }
@@ -122,19 +123,16 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        // Save selected index
+        // 1. Store selection logic
         selectedIndex = indexPath
         
-        // Refresh UI
-            collectionView.reloadData()
+        // 2. Animate only the cell that was touched
+        if let cell = collectionView.cellForItem(at: indexPath) as? PlantLightCollectionViewCell {
+            cell.animateSelection()
+        }
         
-        // Animate the selected cell after reload
-          if let cell = collectionView.cellForItem(at: indexPath) as? PlantLightCollectionViewCell {
-              cell.animateSelection()
-          }
+        // 3. Keep logic intact
         print("✅ Selected light:", buttonData[indexPath.row].light)
-        
     }
 
     

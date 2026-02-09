@@ -25,7 +25,7 @@ class MyGardenViewController: UIViewController,UICollectionViewDelegate, UIColle
 
     let siteStore = SiteStore.shared
 
-    
+   
     override func viewDidLoad() {
          super.viewDidLoad()
          
@@ -137,7 +137,7 @@ class MyGardenViewController: UIViewController,UICollectionViewDelegate, UIColle
            
        
        }
-    
+   
        
     
     // MARK: Select site → Push detail page
