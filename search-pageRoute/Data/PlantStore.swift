@@ -177,6 +177,9 @@ final class PlantStore: ObservableObject {
         let removedCount = beforeCount - plants.count
         print("🗑️ Removed \(removedCount) plants of type:", plantId)
     }
+    
+  
+
 }
 
 //
@@ -185,7 +188,7 @@ final class PlantStore: ObservableObject {
 
 extension JSONLoader {
     static func plant(by id: String) -> Plant? {
-        loadPlants().first { $0.plantId == id }
+        loadPlants(from: "plantData").first { $0.plantId == id }  // ✅ Fixed
     }
 }
 
@@ -204,4 +207,7 @@ extension PlantStore {
             print("🗑️ Removed one plant of type:", plantId)
         }
     }
+    
+   
+
 }
