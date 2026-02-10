@@ -10,6 +10,7 @@ import UIKit
 class CareTaskCell: UICollectionViewCell {
 
    
+    @IBOutlet weak var unitLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var countLabel: UILabel!
     override func awakeFromNib() {

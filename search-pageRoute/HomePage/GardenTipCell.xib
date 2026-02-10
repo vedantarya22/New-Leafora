@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="gTV-IL-0wX" customClass="GardenTipCell" customModule="search_pageRoute" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="358" height="177"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="358" height="177"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hfk-fV-9gh" userLabel="Container View">
+                        <rect key="frame" x="0.0" y="0.0" width="358" height="177"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GardenTip_Img" translatesAutoresizingMaskIntoConstraints="NO" id="XyZ-aB-cDe">
+                                <rect key="frame" x="0.0" y="0.0" width="358" height="177"/>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zqD-2e-Khe">
+                                <rect key="frame" x="12" y="130.66666666666666" width="330" height="38.333333333333343"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Bfx-hG-7yT">
+                                        <rect key="frame" x="0.0" y="0.0" width="330" height="20.333333333333332"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Garden Tip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m3L-4h-aBc">
+                                                <rect key="frame" x="0.0" y="0.0" width="330" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                <color key="textColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Water your succulents when soil is fully dry" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Abc-dE-fGh">
+                                        <rect key="frame" x="0.0" y="20.333333333333343" width="330" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="XyZ-aB-cDe" secondAttribute="trailing" id="0Bd-t3-D5f"/>
+                            <constraint firstItem="zqD-2e-Khe" firstAttribute="leading" secondItem="Hfk-fV-9gh" secondAttribute="leading" constant="12" id="123-aB-cDe"/>
+                            <constraint firstAttribute="bottom" secondItem="zqD-2e-Khe" secondAttribute="bottom" constant="8" id="AV8-yc-adi"/>
+                            <constraint firstItem="XyZ-aB-cDe" firstAttribute="top" secondItem="Hfk-fV-9gh" secondAttribute="top" id="P3u-R0-fH5"/>
+                            <constraint firstAttribute="bottom" secondItem="XyZ-aB-cDe" secondAttribute="bottom" id="QJB-JZ-ZbF"/>
+                            <constraint firstAttribute="trailing" secondItem="zqD-2e-Khe" secondAttribute="trailing" constant="16" id="fQH-So-GPI"/>
+                            <constraint firstItem="XyZ-aB-cDe" firstAttribute="leading" secondItem="Hfk-fV-9gh" secondAttribute="leading" id="zCq-bB-tIz"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="Hfk-fV-9gh" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="aaa-bB-cCc"/>
+                <constraint firstItem="Hfk-fV-9gh" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="dDd-eE-fFf"/>
+                <constraint firstAttribute="trailing" secondItem="Hfk-fV-9gh" secondAttribute="trailing" id="gGg-hH-iIi"/>
+                <constraint firstAttribute="bottom" secondItem="Hfk-fV-9gh" secondAttribute="bottom" id="jJj-kK-lLl"/>
+            </constraints>
+            <size key="customSize" width="358" height="155"/>
+            <connections>
+                <outlet property="containerView" destination="Hfk-fV-9gh" id="Aa1-Bb2-Cc3"/>
+                <outlet property="plantImageView" destination="XyZ-aB-cDe" id="Gg7-Hh8-Ii9"/>
+                <outlet property="tipMessageLabel" destination="Abc-dE-fGh" id="Jj0-Kk1-Ll2"/>
+                <outlet property="tipTitleLabel" destination="m3L-4h-aBc" id="Mm3-Nn4-Oo5"/>
+            </connections>
+            <point key="canvasLocation" x="138.93129770992365" y="25.704225352112676"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="GardenTip_Img" width="768" height="512"/>
+    </resources>
+</document>
