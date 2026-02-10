@@ -393,7 +393,7 @@ this plant?</string>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="saveButtonTapped:" destination="fIg-u3-lFd" eventType="touchUpInside" id="ziL-kD-fJL"/>
-                                    <segue destination="YZF-IA-Jke" kind="show" id="QWH-3c-Cl6"/>
+                                    <segue destination="YZF-IA-Jke" kind="show" identifier="showPlantAddedSuccess" id="QWH-3c-Cl6"/>
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="z2r-tt-UgD">

@@ -28,5 +28,6 @@ class MyGardenCollectionViewCell: UICollectionViewCell {
         layer.masksToBounds = true
         
     }
+   
     
 }
