@@ -8,7 +8,7 @@
 import UIKit
 
 class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+    var gradientLayer = CAGradientLayer()
     @IBOutlet weak var collectionView: UICollectionView!
     
     var site: MyGardenSite?
@@ -16,7 +16,7 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupBotanicalBackground()
         guard let site = site else {
             print("❌ No site data received")
             return
@@ -155,6 +155,19 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     // MARK: - Navigation
+    private func setupBotanicalBackground() {
+        // A soft, off-white to very pale sage green
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+        
+        // Insert at index 0 so it stays behind the UICollectionView
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
     
     private func navigateToPlantDetail(for userPlant: UserPlant) {
         let storyboard = UIStoryboard(name: "MyGarden", bundle: nil)

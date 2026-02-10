@@ -29,7 +29,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         super.viewDidLoad()
         setupBotanicalBackground()
         navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.title = "Good Morning"
+        self.navigationItem.title = "Home"
         
         NotificationCenter.default.addObserver(
               self,

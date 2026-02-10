@@ -75,7 +75,7 @@
                                     <constraint firstAttribute="height" constant="20" id="X6y-i6-k9g"/>
                                 </constraints>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bqk-Li-PEQ">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bqk-Li-PEQ">
                                 <rect key="frame" x="16" y="111" width="361" height="1"/>
                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
                                 <constraints>

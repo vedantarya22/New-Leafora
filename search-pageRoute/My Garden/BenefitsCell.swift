@@ -59,9 +59,9 @@ class BenefitsCell: UICollectionViewCell {
             showMoreButton.setTitle("Show Less", for: .normal)
             
             // Animate button icon
-            UIView.animate(withDuration: 0.3) {
-                self.showMoreButton.transform = CGAffineTransform(rotationAngle: .pi)
-            }
+//            UIView.animate(withDuration: 0.3) {
+//                self.showMoreButton.transform = CGAffineTransform(rotationAngle: .pi)
+//            }
         } else {
             // Show truncated text (first 2 lines)
             benefitsTextLabel.text = text

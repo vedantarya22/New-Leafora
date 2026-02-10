@@ -5,7 +5,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     var plantId: String?
     var plants: [Plant] = []
     var currentPlant: Plant? { plants.first }
-    
+    var gradientLayer = CAGradientLayer()
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -13,13 +13,27 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         // Pure white background
         view.backgroundColor = .systemBackground
         collectionView.backgroundColor = .clear
-        
+        setupBotanicalBackground()
         loadSpecificPlant()
         setupCollectionView()
     }
     
     @IBAction func addButtonTapped(_ sender: UIBarButtonItem) {
         navigateToAddPlantQuestionnaire()
+    }
+    
+    private func setupBotanicalBackground() {
+        // A soft, off-white to very pale sage green
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+        
+        // Insert at index 0 so it stays behind the UICollectionView
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     func navigateToAddPlantQuestionnaire() {

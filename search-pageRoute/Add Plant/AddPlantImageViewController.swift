@@ -215,6 +215,7 @@ class AddPlantImageViewController: UIViewController,
            }
 
         print("✅ All \(plantCountToAdd) plants saved for:", session.plantId)
+        performSegue(withIdentifier: "showPlantAddedSuccess", sender: self)
         
     }
 }

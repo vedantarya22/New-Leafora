@@ -29,11 +29,11 @@
                                 <rect key="frame" x="16" y="49.666666666666657" width="235" height="38.333333333333343"/>
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="32"/>
-                                <color key="textColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <color key="highlightedColor" red="0.50390625" green="0.779296875" blue="0.5688476562" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="highlightedColor" red="0.50984790400000002" green="0.73001953119999996" blue="0.45334080269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.9067382812" green="0.9614257812" blue="0.8994140625" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="3EA-Vp-ujq" firstAttribute="leading" secondItem="MQi-b7-Fd9" secondAttribute="leading" constant="16" id="7hp-8I-dqE"/>
                             <constraint firstAttribute="trailing" secondItem="3EA-Vp-ujq" secondAttribute="trailing" constant="16" id="BOQ-Es-STv"/>
@@ -46,6 +46,7 @@
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <color key="backgroundColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
             <constraints>
                 <constraint firstItem="MQi-b7-Fd9" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="7wX-TN-yWq"/>
                 <constraint firstItem="MQi-b7-Fd9" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="UZn-hq-1uC"/>
