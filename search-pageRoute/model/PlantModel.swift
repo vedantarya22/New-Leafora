@@ -61,6 +61,7 @@ struct CareCycle: Codable {
 struct CareFrequency: Codable {
     let display: String
     let days: Int
+    let method: String? // Optional: care method type
 }
 
 
