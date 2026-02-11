@@ -149,7 +149,9 @@
 				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "we use camera fo memories";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to provide weather conditions for your plants";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -184,7 +186,9 @@
 				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "we use camera fo memories";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to provide weather conditions for your plants";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
