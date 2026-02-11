@@ -54,7 +54,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             tipTimer = nil
         }
         // Register XIBs
-        let cells = ["CareTaskCell", "InsightCell", "MemoryCell", "UrgentCareCell","GardenTipCell"]
+        let cells = ["CareTaskCell", "InsightCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
         cells.forEach { name in
             collectionView.register(UINib(nibName: name, bundle: nil), forCellWithReuseIdentifier: name)
         }
@@ -145,7 +145,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 )
             ]
 
-            return insights
+//            return insights
         }
     
     
@@ -182,14 +182,37 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, env in
             switch sectionIndex {
-            case 0: return self.gardenTipLayout()
-            case 1: return self.urgentCardsLayout()
-            case 2: return self.careGridLayout()
-            // Cases 3 and 4 removed
+            case 0: return self.gardenTipLayout()     // Top: Tip
+            case 1: return self.urgentCardsLayout()   // Below Scan: Urgent
+            case 2: return self.scanSectionLayout()    // Middle: Scan (New position)
+            case 3: return self.careGridLayout()     // Bottom: Grid
             default: return nil
             }
         }
     }
+    
+    func scanSectionLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(100)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(100)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 10, leading: 0, bottom: 40, trailing: 0)
+        return section
+    }
+    
+    
+    
+    
     func gardenTipLayout() -> NSCollectionLayoutSection {
           let itemSize = NSCollectionLayoutSize(
              widthDimension: .fractionalWidth(1.0),
@@ -309,14 +332,15 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     // MARK: - Data Source
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3  // Section 0: Urgent/Missed, Section 1: Care Tasks, Section 2: Memories
+        return 4  // Section 0: Urgent/Missed, Section 1: Care Tasks, Section 2: Memories
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0: return 1 // Garden Tip
-        case 1: return taskInsightsForHome().count
-        case 2: return getCareTasks().count
+        case 1: return taskInsightsForHome().count // Urgent
+        case 2: return 1 // Scan Your Plant (Moved up)
+        case 3: return getCareTasks().count // Care Tasks
         default: return 0
         }
     }
@@ -328,15 +352,20 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             cell.configure(tip: GardenTip.randomTip())
             return cell
             
-        case 1:
+            
+        case 1: // Urgent Care
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UrgentCareCell", for: indexPath) as! UrgentCareCell
             let insights = taskInsightsForHome()
             let insight = insights[indexPath.row]
             cell.configure(with: insight)
             cell.setChevronHidden(insight.level == .good)
             return cell
-                
-        case 2:
+            
+        case 2: // Scan Your Plant
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanPlantCell", for: indexPath) as! ScanPlantCell
+            return cell
+            
+        case 3: // Care Tasks
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell", for: indexPath) as! CareTaskCell
             let task = getCareTasks()[indexPath.row]
             cell.titleLabel.text = task.name
@@ -345,15 +374,14 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             
             let taskColor: UIColor
             switch task.name {
-            case "Watering": taskColor = wateringBlue
-            case "Pruning": taskColor = pruningRed
-            case "Fertilizing": taskColor = fertilizingGreen
-            case "Repotting": taskColor = repottingOrange
-            default: taskColor = .systemGray
+                case "Watering": taskColor = wateringBlue
+                case "Pruning": taskColor = pruningRed
+                case "Fertilizing": taskColor = fertilizingGreen
+                case "Repotting": taskColor = repottingOrange
+                default: taskColor = .systemGray
             }
             cell.countLabel.textColor = taskColor
             cell.unitLabel.textColor = taskColor
-            
             return cell
                 
         default:
@@ -388,7 +416,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 }
             }
             
-        case 2: // Care Tasks
+        case 2:
+            self.openCamera()
+            
+        case 3: // Care Tasks
             let taskName = getCareTasks()[indexPath.row].name
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let plantListVC = storyboard.instantiateViewController(withIdentifier: "PlantListViewController") as? PlantListViewController {
@@ -396,11 +427,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 navigationController?.pushViewController(plantListVC, animated: true)
             }
             
-        case 4: // Memories
-            if indexPath.row == memories.count {
-                self.openCamera()
-            }
-            
+       
         default:
             break
         }
@@ -440,18 +467,20 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         header.chevronButton.isHidden = true
 
         switch indexPath.section {
-        case 0:
+        case 0://garden tip
             header.titleLabel.text = ""
-        case 1:
+        case 1://urgent/missed
             header.titleLabel.text = ""
-        case 2:
-            header.titleLabel.text = "Care Tasks"
-            header.chevronButton.isHidden = false
-            header.didTapSeeAll = { [weak self] in self?.openCareTasksDetail() }
-        default:
-            break
-        }
-        return header
+        case 2://scan plant cell
+            header.titleLabel.text = ""
+        case 3: // Now Section 3 is Care Tasks
+                header.titleLabel.text = "Care Tasks"
+                header.chevronButton.isHidden = false
+                header.didTapSeeAll = { [weak self] in self?.openCareTasksDetail() }
+            default:
+                header.titleLabel.text = ""
+            }
+            return header
     }
     
     func openCareTasksDetail() {

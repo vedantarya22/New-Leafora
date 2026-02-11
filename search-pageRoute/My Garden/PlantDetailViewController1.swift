@@ -13,15 +13,15 @@ class PlantDetailViewController_New: UIViewController {
     enum Section: Int, CaseIterable {
         case hero = 0
         case stats = 1
-        case status = 2
-        case benefits = 3
-        case careGuide = 4
+//        case status = 2
+        case benefits = 2
+        case careGuide = 3
         
         var title: String {
             switch self {
             case .hero: return ""
             case .stats: return ""
-            case .status: return "Plant Health"
+//            case .status: return "Plant Health"
             case .benefits: return "Benefits"
             case .careGuide: return "Care Guide"
             }
@@ -30,10 +30,10 @@ class PlantDetailViewController_New: UIViewController {
     
     // MARK: - DUMMY DATA - Replace these with your real data later
     private var statsData: [(icon: String, title: String, value: String, color: UIColor)] = [
-        (icon: "drop.fill", title: "Water", value: "Every 2 days", color: UIColor.systemBlue),
-        (icon: "sun.max.fill", title: "Light", value: "Bright light", color: UIColor.systemYellow),
-        (icon: "leaf.fill", title: "Difficulty", value: "Easy", color: UIColor.systemGreen),
-        (icon: "leaf", title: "Quantity", value: "1 plant", color: UIColor.systemTeal)
+        (icon: "drop.fill", value: "Water", title: "Every 2 days", color: UIColor.systemBlue),
+        (icon: "sun.max.fill", value: "Light", title: "Bright light", color: UIColor.systemYellow),
+        (icon: "leaf.fill", value: "Difficulty", title: "Easy", color: UIColor.systemGreen),
+        (icon: "leaf", value: "Quantity", title: "1 plant", color: UIColor.systemTeal)
     ]
     
     private var benefitsText: String = """
@@ -148,8 +148,8 @@ class PlantDetailViewController_New: UIViewController {
                                forCellWithReuseIdentifier: "HeroImageCell")
         collectionView.register(UINib(nibName: "StatCardCell", bundle: nil),
                                forCellWithReuseIdentifier: "StatCardCell")
-        collectionView.register(UINib(nibName: "PlantStatusCell", bundle: nil),
-                               forCellWithReuseIdentifier: "PlantStatusCell")
+//        collectionView.register(UINib(nibName: "PlantStatusCell", bundle: nil),
+//                               forCellWithReuseIdentifier: "PlantStatusCell")
         collectionView.register(UINib(nibName: "BenefitsCell", bundle: nil),
                                forCellWithReuseIdentifier: "BenefitsCell")
         collectionView.register(UINib(nibName: "CareTaskCell1", bundle: nil),
@@ -176,8 +176,8 @@ class PlantDetailViewController_New: UIViewController {
                 return self.createHeroSection()
             case .stats:
                 return self.createStatsSection()
-            case .status:
-                return self.createStatusSection()
+//            case .status:
+//                return self.createStatusSection()
             case .benefits:
                 return self.createBenefitsSection()
             case .careGuide:
@@ -333,7 +333,7 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
         switch sectionType {
         case .hero: return 1
         case .stats: return statsData.count
-        case .status: return 1
+//        case .status: return 1
         case .benefits: return 1
         case .careGuide: return careItems.count
         }
@@ -367,12 +367,12 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
             cell.configure(icon: stat.icon, title: stat.title, value: stat.value, color: stat.color)
             return cell
             
-        case .status:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantStatusCell", for: indexPath) as! PlantStatusCell
-            // TODO: Calculate real health data
-            cell.configure(status: healthStatus, nextWatering: nextWateringText, healthPercentage: healthPercentage)
-            return cell
-            
+//        case .status:
+//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantStatusCell", for: indexPath) as! PlantStatusCell
+//            // TODO: Calculate real health data
+//            cell.configure(status: healthStatus, nextWatering: nextWateringText, healthPercentage: healthPercentage)
+//            return cell
+//            
         case .benefits:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BenefitsCell", for: indexPath) as! BenefitsCell
             cell.configure(text: benefitsText, isExpanded: isBenefitsExpanded)
