@@ -53,35 +53,35 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
         collectionView.delegate = self
         
         // Register cell
-        collectionView.register(
-            UINib(nibName: "SiteDetailCollectionViewCell", bundle: nil),
-            forCellWithReuseIdentifier: "SiteDetailCell"
-        )
-        
+        let nib = UINib(nibName: "SearchPageCollectionViewCell", bundle: nil)
+        collectionView.register(nib, forCellWithReuseIdentifier: SearchPageCollectionViewCell.identifier)
         // Setup layout for 2 columns
         configureGridLayout()
     }
     
     private func configureGridLayout() {
-        let layout = UICollectionViewFlowLayout()
-        
-        let spacing: CGFloat = 16
-        let columns: CGFloat = 2
-        let horizontalPadding: CGFloat = 16
-        
-        let totalSpacing = (columns - 1) * spacing + (horizontalPadding * 2)
-        let availableWidth = collectionView.bounds.width - totalSpacing
-        let itemWidth = floor(availableWidth / columns)
-        
-        // Adjust height to your card design (image + label)
-        let itemHeight: CGFloat = itemWidth + 30 // Image square + label space
-        
-        layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
-        layout.minimumInteritemSpacing = spacing
-        layout.minimumLineSpacing = spacing
-        layout.sectionInset = UIEdgeInsets(top: 16, left: horizontalPadding, bottom: 16, right: horizontalPadding)
-        
-        collectionView.collectionViewLayout = layout
+        let itemSize = NSCollectionLayoutSize(
+                  widthDimension: .fractionalWidth(1.0),
+                  heightDimension: .estimated(130)
+              )
+               let item = NSCollectionLayoutItem(layoutSize: itemSize)
+       
+          // Group
+              let groupSize = NSCollectionLayoutSize(
+                   widthDimension: .fractionalWidth(1.0),
+                 heightDimension: itemSize.heightDimension
+              )
+              let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+       
+           // Section
+              let section = NSCollectionLayoutSection(group: group)
+            section.interGroupSpacing = -2.8 // Small standard gap between list items
+      
+               // Padding around the section content
+              section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
+      
+              let layout = UICollectionViewCompositionalLayout(section: section)
+              collectionView.collectionViewLayout = layout
     }
     
     private func loadPlantsForSite() {
@@ -121,23 +121,28 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "SiteDetailCell",
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SearchPageCollectionViewCell.identifier,
             for: indexPath
-        ) as! SiteDetailCollectionViewCell
+        ) as? SearchPageCollectionViewCell else {
+            return UICollectionViewCell()
+        }
         
         let userPlant = userPlants[indexPath.item]
         
+        // Configure cell with user plant data (this loads plant details from JSON)
+        cell.configure(userPlant: userPlant)
+        
+        // Check if there are multiple plants of the same type in this site
         let allPlantsInSite = PlantStore.shared.plants(for: site!.id)
         let sameTypePlants = allPlantsInSite.filter { $0.plantId == userPlant.plantId }
         
-        // Configure cell with user plant data
-        cell.configure(userPlant: userPlant)
-        
+        // If multiple plants of same type, show count in the label
         if sameTypePlants.count > 1 {
             let allPlants = JSONLoader.loadPlants(from: "plantData")
-            let plantName = allPlants.first(where: { $0.plantId == userPlant.plantId })?.plantName ?? "Unknown"
-            cell.nameLabel.text = "\(plantName) (×\(sameTypePlants.count))"
+            if let plantName = allPlants.first(where: { $0.plantId == userPlant.plantId })?.plantName {
+                cell.plantLabel.text = "\(plantName) (×\(sameTypePlants.count))"
+            }
         }
         
         return cell
