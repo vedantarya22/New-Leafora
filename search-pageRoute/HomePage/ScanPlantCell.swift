@@ -35,6 +35,7 @@ class ScanPlantCell: UICollectionViewCell {
         shapeLayer.frame = containerView.bounds
         shapeLayer.fillColor = nil
         shapeLayer.path = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: 16).cgPath
+        shapeLayer.frame = containerView.bounds
         
         containerView.layer.addSublayer(shapeLayer)
         dashedBorder = shapeLayer
