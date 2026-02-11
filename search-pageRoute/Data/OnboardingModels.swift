@@ -11,13 +11,13 @@ struct OnboardingResponse: Decodable {
     let questions: [OnboardingQuestion]
 }
 
-struct OnboardingQuestion: Decodable {
+struct OnboardingQuestion: Decodable, Hashable {
     let id: String
     let question: String
     let options: [QuestionOption]
 }
 
-struct QuestionOption: Decodable {
+struct QuestionOption: Decodable, Hashable {
     let id: String
     let label: String
 }

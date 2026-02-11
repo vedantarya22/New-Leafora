@@ -17,7 +17,8 @@ class onboardingViewController: UIViewController {
     
     // MARK: - Properties
     private var currentPage = 0
-    private let pageControl = UIPageControl()
+    @IBOutlet weak var pageControl: UIPageControl! // Added IBOutlet for PageControl
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
     
     // Data Model
     struct OnboardingSlide {
@@ -47,85 +48,25 @@ class onboardingViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-        // PageControl and Gestures are called within setupUI or after
+        setupPageControl() 
         setupGestures()
-        setupPageControl() // Ensure this is styled correctly
         updateUI(animated: false)
+        
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
+    
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
     
     // MARK: - Setup
-    private func setupUI() {
-        // Disable autoresizing masks to use programmatic constraints
-        [logo, functionalityPic, functionalityTitle, functionalityDesc, nextButton].forEach {
-            $0?.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
-        // Ensure multiline label
-        functionalityTitle.numberOfLines = 0
-        functionalityTitle.textAlignment = .center
-        functionalityTitle.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        
-        functionalityDesc.numberOfLines = 0
-        functionalityDesc.textAlignment = .center
-        functionalityDesc.textColor = .secondaryLabel
-        
-        // Define standard padding
-        let padding: CGFloat = 24
-        
-        // Add Constraints
-        NSLayoutConstraint.activate([
-            // Logo (Top) - Optional, assuming logo exists
-            logo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logo.heightAnchor.constraint(equalToConstant: 40), // Adjust as needed
-            logo.widthAnchor.constraint(equalToConstant: 120), // Adjust as needed
-            
-            // Image (Middle-Top)
-            functionalityPic.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: 10),
-            functionalityPic.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            functionalityPic.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            functionalityPic.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            functionalityPic.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4), // Take up 40% of screen height
-            //functionalityPic.contentMode = .scaleAspectFit,
-            
-            // Title (Below Image)
-            functionalityTitle.topAnchor.constraint(equalTo: functionalityPic.bottomAnchor, constant: 30),
-            functionalityTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            functionalityTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            
-            // Description (Below Title)
-            functionalityDesc.topAnchor.constraint(equalTo: functionalityTitle.bottomAnchor, constant: 16),
-            functionalityDesc.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
-            functionalityDesc.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
-            
-            // Next Button (Bottom)
-            nextButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
-            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            nextButton.heightAnchor.constraint(equalToConstant: 50),
-            nextButton.widthAnchor.constraint(equalToConstant: 200)
-        ])
-        
-        // Style Next Button
-        nextButton.backgroundColor = .systemGreen
-        nextButton.setTitleColor(.white, for: .normal)
-        nextButton.layer.cornerRadius = 25
-    }
-    
     private func setupPageControl() {
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(pageControl)
-        
         pageControl.numberOfPages = slides.count
         pageControl.currentPage = 0
-        pageControl.pageIndicatorTintColor = .systemGray4
-        pageControl.currentPageIndicatorTintColor = .systemGreen
-        
-        NSLayoutConstraint.activate([
-            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            pageControl.bottomAnchor.constraint(equalTo: nextButton.topAnchor, constant: -20),
-            pageControl.heightAnchor.constraint(equalToConstant: 30) // Ensure it has some height
-        ])
+        // Styling moved to Storyboard
     }
 
     
@@ -146,8 +87,19 @@ class onboardingViewController: UIViewController {
             updateUI(animated: true)
         } else {
             // Already on last screen, user finished onboarding
-            // For now, we just print, as per instruction "dont connect it with main.storyboard or anything just yet"
-            print("Onboarding Finished!")
+            print("Onboarding Finished! Presenting Questions...")
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            // Navigate to Pre-Questions Screen
+            if let loginVC = storyboard.instantiateViewController(withIdentifier: "loginVC") as? loginViewController {
+                 if let nav = navigationController {
+                     nav.pushViewController(loginVC, animated: true)
+//                 } else {
+//                     navigationController?.pushViewController(loginVC, animated: true)
+                 }
+            } else {
+                print("Could not instantiate preQuestionsVC. Check Storyboard ID.")
+            }
         }
     }
     
