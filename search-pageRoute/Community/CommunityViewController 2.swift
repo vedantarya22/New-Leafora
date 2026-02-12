@@ -9,11 +9,13 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     private var posts: [Post] = []
     
     let timestamp = ISO8601DateFormatter().string(from: Date())
+    let gradientLayer = CAGradientLayer()
 
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupBotanicalBackground()
         setupCollectionView()
         loadData()
         
@@ -47,6 +49,19 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
         postsCollectionView.collectionViewLayout = createLayout()
         
         postsCollectionView.delaysContentTouches = false
+    }
+    private func setupBotanicalBackground() {
+        // A soft, off-white to very pale sage green
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+        
+        // Insert at index 0 so it stays behind the UICollectionView
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     // MARK: - Layout Generator

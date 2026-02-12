@@ -8,7 +8,29 @@
 import Foundation
 
 class JSONLoader {
-    static func loadPlants(from filename: String = "plants") -> [Plant] {
+    
+    static func debugListBundleJSONFiles() {
+        print("🔍 DEBUG: Searching for JSON files in bundle...")
+   
+         if let bundlePath = Bundle.main.resourcePath {
+              do {
+                   let files = try FileManager.default.contentsOfDirectory(atPath: bundlePath)
+               let jsonFiles = files.filter { $0.hasSuffix(".json") }
+   
+                  print("📁 Found \(jsonFiles.count) JSON files in bundle:")
+                  jsonFiles.forEach { print("   - \($0)") }
+   
+                  if jsonFiles.isEmpty {
+                      print("⚠️ WARNING: NO JSON files found in bundle!")
+                    print("💡 Make sure your .json files are added to your target's 'Copy Bundle Resources'")
+                 }
+           } catch {
+               print("❌ Error listing bundle files: \(error)")
+             }
+        }
+  }
+    
+    static func loadPlants(from filename: String = "plantData") -> [Plant] {
         guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
             print("JSON file not found")
             return []

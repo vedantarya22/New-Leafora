@@ -94,7 +94,6 @@ class PlantRowCell: UICollectionViewCell {
             // 2. JSON fallback
             if let data = userPlant.imageData,
                let savedImage = UIImage(data: data) {
-
                 plantImageView.image = savedImage
 
             } else {
@@ -102,24 +101,112 @@ class PlantRowCell: UICollectionViewCell {
                     UIImage(named: plant.imageName)
                     ?? UIImage(systemName: "leaf.fill")
             }
+            
+            // ✅ Task-specific detail label using method field
+           detailLabel.text = getTaskDetail(for: task, plant: plant)
 
         } else {
 
-            // ❌ Plant not found
             nameLabel.text = "Unknown Plant"
-            plantImageView.image = UIImage(systemName: "leaf.fill")
+                  plantImageView.image = UIImage(systemName: "leaf.fill")
+                     detailLabel.text = "Unknown"
         }
 
-        // ✅ Detail label
-        detailLabel.text = "Swipe to mark \(task) done"
+       
 
         // ✅ Reset swipe UI (important!)
         mainContainerView.transform = .identity
         mainContainerView.alpha = 1.0
     }
+    
+    private func getTaskDetail(for task: String, plant: Plant) -> String {
+          switch task.lowercased() {
+       case "watering":
+           return getWateringDetail(plant: plant)
 
+          case "fertilizing":
+           return getFertilizingDetail(plant: plant)
 
+       case "pruning":
+            return getPruningDetail(plant: plant)
 
+        case "repotting":
+            return getRepottingDetail(plant: plant)
+  
+         default:
+              return plant.careCycle.watering.display
+         }
+    }
+    
+    private func getWateringDetail(plant: Plant) -> String {
+        let method = plant.careCycle.watering.method?.lowercased() ?? "moderate"
+
+        switch method {
+         case "spray":
+           return "Spray misting"
+       case "light":
+          return "Light watering"
+       case "moderate":
+           return "Moderate watering"
+        case "deep":
+           return "Deep watering"
+         case "bottom":
+            return "Bottom watering"
+        default:
+            return "Moderate watering"
+         }
+     }
+    
+    private func getFertilizingDetail(plant: Plant) -> String {
+         let method = plant.careCycle.fertilizing.method?.lowercased() ?? "balanced"
+   
+          switch method {
+         case "light":
+             return "Light feeding"
+          case "balanced":
+            return "Balanced feeding"
+         case "heavy":
+          return "Heavy feeding"
+          case "organic":
+            return "Organic compost"
+       default:
+            return "Balanced feeding"
+           }
+       }
+   
+      private func getPruningDetail(plant: Plant) -> String {
+          let method = plant.careCycle.pruning.method?.lowercased() ?? "trim"
+ 
+       switch method {
+         case "trim":
+           return "Light trimming"
+         case "shape":
+            return "Shape pruning"
+         case "heavy":
+            return "Heavy pruning"
+          case "pinch":
+           return "Pinching back"
+          default:
+            return "Light trimming"
+        }
+   }
+
+    private func getRepottingDetail(plant: Plant) -> String {
+        let method = plant.careCycle.repotting.method?.lowercased() ?? "refresh"
+   
+        switch method {
+        case "check":
+           return "Root check needed"
+      case "upgrade":
+           return "Pot upgrade needed"
+       case "refresh":
+            return "Soil refresh needed"
+       case "division":
+               return "Division needed"
+         default:
+           return "Soil refresh needed"
+         }
+     }
 
 
 }

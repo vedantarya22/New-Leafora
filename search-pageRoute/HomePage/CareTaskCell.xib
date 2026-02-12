@@ -17,24 +17,35 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Watering" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="titleLabel" userLabel="Heading">
-                        <rect key="frame" x="16" y="16" width="72" height="21"/>
+                        <rect key="frame" x="16" y="15.999999999999998" width="72" height="20.333333333333329"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Today" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="todayLabel" userLabel="Today">
-                        <rect key="frame" x="16" y="39" width="37" height="16"/>
+                        <rect key="frame" x="16.000000000000004" y="38.333333333333336" width="36.333333333333343" height="15.666666666666664"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" systemColor="secondaryLabelColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="countLabel" userLabel="Number">
-                        <rect key="frame" x="16" y="65" width="23" height="43"/>
-                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="zEY-QT-LkB">
+                        <rect key="frame" x="16" y="65" width="94" height="55"/>
+                        <subviews>
+                            <label opaque="NO" contentMode="left" verticalHuggingPriority="251" text="5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="countLabel" userLabel="Number">
+                                <rect key="frame" x="0.0" y="6" width="29.666666666666668" height="43"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Plants" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jL7-Qm-gVY">
+                                <rect key="frame" x="29.666666666666664" y="17.333333333333329" width="64.333333333333343" height="20.333333333333329"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="chevronIcon">
                         <rect key="frame" x="141.33333333333334" y="19" width="12.666666666666657" height="15.333333333333329"/>
                         <color key="tintColor" systemColor="placeholderTextColor"/>
@@ -47,12 +58,14 @@
             </view>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="countLabel" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="5fN-Bw-SAn"/>
+                <constraint firstItem="zEY-QT-LkB" firstAttribute="top" secondItem="todayLabel" secondAttribute="bottom" constant="11" id="D5K-s7-KrG"/>
                 <constraint firstItem="titleLabel" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="O6C-2e-Ssh"/>
+                <constraint firstAttribute="trailing" secondItem="zEY-QT-LkB" secondAttribute="trailing" constant="60" id="RjA-wt-SfR"/>
                 <constraint firstItem="todayLabel" firstAttribute="leading" secondItem="titleLabel" secondAttribute="leading" id="TWh-Gf-S1z"/>
-                <constraint firstItem="countLabel" firstAttribute="top" secondItem="todayLabel" secondAttribute="bottom" constant="10" id="Y9u-89-p6O"/>
                 <constraint firstAttribute="trailing" secondItem="chevronIcon" secondAttribute="trailing" constant="16" id="YfT-Xm-9iP"/>
+                <constraint firstAttribute="bottom" secondItem="zEY-QT-LkB" secondAttribute="bottom" constant="20" id="eNx-qm-z2D"/>
                 <constraint firstItem="titleLabel" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="16" id="hG8-3m-PjH"/>
+                <constraint firstItem="zEY-QT-LkB" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="oh0-zQ-aPC"/>
                 <constraint firstItem="todayLabel" firstAttribute="top" secondItem="titleLabel" secondAttribute="bottom" constant="2" id="vE2-fN-G4F"/>
                 <constraint firstItem="chevronIcon" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="17" id="x2O-8c-E4F"/>
             </constraints>
@@ -60,6 +73,7 @@
             <connections>
                 <outlet property="countLabel" destination="countLabel" id="Apf-3r-8iu"/>
                 <outlet property="titleLabel" destination="titleLabel" id="R8a-K2-EqA"/>
+                <outlet property="unitLabel" destination="jL7-Qm-gVY" id="pQn-WA-QPF"/>
             </connections>
             <point key="canvasLocation" x="129.7709923664122" y="-11.267605633802818"/>
         </collectionViewCell>

@@ -97,7 +97,7 @@
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="CkZ-WR-i1c">
                         <barButtonItem key="rightBarButtonItem" title="Next" id="0Aa-5L-reo">
                             <connections>
-                                <action selector="nextButtonTapped:" destination="S7K-ST-SJp" id="Tkh-8E-bAt"/>
+                                <action selector="nextButtonTapped:" destination="S7K-ST-SJp" id="TyF-Fk-SB8"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -393,7 +393,6 @@ this plant?</string>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="saveButtonTapped:" destination="fIg-u3-lFd" eventType="touchUpInside" id="ziL-kD-fJL"/>
-                                    <segue destination="YZF-IA-Jke" kind="show" id="QWH-3c-Cl6"/>
                                 </connections>
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="z2r-tt-UgD">
@@ -438,6 +437,7 @@ this plant?</string>
                     <connections>
                         <outlet property="plantImageView" destination="ALD-1M-Ys0" id="In2-S5-vpF"/>
                         <outlet property="saveButton" destination="ayA-JU-sFp" id="zky-AR-zmy"/>
+                        <segue destination="YZF-IA-Jke" kind="show" identifier="showPlantAddedSuccess" id="tp7-1U-sCA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iiQ-9D-czl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -465,7 +465,7 @@ this plant?</string>
         <!--Plant Added Success View Controller-->
         <scene sceneID="OZk-r6-b8S">
             <objects>
-                <viewController id="YZF-IA-Jke" customClass="PlantAddedSuccessViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="YZF-IA-Jke" customClass="PlantAddedSuccessViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OFi-E0-cTp">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

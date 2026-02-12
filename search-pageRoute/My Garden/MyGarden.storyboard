@@ -19,7 +19,7 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="g8R-vB-fnS">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Upl-l3-Fbe">
                                     <size key="itemSize" width="128" height="128"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -50,6 +50,7 @@
                     <navigationItem key="navigationItem" id="fso-eB-0Rv"/>
                     <connections>
                         <outlet property="collectionView" destination="g8R-vB-fnS" id="Hki-Qy-BKL"/>
+                        <segue destination="qbJ-oK-OhV" kind="show" id="uhv-4q-pba"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HD4-lT-5Ns" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -73,6 +74,53 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B5w-Lm-cT6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="6687.7862595419847" y="-1704.2253521126761"/>
+        </scene>
+        <!--Aloe Vera-->
+        <scene sceneID="IE1-KD-vnW">
+            <objects>
+                <viewController storyboardIdentifier="PlantDetailViewController_New" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qbJ-oK-OhV" customClass="PlantDetailViewController_New" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gMl-Sc-VeT">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="p8H-j8-Q2Q">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ixz-7e-mCp">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ibV-No-Vv6">
+                                        <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="e4X-Dp-usJ">
+                                            <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="w3L-SA-7ds"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="p8H-j8-Q2Q" secondAttribute="bottom" id="inm-uj-Ggl"/>
+                            <constraint firstItem="p8H-j8-Q2Q" firstAttribute="leading" secondItem="w3L-SA-7ds" secondAttribute="leading" id="kFu-Pp-clb"/>
+                            <constraint firstAttribute="bottom" secondItem="p8H-j8-Q2Q" secondAttribute="bottom" id="pSd-IT-ESF"/>
+                            <constraint firstItem="p8H-j8-Q2Q" firstAttribute="top" secondItem="gMl-Sc-VeT" secondAttribute="top" id="t3j-hR-8gi"/>
+                            <constraint firstItem="p8H-j8-Q2Q" firstAttribute="trailing" secondItem="w3L-SA-7ds" secondAttribute="trailing" id="zsK-nA-sDq"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Aloe Vera" id="xaD-36-JF9"/>
+                    <connections>
+                        <outlet property="collectionView" destination="p8H-j8-Q2Q" id="Uda-uk-zO2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ju6-fF-dYJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="8591.6030534351139" y="-1715.4929577464789"/>
         </scene>
     </scenes>
     <resources>

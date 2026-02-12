@@ -36,31 +36,19 @@ final class PlantStore: ObservableObject {
     // MARK: - Add / Update Plant
 
     func addPlant(_ plant: UserPlant) {
-
-        print("➡️ ADD REQUEST: plantId=\(plant.plantId), siteID=\(plant.siteID)")
-
-        if let index = plants.firstIndex(where: {
-            $0.plantId == plant.plantId && $0.siteID == plant.siteID
-        }) {
-
-            let oldQty = plants[index].quantity
-            plants[index].quantity += plant.quantity
-            print("✅ UPDATED: qty \(oldQty) → \(plants[index].quantity)")
-
-            if plant.imageData != nil {
-                plants[index].imageData = plant.imageData
-            }
-
-        } else {
-            plants.append(plant)
-            print("🆕 NEW ENTRY CREATED: qty=\(plant.quantity)")
-        }
+        print("➡️ ADD REQUEST: plantId=\(plant.plantId), siteID=\(plant.siteID), qty=\(plant.quantity)")
+        
+        // CHANGED: Always add as new entry with unique ID
+        // No longer merging - each plant gets its own UUID
+        plants.append(plant)
+        print("🆕 NEW ENTRY CREATED: ID=\(plant.id), qty=\(plant.quantity)")
     }
 
     // MARK: - Stats
 
     var totalPlants: Int {
-        plants.count
+        // Count total quantity across all plants
+        plants.reduce(0) { $0 + $1.quantity }
     }
 
     var totalSpaces: Int {
@@ -72,6 +60,51 @@ final class PlantStore: ObservableObject {
     func plants(for siteID: UUID) -> [UserPlant] {
         plants.filter { $0.siteID == siteID }
     }
+    
+    // MARK: - Get All Plants (for Care Tasks)
+    
+    func allPlants() -> [UserPlant] {
+        return plants
+    }
+    
+    // MARK: - Get Plant by ID
+    
+    func getPlant(by id: UUID) -> UserPlant? {
+        return plants.first(where: { $0.id == id })
+    }
+    
+    // MARK: - Update Plant
+    
+    func updatePlant(_ updatedPlant: UserPlant) {
+        guard let index = plants.firstIndex(where: { $0.id == updatedPlant.id }) else {
+            print("❌ Plant not found for update")
+            return
+        }
+        plants[index] = updatedPlant
+        print("✅ Plant updated: ID=\(updatedPlant.id)")
+    }
+    
+    // MARK: - Group Plants by Type (for Display)
+    
+    func groupedPlants(for siteID: UUID) -> [(plant: UserPlant, count: Int)] {
+        let sitePlants = plants.filter { $0.siteID == siteID }
+        
+        // Group by plantId
+        var grouped: [String: [UserPlant]] = [:]
+        for plant in sitePlants {
+            if grouped[plant.plantId] == nil {
+                grouped[plant.plantId] = []
+            }
+            grouped[plant.plantId]?.append(plant)
+        }
+        
+        // Return first plant of each group with total count
+        return grouped.values.compactMap { group in
+            guard let first = group.first else { return nil }
+            let totalCount = group.reduce(0) { $0 + $1.quantity }
+            return (plant: first, count: totalCount)
+        }
+    }
 
     // MARK: - Persistence (Disk)
 
@@ -79,17 +112,22 @@ final class PlantStore: ObservableObject {
         do {
             let data = try JSONEncoder().encode(plants)
             try data.write(to: fileURL, options: [.atomic])
+            print("💾 Saved \(plants.count) plant entries")
         } catch {
             print("❌ Failed to save plants:", error)
         }
     }
 
     private func loadPlants() {
-        guard FileManager.default.fileExists(atPath: fileURL.path) else { return }
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+            print("📂 No saved plants file found")
+            return
+        }
 
         do {
             let data = try Data(contentsOf: fileURL)
             plants = try JSONDecoder().decode([UserPlant].self, from: data)
+            print("✅ Loaded \(plants.count) plant entries")
         } catch {
             print("❌ Failed to load plants:", error)
         }
@@ -98,24 +136,50 @@ final class PlantStore: ObservableObject {
     // MARK: - Task Completion
 
     func markTaskDone(userPlantID: UUID, taskType: String) {
-
-        guard let index = plants.firstIndex(where: { $0.id == userPlantID }) else { return }
+        guard let index = plants.firstIndex(where: { $0.id == userPlantID }) else {
+            print("❌ Plant not found with ID:", userPlantID)
+            return
+        }
 
         switch taskType.lowercased() {
         case "watering":
-            plants[index].wateringDone = true
+            plants[index].lastWatered = Date()
+            print("✅ Watered plant ID:", userPlantID)
+            
         case "pruning":
-            plants[index].pruningDone = true
+            plants[index].lastPruned = Date()
+            print("✅ Pruned plant ID:", userPlantID)
+            
         case "fertilizing":
-            plants[index].fertilizingDone = true
+            plants[index].lastFertilized = Date()
+            print("✅ Fertilized plant ID:", userPlantID)
+            
         case "repotting":
-            plants[index].repottingDone = true
+            plants[index].lastRepotted = Date()
+            print("✅ Repotted plant ID:", userPlantID)
+            
         default:
+            print("⚠️ Unknown task type:", taskType)
             break
         }
-
-        print("✅ Task marked done in PlantStore")
     }
+    
+    // MARK: - Remove Plants
+    
+    func removePlant(by id: UUID) {
+        plants.removeAll { $0.id == id }
+        print("🗑️ Removed plant with ID:", id)
+    }
+    
+    func removeAllPlants(plantId: String, siteID: UUID) {
+        let beforeCount = plants.count
+        plants.removeAll { $0.plantId == plantId && $0.siteID == siteID }
+        let removedCount = beforeCount - plants.count
+        print("🗑️ Removed \(removedCount) plants of type:", plantId)
+    }
+    
+  
+
 }
 
 //
@@ -123,33 +187,27 @@ final class PlantStore: ObservableObject {
 //
 
 extension JSONLoader {
-
     static func plant(by id: String) -> Plant? {
-        loadPlants().first { $0.plantId == id }
+        loadPlants(from: "plantData").first { $0.plantId == id }  // ✅ Fixed
     }
 }
 
 extension PlantStore {
-
     func hasUserAddedPlant(plantId: String) -> Bool {
         plants.contains { $0.plantId == plantId }
     }
-
+    
+    // DEPRECATED: Use removePlant(by:) instead
     func removeOnePlant(plantId: String, siteID: UUID) {
+        // Find first matching plant and remove it
         if let index = plants.firstIndex(where: {
             $0.plantId == plantId && $0.siteID == siteID
         }) {
-            if plants[index].quantity > 1 {
-                plants[index].quantity -= 1
-            } else {
-                plants.remove(at: index)
-            }
+            plants.remove(at: index)
+            print("🗑️ Removed one plant of type:", plantId)
         }
     }
+    
+   
 
-    func removeAllPlants(plantId: String, siteID: UUID) {
-        plants.removeAll {
-            $0.plantId == plantId && $0.siteID == siteID
-        }
-    }
 }
