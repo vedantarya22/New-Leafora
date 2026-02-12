@@ -1,0 +1,70 @@
+{
+  "questions": [
+    {
+      "id": "experience_level",
+      "question": "How familiar are you with plant care?",
+      "options": [
+        { "id": "beginner", "label": "Just starting out" },
+        { "id": "intermediate", "label": "I know the basics" },
+        { "id": "advanced", "label": "I’m pretty confident" }
+      ]
+    },
+    {
+      "id": "pruning_knowledge",
+      "question": "Have you ever pruned or repotted a plant?",
+      "options": [
+        { "id": "yes", "label": "Yes, I have" },
+        { "id": "no", "label": "Not yet" }
+      ]
+    },
+    {
+      "id": "light_level",
+      "question": "How much natural light does your space get daily?",
+      "options": [
+        { "id": "low", "label": "Low light (less than 2 hours)" },
+        { "id": "medium", "label": "Medium light (2–5 hours)" },
+        { "id": "bright", "label": "Bright light (more than 5 hours)" }
+      ]
+    },
+    {
+      "id": "climate_type",
+      "question": "What’s your local climate like most of the year?",
+      "options": [
+        { "id": "hot_dry", "label": "Hot & dry" },
+        { "id": "hot_humid", "label": "Hot & humid" },
+        { "id": "cold", "label": "Cold" },
+        { "id": "mild", "label": "Mild / moderate" }
+      ]
+    },
+    {
+      "id": "plant_preferences",
+      "question": "What kind of plants are you most interested in?",
+      "options": [
+        { "id": "decorative", "label": "Decorative / aesthetic plants" },
+        { "id": "flowering", "label": "Flowering plants" },
+        { "id": "air_purifying", "label": "Air-purifying plants" },
+        { "id": "low_maintenance", "label": "Low-maintenance plants" },
+        { "id": "medicinal", "label": "Medicinal / useful plants" }
+      ]
+    },
+    {
+      "id": "has_pets",
+      "question": "Do you have pets at home?",
+      "options": [
+        { "id": "yes", "label": "Yes" },
+        { "id": "no", "label": "No" }
+      ]
+    },
+    {
+      "id": "care_frequency",
+      "question": "How often do you usually check on your plants?",
+      "options": [
+        { "id": "daily", "label": "Daily" },
+        { "id": "few_times_week", "label": "A few times a week" },
+        { "id": "weekly", "label": "Once a week" },
+        { "id": "rarely", "label": "Rarely / only when I remember" }
+      ]
+    }
+  ]
+}
+

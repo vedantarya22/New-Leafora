@@ -49,24 +49,42 @@ class JSONLoader {
     
     
     // MARK: - Load Categories (Static)
-        static func fetchCategories() -> [Category] {
-            guard let url = Bundle.main.url(forResource: "categories", withExtension: "json") else {
-                print("JSON file not found: categories")
-                return []
-            }
-
-            do {
-                let data = try Data(contentsOf: url)
-                let decoder = JSONDecoder()
-                let response = try decoder.decode(CategoryResponse.self, from: data)
-                return response.categories
-            } catch {
-                print("Error loading Categories JSON: \(error)")
-                return []
-            }
+    static func fetchCategories() -> [Category] {
+        guard let url = Bundle.main.url(forResource: "categories", withExtension: "json") else {
+            print("JSON file not found: categories")
+            return []
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let response = try decoder.decode(CategoryResponse.self, from: data)
+            return response.categories
+        } catch {
+            print("Error loading Categories JSON: \(error)")
+            return []
         }
     }
-
+    
+    
+    // MARK: - Load Onboarding Questions (Static)
+    static func loadOnboardingQuestions() -> [OnboardingQuestion] {
+        guard let url = Bundle.main.url(forResource: "onboarding_questions", withExtension: "json") else {
+            print("JSON file not found: onboarding_questions")
+            return []
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let response = try decoder.decode(OnboardingResponse.self, from: data)
+            return response.questions
+        } catch {
+            print("Error loading Onboarding Questions JSON: \(error)")
+            return []
+        }
+    }
+    
     // MARK: - Helper Structs
     struct CategoryResponse: Decodable {
         let categories: [Category]
@@ -74,4 +92,5 @@ class JSONLoader {
     
     
     
-
+    
+}
