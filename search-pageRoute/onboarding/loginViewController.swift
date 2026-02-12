@@ -59,7 +59,7 @@ class loginViewController: UIViewController {
     
     // MARK: - Navigation
     private func navigateToOnboarding() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
         // Assuming the ID for the onboarding view controller (the one with the PageViewController or the initial onboarding VC)
         // Based on previous context, the initial onboarding screen is `onboardingViewController` with ID `onboardingVC`?
         // Let's check the implementation plan or previous knowledge. The user said "1st screen of the onboardingVC".

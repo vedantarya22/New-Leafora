@@ -24,7 +24,7 @@ class preQuestionsViewController: UIViewController {
     }
     
     @IBAction func beginButtonTapped(_ sender: UIButton) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
         if let questionsVC = storyboard.instantiateViewController(withIdentifier: "onboardingQuestionViewController") as? onboardingQuestionViewController {
             // Check if we are in a navigation controller
             if let nav = navigationController {

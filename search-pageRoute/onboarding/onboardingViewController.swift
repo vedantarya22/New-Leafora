@@ -89,7 +89,7 @@ class onboardingViewController: UIViewController {
             // Already on last screen, user finished onboarding
             print("Onboarding Finished! Presenting Questions...")
             
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
             // Navigate to Pre-Questions Screen
             if let loginVC = storyboard.instantiateViewController(withIdentifier: "loginVC") as? loginViewController {
                  if let nav = navigationController {
