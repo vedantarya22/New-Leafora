@@ -12,6 +12,11 @@ class WeatherTipCell: UICollectionViewCell {
         setupUI()
     }
     
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        // Use the size provided by the flow layout delegate
+        return layoutAttributes
+    }
+    
     private func setupUI() {
         containerView.layer.cornerRadius = 20
         containerView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
@@ -22,6 +27,7 @@ class WeatherTipCell: UICollectionViewCell {
         containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
         containerView.layer.shadowRadius = 8
         containerView.layer.masksToBounds = false
+        
     }
 
     // MARK: - Integration Functions
@@ -30,7 +36,7 @@ class WeatherTipCell: UICollectionViewCell {
     func configure(with weather: PlantWeatherInfo) {
         titleLabel.text = "Great day for your plants!"
         subtitleLabel.text = "\(weather.condition), \(weather.temperature)°C — \(weather.plantAdvice)"
-        weatherIcon.image = UIImage(systemName: weather.weatherEmoji) // Uses SFSymbol from your model
+        weatherIcon.image = UIImage(systemName: weather.weatherSFSymbol) // Use SF Symbol
         weatherIcon.tintColor = .systemYellow
     }
 

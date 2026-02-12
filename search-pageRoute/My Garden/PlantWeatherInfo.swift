@@ -1,11 +1,3 @@
-//
-//  PlantWeatherInfo.swift
-//  search-pageRoute
-//
-//  Created by SDC-USER on 11/02/26.
-//
-
-
 import Foundation
 
 struct PlantWeatherInfo {
@@ -23,6 +15,19 @@ struct PlantWeatherInfo {
         case let str where str.contains("snow"): return "❄️"
         case let str where str.contains("mist"), let str where str.contains("fog"): return "🌫️"
         default: return "🌤️"
+        }
+    }
+    
+    // SF Symbol for weather icon in UI
+    var weatherSFSymbol: String {
+        switch condition.lowercased() {
+        case let str where str.contains("clear"): return "sun.max.fill"
+        case let str where str.contains("cloud"): return "cloud.fill"
+        case let str where str.contains("rain"), let str where str.contains("drizzle"): return "cloud.rain.fill"
+        case let str where str.contains("thunder"): return "cloud.bolt.fill"
+        case let str where str.contains("snow"): return "cloud.snow.fill"
+        case let str where str.contains("mist"), let str where str.contains("fog"): return "cloud.fog.fill"
+        default: return "cloud.sun.fill"
         }
     }
     
