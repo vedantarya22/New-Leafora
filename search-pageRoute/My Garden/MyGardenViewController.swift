@@ -56,13 +56,13 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 }
             } else {
                 // Fallback to a default city if location is off
-                WeatherService.shared.fetchWeather(city: "Bengaluru") { result in
+                WeatherService.shared.fetchWeather(city: "Pune") { result in
                     self.handleWeatherResult(result)
                 }
             }
         }
     }
-
+    
     private func handleWeatherResult(_ result: Result<PlantWeatherInfo, Error>) {
         // UI updates must be on the main thread
         DispatchQueue.main.async { [weak self] in
