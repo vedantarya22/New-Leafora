@@ -21,3 +21,9 @@ struct QuestionOption: Decodable, Hashable {
     let id: String
     let label: String
 }
+
+struct OnboardingSlide {
+    let title: String
+    let description: String
+    let imageName: String
+}
