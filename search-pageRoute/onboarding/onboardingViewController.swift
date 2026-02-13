@@ -21,11 +21,11 @@ class onboardingViewController: UIViewController {
     private let gradientLayer = CAGradientLayer.backgroundGreen()
     
     // Data Model
-    struct OnboardingSlide {
-        let title: String
-        let description: String
-        let imageName: String
-    }
+//    struct OnboardingSlide {
+//        let title: String
+//        let description: String
+//        let imageName: String
+//    }
     
     private let slides: [OnboardingSlide] = [
         OnboardingSlide(
