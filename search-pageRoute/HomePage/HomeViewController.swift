@@ -210,9 +210,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         return section
     }
     
-    
-    
-    
     func gardenTipLayout() -> NSCollectionLayoutSection {
           let itemSize = NSCollectionLayoutSize(
              widthDimension: .fractionalWidth(1.0),
@@ -235,7 +232,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
    
            return section
        }
-    
     
     func urgentCardsLayout() -> NSCollectionLayoutSection {
 
@@ -275,7 +271,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         return section
     }
 
-    
     func careGridLayout() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -417,7 +412,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             }
             
         case 2:
-            self.openCamera()
+            // 🆕 PLANT SCANNING - Open camera for plant identification
+            self.openCameraForPlantScan()
             
         case 3: // Care Tasks
             let taskName = getCareTasks()[indexPath.row].name
@@ -433,18 +429,30 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
-    // MARK: - Photo Actions
-    func openCamera() {
-        let alert = UIAlertController(title: "Add Garden Memory", message: "Capture a moment or choose from your gallery", preferredStyle: .actionSheet)
+    // MARK: - 🆕 Plant Scanning Methods
+    func openCameraForPlantScan() {
+        let alert = UIAlertController(
+            title: "Scan Plant",
+            message: "Take a photo of the plant to identify it",
+            preferredStyle: .actionSheet
+        )
+        
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alert.addAction(UIAlertAction(title: "Take Photo", style: .default) { _ in self.showImagePicker(source: .camera) })
+            alert.addAction(UIAlertAction(title: "Take Photo", style: .default) { [weak self] _ in
+                self?.showImagePickerForPlantScan(source: .camera)
+            })
         }
-        alert.addAction(UIAlertAction(title: "Photo Library", style: .default) { _ in self.showImagePicker(source: .photoLibrary) })
+        
+        alert.addAction(UIAlertAction(title: "Choose from Library", style: .default) { [weak self] _ in
+            self?.showImagePickerForPlantScan(source: .photoLibrary)
+        })
+        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
         present(alert, animated: true)
     }
     
-    func showImagePicker(source: UIImagePickerController.SourceType) {
+    func showImagePickerForPlantScan(source: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = true
@@ -453,12 +461,32 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        print("📸 Image picked, preparing to scan...")
+        
         if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
-            memories.append(GardenMemory(image: image, timestamp: Date()))
-            collectionView.reloadData()
-            let lastItem = IndexPath(item: memories.count, section: 3)
-            collectionView.scrollToItem(at: lastItem, at: .right, animated: true)
+            print("✅ Got image, size: \(image.size)")
+            
+            // Dismiss the picker first
+            picker.dismiss(animated: true) { [weak self] in
+                guard let self = self else { return }
+                print("📸 Picker dismissed, showing scanning screen...")
+                
+                // Small delay to ensure smooth transition
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    let scanningVC = PlantScanningViewController(image: image)
+                    scanningVC.modalPresentationStyle = .overFullScreen
+                    self.present(scanningVC, animated: true) {
+                        print("✅ Scanning view controller presented")
+                    }
+                }
+            }
+        } else {
+            print("❌ ERROR: Could not get image from picker")
+            picker.dismiss(animated: true)
         }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true)
     }
     
