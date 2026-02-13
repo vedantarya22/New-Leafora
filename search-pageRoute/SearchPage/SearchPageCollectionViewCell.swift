@@ -61,4 +61,45 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
         difficultyLabel.text = plant.tags[0].capitalized
         lightLabel.text = plant.tags[1].capitalized
     }
+    
+    
+ 
+       
+       // 2️⃣ For SiteDetailViewController - uses UserPlant and loads Plant data from JSON
+       func configure(userPlant: UserPlant) {
+           // Load all plants from JSON to get the plant details
+           let allPlants = JSONLoader.loadPlants(from: "plantData")
+           
+           // Find the matching plant by plantId
+           guard let plant = allPlants.first(where: { $0.plantId == userPlant.plantId }) else {
+               print("⚠️ Could not find plant with ID: \(userPlant.plantId)")
+               plantLabel.text = "Unknown Plant"
+               scientificLabel.text = ""
+               plantImageView.image = UIImage(systemName: "leaf.fill")
+               difficultyLabel.text = "-"
+               lightLabel.text = "-"
+               return
+           }
+           
+           // Configure labels with plant data
+           plantLabel.text = plant.plantName
+           scientificLabel.text = plant.scientificName
+           
+           // Use user's custom image if available, otherwise use default from plant data
+           if let imageData = userPlant.imageData,
+              let userImage = UIImage(data: imageData) {
+               plantImageView.image = userImage
+           } else {
+               plantImageView.image = UIImage(named: plant.imageName)
+           }
+           
+           // Set tags from plant data
+           if plant.tags.count >= 2 {
+               difficultyLabel.text = plant.tags[0].capitalized
+               lightLabel.text = plant.tags[1].capitalized
+           } else {
+               difficultyLabel.text = "-"
+               lightLabel.text = "-"
+           }
+       }
 }

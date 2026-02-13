@@ -19,11 +19,16 @@ struct UserPlant: Codable, Identifiable {
     
     // Garden-only (mutable, user specific)
     var isAddedToGarden: Bool
-    var wateringDone: Bool
-    var pruningDone: Bool
-    var fertilizingDone: Bool
-    var repottingDone: Bool
+//    var wateringDone: Bool
+//    var pruningDone: Bool
+//    var fertilizingDone: Bool
+//    var repottingDone: Bool
     
     //date created at
     let createdAt: Date
+    
+    var lastWatered: Date?
+       var lastPruned: Date?
+       var lastFertilized: Date?
+       var lastRepotted: Date?
 }

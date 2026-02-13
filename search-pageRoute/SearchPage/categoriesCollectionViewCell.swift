@@ -1,10 +1,3 @@
-//
-//  categoriesCollectionViewCell.swift
-//  SearchPage
-//
-//  Created by SDC-USER on 28/01/26.
-//
-
 import UIKit
 
 class categoriesCollectionViewCell: UICollectionViewCell {
@@ -13,58 +6,59 @@ class categoriesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var categoryView: UIView!
     @IBOutlet weak var categoryLabel: UILabel!
     
-    private var gradientLayer: CAGradientLayer?
-
-    
     static let identifier = "categoriesCollectionViewCell"
+    
+    private let plantGreens: [UIColor] = [
+        UIColor(red: 0.85, green: 0.93, blue: 0.88, alpha: 1.0), // Soft Mint
+        UIColor(red: 0.78, green: 0.89, blue: 0.78, alpha: 1.0), // Sage
+        UIColor(red: 0.88, green: 0.94, blue: 0.85, alpha: 1.0), // Pale Lime
+        UIColor(red: 0.73, green: 0.85, blue: 0.75, alpha: 1.0), // Dusty Fern
+        UIColor(red: 0.82, green: 0.91, blue: 0.80, alpha: 1.0), // Moss
+        UIColor(red: 0.90, green: 0.95, blue: 0.90, alpha: 1.0), // Ice Green
+        UIColor(red: 0.80, green: 0.88, blue: 0.82, alpha: 1.0), // Eucalyptus
+        UIColor(red: 0.86, green: 0.93, blue: 0.78, alpha: 1.0)  // Sprout
+    ]
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Round corners for image view if needed
-        categoryImageView?.layer.cornerRadius = 8
-        categoryImageView?.clipsToBounds = true
-        categoryImageView?.contentMode = .scaleAspectFill
-//        categoryImageView?.backgroundColor = .systemGray5 // Placeholder color
-        //categoryView?.backgroundColor = .systemGray2
-        categoryView?.layer.cornerRadius = 16
+        
+        // 1. THE NEW LEAF SHAPE
+        categoryView.layer.cornerRadius = 35
+        
+        // CHANGE: Round Top-Left and Bottom-Right.
+        // This leaves Top-Right and Bottom-Left SHARP (Pointy).
+        categoryView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMaxYCorner]
+        
         categoryView.clipsToBounds = true
-
+        
+        // 2. Image Styling
+        categoryImageView.contentMode = .scaleAspectFit
+        
+        // 3. Text Safety
+        categoryLabel.adjustsFontSizeToFitWidth = true
+        categoryLabel.minimumScaleFactor = 0.6
+        categoryLabel.numberOfLines = 2
     }
+
     func configure(with category: Category) {
         categoryLabel.text = category.title
         categoryImageView.image = UIImage(named: category.assetName)
-        let colors = category.gradient.toUIColor()
-        applyGradient(topColor: colors.top, bottomColor: colors.bottom)
+        
+        // Pick a consistent green for this category
+        let colorIndex = abs(category.title.hashValue) % plantGreens.count
+        let selectedGreen = plantGreens[colorIndex]
+        
+        applyPlantTheme(bgColor: selectedGreen)
     }
 
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        gradientLayer?.removeFromSuperlayer()
-        gradientLayer = nil
+    private func applyPlantTheme(bgColor: UIColor) {
+        categoryView.backgroundColor = bgColor
+        categoryLabel.textColor = UIColor(red: 0.1, green: 0.25, blue: 0.1, alpha: 1.0)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer?.frame = categoryView.bounds
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        categoryView.backgroundColor = .systemGray6
+        categoryLabel.textColor = .black
     }
-
-    private func applyGradient(topColor: UIColor, bottomColor: UIColor) {
-        gradientLayer?.removeFromSuperlayer()
-
-        let gradient = CAGradientLayer()
-        gradient.colors = [
-            topColor.cgColor,
-            bottomColor.cgColor
-        ]
-
-        gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
-        gradient.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        gradient.frame = categoryView.bounds
-        gradient.cornerRadius = 16
-
-        categoryView.layer.insertSublayer(gradient, at: 0)
-        gradientLayer = gradient
-    }
-
-
 }
