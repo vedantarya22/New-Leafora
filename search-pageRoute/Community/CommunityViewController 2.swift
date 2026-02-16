@@ -84,7 +84,7 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
         
         // Section
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 0 // Spacing between posts
+        section.interGroupSpacing = 10 // Spacing between posts
         
         return UICollectionViewCompositionalLayout(section: section)
     }
