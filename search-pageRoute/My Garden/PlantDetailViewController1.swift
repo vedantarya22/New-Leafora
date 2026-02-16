@@ -5,118 +5,262 @@ class PlantDetailViewController_New: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     var userPlant: UserPlant?
     var plantImage: UIImage?
+    
     // Tracks which care card is currently open
     private var expandedCareIndex: IndexPath?
-    private var isBenefitsExpanded = false
     let gradientLayer = CAGradientLayer()
+    
+    // Data loaded from JSON
+    private var plantData: Plant?
+    private var allPlants: [Plant] = []
+    
     // MARK: - Section Management
     enum Section: Int, CaseIterable {
         case hero = 0
         case stats = 1
-//        case status = 2
-        case benefits = 2
-        case careGuide = 3
+        case careGuide = 2
         
         var title: String {
             switch self {
             case .hero: return ""
             case .stats: return ""
-//            case .status: return "Plant Health"
-            case .benefits: return "Benefits"
             case .careGuide: return "Care Guide"
             }
         }
     }
     
-    // MARK: - DUMMY DATA - Replace these with your real data later
-    private var statsData: [(icon: String, title: String, value: String, color: UIColor)] = [
-        (icon: "drop.fill", value: "Water", title: "Every 2 days", color: UIColor.systemBlue),
-        (icon: "sun.max.fill", value: "Light", title: "Bright light", color: UIColor.systemYellow),
-        (icon: "leaf.fill", value: "Difficulty", title: "Easy", color: UIColor.systemGreen),
-        (icon: "leaf", value: "Quantity", title: "1 plant", color: UIColor.systemTeal)
-    ]
-    
-    private var benefitsText: String = """
-    A hardy succulent known for healing gel and minimal watering needs.
-    
-    • Heals burns and skin irritations
-    • Easy care and low maintenance
-    • Air purification properties
-    • Perfect for beginners
-    • Drought resistant
-    
-    ⚠️ Toxic to pets - keep away from animals
-    """
-    
-    private var careItems: [(icon: String, title: String, steps: String, color: UIColor)] = [
-        (
-            icon: "drop.fill",
-            title: "Watering",
-            steps: """
-            Schedule: Every 2–3 weeks
-            
-            • Check soil moisture before watering
-            • Water thoroughly until it drains
-            • Allow soil to dry completely between waterings
-            • Reduce watering in winter months
-            """,
-            color: UIColor.systemBlue
-        ),
-        (
-            icon: "leaf.fill",
-            title: "Fertilizing",
-            steps: """
-            Schedule: Every 2 months
-            
-            • Use diluted liquid fertilizer
-            • Apply during growing season (spring/summer)
-            • Reduce or skip in winter
-            • Follow package instructions carefully
-            """,
-            color: UIColor.systemGreen
-        ),
-        (
-            icon: "arrow.triangle.2.circlepath",
-            title: "Repotting",
-            steps: """
-            Schedule: Every 12 months
-            
-            • Check if roots are crowding the pot
-            • Use pot 2" larger than current
-            • Use well-draining cactus mix soil
-            • Best done in spring season
-            """,
-            color: UIColor.systemOrange
-        ),
-        (
-            icon: "scissors",
-            title: "Pruning",
-            steps: """
-            Schedule: Every 6 months
-            
-            • Remove dead or brown leaves
-            • Trim damaged or diseased parts
-            • Use clean, sharp tools
-            • Dispose of diseased material properly
-            """,
-            color: UIColor.systemPurple
-        )
-    ]
-    
-    // Dummy health data
-    private var healthStatus = "Healthy"
-    private var nextWateringText = "in 5 days"
-    private var healthPercentage = 85
+    // Stats and care data - populated from JSON
+    private var statsData: [(icon: String, title: String, value: String, color: UIColor)] = []
+    private var careItems: [(icon: String, title: String, steps: String, color: UIColor)] = []
 
     override func viewDidLoad() {
+        super.viewDidLoad()
         setupBotanicalBackground()
         gradientLayer.frame = view.bounds
-        self.plantImage = UIImage(named: "areca_palm")
-        super.viewDidLoad()
         collectionView.backgroundColor = .clear
+        
+        // ✅ Load plant data from JSON
+        loadPlantData()
+        
         setupCollectionView()
         collectionView.backgroundView = nil
         setupNavigationBar()
+    }
+    
+    // MARK: - Load Plant Data from JSON
+    private func loadPlantData() {
+        // Load all plants from JSON
+        allPlants = JSONLoader.loadPlants(from: "plantData")
+        
+        guard let userPlant = userPlant else {
+            print("⚠️ No userPlant provided")
+            return
+        }
+        
+        // Find matching plant by plantId
+        plantData = allPlants.first(where: { $0.plantId == userPlant.plantId })
+        
+        guard let plant = plantData else {
+            print("⚠️ Could not find plant data for plantId: \(userPlant.plantId)")
+            return
+        }
+        
+        print("✅ Loaded plant data for: \(plant.plantName)")
+        
+        // ✅ FIXED: Correct tuple order (title, value)
+        statsData = [
+            (icon: "drop.fill",
+             title: "Water",
+             value: plant.careCycle.watering.display,
+             color: UIColor.systemBlue),
+            
+            (icon: "sun.max.fill",
+             title: "Light",
+             value: plant.lightRequirement.displayName,  // ✅ Use displayName
+             color: UIColor.systemYellow),
+            
+            (icon: "leaf.fill",
+             title: "Difficulty",
+             value: plant.difficulty.displayName,  // ✅ Use displayName
+             color: UIColor.systemGreen),
+            
+            (icon: "leaf",
+             title: "Quantity",
+             value: "\(countPlantsOfType(plantId: userPlant.plantId)) plant\(countPlantsOfType(plantId: userPlant.plantId) > 1 ? "s" : "")",
+             color: UIColor.systemTeal)
+        ]
+        
+        // ✅ Populate care items from plant data
+        careItems = [
+            (
+                icon: "drop.fill",
+                title: "Watering",
+                steps: buildWateringSteps(from: plant),
+                color: UIColor.systemBlue
+            ),
+            (
+                icon: "leaf.fill",
+                title: "Fertilizing",
+                steps: buildFertilizingSteps(from: plant),
+                color: UIColor.systemGreen
+            ),
+            (
+                icon: "arrow.triangle.2.circlepath",
+                title: "Repotting",
+                steps: buildRepottingSteps(from: plant),
+                color: UIColor.systemOrange
+            ),
+            (
+                icon: "scissors",
+                title: "Pruning",
+                steps: buildPruningSteps(from: plant),
+                color: UIColor.systemPurple
+            )
+        ]
+    }
+    // MARK: - Build Care Steps from Plant Data
+    
+    // MARK: - Build Care Steps from Plant Data
+
+    private func buildWateringSteps(from plant: Plant) -> String {
+        let schedule = plant.careCycle.watering.display
+        
+        // ✅ Use steps from JSON if available
+        if let steps = plant.careCycle.watering.steps {
+            let bulletPoints = steps.map { "• \($0)" }.joined(separator: "\n")
+            return "Schedule: \(schedule)\n\n\(bulletPoints)"
+        }
+        
+        // Fallback: build from method
+        let method = plant.careCycle.watering.method ?? "moderate"
+        let methodDescription: String
+        switch method.lowercased() {
+        case "spray":
+            methodDescription = "• Use spray bottle for misting\n• Keep leaves lightly moist"
+        case "light":
+            methodDescription = "• Water lightly around the base\n• Avoid overwatering"
+        case "moderate":
+            methodDescription = "• Water thoroughly until it drains\n• Allow soil to dry between waterings"
+        case "deep":
+            methodDescription = "• Deep soak until water drains freely\n• Ensure soil is fully saturated"
+        case "bottom":
+            methodDescription = "• Place pot in water tray\n• Let roots absorb from bottom"
+        default:
+            methodDescription = "• Water thoroughly until it drains\n• Allow soil to dry between waterings"
+        }
+        
+        return """
+        Schedule: \(schedule)
+        
+        \(methodDescription)
+        • Check soil moisture before watering
+        • Reduce watering in winter months
+        """
+    }
+
+    private func buildFertilizingSteps(from plant: Plant) -> String {
+        let schedule = plant.careCycle.fertilizing.display
+        
+        if let steps = plant.careCycle.fertilizing.steps {
+            let bulletPoints = steps.map { "• \($0)" }.joined(separator: "\n")
+            return "Schedule: \(schedule)\n\n\(bulletPoints)"
+        }
+        
+        let method = plant.careCycle.fertilizing.method ?? "balanced"
+        let methodDescription: String
+        switch method.lowercased() {
+        case "light":
+            methodDescription = "• Use diluted liquid fertilizer\n• Apply at 1/4 strength"
+        case "balanced":
+            methodDescription = "• Use balanced liquid fertilizer\n• Apply at recommended strength"
+        case "heavy":
+            methodDescription = "• Use full-strength fertilizer\n• Heavy feeders need regular feeding"
+        case "organic":
+            methodDescription = "• Use organic compost or worm castings\n• Apply as top dressing"
+        default:
+            methodDescription = "• Use balanced liquid fertilizer\n• Apply at recommended strength"
+        }
+        
+        return """
+        Schedule: \(schedule)
+        
+        \(methodDescription)
+        • Apply during growing season (spring/summer)
+        • Reduce or skip in winter
+        """
+    }
+
+    private func buildRepottingSteps(from plant: Plant) -> String {
+        let schedule = plant.careCycle.repotting.display
+        
+        if let steps = plant.careCycle.repotting.steps {
+            let bulletPoints = steps.map { "• \($0)" }.joined(separator: "\n")
+            return "Schedule: \(schedule)\n\n\(bulletPoints)"
+        }
+        
+        let method = plant.careCycle.repotting.method ?? "refresh"
+        let methodDescription: String
+        switch method.lowercased() {
+        case "check":
+            methodDescription = "• Check if roots are crowding\n• Look for roots growing through drainage holes"
+        case "upgrade":
+            methodDescription = "• Use pot 2\" larger than current\n• Ensure good drainage"
+        case "refresh":
+            methodDescription = "• Replace old soil with fresh mix\n• Can use same size pot"
+        case "division":
+            methodDescription = "• Divide root ball into sections\n• Plant each division separately"
+        default:
+            methodDescription = "• Use pot 2\" larger than current\n• Replace with fresh soil"
+        }
+        
+        return """
+        Schedule: \(schedule)
+        
+        \(methodDescription)
+        • Use well-draining soil mix
+        • Best done in spring season
+        """
+    }
+
+    private func buildPruningSteps(from plant: Plant) -> String {
+        let schedule = plant.careCycle.pruning.display
+        
+        if let steps = plant.careCycle.pruning.steps {
+            let bulletPoints = steps.map { "• \($0)" }.joined(separator: "\n")
+            return "Schedule: \(schedule)\n\n\(bulletPoints)"
+        }
+        
+        let method = plant.careCycle.pruning.method ?? "trim"
+        let methodDescription: String
+        switch method.lowercased() {
+        case "trim":
+            methodDescription = "• Remove dead or brown leaves\n• Light maintenance trimming"
+        case "shape":
+            methodDescription = "• Shape to maintain desired form\n• Cut above leaf nodes"
+        case "heavy":
+            methodDescription = "• Cut back significantly for renewal\n• Remove up to 1/3 of growth"
+        case "pinch":
+            methodDescription = "• Pinch back growing tips\n• Encourages bushier growth"
+        default:
+            methodDescription = "• Remove dead or brown leaves\n• Light maintenance trimming"
+        }
+        
+        return """
+        Schedule: \(schedule)
+        
+        \(methodDescription)
+        • Use clean, sharp tools
+        • Dispose of diseased material properly
+        """
+    }
+    
+
+
+    
+    private func countPlantsOfType(plantId: String) -> Int {
+        guard let site = userPlant?.siteID else { return 1 }
+        let plantsInSite = PlantStore.shared.plants(for: site)
+        return plantsInSite.filter { $0.plantId == plantId }.count
     }
     
     private func setupBotanicalBackground() {
@@ -133,10 +277,13 @@ class PlantDetailViewController_New: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
-    
     private func setupNavigationBar() {
-        // TODO: Replace with real plant name
-        title = "Areca palm"
+        // ✅ Use plant name from JSON
+        if let plant = plantData {
+            title = plant.plantName
+        } else {
+            title = "Plant Details"
+        }
         navigationController?.navigationBar.prefersLargeTitles = false
     }
 
@@ -148,10 +295,6 @@ class PlantDetailViewController_New: UIViewController {
                                forCellWithReuseIdentifier: "HeroImageCell")
         collectionView.register(UINib(nibName: "StatCardCell", bundle: nil),
                                forCellWithReuseIdentifier: "StatCardCell")
-//        collectionView.register(UINib(nibName: "PlantStatusCell", bundle: nil),
-//                               forCellWithReuseIdentifier: "PlantStatusCell")
-        collectionView.register(UINib(nibName: "BenefitsCell", bundle: nil),
-                               forCellWithReuseIdentifier: "BenefitsCell")
         collectionView.register(UINib(nibName: "CareTaskCell1", bundle: nil),
                                forCellWithReuseIdentifier: "CareTaskCell1")
         
@@ -163,7 +306,6 @@ class PlantDetailViewController_New: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.collectionViewLayout = createLayout()
-//        collectionView.backgroundColor = .systemGroupedBackground
     }
     
     // MARK: - Layout Configuration
@@ -176,10 +318,6 @@ class PlantDetailViewController_New: UIViewController {
                 return self.createHeroSection()
             case .stats:
                 return self.createStatsSection()
-//            case .status:
-//                return self.createStatusSection()
-            case .benefits:
-                return self.createBenefitsSection()
             case .careGuide:
                 return self.createCareGuideSection()
             }
@@ -222,68 +360,6 @@ class PlantDetailViewController_New: UIViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 24, trailing: 8)
-        return section
-    }
-    
-    // Status section - single full-width card
-    private func createStatusSection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(100)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(100)
-        )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
-        
-        let headerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(50)
-        )
-        let header = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: headerSize,
-            elementKind: UICollectionView.elementKindSectionHeader,
-            alignment: .top
-        )
-        section.boundarySupplementaryItems = [header]
-        
-        return section
-    }
-    
-    // Benefits section - expandable
-    private func createBenefitsSection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(150)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(150)
-        )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
-        
-        let headerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(50)
-        )
-        let header = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: headerSize,
-            elementKind: UICollectionView.elementKindSectionHeader,
-            alignment: .top
-        )
-        section.boundarySupplementaryItems = [header]
-        
         return section
     }
     
@@ -333,8 +409,6 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
         switch sectionType {
         case .hero: return 1
         case .stats: return statsData.count
-//        case .status: return 1
-        case .benefits: return 1
         case .careGuide: return careItems.count
         }
     }
@@ -348,14 +422,12 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
         case .hero:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeroImageCell", for: indexPath) as! HeroImageCell
             
-            if let data = userPlant?.imageData {
-                // Use the user's custom photo if available
-                cell.plantImageView.image = UIImage(data: data)
-            } else if let assetImage = UIImage(named: "areca_palm") {
-                // REPLACE "YourAssetNameHere" with the name in your Assets.xcassets
+            // ✅ Priority: User's custom photo > JSON image > System icon
+            if let data = userPlant?.imageData, let customImage = UIImage(data: data) {
+                cell.plantImageView.image = customImage
+            } else if let plant = plantData, let assetImage = UIImage(named: plant.imageName) {
                 cell.plantImageView.image = assetImage
             } else {
-                // Fallback to a system symbol if the asset is missing
                 cell.plantImageView.image = UIImage(systemName: "leaf.fill")
                 cell.plantImageView.tintColor = .systemGreen
             }
@@ -365,20 +437,6 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StatCardCell", for: indexPath) as! StatCardCell
             let stat = statsData[indexPath.item]
             cell.configure(icon: stat.icon, title: stat.title, value: stat.value, color: stat.color)
-            return cell
-            
-//        case .status:
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantStatusCell", for: indexPath) as! PlantStatusCell
-//            // TODO: Calculate real health data
-//            cell.configure(status: healthStatus, nextWatering: nextWateringText, healthPercentage: healthPercentage)
-//            return cell
-//            
-        case .benefits:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BenefitsCell", for: indexPath) as! BenefitsCell
-            cell.configure(text: benefitsText, isExpanded: isBenefitsExpanded)
-            cell.onToggle = { [weak self] in
-                self?.toggleBenefits()
-            }
             return cell
             
         case .careGuide:
@@ -436,46 +494,4 @@ extension PlantDetailViewController_New: UICollectionViewDelegate {
             }
         })
     }
-    
-    private func toggleBenefits() {
-        isBenefitsExpanded.toggle()
-        
-        let indexPath = IndexPath(item: 0, section: Section.benefits.rawValue)
-        collectionView.performBatchUpdates({
-            collectionView.reloadItems(at: [indexPath])
-        }, completion: nil)
-    }
 }
-
-// MARK: - TODO: Replace Dummy Data with Real Data
-/*
- 
- HOW TO USE YOUR REAL DATA:
- 
- 1. Replace statsData array with your plant's real data:
-    statsData = [
-        (icon: "drop.fill", title: "Water", value: yourPlant.wateringSchedule, color: .systemBlue),
-        (icon: "sun.max.fill", title: "Light", value: yourPlant.lightNeeds, color: .systemYellow),
-        // ... etc
-    ]
- 
- 2. Replace benefitsText with your plant's benefits:
-    benefitsText = yourPlant.benefits
- 
- 3. Replace careItems with your plant's care instructions:
-    careItems = [
-        (icon: "drop.fill", title: "Watering", steps: yourPlant.wateringInstructions, color: .systemBlue),
-        // ... etc
-    ]
- 
- 4. Replace health data:
-    healthStatus = calculateHealthStatus()
-    nextWateringText = calculateNextWatering()
-    healthPercentage = calculateHealthPercentage()
- 
- 5. Replace title:
-    title = yourPlant.name
- 
- You can do this in viewDidLoad() or create a configure(with plant:) method.
- 
- */
