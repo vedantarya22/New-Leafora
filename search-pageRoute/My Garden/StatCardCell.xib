@@ -84,8 +84,8 @@
                 <outlet property="containerView" destination="container-view" id="out-container"/>
                 <outlet property="iconBackgroundView" destination="icon-bg-view" id="out-icon-bg"/>
                 <outlet property="iconImageView" destination="icon-img" id="out-icon"/>
-                <outlet property="titleLabel" destination="title-lbl" id="out-title"/>
-                <outlet property="valueLabel" destination="value-lbl" id="out-value"/>
+                <outlet property="statTitleLabel" destination="value-lbl" id="out-value"/>
+                <outlet property="statValueLabel" destination="title-lbl" id="HAH-vD-a84"/>
             </connections>
             <point key="canvasLocation" x="139" y="21"/>
         </collectionViewCell>

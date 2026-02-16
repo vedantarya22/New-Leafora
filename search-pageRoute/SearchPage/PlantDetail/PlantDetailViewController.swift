@@ -113,18 +113,31 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             cell.plantImageView.image = UIImage(named: plant.imageName)
             return cell
             
-        case 1: // Merged: About + Characteristics
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantInfoCardCell", for: indexPath) as! PlantInfoCardCell
+        case 1:
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "PlantInfoCardCell",
+                for: indexPath
+            ) as! PlantInfoCardCell
+
             let petStatus = plant.petFriendly ? "Pet Friendly" : "Toxic to Pets"
+
             let combinedText = """
             \(plant.description)
-            
-            • Light: \(plant.lightRequired)
-            • Difficulty: \(plant.careDifficulty.capitalized)
+
+            • Light: \(plant.lightRequirement.displayName)
+            • Difficulty: \(plant.difficulty.displayName)
             • \(petStatus)
             """
-            cell.configure(title: "About", text: combinedText, iconName: "info.circle.fill", iconColor: .systemBlue)
+
+            cell.configure(
+                title: "About",
+                text: combinedText,
+                iconName: "info.circle.fill",
+                iconColor: .systemBlue
+            )
+
             return cell
+
             
         case 2: // Care Cycle
             let cell = collectionView.dequeueReusableCell(

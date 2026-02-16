@@ -31,7 +31,7 @@ class FeatureCell: UICollectionViewCell {
 
            case .light:
                iconImageView.image = UIImage(systemName: "sun.max.fill")
-               titleLabel.text = plant.lightRequired
+               titleLabel.text = plant.lightRequirement.displayName
 
            case .petFriendly:
                iconImageView.image = UIImage(systemName: "pawprint.fill")
@@ -39,7 +39,7 @@ class FeatureCell: UICollectionViewCell {
 
            case .toxic:
                iconImageView.image = UIImage(systemName: "exclamationmark.triangle.fill")
-               titleLabel.text = plant.petFriendly ? "Non Toxic" : "Toxic"
+               titleLabel.text = plant.toxic ? "Non Toxic" : "Toxic"
            }
        }
     

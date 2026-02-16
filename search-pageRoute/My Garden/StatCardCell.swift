@@ -5,8 +5,8 @@ class StatCardCell: UICollectionViewCell {
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var iconBackgroundView: UIView!
     @IBOutlet weak var iconImageView: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var valueLabel: UILabel!
+    @IBOutlet weak var statValueLabel: UILabel!
+    @IBOutlet weak var statTitleLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,14 +31,14 @@ class StatCardCell: UICollectionViewCell {
         iconBackgroundView.layer.cornerCurve = .continuous
         
         // Labels
-        titleLabel.font = .systemFont(ofSize: 13, weight: .medium)
-        titleLabel.textColor = .secondaryLabel
+        statValueLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        statValueLabel.textColor = .secondaryLabel
         
-        valueLabel.font = .systemFont(ofSize: 15, weight: .semibold)
-        valueLabel.textColor = .label
-        valueLabel.numberOfLines = 2
-        valueLabel.adjustsFontSizeToFitWidth = true
-        valueLabel.minimumScaleFactor = 0.8
+        statTitleLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        statTitleLabel.textColor = .label
+        statTitleLabel.numberOfLines = 2
+        statTitleLabel.adjustsFontSizeToFitWidth = true
+        statTitleLabel.minimumScaleFactor = 0.8
         
         iconImageView.contentMode = .scaleAspectFit
     }
@@ -53,7 +53,8 @@ class StatCardCell: UICollectionViewCell {
         iconBackgroundView.backgroundColor = color.withAlphaComponent(0.12)
         
         // Set text
-        titleLabel.text = title
-        valueLabel.text = value
+        statTitleLabel.text = title
+        statValueLabel.text = value
+
     }
 }

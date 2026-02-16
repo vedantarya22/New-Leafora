@@ -1,12 +1,3 @@
-//
-//  Plant.swift
-//  search-pageRoute
-//
-//  Created by SDC-USER on 27/01/26.
-//
-
-
-
 import Foundation
 import UIKit
 
@@ -26,28 +17,61 @@ struct Plant: Codable {
     let soilType: SoilType
     let benefits: [String]
     let petFriendly: Bool
-    let toxic:Bool
-    let lightRequired: String
-    let careDifficulty: String
+    let toxic: Bool
+    let lightRequirement: LightRequirement
+    let difficulty: CareDifficulty
     let commonIssues: [String]
-    
     
     enum CodingKeys: String, CodingKey {
         case plantId = "plant_id"
-                case plantName = "plant_name"
-                case scientificName = "scientific_name"
-                case description
-                case category
-                case tags
-                case imageName = "image_name"
-                case careCycle = "care_cycle"
-                case soilType = "soil_type"
-                case benefits
-                case petFriendly = "pet_friendly"
-                case toxic
-                case lightRequired = "light_required"
-                case careDifficulty = "care_difficulty"
-                case commonIssues = "common_issues"
+        case plantName = "plant_name"
+        case scientificName = "scientific_name"
+        case description
+        case category
+        case tags
+        case imageName = "image_name"
+        case careCycle = "care_cycle"
+        case soilType = "soil_type"
+        case benefits
+        case petFriendly = "pet_friendly"
+        case toxic
+        case lightRequirement = "light_required"
+        case difficulty = "care_difficulty"
+        case commonIssues = "common_issues"
+    }
+}
+
+// MARK: - Enums for Type Safety
+
+enum LightRequirement: String, Codable {
+    case lowLight = "low_light"
+    case lowToMedium = "low_to_medium"
+    case lowToBrightIndirect = "low_to_bright_indirect"
+    case mediumLight = "medium_light"
+    case brightIndirect = "bright_indirect"
+    case partialSunlight = "partial_sunlight"
+    case fullSunlight = "full_sunlight"
+    
+    var displayName: String {
+        switch self {
+        case .lowLight: return "Low light"
+        case .lowToMedium: return "Low to medium"
+        case .lowToBrightIndirect: return "Low to bright indirect"
+        case .mediumLight: return "Medium light"
+        case .brightIndirect: return "Bright indirect"
+        case .partialSunlight: return "Partial sunlight"
+        case .fullSunlight: return "Full sunlight"
+        }
+    }
+}
+
+enum CareDifficulty: String, Codable {
+    case easy
+    case moderate
+    case advanced
+    
+    var displayName: String {
+        return rawValue.capitalized
     }
 }
 
@@ -61,10 +85,9 @@ struct CareCycle: Codable {
 struct CareFrequency: Codable {
     let display: String
     let days: Int
-    let method: String? // Optional: care method type
+    let method: String?
+    let steps: [String]? // ✅ Changed to array of strings
 }
-
-
 
 struct SoilType: Codable {
     let characteristics: String
