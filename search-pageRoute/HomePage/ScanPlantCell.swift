@@ -15,7 +15,7 @@ class ScanPlantCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         // Redraw dashed border if the frame changes
-        updateDashedBorder()
+//        updateDashedBorder()
     }
     
     private func setupUI() {
@@ -26,18 +26,18 @@ class ScanPlantCell: UICollectionViewCell {
         iconBackgroundView.backgroundColor = UIColor.systemMint.withAlphaComponent(0.2)
     }
     
-    private func updateDashedBorder() {
-        dashedBorder?.removeFromSuperlayer()
-        
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.strokeColor = UIColor.systemMint.withAlphaComponent(0.4).cgColor
-        shapeLayer.lineDashPattern = [6, 4]
-        shapeLayer.frame = containerView.bounds
-        shapeLayer.fillColor = nil
-        shapeLayer.path = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: 16).cgPath
-        shapeLayer.frame = containerView.bounds
-        
-        containerView.layer.addSublayer(shapeLayer)
-        dashedBorder = shapeLayer
-    }
+//    private func updateDashedBorder() {
+//        dashedBorder?.removeFromSuperlayer()
+//        
+//        let shapeLayer = CAShapeLayer()
+//        shapeLayer.strokeColor = UIColor.systemMint.withAlphaComponent(0.4).cgColor
+//        shapeLayer.lineDashPattern = [6, 4]
+//        shapeLayer.frame = containerView.bounds
+//        shapeLayer.fillColor = nil
+//        shapeLayer.path = UIBezierPath(roundedRect: containerView.bounds, cornerRadius: 16).cgPath
+//        shapeLayer.frame = containerView.bounds
+//        
+//        containerView.layer.addSublayer(shapeLayer)
+//        dashedBorder = shapeLayer
+//    }
 }
