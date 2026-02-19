@@ -1,10 +1,10 @@
 {
   "categories": [
     {
-        "id": "money_plant",
-        "normalizedKey": "money_plant",
+        "id": "recommended_plant",
+        "normalizedKey": "recommended_plant",
         "title": "Recommended",
-        "asset_name": "MoneyPlant",
+        "asset_name": "recommended",
         "gradient": {
           "top": "#B4F8C8",
           "bottom": "#4CAF50"

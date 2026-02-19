@@ -73,6 +73,13 @@ class categoriesViewController: UIViewController {
     @IBAction func closeButtonTapped(_ sender: Any) {
         dismiss(animated: true)
     }
+    
+    @IBAction func clearButtonTapped(_ sender: Any) {
+        print("Clear Filter Tapped")
+        dismiss(animated: true) {
+            self.selectionHandler?("all")
+        }
+    }
 }
 
 // MARK: - UICollectionViewDataSource & Delegate
@@ -98,10 +105,30 @@ extension categoriesViewController: UICollectionViewDataSource, UICollectionView
         let category = categories[indexPath.row]
         print("Selected category: \(category.title) -> Filtering by: \(category.normalizedKey)")
         
-        // Pass selection back
-        selectionHandler?(category.normalizedKey)
+        if category.normalizedKey == "recommended_plant" {
+            if !HomeDataStore.shared.arePreferencesSet() {
+                showPreferencesAlert()
+                return
+            }
+        }
         
-        dismiss(animated: true)
+        dismiss(animated: true) {
+            // Pass selection back AFTER dismissal to avoid presentation conflicts
+            self.selectionHandler?(category.normalizedKey)
+        }
+    }
+    
+    private func showPreferencesAlert() {
+        let alert = UIAlertController(
+            title: "Complete Your Profile",
+            message: "To get personalized plant recommendations, please complete your Gardening Preferences in your Profile.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        // Optional: Add "Go to Profile" action if navigation is possible from here
+        
+        present(alert, animated: true)
     }
 
 }
