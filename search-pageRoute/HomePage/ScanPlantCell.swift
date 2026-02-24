@@ -20,8 +20,7 @@ class ScanPlantCell: UICollectionViewCell {
     
     private func setupUI() {
         containerView.layer.cornerRadius = 16
-        containerView.backgroundColor = UIColor(red: 0.94, green: 0.97, blue: 0.95, alpha: 1.0) // #F0F7F2
-        
+        containerView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
         iconBackgroundView.layer.cornerRadius = 12
         iconBackgroundView.backgroundColor = UIColor.systemMint.withAlphaComponent(0.2)
     }

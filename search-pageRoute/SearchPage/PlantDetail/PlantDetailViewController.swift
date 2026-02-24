@@ -21,6 +21,23 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     @IBAction func addButtonTapped(_ sender: UIBarButtonItem) {
         navigateToAddPlantQuestionnaire()
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+            // Section 5 is the AR Button section
+            if indexPath.section == 5 {
+                print("AR Button Tapped at section 5")
+                navigateToAR()
+            }
+        }
+    private func navigateToAR() {
+        // If your storyboard file is named "Main.storyboard", use "Main"
+        let storyboard = UIStoryboard(name: "ARlightmeter", bundle: nil)
+        
+        // This identifier MUST match the Storyboard ID you just typed in the inspector
+        if let arVC = storyboard.instantiateViewController(withIdentifier: "ARViewController") as? ARViewController {
+            arVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(arVC, animated: true)
+        }
+    }
     
     private func setupBotanicalBackground() {
         // A soft, off-white to very pale sage green
@@ -90,9 +107,9 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 return section
                 
             default: // AR Button
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(80))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(100))
                 let section = NSCollectionLayoutSection(group: NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [NSCollectionLayoutItem(layoutSize: itemSize)]))
-                section.contentInsets = .init(top: 10, leading: spacing, bottom: 40, trailing: spacing)
+                section.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
                 return section
             }
         }

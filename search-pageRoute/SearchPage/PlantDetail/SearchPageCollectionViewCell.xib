@@ -20,7 +20,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z9g-Mg-hNl">
                         <rect key="frame" x="0.0" y="-1" width="393" height="112"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3GN-vW-zbF">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3GN-vW-zbF">
                                 <rect key="frame" x="10" y="10" width="90" height="90"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="3GN-vW-zbF" secondAttribute="height" multiplier="1:1" id="LTp-Hz-VqP"/>
@@ -138,7 +138,7 @@
     <resources>
         <image name="tag" catalog="system" width="128" height="118"/>
         <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
