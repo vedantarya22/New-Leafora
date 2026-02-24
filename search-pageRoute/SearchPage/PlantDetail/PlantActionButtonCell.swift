@@ -9,11 +9,17 @@ class PlantActionButtonCell: UICollectionViewCell {
     
     // Ensure this name matches EXACTLY what you connect in the XIB
     @IBOutlet weak var actionButton: UIButton!
+    var onTap: (() -> Void)?
 
     override func awakeFromNib() {
+        actionButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         super.awakeFromNib()
         setupNativeStyle()
     }
+    
+    @objc private func buttonTapped() {
+            onTap?()
+        }
 
     func configure(type: PlantActionType) {
         // Keep the text concise and native

@@ -6,6 +6,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     var plants: [Plant] = []
     var currentPlant: Plant? { plants.first }
     var gradientLayer = CAGradientLayer()
+    var onTap: (() -> Void)?
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -16,6 +17,9 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         setupBotanicalBackground()
         loadSpecificPlant()
         setupCollectionView()
+    }
+    @IBAction func buttonTapped(_ sender: UIButton) {
+        onTap?()
     }
     
     @IBAction func addButtonTapped(_ sender: UIBarButtonItem) {
@@ -194,6 +198,9 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         case 5: // AR Button
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantActionButtonCell", for: indexPath) as! PlantActionButtonCell
             cell.configure(type: .visualizeAR)
+            cell.onTap = { [weak self] in
+                    self?.navigateToAR()
+                }
             return cell
             
         default:
