@@ -150,6 +150,11 @@
                                                 <action selector="closeButtonTapped:" destination="Qbd-IZ-3Zw" id="1P8-bm-uQ4"/>
                                             </connections>
                                         </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Clear" id="ffW-Na-4fq">
+                                            <connections>
+                                                <action selector="clearButtonTapped:" destination="Qbd-IZ-3Zw" id="Q3l-zI-AUt"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -246,7 +251,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uyu-Dr-E9I" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1036" y="-208"/>
+            <point key="canvasLocation" x="1037" y="-196"/>
         </scene>
         <!--myGarden-->
         <scene sceneID="dbK-bU-uW8">
@@ -393,7 +398,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pMi-39-qgi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2043.5114503816792" y="-896.47887323943667"/>
+            <point key="canvasLocation" x="1818" y="-899"/>
         </scene>
         <!--Profile-->
         <scene sceneID="EEc-t2-ScH">
@@ -401,7 +406,7 @@
                 <viewControllerPlaceholder storyboardName="Profile" id="9FG-zb-qLY" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gyH-vf-Kee" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2095" y="232"/>
+            <point key="canvasLocation" x="2121" y="227"/>
         </scene>
         <!--communityScreens-->
         <scene sceneID="UVm-Tz-QEn">

@@ -70,6 +70,27 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
     @objc private func saveTapped() {
         // Save changes to DataStore
         HomeDataStore.shared.gardeningPreferences = tempPreferences
+        
+        // ---------------------------------------------------------
+        // Trigger Recommendation Engine
+        // ---------------------------------------------------------
+        print("🌱 GardeningPreferences changed. Running Recommendation Engine...")
+        
+        // 1. Load all plants (Ensure this is not on main thread if heavy, 
+        // but for this dataset size it's likely fine, or dispatch async)
+        DispatchQueue.global(qos: .userInitiated).async {
+            let allPlants = JSONLoader.loadPlants(from: "plantData")
+            
+            // 2. Run Engine
+            let recommendedIDs = PlantRecommendationEngine.shared.generateRecommendedPlantIDs(
+                plants: allPlants,
+                preferences: self.tempPreferences,
+                hasPets: false // TODO: if we have a pet setting, pass it. Defaulting to false for now based on available data.
+            )
+            
+            print("✅ Recommendation Engine finished. Cached \(recommendedIDs.count) plants.")
+        }
+        
         navigationController?.popViewController(animated: true)
     }
     
