@@ -27,7 +27,8 @@ class WeatherTipCell: UICollectionViewCell {
         containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
         containerView.layer.shadowRadius = 8
         containerView.layer.masksToBounds = false
-        
+        titleLabel.numberOfLines = 0
+        subtitleLabel.numberOfLines = 0
     }
 
     // MARK: - Integration Functions

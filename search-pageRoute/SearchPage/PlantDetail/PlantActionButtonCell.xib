@@ -16,15 +16,15 @@
                 <rect key="frame" x="0.0" y="0.0" width="281" height="117"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jzT-ph-DRX">
-                        <rect key="frame" x="-34.666666666666657" y="41" width="350.33333333333326" height="35"/>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jzT-ph-DRX">
+                        <rect key="frame" x="-34.666666666666657" y="33.666666666666664" width="350.33333333333326" height="49.999999999999993"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="35" id="Fr7-9b-hVV"/>
+                            <constraint firstAttribute="height" constant="50" id="Fr7-9b-hVV"/>
                             <constraint firstAttribute="width" constant="350" id="Vqb-3v-d0U"/>
                         </constraints>
                         <color key="tintColor" red="0.19262696800000001" green="0.4411621094" blue="0.14306639130000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="filled" title="Add Plant">
+                        <buttonConfiguration key="configuration" style="filled" title="AR">
                             <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </buttonConfiguration>
                     </button>

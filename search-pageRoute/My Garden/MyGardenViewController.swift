@@ -4,6 +4,7 @@ internal import _LocationEssentials
 class MyGardenViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private var currentWeather: PlantWeatherInfo?
     private var isLoadingWeather = true
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
     @IBOutlet weak var myGardenCollectionView: UICollectionView!
     
     private let emptyStateLabel: UILabel = {
@@ -19,12 +20,12 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     }()
 
     let siteStore = SiteStore.shared
-    var gradientLayer = CAGradientLayer()
+   
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupBotanicalBackground()
+        view.layer.insertSublayer(gradientLayer, at: 0)
+       setupBotanicalBackground()
         setupCollectionView()
         setupEmptyStateLabel()
         updateEmptyState()
@@ -36,6 +37,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         myGardenCollectionView.reloadData()
         updateEmptyState()
     }
+   
 
     private func fetchWeatherData() {
         isLoadingWeather = true
@@ -90,14 +92,23 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         gradientLayer.startPoint = CGPoint(x: 0, y: 0)
         gradientLayer.endPoint = CGPoint(x: 1, y: 1)
         
-        view.layer.insertSublayer(gradientLayer, at: 0)
-        myGardenCollectionView.backgroundColor = .clear
+        // Set the frame immediately
+        gradientLayer.frame = view.bounds
+        
+        // Create a container view for the gradient to act as the background
+        let backgroundContainer = UIView(frame: view.bounds)
+        backgroundContainer.layer.insertSublayer(gradientLayer, at: 0)
+        
+        // Assign this to the collection view's backgroundView
+        // This ensures the gradient is ALWAYS behind the cells
+        myGardenCollectionView.backgroundView = backgroundContainer
     }
 
     private func setupCollectionView() {
         myGardenCollectionView.delegate = self
         myGardenCollectionView.dataSource = self
-        
+        myGardenCollectionView.backgroundColor = .clear
+            myGardenCollectionView.backgroundView?.backgroundColor = .clear
         // Configure flow layout
         if let flowLayout = myGardenCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.minimumInteritemSpacing = 16
@@ -208,6 +219,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         vc.site = site
         navigationController?.pushViewController(vc, animated: true)
     }
+    
     
     private func setupEmptyStateLabel() {
         view.addSubview(emptyStateLabel)
