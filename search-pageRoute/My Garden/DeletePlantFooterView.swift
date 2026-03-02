@@ -7,11 +7,12 @@
 
 import UIKit
 
-class DeletePlantFooterView: UICollectionViewCell {
+class DeletePlantFooterView: UICollectionReusableView {
+    @IBOutlet weak var deleteButton: UIButton!
+    
+    var onDeleteTapped: (() -> Void)?
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    @IBAction func didTapDelete(_ sender: Any) {
+        onDeleteTapped?()
     }
-
 }

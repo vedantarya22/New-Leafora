@@ -17,47 +17,38 @@
                 <rect key="frame" x="0.0" y="0.0" width="393" height="111"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <!-- White card container -->
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z9g-Mg-hNl">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="111"/>
                         <subviews>
-
-                            <!-- Plant Image -->
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3GN-vW-zbF">
                                 <rect key="frame" x="10" y="10" width="90" height="90"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="90" id="YVY-UA-jB6"/>
                                     <constraint firstAttribute="height" constant="90" id="SFA-S0-gNK"/>
+                                    <constraint firstAttribute="width" constant="90" id="YVY-UA-jB6"/>
                                 </constraints>
                             </imageView>
-
-                            <!-- Plant Name + Scientific Name vertical stack -->
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="ql6-Qr-PQ9">
-                                <rect key="frame" x="110" y="13" width="265" height="45"/>
+                                <rect key="frame" x="110" y="13.000000000000004" width="267" height="46.333333333333343"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Money Plant" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kkl-eb-7tM">
-                                        <rect key="frame" x="0.0" y="0.0" width="265" height="27"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="267" height="26.333333333333332"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Epipremnum aureum" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="edP-Vs-JRo">
-                                        <rect key="frame" x="0.0" y="29" width="265" height="18"/>
+                                        <rect key="frame" x="0.0" y="28.333333333333336" width="267" height="18"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                        <color key="textColor" white="0.6" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="textColor" white="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                             </stackView>
-
-                            <!-- Tags horizontal stack — labels only, icons embedded via attributedText -->
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="horizontal" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="caM-xk-ClD">
-                                <rect key="frame" x="110" y="72" width="265" height="24"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="caM-xk-ClD">
+                                <rect key="frame" x="110" y="75" width="267" height="24"/>
                                 <subviews>
-
-                                    <!-- Tag 1: difficultyLabel -->
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tag 1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s7Z-my-MII">
-                                        <rect key="frame" x="0.0" y="0.0" width="120" height="24"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="27.333333333333332" height="24"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -68,10 +59,8 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-
-                                    <!-- Tag 2: lightLabel -->
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tag 2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tFC-Et-xjx">
-                                        <rect key="frame" x="128" y="0.0" width="120" height="24"/>
+                                        <rect key="frame" x="35.333333333333343" y="0.0" width="29" height="24"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -82,19 +71,14 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                     </label>
-
-                                    <!-- Spacer -->
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sp1-aa-001">
-                                        <rect key="frame" x="248" y="0" width="17" height="24"/>
+                                        <rect key="frame" x="72.333333333333357" y="0.0" width="194.66666666666663" height="24"/>
                                     </view>
-
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="24" id="X6y-i6-k9g"/>
                                 </constraints>
                             </stackView>
-
-                            <!-- Separator line -->
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bqk-Li-PEQ">
                                 <rect key="frame" x="16" y="110" width="361" height="1"/>
                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
@@ -102,32 +86,22 @@
                                     <constraint firstAttribute="height" constant="1" id="PR9-wf-Uj2"/>
                                 </constraints>
                             </view>
-
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <!-- Image top & leading -->
-                            <constraint firstItem="3GN-vW-zbF" firstAttribute="top" secondItem="z9g-Mg-hNl" secondAttribute="top" constant="10" id="giN-pc-CJR"/>
-                            <constraint firstItem="3GN-vW-zbF" firstAttribute="leading" secondItem="z9g-Mg-hNl" secondAttribute="leading" constant="10" id="RyX-lY-obS"/>
-
-                            <!-- Name stack: top & leading from image -->
                             <constraint firstItem="ql6-Qr-PQ9" firstAttribute="top" secondItem="z9g-Mg-hNl" secondAttribute="top" constant="13" id="89L-Ux-uih"/>
-                            <constraint firstItem="ql6-Qr-PQ9" firstAttribute="leading" secondItem="3GN-vW-zbF" secondAttribute="trailing" constant="10" id="ggP-1J-qeM"/>
-                            <constraint firstAttribute="trailing" secondItem="ql6-Qr-PQ9" secondAttribute="trailing" constant="16" id="nme-tr-001"/>
-
-                            <!-- Tag stack: below name, leading from image trailing -->
-                            <constraint firstItem="caM-xk-ClD" firstAttribute="leading" secondItem="3GN-vW-zbF" secondAttribute="trailing" constant="10" id="bfE-5a-xnw"/>
-                            <constraint firstAttribute="bottom" secondItem="caM-xk-ClD" secondAttribute="bottom" constant="12" id="dCh-J5-pK4"/>
-                            <constraint firstAttribute="trailing" secondItem="caM-xk-ClD" secondAttribute="trailing" constant="16" id="trl-tg-001"/>
-
-                            <!-- Separator -->
                             <constraint firstAttribute="bottom" secondItem="Bqk-Li-PEQ" secondAttribute="bottom" id="KZl-Wr-ccF"/>
-                            <constraint firstItem="Bqk-Li-PEQ" firstAttribute="leading" secondItem="z9g-Mg-hNl" secondAttribute="leading" constant="16" id="ZrQ-gv-yDo"/>
-                            <constraint firstAttribute="trailing" secondItem="Bqk-Li-PEQ" secondAttribute="trailing" constant="16" id="d71-wr-3pE"/>
-
-                            <!-- Card size -->
+                            <constraint firstItem="3GN-vW-zbF" firstAttribute="leading" secondItem="z9g-Mg-hNl" secondAttribute="leading" constant="10" id="RyX-lY-obS"/>
                             <constraint firstAttribute="width" constant="393" id="Tbu-JG-mhB"/>
+                            <constraint firstItem="Bqk-Li-PEQ" firstAttribute="leading" secondItem="z9g-Mg-hNl" secondAttribute="leading" constant="16" id="ZrQ-gv-yDo"/>
+                            <constraint firstItem="caM-xk-ClD" firstAttribute="leading" secondItem="3GN-vW-zbF" secondAttribute="trailing" constant="10" id="bfE-5a-xnw"/>
+                            <constraint firstAttribute="trailing" secondItem="Bqk-Li-PEQ" secondAttribute="trailing" constant="16" id="d71-wr-3pE"/>
+                            <constraint firstAttribute="bottom" secondItem="caM-xk-ClD" secondAttribute="bottom" constant="12" id="dCh-J5-pK4"/>
+                            <constraint firstItem="ql6-Qr-PQ9" firstAttribute="leading" secondItem="3GN-vW-zbF" secondAttribute="trailing" constant="10" id="ggP-1J-qeM"/>
+                            <constraint firstItem="3GN-vW-zbF" firstAttribute="top" secondItem="z9g-Mg-hNl" secondAttribute="top" constant="10" id="giN-pc-CJR"/>
                             <constraint firstAttribute="height" constant="111" id="l1V-gV-Bcl"/>
+                            <constraint firstAttribute="trailing" secondItem="ql6-Qr-PQ9" secondAttribute="trailing" constant="16" id="nme-tr-001"/>
+                            <constraint firstAttribute="trailing" secondItem="caM-xk-ClD" secondAttribute="trailing" constant="16" id="trl-tg-001"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -147,11 +121,12 @@
                 <outlet property="plantLabel" destination="kkl-eb-7tM" id="VdB-Wg-Lgq"/>
                 <outlet property="scientificLabel" destination="edP-Vs-JRo" id="que-db-l2u"/>
             </connections>
+            <point key="canvasLocation" x="138" y="129"/>
         </collectionViewCell>
     </objects>
     <resources>
         <systemColor name="systemGray5Color">
-            <color red="0.898" green="0.898" blue="0.918" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

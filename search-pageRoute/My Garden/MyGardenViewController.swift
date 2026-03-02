@@ -6,7 +6,15 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     private var isLoadingWeather = true
     private let gradientLayer = CAGradientLayer.backgroundGreen()
     @IBOutlet weak var myGardenCollectionView: UICollectionView!
-    
+    private let holdTipLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Hold & press a site to remove it"
+        label.textAlignment = .center
+        label.textColor = .secondaryLabel
+        label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     private let emptyStateLabel: UILabel = {
         let label = UILabel()
         label.text = "No sites yet.\nAdd plants to get started "
@@ -25,6 +33,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     override func viewDidLoad() {
         super.viewDidLoad()
         view.layer.insertSublayer(gradientLayer, at: 0)
+        setupHoldTipLabel()
        setupBotanicalBackground()
         setupCollectionView()
         setupEmptyStateLabel()
@@ -37,7 +46,13 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         myGardenCollectionView.reloadData()
         updateEmptyState()
     }
-   
+    private func setupHoldTipLabel() {
+        view.addSubview(holdTipLabel)
+        NSLayoutConstraint.activate([
+            holdTipLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            holdTipLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+    }
 
     private func fetchWeatherData() {
         isLoadingWeather = true
@@ -110,6 +125,8 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         myGardenCollectionView.backgroundColor = .clear
             myGardenCollectionView.backgroundView?.backgroundColor = .clear
         // Configure flow layout
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        myGardenCollectionView.addGestureRecognizer(longPress)
         if let flowLayout = myGardenCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.minimumInteritemSpacing = 16
             flowLayout.minimumLineSpacing = 16
@@ -168,6 +185,51 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             cell.plantCountLabel.text = "\(totalCount) plant\(totalCount == 1 ? "" : "s")"
             
             return cell
+        }
+    }
+    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        
+        let point = gesture.location(in: myGardenCollectionView)
+        guard let indexPath = myGardenCollectionView.indexPathForItem(at: point),
+              indexPath.section == 1 else { return }
+        
+        if let cell = myGardenCollectionView.cellForItem(at: indexPath) as? MyGardenCollectionViewCell {
+                cell.startWobble()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    cell.stopWobble()
+                }
+            }
+        
+        let site = siteStore.sites[indexPath.item]
+        let plantCount = PlantStore.shared.plants(for: site.id).count
+        
+        if plantCount == 0 {
+            // ✅ No plants — delete immediately with simple confirm
+            let alert = UIAlertController(title: "Delete \(site.name)?", message: "Are you sure?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+                self?.siteStore.sites.removeAll { $0.id == site.id }
+                self?.myGardenCollectionView.reloadData()
+                self?.updateEmptyState()
+            })
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            present(alert, animated: true)
+            
+        } else {
+            // ✅ Has plants — show warning with plant count
+            let alert = UIAlertController(
+                title: "Delete \(site.name)?",
+                message: "This site has \(plantCount) plant\(plantCount == 1 ? "" : "s"). Deleting it will remove all plants inside.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Delete Anyway", style: .destructive) { [weak self] _ in
+                PlantStore.shared.removeAllPlants(for: site.id)
+                self?.siteStore.sites.removeAll { $0.id == site.id }
+                self?.myGardenCollectionView.reloadData()
+                self?.updateEmptyState()
+            })
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            present(alert, animated: true)
         }
     }
 
@@ -229,5 +291,20 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             emptyStateLabel.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 24),
             emptyStateLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -24)
         ])
+    }
+}
+
+
+extension UICollectionViewCell {
+    func startWobble() {
+        let wobble = CAKeyframeAnimation(keyPath: "transform.rotation")
+        wobble.values = [0, -0.03, 0.03, -0.03, 0.03, 0]
+        wobble.duration = 0.4
+        wobble.repeatCount = .infinity
+        layer.add(wobble, forKey: "wobble")
+    }
+    
+    func stopWobble() {
+        layer.removeAnimation(forKey: "wobble")
     }
 }
