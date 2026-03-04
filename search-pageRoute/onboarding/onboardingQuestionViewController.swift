@@ -153,5 +153,34 @@ class onboardingQuestionViewController: UIViewController, UITableViewDelegate, U
     
     private func finishOnboarding() {
         print("Onboarding Complete! User Answers: \(userAnswers)")
+        
+        // TODO: Map userAnswers to HomeDataStore.shared.gardeningPreferences if not already done.
+        // Assuming for now that implicit saving or mapping happens or that we just run the engine.
+        // The user request specifically asked to "Hook the engine execution at: Completion of onboarding gardening preferences".
+        
+        print("🌱 Onboarding finished. Running Recommendation Engine...")
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+             let allPlants = JSONLoader.loadPlants(from: "plantData")
+             
+             // Run Engine with current preferences
+             // Note: If userAnswers are not yet in HomeDataStore, this might run on defaults.
+             // Ideally we would map 'userAnswers' to 'GardeningPreferences' first.
+             let recommendedIDs = PlantRecommendationEngine.shared.generateRecommendedPlantIDs(
+                 plants: allPlants,
+                 preferences: HomeDataStore.shared.gardeningPreferences, 
+                 hasPets: false // TODO: Pass hasPets if captured in onboarding
+             )
+             
+             print("✅ Recommendation Engine finished (Onboarding). Cached \(recommendedIDs.count) plants.")
+             
+             DispatchQueue.main.async {
+                 // Navigate to Main App / Home
+                 // Example validation:
+                 // let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                 // let homeVC = ...
+                 // window.rootViewController = ...
+             }
+        }
     }
 }

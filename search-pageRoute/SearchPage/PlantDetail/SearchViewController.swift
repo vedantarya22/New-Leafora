@@ -234,12 +234,44 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     
     // MARK: - Filter Logic
     
+    // MARK: - Filter Logic
+    
     private func applyFilter(category: String) {
         print("Applying filter for category: \(category)")
         
-        // Basic filtering logic: Check if the plant's category array contains the selected category
-        filteredPlants = allPlants.filter { plant in
-            plant.category.contains(where: { $0.caseInsensitiveCompare(category) == .orderedSame })
+        if category == "recommended_plant" {
+            // ---------------------------------------------------------
+            // RECOMMENDED PLANTS LOGIC
+            // ---------------------------------------------------------
+            
+            // 1. Check if preferences are set (Safety check)
+            if !HomeDataStore.shared.arePreferencesSet() {
+                // Clear the list just in case, but no alert (handled by modal)
+                filteredPlants = []
+                collectionView.reloadData()
+                return 
+            }
+            
+            if let cachedIDs = RecommendedPlantsCache.shared.get() {
+                print("✨ Loading \(cachedIDs.count) recommended plants from cache.")
+                
+                let plantsMap = Dictionary(uniqueKeysWithValues: allPlants.map { ($0.plantId, $0) })
+                filteredPlants = cachedIDs.compactMap { plantsMap[$0] }
+                
+            } else {
+                print("⚠️ No recommended plants in cache (but prefs set). Triggering engine or showing empty.")
+                // If prefs are set but no cache (e.g. migration), we could trigger engine here or show empty.
+                // For now showing empty as per safety rules (no engine in UI).
+                filteredPlants = [] 
+            }
+            
+        } else if category == "all_plants" || category == "all" { // Assuming 'all' or similar key exists
+             filteredPlants = allPlants
+        } else {
+            // Basic filtering logic: Check if the plant's category array contains the selected category
+            filteredPlants = allPlants.filter { plant in
+                plant.category.contains(where: { $0.caseInsensitiveCompare(category) == .orderedSame })
+            }
         }
         
         // If no results (or "All"), maybe reset? For now strict filtering.
@@ -301,6 +333,11 @@ extension SearchViewController: UICollectionViewDataSource {
         cell.configure(with: plant)
         return cell
     }
+}
+// MARK: - Helper Methods
+
+extension SearchViewController {
+    // Helper methods moved to HomeDataStore and categoriesViewController
 }
 
 // MARK: - Quick Add

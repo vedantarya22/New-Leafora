@@ -10,7 +10,7 @@
       "image_name": "aloe_vera",
       "care_cycle": {
         "watering": {
-          "display": "Every 2–3 weeks",
+          "display": " 2–3 weeks",
           "days": 18,
           "method": "light",
           "steps": [
@@ -21,7 +21,7 @@
           ]
         },
         "repotting": {
-          "display": "Every 12 months",
+          "display": " 12 months",
           "days": 365,
           "method": "refresh",
           "steps": [
@@ -32,7 +32,7 @@
           ]
         },
         "fertilizing": {
-          "display": "Every 2 months",
+          "display": " 2 months",
           "days": 60,
           "method": "light",
           "steps": [
@@ -43,7 +43,7 @@
           ]
         },
         "pruning": {
-          "display": "Every 6 months",
+          "display": " 6 months",
           "days": 180,
           "method": "trim",
           "steps": [
@@ -87,7 +87,7 @@
           ]
         },
         "repotting": {
-          "display": "Every 10 months",
+          "display": " 10 months",
           "days": 300,
           "method": "upgrade",
           "steps": [
@@ -109,7 +109,7 @@
           ]
         },
         "pruning": {
-          "display": "Every 2 months",
+          "display": " 2 months",
           "days": 60,
           "method": "trim",
           "steps": [
@@ -142,7 +142,7 @@
       "image_name": "snake_plant",
       "care_cycle": {
         "watering": {
-          "display": "Every 2 weeks",
+          "display": " 2 weeks",
           "days": 14,
           "method": "light",
           "steps": [
@@ -153,7 +153,7 @@
           ]
         },
         "repotting": {
-          "display": "Every 18 months",
+          "display": " 18 months",
           "days": 540,
           "method": "check",
           "steps": [
@@ -164,7 +164,7 @@
           ]
         },
         "fertilizing": {
-          "display": "Every 2 months",
+          "display": " 2 months",
           "days": 60,
           "method": "light",
           "steps": [
@@ -241,7 +241,7 @@
           ]
         },
         "pruning": {
-          "display": "Every 3 months",
+          "display": " 3 months",
           "days": 90,
           "method": "trim",
           "steps": [
@@ -274,7 +274,7 @@
       "image_name": "tulsi",
       "care_cycle": {
         "watering": {
-          "display": "Every 2 days",
+          "display": " 2 days",
           "days": 2,
           "method": "moderate",
           "steps": [
@@ -285,7 +285,7 @@
           ]
         },
         "repotting": {
-          "display": "Every 8 months",
+          "display": " 8 months",
           "days": 240,
           "method": "refresh",
           "steps": [
@@ -362,7 +362,7 @@
           ]
         },
         "fertilizing": {
-          "display": "Every 15 days",
+          "display": " 15 days",
           "days": 15,
           "method": "heavy",
           "steps": [
@@ -406,7 +406,7 @@
       "image_name": "mint",
       "care_cycle": {
         "watering": {
-          "display": "Every 2 days",
+          "display": " 2 days",
           "days": 2,
           "method": "moderate",
           "steps": [
@@ -417,7 +417,7 @@
           ]
         },
         "repotting": {
-          "display": "Every 6 months",
+          "display": " 6 months",
           "days": 180,
           "method": "division",
           "steps": [
@@ -560,7 +560,7 @@
           ]
         },
         "fertilizing": {
-          "display": "Every 2 months",
+          "display": " 2 months",
           "days": 60,
           "method": "balanced",
           "steps": [
@@ -615,7 +615,7 @@
           ]
         },
         "repotting": {
-          "display": "Every 2 years",
+          "display": " 2 years",
           "days": 730,
           "method": "upgrade",
           "steps": [

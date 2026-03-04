@@ -150,6 +150,11 @@
                                                 <action selector="closeButtonTapped:" destination="Qbd-IZ-3Zw" id="1P8-bm-uQ4"/>
                                             </connections>
                                         </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Clear" id="ffW-Na-4fq">
+                                            <connections>
+                                                <action selector="clearButtonTapped:" destination="Qbd-IZ-3Zw" id="Q3l-zI-AUt"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -231,7 +236,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home" largeTitleDisplayMode="always" id="eoy-rg-qNT">
-                        <barButtonItem key="rightBarButtonItem" image="person.circle" catalog="system" id="ypw-Ns-KPr">
+                        <barButtonItem key="rightBarButtonItem" image="person.text.rectangle" catalog="system" id="ypw-Ns-KPr">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="9FG-zb-qLY" kind="presentation" id="cJw-my-soD"/>
@@ -246,7 +251,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uyu-Dr-E9I" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1036" y="-208"/>
+            <point key="canvasLocation" x="1037" y="-196"/>
         </scene>
         <!--myGarden-->
         <scene sceneID="dbK-bU-uW8">
@@ -268,7 +273,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="selectedImageTintColor" red="0.2141113281" green="0.490234375" blue="0.1571044922" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </tabBar>
                     <connections>
                         <segue destination="mno-M4-Hgd" kind="relationship" relationship="viewControllers" id="G7U-Db-ecJ"/>
@@ -393,7 +398,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pMi-39-qgi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2043.5114503816792" y="-896.47887323943667"/>
+            <point key="canvasLocation" x="1818" y="-899"/>
         </scene>
         <!--Profile-->
         <scene sceneID="EEc-t2-ScH">
@@ -401,7 +406,7 @@
                 <viewControllerPlaceholder storyboardName="Profile" id="9FG-zb-qLY" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gyH-vf-Kee" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2095" y="232"/>
+            <point key="canvasLocation" x="2121" y="227"/>
         </scene>
         <!--communityScreens-->
         <scene sceneID="UVm-Tz-QEn">
@@ -470,7 +475,7 @@
         <scene sceneID="tnx-Ej-Oru">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="zjX-zy-f84" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="My Garden" image="leaf" catalog="system" id="O8R-Tq-q36"/>
+                    <tabBarItem key="tabBarItem" title="My Garden" image="leaf.fill" catalog="system" id="O8R-Tq-q36"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="p3J-ma-sKy">
                         <rect key="frame" x="0.0" y="118" width="393" height="106"/>
@@ -488,9 +493,9 @@
     </scenes>
     <resources>
         <image name="house.fill" catalog="system" width="128" height="104"/>
-        <image name="leaf" catalog="system" width="128" height="111"/>
+        <image name="leaf.fill" catalog="system" width="128" height="109"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
-        <image name="person.circle" catalog="system" width="128" height="123"/>
+        <image name="person.text.rectangle" catalog="system" width="128" height="93"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
