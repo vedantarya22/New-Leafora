@@ -150,6 +150,7 @@
                 <constraint firstItem="eRc-dd-35N" firstAttribute="top" secondItem="SJW-mG-qBt" secondAttribute="bottom" constant="5" id="yKX-dg-ZaM"/>
                 <constraint firstItem="4fT-2c-nO6" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="yjg-fj-Toh"/>
                 <constraint firstItem="SJW-mG-qBt" firstAttribute="top" secondItem="wiM-kk-lJS" secondAttribute="bottom" constant="15" id="yvy-AM-icW"/>
+                <constraint firstAttribute="bottom" secondItem="Uc8-Fv-zpQ" secondAttribute="bottom" constant="10" id="btm-cap-pin"/>
             </constraints>
             <size key="customSize" width="458" height="470"/>
             <connections>

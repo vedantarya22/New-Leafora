@@ -66,19 +66,17 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     
     // MARK: - Layout Generator
     private func createLayout() -> UICollectionViewLayout {
-        // Item
-        // We use .estimated(600) to let the XIB calculate its own height
+        // Item — estimated should be below actual content height so the cell grows, never pads
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(450)
+            heightDimension: .estimated(350)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Group
-        // The group must also be estimated to allow the item to expand
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(600)
+            heightDimension: .estimated(350)
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         

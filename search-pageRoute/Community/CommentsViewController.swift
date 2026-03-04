@@ -69,23 +69,29 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         
         let newComment = Comment(
             id: UUID(),
-            username: "Shubham_r24",
+            username: UserSession.shared.currentUser?.username ?? "Anonymous",
             text: text,
             timeAgo: "Just now"
         )
-        // 2. Add to list
-        post.comments.append(newComment)
         
-        // 3. Update Table
+        // Write to the shared source of truth
+        PostRepository.shared.addComment(to: post.id, comment: newComment)
+        
+        // Refresh local copy from the repository
+        if let freshPost = PostRepository.shared.getPost(id: post.id) {
+            post = freshPost
+        }
+        
+        // Update Table
         tableView.reloadData()
         
-        // 4. Scroll to bottom
+        // Scroll to bottom
         if post.comments.count > 0 {
             let indexPath = IndexPath(row: post.comments.count - 1, section: 0)
             tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
         
-        // 5. Clear Input
+        // Clear Input
         commentTextField.text = ""
     }
     
