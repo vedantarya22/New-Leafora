@@ -6,15 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		19D54EAA2F55643A00AA12B3 /* BotanicalAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D54EA92F55643A00AA12B3 /* BotanicalAction.swift */; };
-		19D54EAC2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D54EAB2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		19D1293C2F288EB200B6F32B /* search-pageRoute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "search-pageRoute.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		19D54EA92F55643A00AA12B3 /* BotanicalAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotanicalAction.swift; sourceTree = "<group>"; };
-		19D54EAB2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+ActionSheetSwizzle.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -52,8 +45,6 @@
 		19D129332F288EB200B6F32B = {
 			isa = PBXGroup;
 			children = (
-				19D54EA92F55643A00AA12B3 /* BotanicalAction.swift */,
-				19D54EAB2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift */,
 				19D1293E2F288EB200B6F32B /* search-pageRoute */,
 				19D1293D2F288EB200B6F32B /* Products */,
 			);
@@ -141,8 +132,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19D54EAA2F55643A00AA12B3 /* BotanicalAction.swift in Sources */,
-				19D54EAC2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
