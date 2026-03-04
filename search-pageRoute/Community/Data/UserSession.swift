@@ -53,7 +53,7 @@ class UserSession {
             id: "u1",
             name: "Vedant Arya",
             username: "vedantarya.22",
-            profileImageString: "person.circle",
+            profileImageString: "",
             plantCount: 12
         )
         
@@ -61,7 +61,7 @@ class UserSession {
             id: "u2",
             name: "Shubham",
             username: "shubham_r24",
-            profileImageString: "person.circle",
+            profileImageString: "",
             plantCount: 32
         )
         
@@ -69,7 +69,7 @@ class UserSession {
             id: "u3",
             name: "Arya Kulkarni",
             username: "arya.grows",
-            profileImageString: "person.circle",
+            profileImageString: "",
             plantCount: 7
         )
         
@@ -77,7 +77,7 @@ class UserSession {
             id: "u4",
             name: "Rohan Mehta",
             username: "rohan.plants",
-            profileImageString: "person.circle",
+            profileImageString: "",
             plantCount: 18
         )
         
@@ -85,7 +85,7 @@ class UserSession {
             id: "u5",
             name: "Neha Sharma",
             username: "neha.greens",
-            profileImageString: "person.circle",
+            profileImageString: "",
             plantCount: 25
         )
         
@@ -93,7 +93,7 @@ class UserSession {
             id: "u6",
             name: "Kabir Verma",
             username: "kabir.gardens",
-            profileImageString: "person.circle",
+            profileImageString: "",
             plantCount: 9
         )
         

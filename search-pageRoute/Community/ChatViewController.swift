@@ -6,169 +6,237 @@
 //
 
 import UIKit
+import MessageKit
+import InputBarAccessoryView
 
-// 1. Simple Model for our Messages
-struct Message {
-    let text: String
-    let isSender: Bool
+// MARK: - Sender (who sent the message)
+struct Sender: SenderType {
+    var senderId: String
+    var displayName: String
 }
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
-    
-    // MARK: - Outlets
-    
-    // Top Header
-    @IBOutlet weak var headerImageView: UIImageView!
-    @IBOutlet weak var headerNameLabel: UILabel!
-    
-    // The Chat Area
-    @IBOutlet weak var tableView: UITableView!
-    
-    // The Bottom Input Area
-    @IBOutlet weak var inputContainerView: UIView!
-    @IBOutlet weak var messageTextField: UITextField!
-    @IBOutlet weak var inputBottomConstraint: NSLayoutConstraint!
-    
+// MARK: - Message Model (updated to conform to MessageType)
+struct Message: MessageType {
+    var sender: SenderType
+    var messageId: String
+    var sentDate: Date
+    var kind: MessageKind
+}
+
+// MARK: - ChatViewController
+class ChatViewController: MessagesViewController {
+
     // MARK: - Data
-    var user: User? // The person we are talking to
-    
-    // Dummy Data
-    var messages: [Message] = [
-        Message(text: "May I know about the plants you have? 🤗", isSender: true),
-        Message(text: "Sureee I would love to tell lets meet at 7? 🤗", isSender: false),
-        Message(text: "That sounds perfect! See you then.", isSender: true)
-    ]
-    
+    var user: User?  // The person we are chatting with
+
+    // Current logged-in user (me)
+    let mySender = Sender(senderId: "me", displayName: "Me")
+
+    // Lazy: built once we know the `user` property
+    var otherSender: Sender {
+        Sender(senderId: user?.id ?? "other", displayName: user?.name ?? "User")
+    }
+
+
+    var messages: [Message] = []
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if let user = user {
             print("✅ Step 4: Chat Screen received user: \(user.name)")
         } else {
             print("❌ Error: Chat Screen user is NIL!")
         }
-        setupUI()
-        setupKeyboardObservers()
-        
-        messageTextField.delegate = self
-        tableView.keyboardDismissMode = .onDrag    }
-    
-    // MARK: - Setup & Styling 🎨
-    func setupUI() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .none
-        //tableView.allowsSelection = false // Disable clicking cells
-        
-        // 2. Setup Header Data (If user is passed)
-        if let user = user {
-            headerNameLabel.text = user.name
-            let imageName = UserSession.shared.profileImageString(for: user.id)
-                headerImageView.configureImage(with: imageName)
-            
+
+        setupSeedMessages()
+        setupMessageKit()
+        setupNavigationBar()
+    }
+
+    // MARK: - Setup
+
+    private func setupSeedMessages() {
+        messages = [
+            Message(
+                sender: mySender,
+                messageId: UUID().uuidString,
+                sentDate: Date().addingTimeInterval(-300),
+                kind: .text("May I know about the plants you have? 🤗")
+            ),
+            Message(
+                sender: otherSender,
+                messageId: UUID().uuidString,
+                sentDate: Date().addingTimeInterval(-200),
+                kind: .text("Sureee I would love to tell lets meet at 7? 🤗")
+            ),
+            Message(
+                sender: mySender,
+                messageId: UUID().uuidString,
+                sentDate: Date().addingTimeInterval(-100),
+                kind: .text("That sounds perfect! See you then.")
+            )
+        ]
+    }
+
+private func setupMessageKit() {
+        messagesCollectionView.messagesDataSource = self
+        messagesCollectionView.messagesLayoutDelegate = self
+        messagesCollectionView.messagesDisplayDelegate = self
+
+        messageInputBar.delegate = self
+
+        // Input bar styling
+        messageInputBar.inputTextView.placeholder = "Message..."
+        messageInputBar.inputTextView.font = UIFont.systemFont(ofSize: 15)
+
+        // Send button — only shows when text is present
+        messageInputBar.sendButton.setTitle("Send", for: .normal)
+        messageInputBar.sendButton.setTitleColor(.systemGreen, for: .normal)
+        messageInputBar.sendButton.setTitleColor(.systemGray3, for: .disabled)
+        messageInputBar.sendButton.setImage(nil, for: .normal)   // no icon, title only
+
+        // Remove the mic/attachment buttons from both sides
+        messageInputBar.setLeftStackViewWidthConstant(to: 0, animated: false)
+        messageInputBar.leftStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        // Reload so the collection view knows about the seed messages
+        messagesCollectionView.reloadData()
+
+        DispatchQueue.main.async {
+            self.messagesCollectionView.scrollToLastItem(animated: false)
         }
-        
-        // 3. Styling (Corner Radius in Code as requested)
-        headerImageView.layer.cornerRadius = headerImageView.frame.height / 2
-        messageTextField.superview?.layer.cornerRadius = 18
     }
-    
-    // MARK: - TableView Logic 📝
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let message = messages[indexPath.row]
-        
-        // 1. Decide which cell to load
-        let cellIdentifier = message.isSender ? "SenderCell" : "ReceiverCell"
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ChatBubbleCell
-        
-        // 2. Set Text
-        cell.messageLabel.text = message.text
-        
-        // 3. Apply Corner Radius
-        cell.bubbleView.layer.cornerRadius = 16
-        if message.isSender {
-            cell.bubbleView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
+
+    private func setupNavigationBar() {
+        guard let user = user else { return }
+
+        // Vertical layout: avatar centred above name (like iMessage)
+        let avatarSize: CGFloat = 36
+        let containerWidth: CGFloat = 180
+        let labelHeight: CGFloat = 16
+        let spacing: CGFloat = 3
+        let totalHeight = avatarSize + spacing + labelHeight
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: containerWidth, height: totalHeight))
+
+        // Avatar — centred horizontally
+        let avatarX = (containerWidth - avatarSize) / 2
+        let avatarImageView = UIImageView(frame: CGRect(x: avatarX, y: 0, width: avatarSize, height: avatarSize))
+        avatarImageView.contentMode = .scaleAspectFill
+        avatarImageView.clipsToBounds = true
+        avatarImageView.layer.cornerRadius = avatarSize / 2
+
+        let imageName = UserSession.shared.profileImageString(for: user.id)
+        if imageName.isEmpty {
+            avatarImageView.image = UIImage(systemName: "person.circle.fill")
+            avatarImageView.tintColor = .systemGray3
+            avatarImageView.contentMode = .scaleAspectFit
         } else {
-            cell.bubbleView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+            avatarImageView.configureImage(with: imageName)
         }
-        
-        return cell
-    }
-    
-    // MARK: - Keyboard Handling ⌨️
-    // This moves the input bar up when keyboard opens
-    func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            
-            
-            let bottomPadding = view.safeAreaInsets.bottom
-                        self.inputBottomConstraint.constant = -(keyboardSize.height - bottomPadding)
-                        
-                        UIView.animate(withDuration: 0.3) {
-                            self.view.layoutIfNeeded()
-                        }
-                        scrollToBottom()
-                    }
-                }
-    
-  @objc func keyboardWillHide(notification: NSNotification) {
-       self.inputBottomConstraint.constant = 0
-    
-    UIView.animate(withDuration: 0.3) {
-        self.view.layoutIfNeeded()
+
+        // Name label — centred below avatar
+        let nameLabel = UILabel(frame: CGRect(x: 0, y: avatarSize + spacing, width: containerWidth, height: labelHeight))
+        nameLabel.text = user.name
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 13)
+        nameLabel.textAlignment = .center
+
+        containerView.addSubview(avatarImageView)
+        containerView.addSubview(nameLabel)
+        navigationItem.titleView = containerView
+
+        // Remove any right bar button (e.g. video call)
+        navigationItem.rightBarButtonItem = nil
     }
 }
-    @objc func dismissKeyboard() {
-            view.endEditing(true)
-        }
-    
-    func scrollToBottom() {
-        if !messages.isEmpty {
-            let indexPath = IndexPath(row: messages.count - 1, section: 0)
-            tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+
+// MARK: - MessagesDataSource
+extension ChatViewController: MessagesDataSource {
+
+    var currentSender: any SenderType {
+        return mySender
+    }
+
+    func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> any MessageType {
+        return messages[indexPath.section]
+    }
+
+    func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
+        return messages.count
+    }
+}
+
+// MARK: - MessagesDisplayDelegate
+extension ChatViewController: MessagesDisplayDelegate {
+
+    func backgroundColor(for message: any MessageType, at indexPath: IndexPath,
+                         in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? UIColor.systemGreen : UIColor.systemGray5
+    }
+
+    func textColor(for message: any MessageType, at indexPath: IndexPath,
+                   in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? .white : .label
+    }
+
+    func configureAvatarView(_ avatarView: AvatarView, for message: any MessageType,
+                             at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        if isFromCurrentSender(message: message) {
+            avatarView.isHidden = true
+        } else {
+            avatarView.isHidden = false
+            avatarView.backgroundColor = .clear  // removes the grey ring
+
+            let imageName = user.flatMap { UserSession.shared.profileImageString(for: $0.id) } ?? ""
+            let placeholder = UIImage(systemName: "person.circle.fill")?
+                .withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+
+            if imageName.isEmpty {
+                avatarView.set(avatar: Avatar(image: placeholder))
+            } else {
+                let img = UIImage(named: imageName) ?? placeholder
+                avatarView.set(avatar: Avatar(image: img))
+            }
         }
     }
-    
-    // MARK: - Sending Logic 
 
-        // This function runs when the user hits "Return" or "Send" on the keyboard
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            sendMessage()
-            return true
-        }
+    func messageStyle(for message: any MessageType, at indexPath: IndexPath,
+                      in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+        let corner: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
+        return .bubbleTail(corner, .curved)
+    }
+}
 
-        func sendMessage() {
-            // 1. Check if text exists and isn't just spaces
-            guard let text = messageTextField.text, !text.trimmingCharacters(in: .whitespaces).isEmpty else {
-                return
-            }
+// MARK: - MessagesLayoutDelegate
+extension ChatViewController: MessagesLayoutDelegate {
 
-            // 2. Create the new message object (Me = isSender: true)
-            let newMessage = Message(text: text, isSender: true)
+    func avatarSize(for message: any MessageType, at indexPath: IndexPath,
+                    in messagesCollectionView: MessagesCollectionView) -> CGSize? {
+        return isFromCurrentSender(message: message) ? .zero : CGSize(width: 32, height: 32)
+    }
+}
 
-            // 3. Add to our data source
-            messages.append(newMessage)
+// MARK: - InputBarAccessoryViewDelegate
+extension ChatViewController: InputBarAccessoryViewDelegate {
 
-            // 4. Insert the row into the TableView nicely (Animation)
-            let newIndexPath = IndexPath(row: messages.count - 1, section: 0)
-            tableView.insertRows(at: [newIndexPath], with: .right)
-            
-            // 5. Scroll to the new message
-            tableView.scrollToRow(at: newIndexPath, at: .bottom, animated: true)
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
 
-            // 6. Clear the text field
-            messageTextField.text = ""
-        }
-    
-    
+        let newMessage = Message(
+            sender: mySender,
+            messageId: UUID().uuidString,
+            sentDate: Date(),
+            kind: .text(trimmed)
+        )
+
+        messages.append(newMessage)
+        inputBar.inputTextView.text = ""
+        inputBar.invalidatePlugins()
+
+        // Use reloadData to avoid section-count mismatch crashes
+        messagesCollectionView.reloadData()
+        messagesCollectionView.scrollToLastItem(animated: true)
+    }
 }

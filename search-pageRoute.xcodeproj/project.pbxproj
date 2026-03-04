@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		19BB146F2F55708B002E872D /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 19BB146E2F55708B002E872D /* MessageKit */; };
+		19D54EAA2F55643A00AA12B3 /* BotanicalAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D54EA92F55643A00AA12B3 /* BotanicalAction.swift */; };
+		19D54EAC2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D54EAB2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		19D1293C2F288EB200B6F32B /* search-pageRoute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "search-pageRoute.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19BB146F2F55708B002E872D /* MessageKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,7 @@
 			);
 			name = "search-pageRoute";
 			packageProductDependencies = (
+				19BB146E2F55708B002E872D /* MessageKit */,
 			);
 			productName = "search-pageRoute";
 			productReference = 19D1293C2F288EB200B6F32B /* search-pageRoute.app */;
@@ -107,6 +115,9 @@
 			);
 			mainGroup = 19D129332F288EB200B6F32B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				19BB146D2F55708B002E872D /* XCRemoteSwiftPackageReference "MessageKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 19D1293D2F288EB200B6F32B /* Products */;
 			projectDirPath = "";
@@ -146,7 +157,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 638HMB96TT;
+				DEVELOPMENT_TEAM = QZ4U8TA4U3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
@@ -184,7 +195,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 638HMB96TT;
+				DEVELOPMENT_TEAM = QZ4U8TA4U3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
@@ -355,6 +366,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		19BB146D2F55708B002E872D /* XCRemoteSwiftPackageReference "MessageKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MessageKit/MessageKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		19BB146E2F55708B002E872D /* MessageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 19BB146D2F55708B002E872D /* XCRemoteSwiftPackageReference "MessageKit" */;
+			productName = MessageKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 19D129342F288EB200B6F32B /* Project object */;
 }
