@@ -10,6 +10,11 @@ struct PlantQuestionSession {
 
     // injected once from PlantDetailViewController
     let plantId: String
+    
+    var fertilizingAnswer: String?
+    var lastFertilizedDate: Date?
+    var pruningAnswer: String?
+    var lastPrunedDate: Date?
 
     // 🔹 direct mappings (user choices)
     var siteName: String?

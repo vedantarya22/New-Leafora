@@ -32,6 +32,8 @@ class PlantDetailViewController_New: UIViewController {
     // Stats and care data - populated from JSON
     private var statsData: [(icon: String, title: String, value: String, color: UIColor)] = []
     private var careItems: [(icon: String, title: String, steps: String, color: UIColor)] = []
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -289,7 +291,11 @@ class PlantDetailViewController_New: UIViewController {
 
     private func setupCollectionView() {
         guard collectionView != nil else { return }
-
+        collectionView.register(
+            UINib(nibName: "DeletePlantFooterView", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+            withReuseIdentifier: "DeleteFooter"
+        )
         // Register all cells
         collectionView.register(UINib(nibName: "HeroImageCell", bundle: nil),
                                forCellWithReuseIdentifier: "HeroImageCell")
@@ -306,6 +312,54 @@ class PlantDetailViewController_New: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.collectionViewLayout = createLayout()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        // Only show footer on the last section
+        if section == Section.careGuide.rawValue {
+            return CGSize(width: collectionView.bounds.width, height: 100)
+        }
+        return .zero
+    }
+    
+    private func showDeleteOptions() {
+        guard let userPlant = userPlant else { return }
+        
+        let count = countPlantsOfType(plantId: userPlant.plantId)
+        
+        // ✅ Only 1 plant — show simple confirmation instead of action sheet
+        if count == 1 {
+            let alert = UIAlertController(title: "Remove Plant", message: "Are you sure you want to remove this plant?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Remove", style: .destructive) { [weak self] _ in
+                PlantStore.shared.removePlant(by: userPlant.id)
+                if let index = SiteStore.shared.sites.firstIndex(where: { $0.id == userPlant.siteID }) {
+                    SiteStore.shared.sites[index].plantCount = PlantStore.shared.plants(for: userPlant.siteID).count
+                }
+                self?.navigationController?.popViewController(animated: true)
+            })
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            present(alert, animated: true)
+            return
+        }
+        
+        // ✅ Multiple plants — show action sheet with options
+        let alert = UIAlertController(title: "Remove Plant", message: "Choose an action", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Remove 1 Plant", style: .default) { [weak self] _ in
+            PlantStore.shared.removePlant(by: userPlant.id)
+            if let index = SiteStore.shared.sites.firstIndex(where: { $0.id == userPlant.siteID }) {
+                SiteStore.shared.sites[index].plantCount = PlantStore.shared.plants(for: userPlant.siteID).count
+            }
+            self?.navigationController?.popViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "Remove All (\(count))", style: .destructive) { [weak self, count] _ in
+            PlantStore.shared.removeAllPlants(plantId: userPlant.plantId, siteID: userPlant.siteID)
+            if let index = SiteStore.shared.sites.firstIndex(where: { $0.id == userPlant.siteID }) {
+                SiteStore.shared.sites[index].plantCount = PlantStore.shared.plants(for: userPlant.siteID).count
+            }
+            self?.navigationController?.popViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
     
     // MARK: - Layout Configuration
@@ -390,7 +444,16 @@ class PlantDetailViewController_New: UIViewController {
             elementKind: UICollectionView.elementKindSectionHeader,
             alignment: .top
         )
-        section.boundarySupplementaryItems = [header]
+        let footerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(100))
+        
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: footerSize,
+                elementKind: UICollectionView.elementKindSectionFooter,
+                alignment: .bottom
+            )
+        section.boundarySupplementaryItems = [header, footer]
         
         return section
     }
@@ -449,10 +512,21 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "DeleteFooter", for: indexPath) as! DeletePlantFooterView
+            
+            footer.onDeleteTapped = { [weak self] in
+                self?.showDeleteOptions()
+            }
+            return footer
+        }
+        
+        
         guard kind == UICollectionView.elementKindSectionHeader,
               let sectionType = Section(rawValue: indexPath.section),
               !sectionType.title.isEmpty else {
             return UICollectionReusableView()
+            
         }
         
         let header = collectionView.dequeueReusableSupplementaryView(
