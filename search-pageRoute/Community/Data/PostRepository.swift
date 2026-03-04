@@ -198,6 +198,13 @@ class PostRepository {
         notifyPostUpdate(postId: postId)
     }
     
+    func addComment(to postId: String, comment: Comment) {
+        guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
+        posts[index].comments.append(comment)
+        notifyUpdate()
+        notifyPostUpdate(postId: postId)
+    }
+    
     func addNewPost(caption: String, image: UIImage, completion: @escaping (Bool) -> Void) {
         guard let currentUser = UserSession.shared.currentUser else {
             completion(false)
