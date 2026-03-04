@@ -178,6 +178,10 @@ final class PlantStore: ObservableObject {
         print("🗑️ Removed \(removedCount) plants of type:", plantId)
     }
     
+    func removeAllPlants(for siteID: UUID) {
+        plants.removeAll { $0.siteID == siteID }
+        print("🗑️ Removed all plants for site:", siteID)
+    }
   
 
 }

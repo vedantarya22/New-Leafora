@@ -17,15 +17,8 @@ class onboardingViewController: UIViewController {
     
     // MARK: - Properties
     private var currentPage = 0
-    @IBOutlet weak var pageControl: UIPageControl! // Added IBOutlet for PageControl
+    @IBOutlet weak var pageControl: UIPageControl!
     private let gradientLayer = CAGradientLayer.backgroundGreen()
-    
-    // Data Model
-//    struct OnboardingSlide {
-//        let title: String
-//        let description: String
-//        let imageName: String
-//    }
     
     private let slides: [OnboardingSlide] = [
         OnboardingSlide(
@@ -35,7 +28,7 @@ class onboardingViewController: UIViewController {
         ),
         OnboardingSlide(
             title: "Care, Personalized for Every Plant",
-            description: "Smart insights adapt to each plant’s needs, helping them grow better with less effort.",
+            description: "Smart insights adapt to each plant's needs, helping them grow better with less effort.",
             imageName: "Screen2"
         ),
         OnboardingSlide(
@@ -48,27 +41,22 @@ class onboardingViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupPageControl() 
+        setupPageControl()
         setupGestures()
         updateUI(animated: false)
-        
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
-    
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
     
-    
     // MARK: - Setup
     private func setupPageControl() {
         pageControl.numberOfPages = slides.count
         pageControl.currentPage = 0
-        // Styling moved to Storyboard
     }
-
     
     private func setupGestures() {
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
@@ -81,25 +69,22 @@ class onboardingViewController: UIViewController {
     }
     
     // MARK: - Actions
-    @objc private func nextButtonTapped() {
+    @IBAction func nextButtonTapped() {
         if currentPage < slides.count - 1 {
             currentPage += 1
             updateUI(animated: true)
         } else {
-            // Already on last screen, user finished onboarding
-            print("Onboarding Finished! Presenting Questions...")
+            // Mark onboarding as complete so it won't show again
+            UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
             
-            let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
-            // Navigate to Pre-Questions Screen
-            if let loginVC = storyboard.instantiateViewController(withIdentifier: "loginVC") as? loginViewController {
-                 if let nav = navigationController {
-                     nav.pushViewController(loginVC, animated: true)
-//                 } else {
-//                     navigationController?.pushViewController(loginVC, animated: true)
-                 }
-            } else {
-                print("Could not instantiate preQuestionsVC. Check Storyboard ID.")
+            // Navigate to the Main storyboard's initial view controller (your Home page)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            guard let homeVC = storyboard.instantiateInitialViewController() else {
+                print("Could not instantiate initial view controller from Main storyboard.")
+                return
             }
+            homeVC.modalPresentationStyle = .fullScreen
+            present(homeVC, animated: true, completion: nil)
         }
     }
     
@@ -121,25 +106,15 @@ class onboardingViewController: UIViewController {
     private func updateUI(animated: Bool, transitionSubtype: CATransitionSubtype? = nil) {
         let slide = slides[currentPage]
         
-        // Update Page Control
         pageControl.currentPage = currentPage
         
-        // Update Content
         if animated {
             let transition = CATransition()
             transition.duration = 0.3
             transition.type = .push
-            
-            // Default to .fromRight if not specified (e.g. Next button)
             transition.subtype = transitionSubtype ?? .fromRight
-            
             transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
             
-            // Apply transition to specific container views if possible, or individual views
-            // Applying to self.view works but animates the whole screen including background
-            // Let's apply cross dissolve to text/images for a smoother feel without jarring whole-screen movement if background is static
-            
-            // Actually, user asked for "smooth flow". A push transition on the content views looks like pages turning.
             functionalityPic.layer.add(transition, forKey: nil)
             functionalityTitle.layer.add(transition, forKey: nil)
             functionalityDesc.layer.add(transition, forKey: nil)
@@ -149,7 +124,6 @@ class onboardingViewController: UIViewController {
         functionalityDesc.text = slide.description
         functionalityPic.image = UIImage(named: slide.imageName)
         
-        // Update Button Text
         let buttonTitle = (currentPage == slides.count - 1) ? "Get Started" : "Next"
         nextButton.setTitle(buttonTitle, for: .normal)
     }

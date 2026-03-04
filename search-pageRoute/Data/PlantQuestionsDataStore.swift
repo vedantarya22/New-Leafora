@@ -28,6 +28,7 @@ class DataStore {
     
     
     
+    
     var plantLightOptions: [PlantLightOption] = [
         PlantLightOption(image: "sun.max.fill", light: "Full Sun"),
         PlantLightOption(image: "cloud.sun.fill", light: "Part sun,part shade"),
@@ -62,7 +63,31 @@ class DataStore {
     func getWateringOptions() -> [OptionItem] {
         return wateringOptions
     }
-    
+
+    var fertilizingOptions: [OptionItem] = [
+        OptionItem(title: "Today"),
+        OptionItem(title: "Yesterday"),
+        OptionItem(title: "About 1 week ago"),
+        OptionItem(title: "About 1 month ago"),
+        OptionItem(title: "Never")
+    ]
+
+    func getFertilizingOptions() -> [OptionItem] {
+        return fertilizingOptions
+    }
+
+    var pruningOptions: [OptionItem] = [
+        OptionItem(title: "Recently (last week)"),
+        OptionItem(title: "About 1 month ago"),
+        OptionItem(title: "About 3 months ago"),
+        OptionItem(title: "6 months ago or more"),
+        OptionItem(title: "Never pruned")
+    ]
+
+    func getPruningOptions() -> [OptionItem] {
+        return pruningOptions
+    }
+
 }
 
 var dataStore = DataStore()

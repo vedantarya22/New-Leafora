@@ -354,12 +354,174 @@ this plant?</string>
                     <connections>
                         <outlet property="nextButton" destination="Uje-8p-Tcr" id="pp1-Vg-xEJ"/>
                         <outlet property="optionsCollectionView" destination="rZ1-EZ-lRg" id="9gy-XP-EHr"/>
-                        <segue destination="fIg-u3-lFd" kind="show" identifier="toNextScreen" id="0rt-l6-bSG"/>
+                        <segue destination="BAG-M1-Xc1" kind="show" identifier="toNextScreen" id="0rt-l6-bSG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tHc-sV-Jxu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="7199" y="92"/>
+        </scene>
+        <!--Plant Fertilizing View Controller-->
+        <scene sceneID="pl5-ke-2GS">
+            <objects>
+                                <viewController id="Cry-er-gda" customClass="PlantFertilizingViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wlb-o1-hxH">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="UoF-xQ-djE">
+                                <rect key="frame" x="16" y="279" width="361" height="405"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="3f5-my-oEr">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="727-4p-lxb" customClass="PlantRepotCollectionViewCell" customModule="search_pageRoute" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="K7y-FV-m4p">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frt-LB-001">
+                                <rect key="frame" x="16" y="172" width="361" height="67"/>
+                                <string key="text">When did you last fertilize this plant?</string>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.857" translatesAutoresizingMaskIntoConstraints="NO" id="frt-PV-002">
+                                <rect key="frame" x="36" y="714" width="321" height="4"/>
+                                <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 6 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frt-SL-003">
+                                <rect key="frame" x="16" y="738" width="361" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="EsJ-OZ-ZiN"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="frt-SL-003" firstAttribute="leading" secondItem="EsJ-OZ-ZiN" secondAttribute="leading" constant="16" id="frt-C-001"/>
+                            <constraint firstItem="UoF-xQ-djE" firstAttribute="top" secondItem="frt-LB-001" secondAttribute="bottom" constant="40" id="frt-C-002"/>
+                            <constraint firstItem="frt-PV-002" firstAttribute="top" secondItem="UoF-xQ-djE" secondAttribute="bottom" constant="30" id="frt-C-003"/>
+                            <constraint firstItem="frt-PV-002" firstAttribute="leading" secondItem="EsJ-OZ-ZiN" secondAttribute="leading" constant="36" id="frt-C-004"/>
+                            <constraint firstItem="UoF-xQ-djE" firstAttribute="leading" secondItem="EsJ-OZ-ZiN" secondAttribute="leading" constant="16" id="frt-C-005"/>
+                            <constraint firstItem="frt-LB-001" firstAttribute="top" secondItem="EsJ-OZ-ZiN" secondAttribute="top" id="frt-C-006"/>
+                            <constraint firstItem="frt-SL-003" firstAttribute="top" secondItem="frt-PV-002" secondAttribute="bottom" constant="20" id="frt-C-007"/>
+                            <constraint firstItem="frt-LB-001" firstAttribute="leading" secondItem="EsJ-OZ-ZiN" secondAttribute="leading" constant="16" id="frt-C-008"/>
+                            <constraint firstItem="EsJ-OZ-ZiN" firstAttribute="trailing" secondItem="UoF-xQ-djE" secondAttribute="trailing" constant="16" id="frt-C-009"/>
+                            <constraint firstItem="EsJ-OZ-ZiN" firstAttribute="bottom" secondItem="UoF-xQ-djE" secondAttribute="bottom" constant="100" id="frt-C-010"/>
+                            <constraint firstItem="EsJ-OZ-ZiN" firstAttribute="trailing" secondItem="frt-SL-003" secondAttribute="trailing" constant="16" id="frt-C-011"/>
+                            <constraint firstItem="EsJ-OZ-ZiN" firstAttribute="trailing" secondItem="frt-PV-002" secondAttribute="trailing" constant="36" id="frt-C-012"/>
+                            <constraint firstItem="EsJ-OZ-ZiN" firstAttribute="trailing" secondItem="frt-LB-001" secondAttribute="trailing" constant="16" id="frt-C-013"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="hYe-dO-EFV">
+                        <barButtonItem key="rightBarButtonItem" title="Next" id="Ot8-Q4-u75">
+                            <connections>
+                                <action selector="nextButtonTapped:" destination="Cry-er-gda" id="frt-AC-001"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="nextButton" destination="Ot8-Q4-u75" id="t6r-FK-0QA"/>
+                        <outlet property="optionsCollectionView" destination="UoF-xQ-djE" id="ajE-Bu-AtV"/>
+                        <segue destination="fIg-u3-lFd" kind="show" identifier="toNextScreen" id="frt-z2-fAB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kde-ZP-nGU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="8016.0305343511445" y="830.98591549295782"/>
+        </scene>
+        <!--Plant Pruning View Controller-->
+        <scene sceneID="SYT-Ni-d9H">
+            <objects>
+                                <viewController id="BAG-M1-Xc1" customClass="PlantPruningViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Y1c-JB-sap">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="fpt-PP-aP1">
+                                <rect key="frame" x="16" y="279" width="361" height="405"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="qIh-gj-ret">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="LMN-hz-MqJ" customClass="PlantRepotCollectionViewCell" customModule="search_pageRoute" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="JCr-oi-203">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prn-LB-001">
+                                <rect key="frame" x="16" y="172" width="361" height="67"/>
+                                <string key="text">When did you last prune this plant?</string>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.714" translatesAutoresizingMaskIntoConstraints="NO" id="prn-PV-002">
+                                <rect key="frame" x="36" y="714" width="321" height="4"/>
+                                <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 5 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prn-SL-003">
+                                <rect key="frame" x="16" y="738" width="361" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Gcc-sG-VHQ"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="prn-SL-003" firstAttribute="leading" secondItem="Gcc-sG-VHQ" secondAttribute="leading" constant="16" id="prn-C-001"/>
+                            <constraint firstItem="fpt-PP-aP1" firstAttribute="top" secondItem="prn-LB-001" secondAttribute="bottom" constant="40" id="prn-C-002"/>
+                            <constraint firstItem="prn-PV-002" firstAttribute="top" secondItem="fpt-PP-aP1" secondAttribute="bottom" constant="30" id="prn-C-003"/>
+                            <constraint firstItem="prn-PV-002" firstAttribute="leading" secondItem="Gcc-sG-VHQ" secondAttribute="leading" constant="36" id="prn-C-004"/>
+                            <constraint firstItem="fpt-PP-aP1" firstAttribute="leading" secondItem="Gcc-sG-VHQ" secondAttribute="leading" constant="16" id="prn-C-005"/>
+                            <constraint firstItem="prn-LB-001" firstAttribute="top" secondItem="Gcc-sG-VHQ" secondAttribute="top" id="prn-C-006"/>
+                            <constraint firstItem="prn-SL-003" firstAttribute="top" secondItem="prn-PV-002" secondAttribute="bottom" constant="20" id="prn-C-007"/>
+                            <constraint firstItem="prn-LB-001" firstAttribute="leading" secondItem="Gcc-sG-VHQ" secondAttribute="leading" constant="16" id="prn-C-008"/>
+                            <constraint firstItem="Gcc-sG-VHQ" firstAttribute="trailing" secondItem="fpt-PP-aP1" secondAttribute="trailing" constant="16" id="prn-C-009"/>
+                            <constraint firstItem="Gcc-sG-VHQ" firstAttribute="bottom" secondItem="fpt-PP-aP1" secondAttribute="bottom" constant="100" id="prn-C-010"/>
+                            <constraint firstItem="Gcc-sG-VHQ" firstAttribute="trailing" secondItem="prn-SL-003" secondAttribute="trailing" constant="16" id="prn-C-011"/>
+                            <constraint firstItem="Gcc-sG-VHQ" firstAttribute="trailing" secondItem="prn-PV-002" secondAttribute="trailing" constant="36" id="prn-C-012"/>
+                            <constraint firstItem="Gcc-sG-VHQ" firstAttribute="trailing" secondItem="prn-LB-001" secondAttribute="trailing" constant="16" id="prn-C-013"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="uRQ-O6-qOo">
+                        <barButtonItem key="rightBarButtonItem" title="Next" id="SgC-Zh-DeN">
+                            <connections>
+                                <action selector="nextButtonTapped:" destination="BAG-M1-Xc1" id="prn-AC-001"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="nextButton" destination="SgC-Zh-DeN" id="NZq-mC-FLK"/>
+                        <outlet property="optionsCollectionView" destination="fpt-PP-aP1" id="k1I-LE-xg9"/>
+                        <segue destination="Cry-er-gda" kind="show" identifier="toNextScreen" id="pqR-3k-mNW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ma4-PG-KSc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="9785.4961832061072" y="828.87323943661977"/>
         </scene>
         <!--PlantImage-->
         <scene sceneID="ZIE-Gl-ArG">
@@ -627,6 +789,42 @@ garden</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vhV-bU-6hs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3720" y="92"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="UJI-bC-xie">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6mZ-HP-T8e" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="JmT-Js-INu">
+                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Cry-er-gda" kind="relationship" relationship="rootViewController" id="x2a-ju-1w2"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kHd-Ww-4B4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7089.3129770992364" y="830.98591549295782"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Pnd-mn-FrO">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="wGs-Yf-p3D" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gLo-kI-QAw">
+                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BAG-M1-Xc1" kind="relationship" relationship="rootViewController" id="nPe-V8-OyT"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y4j-pm-TWf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="8858.778625954199" y="828.87323943661977"/>
         </scene>
     </scenes>
     <resources>
