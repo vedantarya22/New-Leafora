@@ -26,7 +26,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     // MARK: - Lifecycle
 
     // MARK: - Data Properties
-//    
+//
 //    private let dataProvider = JSONLoader()
     private var allPlants: [Plant] = []
     private var filteredPlants: [Plant] = []
@@ -59,12 +59,12 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //        // 1. Define the Colors
 //        let topColor = UIColor(red: 0.80, green: 0.93, blue: 0.80, alpha: 1.0).cgColor
 //        let bottomColor = UIColor.white.cgColor
-//        
+//
 //        // 2. Setup the Layer
 //        gradientLayer.colors = [topColor, bottomColor]
 //        gradientLayer.locations = [0.0, 0.6] // Green stops at 60%, rest is white
 //        gradientLayer.frame = view.bounds
-//        
+//
 //        // 3. Add it behind everything
 //        view.layer.insertSublayer(gradientLayer, at: 0)
 //    }
@@ -243,7 +243,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         }
         
         // If no results (or "All"), maybe reset? For now strict filtering.
-        // If you want "All" to reset, handle that case. 
+        // If you want "All" to reset, handle that case.
         // Assuming strict filter for now.
         
         collectionView.reloadData()
@@ -303,3 +303,76 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - Quick Add
+
+extension SearchViewController {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        contextMenuConfigurationForItemAt indexPath: IndexPath,
+                        point: CGPoint) -> UIContextMenuConfiguration? {
+        let plant = filteredPlants[indexPath.row]
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let addAction = UIAction(
+                title: "Add to Garden",
+                image: UIImage(systemName: "plus.circle.fill"),
+                attributes: []
+            ) { [weak self] _ in
+                self?.showSitePickerForQuickAdd(plant: plant)
+            }
+            return UIMenu(title: plant.plantName, children: [addAction])
+        }
+    }
+
+    private func showSitePickerForQuickAdd(plant: Plant) {
+        let sites = SiteStore.shared.sites
+        let sheet = UIAlertController(
+            title: "Add \(plant.plantName) to...",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        if sites.isEmpty {
+            sheet.message = "You have no sites yet. Go to My Garden to add one."
+        } else {
+            for site in sites {
+                sheet.addAction(UIAlertAction(title: site.name, style: .default) { [weak self] _ in
+                    self?.quickAddPlant(plant, to: site)
+                })
+            }
+        }
+        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(sheet, animated: true)
+    }
+
+    private func quickAddPlant(_ plant: Plant, to site: MyGardenSite) {
+        let userPlant = UserPlant(
+            id: UUID(),
+            plantId: plant.plantId,
+            siteName: site.name,
+            siteID: site.id,
+            imageData: nil,
+            lightRequirement: nil,
+            watering: nil,
+            repotting: nil,
+            quantity: 1,
+            isAddedToGarden: true,
+            createdAt: Date(),
+            lastWatered: nil,
+            lastPruned: nil,
+            lastFertilized: nil,
+            lastRepotted: nil
+        )
+        PlantStore.shared.addPlant(userPlant)
+        print("✅ Quick-added \(plant.plantName) to \(site.name)")
+        showQuickAddSuccess(plantName: plant.plantName, siteName: site.name)
+    }
+
+    private func showQuickAddSuccess(plantName: String, siteName: String) {
+        let alert = UIAlertController(
+            title: "🌿 Plant Added!",
+            message: "\(plantName) has been added to \(siteName).\n\nVisit the plant in My Garden to answer care questions.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Got it", style: .default))
+        present(alert, animated: true)
+    }
+}

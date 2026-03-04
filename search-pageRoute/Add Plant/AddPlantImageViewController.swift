@@ -188,6 +188,8 @@ class AddPlantImageViewController: UIViewController,
         
         let lastWaterDate = session.lastWateredDate
         let lastRepotDate = session.lastRepottedDate
+        let lastPruneDate = session.lastPrunedDate
+        let lastFertDate = session.lastFertilizedDate
 
         for index in 1...plantCountToAdd {
                let userPlant = UserPlant(
@@ -205,8 +207,8 @@ class AddPlantImageViewController: UIViewController,
                    
                    // Smart timestamps
                    lastWatered: lastWaterDate,
-                   lastPruned: nil,
-                   lastFertilized: nil,
+                   lastPruned: lastPruneDate,
+                   lastFertilized: lastFertDate,
                    lastRepotted: lastRepotDate
                )
                

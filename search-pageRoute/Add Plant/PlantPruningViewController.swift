@@ -41,7 +41,7 @@ class PlantPruningViewController: UIViewController, UICollectionViewDelegateFlow
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toNextScreen" {
             // ✅ Change to whatever your final screen is after pruning
-            if let nextVC = segue.destination as? PlantSiteViewController {
+            if let nextVC = segue.destination as? PlantFertilizingViewController {
                 nextVC.session = self.session
             }
         }

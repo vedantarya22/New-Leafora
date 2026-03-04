@@ -49,7 +49,7 @@ class PlantWaterViewController: UIViewController,UICollectionViewDelegateFlowLay
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toNextScreen" {
-            if let nextVC = segue.destination as? AddPlantImageViewController{ // Change to your actual next VC class
+            if let nextVC = segue.destination as? PlantPruningViewController{ // Change to your actual next VC class
                 nextVC.session = self.session
             }
         }

@@ -40,7 +40,7 @@ class PlantFertilizingViewController: UIViewController, UICollectionViewDelegate
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toNextScreen" {
-            if let nextVC = segue.destination as? PlantPruningViewController {
+            if let nextVC = segue.destination as? AddPlantImageViewController {
                 nextVC.session = self.session
             }
         }
