@@ -205,6 +205,11 @@ class PostRepository {
         notifyPostUpdate(postId: postId)
     }
     
+    func deletePost(id: String) {
+        posts.removeAll { $0.id == id }
+        notifyUpdate()
+    }
+    
     func addNewPost(caption: String, image: UIImage, completion: @escaping (Bool) -> Void) {
         guard let currentUser = UserSession.shared.currentUser else {
             completion(false)

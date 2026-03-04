@@ -72,6 +72,11 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         collectionView.dataSource = self
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+    }
+    
     func checkIsCurrentUser() {
         //Fetch the "Logged In" user
         if let passedUser = self.user {
