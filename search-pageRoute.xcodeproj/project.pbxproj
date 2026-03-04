@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		19BB146F2F55708B002E872D /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 19BB146E2F55708B002E872D /* MessageKit */; };
-		19D54EAA2F55643A00AA12B3 /* BotanicalAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D54EA92F55643A00AA12B3 /* BotanicalAction.swift */; };
-		19D54EAC2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D54EAB2F5564B100AA12B3 /* UIViewController+ActionSheetSwizzle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,7 +155,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QZ4U8TA4U3;
+				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
@@ -195,7 +193,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QZ4U8TA4U3;
+				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";

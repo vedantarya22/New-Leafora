@@ -15,6 +15,12 @@ class PlantQuantityViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // ✏️ Pre-select existing quantity in edit mode
+        if session.isEditMode, let existingQty = session.plantCount, existingQty >= 1, existingQty <= 10 {
+            quantity = existingQty
+        }
+
         setupPicker()
         minusBtn.isHidden = true
         plusBtn.isHidden = true

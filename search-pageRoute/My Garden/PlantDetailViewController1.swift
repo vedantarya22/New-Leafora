@@ -48,6 +48,17 @@ class PlantDetailViewController_New: UIViewController {
         collectionView.backgroundView = nil
         setupNavigationBar()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // ✏️ Refresh userPlant data after returning from edit questionnaire
+        if let plantID = userPlant?.id,
+           let updated = PlantStore.shared.getPlant(by: plantID) {
+            userPlant = updated
+            loadPlantData()
+            collectionView.reloadData()
+        }
+    }
     
     // MARK: - Load Plant Data from JSON
     private func loadPlantData() {
@@ -287,6 +298,48 @@ class PlantDetailViewController_New: UIViewController {
             title = "Plant Details"
         }
         navigationController?.navigationBar.prefersLargeTitles = false
+
+        // ✏️ Edit button in nav bar
+        let editButton = UIBarButtonItem(
+            image: UIImage(systemName: "square.and.pencil"),
+            style: .plain,
+            target: self,
+            action: #selector(editButtonTapped)
+        )
+        navigationItem.rightBarButtonItem = editButton
+    }
+
+    // MARK: - Edit Questionnaire
+    @objc private func editButtonTapped() {
+        guard let userPlant = userPlant else { return }
+
+        // Build a session from existing UserPlant data
+        var session = PlantQuestionSession(plantId: userPlant.plantId)
+        session.isEditMode = true
+        session.editingPlantID = userPlant.id
+        session.siteName = userPlant.siteName
+        session.plantLight = userPlant.lightRequirement
+        session.wateringAnswer = userPlant.watering
+        session.repottingAnswer = userPlant.repotting
+        session.plantCount = userPlant.quantity
+        session.imageData = userPlant.imageData
+        session.lastWateredDate = userPlant.lastWatered
+        session.lastRepottedDate = userPlant.lastRepotted
+        session.lastPrunedDate = userPlant.lastPruned
+        session.lastFertilizedDate = userPlant.lastFertilized
+
+        // Find the site icon from SiteStore
+        if let site = SiteStore.shared.sites.first(where: { $0.id == userPlant.siteID }) {
+            session.siteIcon = site.icon
+        }
+
+        // Open questionnaire from AddPlant storyboard
+        let storyboard = UIStoryboard(name: "AddPlant", bundle: nil)
+        if let siteVC = storyboard.instantiateViewController(withIdentifier: "PlantSiteView") as? PlantSiteViewController {
+            siteVC.session = session
+            siteVC.plantId = userPlant.plantId
+            navigationController?.pushViewController(siteVC, animated: true)
+        }
     }
 
     private func setupCollectionView() {

@@ -28,10 +28,15 @@ class AddPlantImageViewController: UIViewController,
         // Do any additional setup after loading the view.
         setupImageTapGesture()
         
-        setupImagePlaceholder()
-        
-        //        saveButton.tintColor = UIColor.
-        //saveButton.backgroundColor = .green
+        // ✏️ In edit mode, show existing image if available
+        if session.isEditMode, let existingData = session.imageData, let existingImage = UIImage(data: existingData) {
+            plantImageView.layer.cornerRadius = 16
+            plantImageView.image = existingImage
+            plantImageView.contentMode = .scaleAspectFill
+            plantImageView.clipsToBounds = true
+        } else {
+            setupImagePlaceholder()
+        }
     }
     
     // MARK: - Add Tap Gesture to ImageView
@@ -144,7 +149,6 @@ class AddPlantImageViewController: UIViewController,
     }
     
     @IBAction func saveButtonTapped(_ sender: Any) {
-        //        performSegue(withIdentifier: "showPlantAddedSuccess", sender: nil)
         guard
             let siteName = session.siteName,
             let siteIcon = session.siteIcon
@@ -152,10 +156,55 @@ class AddPlantImageViewController: UIViewController,
             print("Missing site info in session")
             return
         }
-        
-        //        saveButton.backgroundColor = .red
-        
-        //        let siteColor = UIColor.systemGreen  // can change later
+
+        // ✏️ EDIT MODE: Update existing plant instead of creating new ones
+        if session.isEditMode, let editingID = session.editingPlantID {
+            guard var existingPlant = PlantStore.shared.getPlant(by: editingID) else {
+                print("❌ Could not find plant to edit with ID:", editingID)
+                return
+            }
+
+            // Update the site if changed
+            if existingPlant.siteName != siteName {
+                // Ensure new site exists
+                if !siteStore.sites.contains(where: { $0.name.lowercased() == siteName.lowercased() }) {
+                    siteStore.addSite(name: siteName, icon: siteIcon)
+                }
+                if let newSite = siteStore.sites.first(where: { $0.name == siteName }) {
+                    existingPlant.siteName = siteName
+                    existingPlant.siteID = newSite.id
+                }
+            }
+
+            // Update fields from session
+            existingPlant.imageData = session.imageData
+            existingPlant.lightRequirement = session.plantLight
+            existingPlant.watering = session.wateringAnswer
+            existingPlant.repotting = session.repottingAnswer
+            existingPlant.lastWatered = session.lastWateredDate
+            existingPlant.lastRepotted = session.lastRepottedDate
+            existingPlant.lastPruned = session.lastPrunedDate
+            existingPlant.lastFertilized = session.lastFertilizedDate
+
+            PlantStore.shared.updatePlant(existingPlant)
+            print("✅ Plant updated in edit mode: ID=\(editingID)")
+
+            // Pop back to the plant detail screen
+            if let navController = navigationController {
+                // Find the PlantDetailViewController_New in the stack and pop to it
+                for vc in navController.viewControllers {
+                    if vc is PlantDetailViewController_New {
+                        navController.popToViewController(vc, animated: true)
+                        return
+                    }
+                }
+                // Fallback: pop to root if detail VC not found
+                navController.popToRootViewController(animated: true)
+            }
+            return
+        }
+
+        // ── NORMAL ADD MODE (unchanged) ──
         let plantCountToAdd = session.plantCount ?? 1
         
         print("Adding \(plantCountToAdd) plants to: \(siteName)")
@@ -164,23 +213,17 @@ class AddPlantImageViewController: UIViewController,
         if !siteStore.sites.contains(where: {
             $0.name.lowercased() == siteName.lowercased()
         }) {
-            
-            // Create new site
             siteStore.addSite(
                 name: siteName,
                 icon: siteIcon
             )
-            
             print("New site saved:", siteName)
-            
         } else {
             print(" Site already exists, not creating again")
-            
         }
         
         siteStore.addPlants(to: siteName, count: plantCountToAdd)
         
-        //  Get the saved site (to get its ID)
         guard
             let savedSite = siteStore.sites.first(where: { $0.name == siteName }
             )
@@ -193,7 +236,7 @@ class AddPlantImageViewController: UIViewController,
 
         for index in 1...plantCountToAdd {
                let userPlant = UserPlant(
-                   id: UUID(),  // ✅ Each plant gets unique ID
+                   id: UUID(),
                    plantId: session.plantId,
                    siteName: siteName,
                    siteID: savedSite.id,
@@ -201,11 +244,9 @@ class AddPlantImageViewController: UIViewController,
                    lightRequirement: session.plantLight,
                    watering: session.wateringAnswer,
                    repotting: session.repottingAnswer,
-                   quantity: 1,  // ✅ Changed: Each object represents 1 plant
+                   quantity: 1,
                    isAddedToGarden: true,
                    createdAt: Date(),
-                   
-                   // Smart timestamps
                    lastWatered: lastWaterDate,
                    lastPruned: lastPruneDate,
                    lastFertilized: lastFertDate,
@@ -218,6 +259,5 @@ class AddPlantImageViewController: UIViewController,
 
         print("✅ All \(plantCountToAdd) plants saved for:", session.plantId)
         performSegue(withIdentifier: "showPlantAddedSuccess", sender: self)
-        
     }
 }

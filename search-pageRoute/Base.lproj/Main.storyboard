@@ -236,7 +236,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home" largeTitleDisplayMode="always" id="eoy-rg-qNT">
-                        <barButtonItem key="rightBarButtonItem" image="person.text.rectangle" catalog="system" id="ypw-Ns-KPr">
+                        <barButtonItem key="rightBarButtonItem" image="person.circle" catalog="system" id="ypw-Ns-KPr">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="9FG-zb-qLY" kind="presentation" id="cJw-my-soD"/>
@@ -495,7 +495,7 @@
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="leaf.fill" catalog="system" width="128" height="109"/>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
-        <image name="person.text.rectangle" catalog="system" width="128" height="93"/>
+        <image name="person.circle" catalog="system" width="128" height="93"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

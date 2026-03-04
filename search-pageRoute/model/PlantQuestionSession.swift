@@ -30,6 +30,10 @@ struct PlantQuestionSession {
     // 🌱 smart timestamps (NEW — for reminders & insights)
     var lastWateredDate: Date?
     var lastRepottedDate: Date?
+
+    // ✏️ Edit mode support
+    var isEditMode: Bool = false
+    var editingPlantID: UUID? = nil
 }
 
 

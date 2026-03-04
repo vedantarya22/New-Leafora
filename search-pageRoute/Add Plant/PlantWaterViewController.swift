@@ -23,7 +23,13 @@ class PlantWaterViewController: UIViewController,UICollectionViewDelegateFlowLay
         optionsCollectionView.dataSource = self
               optionsCollectionView.delegate = self
         registerCell()
-        
+
+        // ✏️ Pre-select existing watering answer in edit mode
+        if session.isEditMode, let existingAnswer = session.wateringAnswer {
+            if let index = buttonData.firstIndex(where: { $0.title == existingAnswer }) {
+                selectedIndex = IndexPath(row: index, section: 0)
+            }
+        }
 
         // Do any additional setup after loading the view.
     }

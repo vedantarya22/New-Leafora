@@ -41,6 +41,15 @@ class PlantSiteViewController: UIViewController,UICollectionViewDataSource,UICol
         if session == nil, let plantId = plantId {
                 session = PlantQuestionSession(plantId: plantId)
             }
+
+        // ✏️ Pre-select existing site in edit mode
+        if session.isEditMode, let existingSite = session.siteName {
+            if let index = buttondata.firstIndex(where: { $0.site == existingSite }) {
+                selectedIndex = IndexPath(row: index, section: 0)
+                selectedSite = existingSite
+                selectedIcon = buttondata[index].image
+            }
+        }
             
             print("PlantSiteViewController loaded with plantID:", plantId ?? "nil")
     }
