@@ -9,7 +9,7 @@ import Foundation
 
 class NetworkManager{
     static let shared = NetworkManager()
-    let baseURL = "https://plantappbackend-5mdh.onrender.com"
+    let baseURL = "https://plantappbackend-5mdh.onrender.com/api"
     
     var currentUserId : String = "" // to be set after creating test user
     
@@ -52,7 +52,19 @@ extension NetworkManager {
     
     func fetchAllPlants(completion: @escaping ([Plant]?) -> Void) {
         guard let url = URL(string: "\(baseURL)/plants") else { return }
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
+
+            // ✅ Add these debug prints
+            if let error = error {
+                print("❌ Network error: \(error.localizedDescription)")
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                print("📡 Status code: \(httpResponse.statusCode)")
+            }
+            if let data = data, let raw = String(data: data, encoding: .utf8) {
+                print("📦 Raw response: \(raw)")
+            }
+
             guard let data = data, error == nil else {
                 DispatchQueue.main.async { completion(nil) }
                 return

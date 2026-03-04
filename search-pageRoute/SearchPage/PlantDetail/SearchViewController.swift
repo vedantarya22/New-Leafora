@@ -70,9 +70,12 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //    }
     
     private func loadData() {
-        allPlants = JSONLoader.loadPlants(from: "plantData")
-        filteredPlants = allPlants
-        collectionView.reloadData()
+        PlantCatalogueCache.shared.getPlants { [weak self] plants in
+            guard let self = self else { return }
+            self.allPlants = plants
+            self.filteredPlants = plants
+            self.collectionView.reloadData()
+        }
     }
     
     // MARK: - UI Setup

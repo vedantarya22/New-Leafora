@@ -12,6 +12,10 @@ import UIKit
 final class PlantStore: ObservableObject {
 
     static let shared = PlantStore()
+    
+    func setPlants(_ newPlants: [UserPlant]) {
+        plants = newPlants
+    }
 
     // MARK: - Published Data
 
