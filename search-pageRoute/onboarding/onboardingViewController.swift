@@ -27,8 +27,8 @@ class onboardingViewController: UIViewController {
             imageName: "Screen1"
         ),
         OnboardingSlide(
-            title: "Care, Personalized for Every Plant",
-            description: "Smart insights adapt to each plant's needs, helping them grow better with less effort.",
+            title: "Visualize Your Dream Space",
+            description: "Use Augmented Reality to perfectly place plants in your room before you buy.",
             imageName: "Screen2"
         ),
         OnboardingSlide(

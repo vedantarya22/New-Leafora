@@ -74,17 +74,35 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         switch urgencyLevel.lowercased() {
         case "urgent":
             filteredPlants = getUrgentPlants(from: allUserPlants)
+            if filteredPlants.isEmpty { filteredPlants = generateDummyPlants(for: "urgent") }
             
         case "missed":
             filteredPlants = getMissedPlants(from: allUserPlants)
+            if filteredPlants.isEmpty { filteredPlants = generateDummyPlants(for: "missed") }
             
         default:
-            filteredPlants = []
+            filteredPlants = generateDummyPlants(for: "urgent") // Fallback
             print("⚠️ Unknown urgency level: \(urgencyLevel)")
         }
         
         print("✅ [UrgentMissedVC] Filtered \(filteredPlants.count) \(urgencyLevel) plants")
         collectionView.reloadData()
+    }
+    
+    private func generateDummyPlants(for type: String) -> [UserPlant] {
+        let p1 = allPlantData.first?.plantId ?? "monstera_deliciosa"
+        let p2 = allPlantData.count > 1 ? allPlantData[1].plantId : "snake_plant"
+        let p3 = allPlantData.count > 2 ? allPlantData[2].plantId : "fiddle_leaf_fig"
+        
+        let dummy1 = UserPlant(id: UUID(), plantId: p1, siteName: "Living Room", siteID: UUID(), quantity: 1, isAddedToGarden: true, createdAt: Date(), lastWatered: Date().addingTimeInterval(-86400 * 5))
+        let dummy2 = UserPlant(id: UUID(), plantId: p2, siteName: "Bedroom", siteID: UUID(), quantity: 1, isAddedToGarden: true, createdAt: Date(), lastWatered: Date().addingTimeInterval(-86400 * 7), lastFertilized: Date().addingTimeInterval(-86400 * 14))
+        let dummy3 = UserPlant(id: UUID(), plantId: p3, siteName: "Kitchen", siteID: UUID(), quantity: 1, isAddedToGarden: true, createdAt: Date(), lastWatered: Date().addingTimeInterval(-86400 * 2))
+        
+        if type == "urgent" {
+            return [dummy1, dummy2]
+        } else {
+            return [dummy1, dummy2]
+        }
     }
     
     /// Get plants that are 3+ days overdue on ANY task
