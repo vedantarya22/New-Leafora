@@ -1,4 +1,5 @@
 import UIKit
+import SDWebImage
 
 class PlantDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
@@ -131,7 +132,13 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeroImageCell", for: indexPath) as! HeroImageCell
-            cell.plantImageView.image = UIImage(named: plant.imageName)
+//            cell.plantImageView.image = UIImage(named: plant.imageName)
+            if let url = URL(string: plant.imageName) {
+                   cell.plantImageView.sd_setImage(
+                       with: url,
+                       placeholderImage: UIImage(systemName: "leaf.fill")
+                   )
+               }
             return cell
             
         case 1:
@@ -209,9 +216,26 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     }
     
     func loadSpecificPlant() {
-        let allPlants = JSONLoader.loadPlants(from: "plantData")
-        self.plants = [allPlants.first(where: { $0.plantId == plantId }) ?? allPlants[0]]
-        self.title = currentPlant?.plantName
-        collectionView.reloadData()
+       
+        
+        PlantCatalogueCache.shared.getPlants { [weak self] plants in
+            guard let self = self else { return }
+            
+            print(" Cache has \(plants.count) plants")
+            
+            if let found = plants.first(where: { $0.plantId == self.plantId }) {
+                print("✅ Found plant: \(found.plantName)")
+                print("🖼️ Image URL: \(found.imageName)")
+                print("💡 Light: \(found.lightRequirement.displayName)")
+                print("🌱 Difficulty: \(found.difficulty.displayName)")
+                self.plants = [found]
+            } else {
+                print("⚠️ Plant not found, loading first plant as fallback")
+                self.plants = [plants[0]]
+            }
+            
+            self.title = self.currentPlant?.plantName
+            self.collectionView.reloadData()
+        }
     }
 }

@@ -187,10 +187,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 
         // 1. Get the correct plant from the UI-backed array
         let selectedPlant = filteredPlants[indexPath.row]
-        
-
-        // 2. Pass the ID
-                navigateToPlantDetail(with: selectedPlant.plantId)
+          print(" Tapped: \(selectedPlant.plantName)")
+          print("PlantId: \(selectedPlant.plantId)")
+          navigateToPlantDetail(with: selectedPlant.plantId)
         
     
     }
