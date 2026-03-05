@@ -133,16 +133,33 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
         // Configure cell with user plant data (this loads plant details from JSON)
         cell.configure(userPlant: userPlant)
         
-        // Check if there are multiple plants of the same type in this site
+        // Check plants of this specific batch (same type + same date)
         let allPlantsInSite = PlantStore.shared.plants(for: site!.id)
-        let sameTypePlants = allPlantsInSite.filter { $0.plantId == userPlant.plantId }
         
-        // If multiple plants of same type, show count in the label
-        if sameTypePlants.count > 1 {
-            let allPlants = JSONLoader.loadPlants(from: "plantData")
-            if let plantName = allPlants.first(where: { $0.plantId == userPlant.plantId })?.plantName {
-                cell.plantLabel.text = "\(plantName) (×\(sameTypePlants.count))"
-            }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateKey = formatter.string(from: userPlant.createdAt)
+        
+        let sameBatchPlants = allPlantsInSite.filter {
+            $0.plantId == userPlant.plantId &&
+            formatter.string(from: $0.createdAt) == dateKey
+        }
+        
+        // Check if there are multiple batches of the same plant type (different dates)
+        let hasOtherBatches = allPlantsInSite.contains {
+            $0.plantId == userPlant.plantId &&
+            formatter.string(from: $0.createdAt) != dateKey
+        }
+        
+        // If we need to show dates, use a friendly format
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "MMM d"
+        let dateStr = displayFormatter.string(from: userPlant.createdAt)
+        
+        let allPlants = JSONLoader.loadPlants(from: "plantData")
+        if let plantName = allPlants.first(where: { $0.plantId == userPlant.plantId })?.plantName {
+            // Only show name
+            cell.plantLabel.text = plantName
         }
         
         return cell

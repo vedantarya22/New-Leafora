@@ -139,6 +139,20 @@ class PlantScanningViewController: UIViewController {
     
     private func showResults(_ suggestions: [PlantSuggestion]) {
         print("📱 Preparing to show results screen...")
+
+        // If top suggestion confidence is below 20%, treat as not a plant
+        if let top = suggestions.first, top.probability < 0.20 {
+            let alert = UIAlertController(
+                title: "Not Identified",
+                message: "We couldn't identify a plant in this image. Please try again with a clearer photo of the plant.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Try Again", style: .default) { [weak self] _ in
+                self?.dismiss(animated: true)
+            })
+            present(alert, animated: true)
+            return
+        }
         
         let resultsVC = PlantIdentificationResultsViewController(
             image: imageToScan,

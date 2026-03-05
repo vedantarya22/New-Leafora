@@ -33,6 +33,13 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
         // ✅ Load options into buttonData
         buttonData = dataStore.getPlantLightOptions()
 
+        // ✏️ Pre-select existing light in edit mode
+        if session.isEditMode, let existingLight = session.plantLight {
+            if let index = buttonData.firstIndex(where: { $0.light == existingLight }) {
+                selectedIndex = IndexPath(row: index, section: 0)
+            }
+        }
+
            // ✅ Reload collection view
            PlantLightCollectionView.reloadData()
 

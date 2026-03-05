@@ -74,7 +74,7 @@
                             <constraint firstItem="5GC-en-FX6" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="24" id="desc-ld-cst"/>
                             <constraint firstItem="5GC-en-FX6" firstAttribute="top" secondItem="X7r-bc-sCa" secondAttribute="bottom" constant="16" id="desc-tp-cst"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="5GC-en-FX6" secondAttribute="trailing" constant="24" id="desc-tr-cst"/>
-                            <constraint firstItem="sXn-Q5-fuW" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.4" id="img-ht-cst"/>
+                            <constraint firstItem="sXn-Q5-fuW" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.48" id="img-ht-cst"/>
                             <constraint firstItem="sXn-Q5-fuW" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="24" id="img-ld-cst"/>
                             <constraint firstItem="sXn-Q5-fuW" firstAttribute="top" secondItem="o7k-U9-icg" secondAttribute="bottom" constant="10" id="img-tp-cst"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="sXn-Q5-fuW" secondAttribute="trailing" constant="24" id="img-tr-cst"/>

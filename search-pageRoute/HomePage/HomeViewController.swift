@@ -139,7 +139,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 TaskOverviewInsight(
                     icon: "clock.fill",
                     title: "Missed Tasks",
-                    message: "3 plants need care soon",
+                    message: "2 plants need care soon",
                     level: .warning,
                     route: "Missed"
                 )
@@ -396,8 +396,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                   print("Garden tip tapped")
         case 1:
             // Tapped Urgent or Missed card
-            let allPlants = PlantStore.shared.allPlants()
-            let taskInsights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
+            let taskInsights = taskInsightsForHome()
             
             if indexPath.row < taskInsights.count {
                 let insight = taskInsights[indexPath.row]

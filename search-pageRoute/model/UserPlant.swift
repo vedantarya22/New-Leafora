@@ -9,11 +9,11 @@ struct UserPlant: Codable, Identifiable {
     let id : UUID
     let plantId: String
     var siteName: String
-    let  siteID: UUID
+    var siteID: UUID
     var imageData: Data?
     var lightRequirement: String?
-    let watering: String?
-    let repotting: String?
+    var watering: String?
+    var repotting: String?
     var quantity: Int = 1 // number of plants added
     
     

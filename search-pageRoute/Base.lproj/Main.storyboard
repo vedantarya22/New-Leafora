@@ -63,11 +63,11 @@
             </objects>
             <point key="canvasLocation" x="-1168.7022900763359" y="1562.6760563380283"/>
         </scene>
-        <!--Search-->
+        <!--Add-->
         <scene sceneID="pJl-kz-yEc">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cd9-em-9Ri" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Search" image="magnifyingglass" catalog="system" id="b6O-bq-RJg"/>
+                    <tabBarItem key="tabBarItem" title="Add" image="plus" catalog="system" id="b6O-bq-RJg"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="rPp-Aw-NCB">
                         <rect key="frame" x="0.0" y="118" width="393" height="106"/>
@@ -82,7 +82,7 @@
             </objects>
             <point key="canvasLocation" x="-1095.4198473282443" y="779.57746478873241"/>
         </scene>
-        <!--Search-->
+        <!--Add Plants-->
         <scene sceneID="ESl-lj-3Z0">
             <objects>
                 <viewController id="yoe-tp-dtu" customClass="SearchViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
@@ -121,7 +121,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="dsa-2t-DPT"/>
-                    <navigationItem key="navigationItem" title="Search" id="vdZ-Kn-6Ff"/>
+                    <navigationItem key="navigationItem" title="Add Plants" id="vdZ-Kn-6Ff"/>
                     <connections>
                         <segue destination="Qbd-IZ-3Zw" kind="presentation" id="8r5-2g-CDb"/>
                         <segue destination="BYZ-38-t0r" kind="show" id="WFw-tp-7dK"/>
@@ -236,7 +236,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home" largeTitleDisplayMode="always" id="eoy-rg-qNT">
-                        <barButtonItem key="rightBarButtonItem" image="person.text.rectangle" catalog="system" id="ypw-Ns-KPr">
+                        <barButtonItem key="rightBarButtonItem" image="person.circle" catalog="system" id="ypw-Ns-KPr">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="9FG-zb-qLY" kind="presentation" id="cJw-my-soD"/>
@@ -494,8 +494,8 @@
     <resources>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="leaf.fill" catalog="system" width="128" height="109"/>
-        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
-        <image name="person.text.rectangle" catalog="system" width="128" height="93"/>
+        <image name="person.circle" catalog="system" width="128" height="123"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
