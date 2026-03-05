@@ -47,9 +47,27 @@ class onboardingViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        addFloatingAnimation()
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
+    }
+    
+    private func addFloatingAnimation() {
+        let hover = CABasicAnimation(keyPath: "position.y")
+        hover.isAdditive = true
+        hover.fromValue = -15
+        hover.toValue = 15
+        hover.autoreverses = true
+        hover.duration = 2.5
+        hover.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        hover.repeatCount = .infinity
+        
+        functionalityPic.layer.add(hover, forKey: "hoverAnimation")
     }
     
     // MARK: - Setup
@@ -108,23 +126,70 @@ class onboardingViewController: UIViewController {
         
         pageControl.currentPage = currentPage
         
-        if animated {
-            let transition = CATransition()
-            transition.duration = 0.3
-            transition.type = .push
-            transition.subtype = transitionSubtype ?? .fromRight
-            transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            
-            functionalityPic.layer.add(transition, forKey: nil)
-            functionalityTitle.layer.add(transition, forKey: nil)
-            functionalityDesc.layer.add(transition, forKey: nil)
-        }
-        
-        functionalityTitle.text = slide.title
-        functionalityDesc.text = slide.description
-        functionalityPic.image = UIImage(named: slide.imageName)
-        
         let buttonTitle = (currentPage == slides.count - 1) ? "Get Started" : "Next"
-        nextButton.setTitle(buttonTitle, for: .normal)
+        UIView.transition(with: nextButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            self.nextButton.setTitle(buttonTitle, for: .normal)
+        }, completion: nil)
+        
+        if animated {
+            let isMovingRight = transitionSubtype == .fromRight
+            let translationX: CGFloat = isMovingRight ? 50 : -50
+            
+            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
+                self.functionalityPic.alpha = 0
+                self.functionalityPic.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                
+                self.functionalityTitle.alpha = 0
+                self.functionalityTitle.transform = CGAffineTransform(translationX: -translationX, y: 0)
+                
+                self.functionalityDesc.alpha = 0
+                self.functionalityDesc.transform = CGAffineTransform(translationX: -translationX, y: 0)
+            }) { _ in
+                self.functionalityTitle.text = slide.title
+                self.functionalityDesc.text = slide.description
+                self.functionalityPic.image = UIImage(named: slide.imageName)
+                
+                self.functionalityTitle.transform = CGAffineTransform(translationX: translationX, y: 0)
+                self.functionalityDesc.transform = CGAffineTransform(translationX: translationX, y: 0)
+                
+                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                    self.functionalityPic.alpha = 1
+                    self.functionalityPic.transform = .identity
+                    
+                    self.functionalityTitle.alpha = 1
+                    self.functionalityTitle.transform = .identity
+                    
+                    self.functionalityDesc.alpha = 1
+                    self.functionalityDesc.transform = .identity
+                }, completion: nil)
+            }
+        } else {
+            functionalityTitle.text = slide.title
+            functionalityDesc.text = slide.description
+            functionalityPic.image = UIImage(named: slide.imageName)
+            
+            // Initial animation when view loads
+            self.functionalityPic.alpha = 0
+            self.functionalityTitle.alpha = 0
+            self.functionalityDesc.alpha = 0
+            self.functionalityPic.transform = CGAffineTransform(translationX: 0, y: 30)
+            self.functionalityTitle.transform = CGAffineTransform(translationX: 0, y: 20)
+            self.functionalityDesc.transform = CGAffineTransform(translationX: 0, y: 20)
+            
+            UIView.animate(withDuration: 0.6, delay: 0.1, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                self.functionalityPic.alpha = 1
+                self.functionalityPic.transform = .identity
+            }, completion: nil)
+            
+            UIView.animate(withDuration: 0.6, delay: 0.2, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                self.functionalityTitle.alpha = 1
+                self.functionalityTitle.transform = .identity
+            }, completion: nil)
+            
+            UIView.animate(withDuration: 0.6, delay: 0.3, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                self.functionalityDesc.alpha = 1
+                self.functionalityDesc.transform = .identity
+            }, completion: nil)
+        }
     }
 }

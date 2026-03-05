@@ -24,6 +24,13 @@ class PlantFertilizingViewController: UIViewController, UICollectionViewDelegate
         optionsCollectionView.delegate = self
         optionsCollectionView.dataSource = self
         registerCell()
+
+        // ✏️ Pre-select existing fertilizing answer in edit mode
+        if session.isEditMode, let existingAnswer = session.fertilizingAnswer {
+            if let index = buttonData.firstIndex(where: { $0.title == existingAnswer }) {
+                selectedIndex = IndexPath(row: index, section: 0)
+            }
+        }
     }
 
     @IBAction func nextButtonTapped(_ sender: UIBarButtonItem) {

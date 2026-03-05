@@ -46,32 +46,10 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
     }
 
     private func applyTag(_ label: UILabel, tag: String) {
-        let style = tagStyle(for: tag)
-        
-        // Small colored dot + tag text, no background
-        let dot = NSAttributedString(
-            string: "● ",
-            attributes: [
-                .foregroundColor: style.background,
-                .font: UIFont.systemFont(ofSize: 9, weight: .bold)
-            ]
-        )
-        let text = NSAttributedString(
-            string: tag.capitalized,
-            attributes: [
-                .foregroundColor: UIColor.secondaryLabel,
-                .font: UIFont.systemFont(ofSize: 12, weight: .medium)
-            ]
-        )
-        
-        let combined = NSMutableAttributedString()
-        combined.append(dot)
-        combined.append(text)
-        
-        label.attributedText = combined
+        label.text = tag.capitalized
+        label.textColor = .secondaryLabel
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.backgroundColor = .clear
-        label.layer.cornerRadius = 0
-        label.layer.masksToBounds = false
     }
 
     // MARK: - Configure with Plant

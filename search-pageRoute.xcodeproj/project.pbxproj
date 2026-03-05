@@ -162,7 +162,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QZ4U8TA4U3;
+				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
@@ -200,7 +200,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QZ4U8TA4U3;
+				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "search-pageRoute/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";

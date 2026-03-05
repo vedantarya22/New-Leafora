@@ -93,21 +93,29 @@ final class PlantStore: ObservableObject {
     func groupedPlants(for siteID: UUID) -> [(plant: UserPlant, count: Int)] {
         let sitePlants = plants.filter { $0.siteID == siteID }
         
-        // Group by plantId
+        // Group by plantId + date
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
         var grouped: [String: [UserPlant]] = [:]
         for plant in sitePlants {
-            if grouped[plant.plantId] == nil {
-                grouped[plant.plantId] = []
+            let dateKey = formatter.string(from: plant.createdAt)
+            let groupKey = "\(plant.plantId)_\(dateKey)"
+            if grouped[groupKey] == nil {
+                grouped[groupKey] = []
             }
-            grouped[plant.plantId]?.append(plant)
+            grouped[groupKey]?.append(plant)
         }
         
         // Return first plant of each group with total count
-        return grouped.values.compactMap { group in
+        let groupedTuples = grouped.values.compactMap { group -> (plant: UserPlant, count: Int)? in
             guard let first = group.first else { return nil }
             let totalCount = group.reduce(0) { $0 + $1.quantity }
             return (plant: first, count: totalCount)
         }
+        
+        // Sort by creation date descending (newest first)
+        return groupedTuples.sorted(by: { $0.plant.createdAt > $1.plant.createdAt })
     }
 
     // MARK: - Persistence (Disk)
