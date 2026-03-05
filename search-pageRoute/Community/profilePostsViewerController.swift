@@ -145,6 +145,37 @@ extension profilePostsViewerController: UICollectionViewDataSource {
             self?.performSegue(withIdentifier: "ShowComments", sender: currentPost)
         }
         
+        // 4. Menu Action
+        cell.onMenuTapped = { [weak self] in
+            self?.showPostMenu(for: currentPost)
+        }
+        
         return cell
+    }
+}
+
+// MARK: - Post Menu
+extension profilePostsViewerController {
+    func showPostMenu(for post: Post) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        // Report — always visible
+        alert.addAction(UIAlertAction(title: "Report Post", style: .destructive) { [weak self] _ in
+            let confirm = UIAlertController(title: "Post Reported", message: "Thank you for reporting. We'll review this post.", preferredStyle: .alert)
+            confirm.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(confirm, animated: true)
+        })
+        
+        // Delete — only for post owner
+        let currentUserId = UserSession.shared.currentLoggedInUserID
+        if post.userId == currentUserId {
+            alert.addAction(UIAlertAction(title: "Delete Post", style: .destructive) { [weak self] _ in
+                PostRepository.shared.deletePost(id: post.id)
+                self?.navigationController?.popViewController(animated: true)
+            })
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
 }

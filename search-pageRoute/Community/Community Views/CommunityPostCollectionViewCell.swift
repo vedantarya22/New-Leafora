@@ -17,9 +17,11 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var commentButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var likesCountLabel: UILabel!
+    @IBOutlet weak var commentsCountLabel: UILabel!
     @IBOutlet weak var captionLabel: UILabel!
     @IBOutlet weak var bottomUsernameLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
+    @IBOutlet weak var menuButton: UIButton!
     
     // MARK: - Properties
     static let identifier = "CommunityPostCollectionViewCell"
@@ -30,6 +32,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     var onCommentTapped: (() -> Void)?
     var onSaveTapped: (() -> Void)?
     var onProfileTapped: (() -> Void)?
+    var onMenuTapped: (() -> Void)?
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -40,9 +43,9 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     // MARK: - Setup
     private func setupUI() {
         // Profile Image
-//        profileImageView.layer.cornerRadius = 20 // Half of 40x40
-//        profileImageView.clipsToBounds = true
-//        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.layer.cornerRadius = 17.5 // Half of 35x35
+        profileImageView.clipsToBounds = true
+        profileImageView.contentMode = .scaleAspectFill
 //        
 //        // Post Image
 //        postImageView.contentMode = .scaleAspectFill
@@ -76,6 +79,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         captionLabel.text = post.caption
         timestampLabel.text = post.timestamp
         likesCountLabel.text = "\(post.likesCount)"
+        commentsCountLabel.text = "\(post.comments.count)"
         
         // Configure images
         if let author = post.author {
@@ -131,6 +135,10 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         sender.setImage(UIImage(systemName: imageName), for: .normal)
         
         onSaveTapped?()
+    }
+    
+    @IBAction func menuButtonTapped(_ sender: UIButton) {
+        onMenuTapped?()
     }
     
     @objc private func profileImageTapped() {
