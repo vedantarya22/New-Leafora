@@ -1,21 +1,21 @@
 {
-  "images" : [
+  "images": [
     {
-      "filename" : "Gemini_Generated_Image_jg2jzhjg2jzhjg2j-removebg-preview.png",
-      "idiom" : "universal",
-      "scale" : "1x"
+      "filename": "Gemini_Generated_Image_jg2jzhjg2jzhjg2j-removebg-preview.png",
+      "idiom": "universal",
+      "scale": "1x"
     },
     {
-      "idiom" : "universal",
-      "scale" : "2x"
+      "idiom": "universal",
+      "scale": "2x"
     },
     {
-      "idiom" : "universal",
-      "scale" : "3x"
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
+  "info": {
+    "author": "xcode",
+    "version": 1
   }
 }

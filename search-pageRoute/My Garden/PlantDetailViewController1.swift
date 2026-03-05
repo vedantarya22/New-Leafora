@@ -80,6 +80,11 @@ class PlantDetailViewController_New: UIViewController {
         
         print("✅ Loaded plant data for: \(plant.plantName)")
         
+        let count = countPlantsOfType(plantId: userPlant.plantId ?? "")
+        let displayFormatter = DateFormatter()
+        displayFormatter.dateFormat = "MMM d, yyyy"
+        let dateStr = userPlant != nil ? displayFormatter.string(from: userPlant.createdAt) : ""
+
         // ✅ FIXED: Correct tuple order (title, value)
         statsData = [
             (icon: "drop.fill",
@@ -87,9 +92,9 @@ class PlantDetailViewController_New: UIViewController {
              value: plant.careCycle.watering.display,
              color: UIColor.systemBlue),
             
-            (icon: "sun.max.fill",
-             title: "Light",
-             value: plant.lightRequirement.displayName,  // ✅ Use displayName
+            (icon: "leaf",
+             title: "Quantity",
+             value: "\(count) plant\(count > 1 ? "s" : "")",
              color: UIColor.systemYellow),
             
             (icon: "leaf.fill",
@@ -97,9 +102,9 @@ class PlantDetailViewController_New: UIViewController {
              value: plant.difficulty.displayName,  // ✅ Use displayName
              color: UIColor.systemGreen),
             
-            (icon: "leaf",
-             title: "Quantity",
-             value: "\(countPlantsOfType(plantId: userPlant.plantId)) plant\(countPlantsOfType(plantId: userPlant.plantId) > 1 ? "s" : "")",
+            (icon: "calendar",
+             title: "Date Added",
+             value: dateStr,
              color: UIColor.systemTeal)
         ]
         
@@ -271,9 +276,17 @@ class PlantDetailViewController_New: UIViewController {
 
     
     private func countPlantsOfType(plantId: String) -> Int {
-        guard let site = userPlant?.siteID else { return 1 }
+        guard let site = userPlant?.siteID, let createdAt = userPlant?.createdAt else { return 1 }
         let plantsInSite = PlantStore.shared.plants(for: site)
-        return plantsInSite.filter { $0.plantId == plantId }.count
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateKey = formatter.string(from: createdAt)
+        
+        return plantsInSite.filter { 
+            $0.plantId == plantId && 
+            formatter.string(from: $0.createdAt) == dateKey 
+        }.count
     }
     
     private func setupBotanicalBackground() {
@@ -316,12 +329,18 @@ class PlantDetailViewController_New: UIViewController {
         // Build a session from existing UserPlant data
         var session = PlantQuestionSession(plantId: userPlant.plantId)
         session.isEditMode = true
-        session.editingPlantID = userPlant.id
+        
+        // 📦 Batch Tracking
+        let currentBatchSize = countPlantsOfType(plantId: userPlant.plantId)
+        session.originalBatchSize = currentBatchSize
+        session.plantCount = currentBatchSize
+        session.editingBatchSiteID = userPlant.siteID
+        session.editingBatchCreatedAt = userPlant.createdAt
+        
         session.siteName = userPlant.siteName
         session.plantLight = userPlant.lightRequirement
         session.wateringAnswer = userPlant.watering
         session.repottingAnswer = userPlant.repotting
-        session.plantCount = userPlant.quantity
         session.imageData = userPlant.imageData
         session.lastWateredDate = userPlant.lastWatered
         session.lastRepottedDate = userPlant.lastRepotted

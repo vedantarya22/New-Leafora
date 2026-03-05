@@ -33,7 +33,9 @@ struct PlantQuestionSession {
 
     // ✏️ Edit mode support
     var isEditMode: Bool = false
-    var editingPlantID: UUID? = nil
+    var editingBatchSiteID: UUID? = nil
+    var editingBatchCreatedAt: Date? = nil
+    var originalBatchSize: Int = 1
 }
 
 

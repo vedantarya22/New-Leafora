@@ -11,17 +11,22 @@ class PlantQuantityViewController: UIViewController {
     var quantity = 1
 
     private let pickerView = UIPickerView()
-    private let quantities = Array(1...10)
+    private var quantities: [Int] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // 🔢 Define max plants based on mode
+        let maxAllowed = session.isEditMode ? session.originalBatchSize : 10
+        quantities = Array(1...maxAllowed)
+
         // ✏️ Pre-select existing quantity in edit mode
-        if session.isEditMode, let existingQty = session.plantCount, existingQty >= 1, existingQty <= 10 {
+        if session.isEditMode, let existingQty = session.plantCount, existingQty >= 1, existingQty <= maxAllowed {
             quantity = existingQty
         }
 
         setupPicker()
+        
         minusBtn.isHidden = true
         plusBtn.isHidden = true
         qtyLabel.isHidden = true

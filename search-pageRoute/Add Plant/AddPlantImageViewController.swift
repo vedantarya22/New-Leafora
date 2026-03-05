@@ -157,48 +157,71 @@ class AddPlantImageViewController: UIViewController,
             return
         }
 
-        // ✏️ EDIT MODE: Update existing plant instead of creating new ones
-        if session.isEditMode, let editingID = session.editingPlantID {
-            guard var existingPlant = PlantStore.shared.getPlant(by: editingID) else {
-                print("❌ Could not find plant to edit with ID:", editingID)
+        // ✏️ EDIT MODE: Batch Edit / Shift
+        if session.isEditMode,
+           let editingBatchSiteID = session.editingBatchSiteID,
+           let editingBatchCreatedAt = session.editingBatchCreatedAt,
+           let targetQuantity = session.plantCount {
+            
+            // 1. Find the original batch
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            let dateKey = formatter.string(from: editingBatchCreatedAt)
+            
+            let allPlantsInSite = PlantStore.shared.plants(for: editingBatchSiteID)
+            var originalBatch = allPlantsInSite.filter {
+                $0.plantId == session.plantId &&
+                formatter.string(from: $0.createdAt) == dateKey
+            }
+            
+            // Safety check
+            if originalBatch.isEmpty {
+                print("❌ Could not find original batch to edit.")
                 return
             }
+            
+            // 2. Select exactly `targetQuantity` plants to apply the edit to.
+            // If the user selects less than originalBatchSize, the remainder are UNTOUCHED.
+            let plantsToEdit = Array(originalBatch.prefix(targetQuantity))
+            
+            // 3. Apply edits to the selected plants
+            for mutPlant in plantsToEdit {
+                var updatedPlant = mutPlant
+                
+                // Update the site if changed
+                if updatedPlant.siteName != siteName {
+                    if !siteStore.sites.contains(where: { $0.name.lowercased() == siteName.lowercased() }) {
+                        siteStore.addSite(name: siteName, icon: siteIcon)
+                    }
+                    if let newSite = siteStore.sites.first(where: { $0.name == siteName }) {
+                        updatedPlant.siteName = siteName
+                        updatedPlant.siteID = newSite.id
+                    }
+                }
 
-            // Update the site if changed
-            if existingPlant.siteName != siteName {
-                // Ensure new site exists
-                if !siteStore.sites.contains(where: { $0.name.lowercased() == siteName.lowercased() }) {
-                    siteStore.addSite(name: siteName, icon: siteIcon)
-                }
-                if let newSite = siteStore.sites.first(where: { $0.name == siteName }) {
-                    existingPlant.siteName = siteName
-                    existingPlant.siteID = newSite.id
-                }
+                // Update fields from session
+                updatedPlant.imageData = session.imageData
+                updatedPlant.lightRequirement = session.plantLight
+                updatedPlant.watering = session.wateringAnswer
+                updatedPlant.repotting = session.repottingAnswer
+                updatedPlant.lastWatered = session.lastWateredDate
+                updatedPlant.lastRepotted = session.lastRepottedDate
+                updatedPlant.lastPruned = session.lastPrunedDate
+                updatedPlant.lastFertilized = session.lastFertilizedDate
+
+                PlantStore.shared.updatePlant(updatedPlant)
             }
-
-            // Update fields from session
-            existingPlant.imageData = session.imageData
-            existingPlant.lightRequirement = session.plantLight
-            existingPlant.watering = session.wateringAnswer
-            existingPlant.repotting = session.repottingAnswer
-            existingPlant.lastWatered = session.lastWateredDate
-            existingPlant.lastRepotted = session.lastRepottedDate
-            existingPlant.lastPruned = session.lastPrunedDate
-            existingPlant.lastFertilized = session.lastFertilizedDate
-
-            PlantStore.shared.updatePlant(existingPlant)
-            print("✅ Plant updated in edit mode: ID=\(editingID)")
+            
+            print("✅ Batch edit complete. Edited \(plantsToEdit.count) out of \(originalBatch.count) plants.")
 
             // Pop back to the plant detail screen
             if let navController = navigationController {
-                // Find the PlantDetailViewController_New in the stack and pop to it
                 for vc in navController.viewControllers {
                     if vc is PlantDetailViewController_New {
                         navController.popToViewController(vc, animated: true)
                         return
                     }
                 }
-                // Fallback: pop to root if detail VC not found
                 navController.popToRootViewController(animated: true)
             }
             return
