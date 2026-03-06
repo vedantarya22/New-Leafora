@@ -17,7 +17,6 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var commentButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var likesCountLabel: UILabel!
-    @IBOutlet weak var commentsCountLabel: UILabel!
     @IBOutlet weak var captionLabel: UILabel!
     @IBOutlet weak var bottomUsernameLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
@@ -38,6 +37,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupUI()
+        setupDoubleTapGesture()
     }
     
     // MARK: - Setup
@@ -46,28 +46,116 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         profileImageView.layer.cornerRadius = 17.5 // Half of 35x35
         profileImageView.clipsToBounds = true
         profileImageView.contentMode = .scaleAspectFill
-//        
-//        // Post Image
-//        postImageView.contentMode = .scaleAspectFill
-//        postImageView.clipsToBounds = true
-//        
-//        // Labels
-//        usernameLabel.font = UIFont.boldSystemFont(ofSize: 14)
-//        likesCountLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-//        captionLabel.font = UIFont.systemFont(ofSize: 14)
-//        captionLabel.numberOfLines = 2
-//        timestampLabel.font = UIFont.systemFont(ofSize: 12)
-//        timestampLabel.textColor = .secondaryLabel
-//        
-//        // Buttons
-//        likeButton.tintColor = .label
-//        commentButton.tintColor = .label
-//        saveButton.tintColor = .label
+        
+        // Separator line at the bottom of each post
+        let separator = UIView()
+        separator.backgroundColor = UIColor.label.withAlphaComponent(0.12)
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(separator)
+        NSLayoutConstraint.activate([
+            separator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            separator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
         
         // Add tap gesture to profile image
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
         profileImageView.isUserInteractionEnabled = true
         profileImageView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func setupDoubleTapGesture() {
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        postImageView.isUserInteractionEnabled = true
+        postImageView.addGestureRecognizer(doubleTap)
+    }
+    
+    // MARK: - Double Tap Heart Animation
+    @objc private func handleDoubleTap(_ gesture: UITapGestureRecognizer) {
+        // Only like (not unlike) on double-tap, just like Instagram
+        if !likeButton.isSelected {
+            likeButton.isSelected = true
+            
+            // Update heart button
+            likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+            likeButton.tintColor = .systemRed
+            
+            // Update count
+            let newCountText = likesCountLabel.text?.components(separatedBy: " ").first ?? "0"
+            let newCount = Int(newCountText.replacingOccurrences(of: ",", with: "")) ?? 0
+            let updatedCount = newCount + 1
+            likesCountLabel.text = "\(updatedCount) likes"
+            
+            // Notify parent
+            onLikeTapped?(true, updatedCount)
+        }
+        
+        // Always show the heart animation (even if already liked)
+        showHeartAnimation(at: gesture.location(in: postImageView))
+    }
+    
+    private func showHeartAnimation(at point: CGPoint) {
+        // Create the green 3D heart
+        let heartSize: CGFloat = 80
+        let heartImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: heartSize, height: heartSize))
+        heartImageView.center = point
+        heartImageView.contentMode = .scaleAspectFit
+        
+        // Use SF Symbol heart.fill with a leafy green color
+        let config = UIImage.SymbolConfiguration(pointSize: 70, weight: .bold)
+        heartImageView.image = UIImage(systemName: "heart.fill", withConfiguration: config)
+        heartImageView.tintColor = UIColor(red: 0.30, green: 0.75, blue: 0.40, alpha: 1.0) // Fresh leaf green
+        
+        // Add a subtle 3D shadow for depth
+        heartImageView.layer.shadowColor = UIColor(red: 0.15, green: 0.55, blue: 0.25, alpha: 0.7).cgColor
+        heartImageView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        heartImageView.layer.shadowRadius = 8
+        heartImageView.layer.shadowOpacity = 1.0
+        
+        // Start small and transparent
+        heartImageView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        heartImageView.alpha = 0
+        
+        postImageView.addSubview(heartImageView)
+        
+        // Animate: pop in with spring -> settle -> wobble -> fade out
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+            heartImageView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            heartImageView.alpha = 1.0
+        } completion: { _ in
+            UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseIn) {
+                heartImageView.transform = .identity
+            } completion: { _ in
+                // Wobble animation using keyframes
+                UIView.animateKeyframes(withDuration: 0.6, delay: 0.05, options: []) {
+                    UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.15) {
+                        heartImageView.transform = CGAffineTransform(rotationAngle: .pi / 12) // tilt right
+                    }
+                    UIView.addKeyframe(withRelativeStartTime: 0.15, relativeDuration: 0.15) {
+                        heartImageView.transform = CGAffineTransform(rotationAngle: -.pi / 10) // tilt left
+                    }
+                    UIView.addKeyframe(withRelativeStartTime: 0.30, relativeDuration: 0.15) {
+                        heartImageView.transform = CGAffineTransform(rotationAngle: .pi / 14) // tilt right smaller
+                    }
+                    UIView.addKeyframe(withRelativeStartTime: 0.45, relativeDuration: 0.15) {
+                        heartImageView.transform = CGAffineTransform(rotationAngle: -.pi / 16) // tilt left smaller
+                    }
+                    UIView.addKeyframe(withRelativeStartTime: 0.60, relativeDuration: 0.15) {
+                        heartImageView.transform = .identity // settle
+                    }
+                } completion: { _ in
+                    // Fade out
+                    UIView.animate(withDuration: 0.4, delay: 0.1, options: .curveEaseOut) {
+                        heartImageView.alpha = 0
+                        heartImageView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+                    } completion: { _ in
+                        heartImageView.removeFromSuperview()
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - Configuration
@@ -78,8 +166,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         bottomUsernameLabel.text = post.author?.username
         captionLabel.text = post.caption
         timestampLabel.text = post.timestamp
-        likesCountLabel.text = "\(post.likesCount)"
-        commentsCountLabel.text = "\(post.comments.count)"
+        likesCountLabel.text = "\(post.likesCount) likes"
         
         // Configure images
         if let author = post.author {
@@ -89,7 +176,6 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         postImageView.configureImage(with: post.postImageString)
         
         // MARK: - TIME LOGIC
-        // We now rely on the Repository to have formatted this for us.
         timestampLabel.text = post.displayTimestamp ?? "Just now"
         timestampLabel.isHidden = false
 
@@ -115,9 +201,10 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         sender.tintColor = isLiked ? .systemRed : .label
         
         // Update count
-        let newCount = Int(likesCountLabel.text?.components(separatedBy: " ").first ?? "0") ?? 0
+        let newCountText = likesCountLabel.text?.components(separatedBy: " ").first ?? "0"
+        let newCount = Int(newCountText.replacingOccurrences(of: ",", with: "")) ?? 0
         let updatedCount = isLiked ? newCount + 1 : newCount - 1
-        likesCountLabel.text = "\(updatedCount)"
+        likesCountLabel.text = "\(updatedCount) likes"
         
         // Notify parent
         onLikeTapped?(isLiked, updatedCount)
