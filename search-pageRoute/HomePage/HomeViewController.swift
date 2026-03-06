@@ -37,22 +37,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
               name: .plantTaskDidUpdate,
               object: nil
           )
-        func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            // Start timer: 30 seconds, repeats indefinitely
-            tipTimer = Timer.scheduledTimer(timeInterval: 30.0,
-                                           target: self,
-                                           selector: #selector(updateGardenTip),
-                                           userInfo: nil,
-                                           repeats: true)
-        }
-
-        func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            // Invalidate timer to prevent memory leaks and background processing
-            tipTimer?.invalidate()
-            tipTimer = nil
-        }
         // Register XIBs
         let cells = ["CareTaskCell", "InsightCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
         cells.forEach { name in
