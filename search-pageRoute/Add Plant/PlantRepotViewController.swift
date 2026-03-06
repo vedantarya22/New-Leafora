@@ -28,6 +28,13 @@ class PlantRepotViewController: UIViewController,UICollectionViewDelegateFlowLay
         optionsCollectionView.delegate = self
         optionsCollectionView.dataSource = self
         registerCell()
+
+        // ✏️ Pre-select existing repotting answer in edit mode
+        if session.isEditMode, let existingAnswer = session.repottingAnswer {
+            if let index = buttonData.firstIndex(where: { $0.title == existingAnswer }) {
+                selectedIndex = IndexPath(row: index, section: 0)
+            }
+        }
     }
     
     @IBAction func nextButtonTapped(_ sender: UIBarButtonItem) {
