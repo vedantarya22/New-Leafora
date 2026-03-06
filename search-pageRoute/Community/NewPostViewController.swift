@@ -9,7 +9,7 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
     @IBOutlet weak var shareButton: UIBarButtonItem!
     
     let placeholderText = "Write a caption..."
-    let maxCaptionLength = 20
+    let maxCaptionLength = 30
     var charCountLabel: UILabel!
     
     var currentUser: User?
