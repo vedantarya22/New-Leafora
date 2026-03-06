@@ -10,6 +10,11 @@ class PlantListViewController: UIViewController,
     var filteredPlants: [UserPlant] = []
     var allPlants: [Plant] = []
 
+    // MARK: - UI Components
+    @IBOutlet weak var emptyStateView: UIView!
+    @IBOutlet weak var emptyStateLabel: UILabel!
+    private let gradientLayer = CAGradientLayer()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +27,10 @@ class PlantListViewController: UIViewController,
         collectionView.dataSource = self
         collectionView.delegate = self
 
+        setupBotanicalBackground()
+
+        // Hide empty state initially
+        emptyStateView?.isHidden = true
 
         // ✅ Load JSON once - reuse everywhere
         allPlants = JSONLoader.loadPlants(from: "plantData")
@@ -38,10 +47,25 @@ class PlantListViewController: UIViewController,
         loadAndFilterData()
     }
 
-    
-    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
 
-    // MARK: - Collection Layout
+    // MARK: - UI Setup
+
+    private func setupBotanicalBackground() {
+        // A soft, off-white to very pale sage green
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+        
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
 
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -240,6 +264,16 @@ class PlantListViewController: UIViewController,
            }
 
            print("✅ Filtered \(filteredPlants.count) plants needing \(taskType)")
+           
+           // Toggle Empty State Visibility
+           if filteredPlants.isEmpty {
+               collectionView.isHidden = true
+               emptyStateView?.isHidden = false
+           } else {
+               collectionView.isHidden = false
+               emptyStateView?.isHidden = true
+           }
+           
            collectionView.reloadData()
        }
     

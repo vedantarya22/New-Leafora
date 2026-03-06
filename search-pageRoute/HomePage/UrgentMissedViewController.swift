@@ -191,8 +191,8 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         return components.day ?? 0
     }
     
-    private func getMostOverdueTask(for userPlant: UserPlant) -> String {
-        guard let plantData = getPlantData(for: userPlant) else { return "Watering" }
+    private func getMostOverdueTask(for userPlant: UserPlant) -> (task: String, daysOverdue: Int) {
+        guard let plantData = getPlantData(for: userPlant) else { return ("Watering", 0) }
         
         var mostOverdueTask = "Watering"
         var maxOverdue = 0
@@ -237,7 +237,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             }
         }
         
-        return mostOverdueTask
+        return (mostOverdueTask, maxOverdue)
     }
     
     
@@ -273,7 +273,9 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         ) as! PlantRowCell
         
         let userPlant = filteredPlants[indexPath.row]
-        let mostOverdueTask = getMostOverdueTask(for: userPlant)
+        let overdueInfo = getMostOverdueTask(for: userPlant)
+        let mostOverdueTask = overdueInfo.task
+        let daysOverdue = overdueInfo.daysOverdue
         
         // Configure cell with plant data
         cell.configure(
@@ -281,6 +283,18 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             task: mostOverdueTask,
             allPlants: allPlantData
         )
+        
+        // Apply dummy overdue text and coloring
+        if daysOverdue >= 3 {
+            cell.detailLabel.text = "\(daysOverdue) days overdue"
+            cell.detailLabel.textColor = .systemRed
+        } else if daysOverdue > 0 {
+            cell.detailLabel.text = "\(daysOverdue) days overdue"
+            cell.detailLabel.textColor = .systemYellow
+        } else {
+            cell.detailLabel.text = "Due today"
+            cell.detailLabel.textColor = .systemOrange
+        }
         
         // Setup swipe-to-complete
         cell.onDone = { [weak self, weak cell] in
@@ -370,9 +384,10 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     // MARK: - Task Completion
     
     func markTaskDone(for userPlant: UserPlant) {
+        let taskName = getMostOverdueTask(for: userPlant).task
         PlantStore.shared.markTaskDone(
             userPlantID: userPlant.id,
-            taskType: getMostOverdueTask(for: userPlant)
+            taskType: taskName
         )
         
         NotificationCenter.default.post(
