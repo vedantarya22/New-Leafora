@@ -10,7 +10,7 @@ import UIKit
 class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
     private let DEBUG_FORCE_OVERDUE = true
-    
+
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -25,7 +25,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         // Do any additional setup after loading the view.
         setupUI()
         loadPlantData()
-        
+     
         registerCell()
         setupLayout()
     }
@@ -46,14 +46,15 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     private func setupUI() {
         self.title = urgencyLevel
-        //        collectionView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
+//        collectionView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
     
     private func loadPlantData() {
         // Load all plant data from JSON
-        allPlantData = JSONLoader.loadPlants(from: "plantData")
+//        allPlantData = JSONLoader.loadPlants(from: "plantData")
+        let allPlants = PlantCatalogueCache.shared.plants
         
         if allPlantData.isEmpty {
             print("⚠️ [UrgentMissedVC] No plant data loaded from JSON!")
@@ -74,35 +75,17 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         switch urgencyLevel.lowercased() {
         case "urgent":
             filteredPlants = getUrgentPlants(from: allUserPlants)
-            if filteredPlants.isEmpty { filteredPlants = generateDummyPlants(for: "urgent") }
             
         case "missed":
             filteredPlants = getMissedPlants(from: allUserPlants)
-            if filteredPlants.isEmpty { filteredPlants = generateDummyPlants(for: "missed") }
             
         default:
-            filteredPlants = generateDummyPlants(for: "urgent") // Fallback
+            filteredPlants = []
             print("⚠️ Unknown urgency level: \(urgencyLevel)")
         }
         
         print("✅ [UrgentMissedVC] Filtered \(filteredPlants.count) \(urgencyLevel) plants")
         collectionView.reloadData()
-    }
-    
-    private func generateDummyPlants(for type: String) -> [UserPlant] {
-        let p1 = allPlantData.first?.plantId ?? "monstera_deliciosa"
-        let p2 = allPlantData.count > 1 ? allPlantData[1].plantId : "snake_plant"
-        let p3 = allPlantData.count > 2 ? allPlantData[2].plantId : "fiddle_leaf_fig"
-        
-        let dummy1 = UserPlant(id: UUID(), plantId: p1, siteName: "Living Room", siteID: UUID(), quantity: 1, isAddedToGarden: true, createdAt: Date(), lastWatered: Date().addingTimeInterval(-86400 * 5))
-        let dummy2 = UserPlant(id: UUID(), plantId: p2, siteName: "Bedroom", siteID: UUID(), quantity: 1, isAddedToGarden: true, createdAt: Date(), lastWatered: Date().addingTimeInterval(-86400 * 7), lastFertilized: Date().addingTimeInterval(-86400 * 14))
-        let dummy3 = UserPlant(id: UUID(), plantId: p3, siteName: "Kitchen", siteID: UUID(), quantity: 1, isAddedToGarden: true, createdAt: Date(), lastWatered: Date().addingTimeInterval(-86400 * 2))
-        
-        if type == "urgent" {
-            return [dummy1, dummy2]
-        } else {
-            return [dummy1, dummy2]
-        }
     }
     
     /// Get plants that are 3+ days overdue on ANY task
@@ -161,7 +144,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         if DEBUG_FORCE_OVERDUE {
             return true   // 👈 force urgent for testing
         }
-        
+
         
         let daysSince = daysBetween(from: lastDate, to: Date())
         let daysOverdue = daysSince - cycleDays
@@ -175,9 +158,9 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         guard let lastDate = lastDate else { return false }
         
         if DEBUG_FORCE_OVERDUE {
-            return true   // 👈 force missed for testing
-        }
-        
+                return true   // 👈 force missed for testing
+            }
+
         
         let daysSince = daysBetween(from: lastDate, to: Date())
         let daysOverdue = daysSince - cycleDays
@@ -191,8 +174,8 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         return components.day ?? 0
     }
     
-    private func getMostOverdueTask(for userPlant: UserPlant) -> (task: String, daysOverdue: Int) {
-        guard let plantData = getPlantData(for: userPlant) else { return ("Watering", 0) }
+    private func getMostOverdueTask(for userPlant: UserPlant) -> String {
+        guard let plantData = getPlantData(for: userPlant) else { return "Watering" }
         
         var mostOverdueTask = "Watering"
         var maxOverdue = 0
@@ -237,7 +220,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             }
         }
         
-        return (mostOverdueTask, maxOverdue)
+        return mostOverdueTask
     }
     
     
@@ -247,7 +230,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         layout.minimumLineSpacing = 12
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .zero
-        
+
         collectionView.collectionViewLayout = layout
     }
     
@@ -273,9 +256,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         ) as! PlantRowCell
         
         let userPlant = filteredPlants[indexPath.row]
-        let overdueInfo = getMostOverdueTask(for: userPlant)
-        let mostOverdueTask = overdueInfo.task
-        let daysOverdue = overdueInfo.daysOverdue
+        let mostOverdueTask = getMostOverdueTask(for: userPlant)
         
         // Configure cell with plant data
         cell.configure(
@@ -283,18 +264,6 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             task: mostOverdueTask,
             allPlants: allPlantData
         )
-        
-        // Apply dummy overdue text and coloring
-        if daysOverdue >= 3 {
-            cell.detailLabel.text = "\(daysOverdue) days overdue"
-            cell.detailLabel.textColor = .systemRed
-        } else if daysOverdue > 0 {
-            cell.detailLabel.text = "\(daysOverdue) days overdue"
-            cell.detailLabel.textColor = .systemYellow
-        } else {
-            cell.detailLabel.text = "Due 2 days ago"
-            cell.detailLabel.textColor = .systemOrange
-        }
         
         // Setup swipe-to-complete
         cell.onDone = { [weak self, weak cell] in
@@ -321,6 +290,34 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     
     
+    //    private func handleTaskCompletion(at indexPath: IndexPath) {
+    //          guard indexPath.row < filteredPlants.count else { return }
+    //
+    //           let completedPlant = filteredPlants[indexPath.row]
+    //           let taskToComplete = getMostOverdueTask(for: completedPlant)
+    //
+    //           // Mark task as done in PlantStore
+    //           PlantStore.shared.markTaskDone(
+    //               userPlantID: completedPlant.id,
+    //              taskType: taskToComplete
+    //          )
+    //
+    //          // Remove from filtered list
+    //          filteredPlants.remove(at: indexPath.row)
+    //
+    //          // Animate deletion
+    //          collectionView.performBatchUpdates({
+    //              collectionView.deleteItems(at: [indexPath])
+    //          }, completion: { _ in
+    //              // Optional: Show message if list is now empty
+    //             if self.filteredPlants.isEmpty {
+    //                  self.showEmptyState()
+    //             }
+    //         })
+    //
+    //          print("✅ Completed \(taskToComplete) for \(completedPlant.plantId)")
+    //      }
+    //
     private func showSwipeHint() {
         
         guard let firstCell = collectionView.cellForItem(
@@ -356,16 +353,15 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     // MARK: - Task Completion
     
     func markTaskDone(for userPlant: UserPlant) {
-        let taskName = getMostOverdueTask(for: userPlant).task
         PlantStore.shared.markTaskDone(
             userPlantID: userPlant.id,
-            taskType: taskName
+            taskType: getMostOverdueTask(for: userPlant)
         )
         
         NotificationCenter.default.post(
-            name: .plantTaskDidUpdate,
-            object: nil
-        )
+              name: .plantTaskDidUpdate,
+              object: nil
+          )
     }
     
     private func showEmptyState() {

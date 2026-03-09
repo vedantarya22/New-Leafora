@@ -1,3 +1,4 @@
+
 import UIKit
 
 class PlantIdentificationResultsViewController: UIViewController {
@@ -353,33 +354,10 @@ class PlantIdentificationResultsViewController: UIViewController {
         // Load all plants from JSON
         let allPlants = JSONLoader.loadPlants(from: "plantData")
         
-        // Try to find a matching plant by comparing scientific name, common name, and API common names
-        let topNameLower = topSuggestion.plantName.lowercased()
-        
+        // Try to find a matching plant by comparing scientific name (case-insensitive)
         let matchingPlant = allPlants.first { plant in
-            let localPlantNameLower = plant.plantName.lowercased()
-            let localSciNameLower = plant.scientificName.lowercased()
-            
-            // 1. Direct name match
-            if localPlantNameLower == topNameLower || localSciNameLower == topNameLower {
-                return true
-            }
-            // 2. Contains match (scientific names can be long e.g. "Aloe barbadensis miller" vs "Aloe")
-            if localSciNameLower.contains(topNameLower) || topNameLower.contains(localSciNameLower) {
-                return true
-            }
-            
-            // 3. Match against the common names array returned by the API
-            if let apiCommonNames = topSuggestion.plantDetails?.commonNames {
-                for apiName in apiCommonNames {
-                    let apiNameLower = apiName.lowercased()
-                    if apiNameLower == localPlantNameLower || localPlantNameLower.contains(apiNameLower) {
-                        return true
-                    }
-                }
-            }
-            
-            return false
+            // Compare scientific names - the plant name from API is the scientific name
+            plant.plantName.lowercased() == topSuggestion.plantName.lowercased()
         }
         
         if let foundPlant = matchingPlant {
@@ -394,38 +372,22 @@ class PlantIdentificationResultsViewController: UIViewController {
     }
     
     private func navigateToPlantDetail(plantId: String) {
-        dismiss(animated: true) {
+        dismiss(animated: true) { [weak self] in
             // Navigate to PlantDetailViewController
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let plantDetailVC = storyboard.instantiateViewController(withIdentifier: "PlantDetailViewController") as? PlantDetailViewController {
                 plantDetailVC.plantId = plantId
                 
-                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                      let window = windowScene.windows.first,
-                      let rootVC = window.rootViewController else { return }
-                      
-                var topVC = rootVC
-                while let presented = topVC.presentedViewController {
-                    topVC = presented
-                }
-                
-                if let tabBarController = topVC as? UITabBarController {
-                    if let navController = tabBarController.selectedViewController as? UINavigationController {
-                        navController.pushViewController(plantDetailVC, animated: true)
-                    } else if let selected = tabBarController.selectedViewController, let navController = selected.navigationController {
-                        navController.pushViewController(plantDetailVC, animated: true)
-                    } else {
-                        // Present modally as a last resort if no navigation controller exists
-                        plantDetailVC.modalPresentationStyle = .fullScreen
-                        tabBarController.selectedViewController?.present(plantDetailVC, animated: true)
-                    }
-                } else if let navController = topVC as? UINavigationController {
+                // Get the navigation controller from the window
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first,
+                   let rootVC = window.rootViewController as? UINavigationController {
+                    rootVC.pushViewController(plantDetailVC, animated: true)
+                } else if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                          let window = windowScene.windows.first,
+                          let tabBarVC = window.rootViewController as? UITabBarController,
+                          let navController = tabBarVC.selectedViewController as? UINavigationController {
                     navController.pushViewController(plantDetailVC, animated: true)
-                } else if let navController = topVC.navigationController {
-                    navController.pushViewController(plantDetailVC, animated: true)
-                } else {
-                    plantDetailVC.modalPresentationStyle = .fullScreen
-                    topVC.present(plantDetailVC, animated: true)
                 }
             }
         }

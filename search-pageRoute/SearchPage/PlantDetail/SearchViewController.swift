@@ -23,44 +23,6 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     // Background Gradient Layer
     private let gradientLayer = CAGradientLayer()
 
-    // MARK: - Banner UI Components
-    
-    private let profileBannerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0)
-        view.layer.cornerRadius = 12
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor(red: 0.52, green: 0.71, blue: 0.42, alpha: 0.3).cgColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.isHidden = true
-        view.clipsToBounds = true
-        return view
-    }()
-    
-    private let bannerLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Tell us about your home to get personalized plant recommendations!"
-        label.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        label.textColor = UIColor(red: 0.15, green: 0.35, blue: 0.15, alpha: 1.0)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let bannerButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Update", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(red: 0.35, green: 0.58, blue: 0.45, alpha: 1.0) // Botanical dark green
-        button.layer.cornerRadius = 14
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    private var bannerHeightConstraint: NSLayoutConstraint!
-    private var bannerTopConstraint: NSLayoutConstraint!
-
     // MARK: - Lifecycle
 
     // MARK: - Data Properties
@@ -86,35 +48,6 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleNavigateToProfilePreferences),
-            name: NSNotification.Name("NavigateToGardeningPreferences"),
-            object: nil
-        )
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkProfileBanner()
-    }
-    
-    private func checkProfileBanner() {
-        let needsProfile = !HomeDataStore.shared.arePreferencesSet()
-        profileBannerView.isHidden = !needsProfile
-        
-        if needsProfile {
-            bannerTopConstraint.constant = 16
-            bannerHeightConstraint.constant = 60
-        } else {
-            bannerTopConstraint.constant = 0
-            bannerHeightConstraint.constant = 0
-        }
-        
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -137,14 +70,11 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //    }
     
     private func loadData() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let loadedPlants = JSONLoader.loadPlants(from: "plantData")
-            
-            DispatchQueue.main.async {
-                self?.allPlants = loadedPlants
-                self?.filteredPlants = loadedPlants
-                self?.collectionView.reloadData()
-            }
+        PlantCatalogueCache.shared.getPlants { [weak self] plants in
+            guard let self = self else { return }
+            self.allPlants = plants
+            self.filteredPlants = plants
+            self.collectionView.reloadData()
         }
     }
     
@@ -229,15 +159,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         // Add Subviews
         view.addSubview(searchBar)
         view.addSubview(filterButton)
-        view.addSubview(profileBannerView)
-        profileBannerView.addSubview(bannerLabel)
-        profileBannerView.addSubview(bannerButton)
-        bannerButton.addTarget(self, action: #selector(handleNavigateToProfilePreferences), for: .touchUpInside)
-        
         view.addSubview(collectionView)
-        
-        bannerTopConstraint = profileBannerView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 16)
-        bannerHeightConstraint = profileBannerView.heightAnchor.constraint(equalToConstant: 0)
         
         NSLayoutConstraint.activate([
             // 1. Search Bar (Top Left)
@@ -253,23 +175,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
             // Pin Search Bar trailing to Filter Button leading
             searchBar.trailingAnchor.constraint(equalTo: filterButton.leadingAnchor, constant: 6),
             
-            // Banner constraints
-            bannerTopConstraint,
-            bannerHeightConstraint,
-            profileBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            profileBannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            bannerButton.trailingAnchor.constraint(equalTo: profileBannerView.trailingAnchor, constant: -12),
-            bannerButton.centerYAnchor.constraint(equalTo: profileBannerView.centerYAnchor),
-            bannerButton.widthAnchor.constraint(equalToConstant: 72),
-            bannerButton.heightAnchor.constraint(equalToConstant: 28),
-            
-            bannerLabel.leadingAnchor.constraint(equalTo: profileBannerView.leadingAnchor, constant: 16),
-            bannerLabel.trailingAnchor.constraint(equalTo: bannerButton.leadingAnchor, constant: -12),
-            bannerLabel.centerYAnchor.constraint(equalTo: profileBannerView.centerYAnchor),
-            
             // 3. Collection View (Below Header)
-            collectionView.topAnchor.constraint(equalTo: profileBannerView.bottomAnchor, constant: 16), // Gap below banner
+            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20), // Gap below search bar
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -280,10 +187,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 
         // 1. Get the correct plant from the UI-backed array
         let selectedPlant = filteredPlants[indexPath.row]
-        
-
-        // 2. Pass the ID
-                navigateToPlantDetail(with: selectedPlant.plantId)
+          print(" Tapped: \(selectedPlant.plantName)")
+          print("PlantId: \(selectedPlant.plantId)")
+          navigateToPlantDetail(with: selectedPlant.plantId)
         
     
     }
@@ -325,13 +231,6 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
             present(filterVC, animated: true)
         } else {
             print("Error: Could not instantiate CategoriesViewController. Check Storyboard ID.")
-        }
-    }
-    
-    @objc private func handleNavigateToProfilePreferences() {
-        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
-        if let vc = storyboard.instantiateViewController(withIdentifier: "GardeningPreferencesViewController") as? UIViewController {
-            navigationController?.pushViewController(vc, animated: true)
         }
     }
     
@@ -484,9 +383,21 @@ extension SearchViewController {
     }
 
     private func quickAddPlant(_ plant: Plant, to site: MyGardenSite) {
+        // ✅ Must use mongoId — not plantId string
+        guard let plantMongoId = plant.mongoId else {
+            print("❌ Plant missing mongoId — cannot quick add")
+            return
+        }
+
+        guard let siteMongoId = site.mongoId else {
+            print("❌ Site missing mongoId — cannot quick add")
+            return
+        }
+
+        // ✅ Save locally with mongoId so TaskDueEngine can find it
         let userPlant = UserPlant(
             id: UUID(),
-            plantId: plant.plantId,
+            plantId: plantMongoId,        // ✅ was plant.plantId
             siteName: site.name,
             siteID: site.id,
             imageData: nil,
@@ -502,6 +413,32 @@ extension SearchViewController {
             lastRepotted: nil
         )
         PlantStore.shared.addPlant(userPlant)
+
+        // ✅ Sync to MongoDB
+        NetworkManager.shared.addUserPlant(
+            plantId:          plantMongoId,
+            plantName:        plant.plantName,
+            siteId:           siteMongoId,
+            siteName:         site.name,
+            imageData:        plant.imageName,   // use catalogue image as fallback
+            lightRequirement: nil,
+            watering:         nil,
+            repotting:        nil,
+            quantity:         1,
+            lastWatered:      nil,
+            lastRepotted:     nil
+        ) { mongoId in
+            if let mongoId = mongoId {
+                print("✅ Quick-added \(plant.plantName) synced to MongoDB: \(mongoId)")
+                // ✅ Refresh from MongoDB so local store is consistent
+                if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                    sceneDelegate.loadAppData()
+                }
+            } else {
+                print("❌ Failed to sync quick-add to MongoDB")
+            }
+        }
+
         print("✅ Quick-added \(plant.plantName) to \(site.name)")
         showQuickAddSuccess(plantName: plant.plantName, siteName: site.name)
     }
