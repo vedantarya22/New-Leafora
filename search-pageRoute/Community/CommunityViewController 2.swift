@@ -149,7 +149,12 @@ extension CommunityViewController: UICollectionViewDataSource {
                 isLiked: isLiked,
                 newCount: newCount
             )
-            
+            // No need to manually update local 'posts' array or reload row if we trust the Notification trigger
+            // But if we want instant optimistic UI, we could.
+            // However, the cell callback 'onLikeTapped' often comes from user interaction.
+            // The architectural goal says "Controllers should never directly modify Post properties".
+            // So we delegate to Repository. The Repository fires notification. We catch notification and reload.
+            // This ensures consistency.
         }
 
         
@@ -171,42 +176,6 @@ extension CommunityViewController: UICollectionViewDataSource {
             }
         }
         
-        // Handle menu tap
-        cell.onMenuTapped = { [weak self] in
-            self?.showPostMenu(for: post)
-        }
-        
-        // Handle see more tap
-        cell.onSeeMoreTapped = { [weak self] in
-            self?.posts[indexPath.item].isExpanded.toggle()
-            self?.postsCollectionView.reloadItems(at: [indexPath])
-        }
-        
         return cell
-    }
-}
-
-// MARK: - Post Menu
-extension CommunityViewController {
-    func showPostMenu(for post: Post) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        // Report — always visible
-        alert.addAction(UIAlertAction(title: "Report Post", style: .destructive) { [weak self] _ in
-            let confirm = UIAlertController(title: "Post Reported", message: "Thank you for reporting. We'll review this post.", preferredStyle: .alert)
-            confirm.addAction(UIAlertAction(title: "OK", style: .default))
-            self?.present(confirm, animated: true)
-        })
-        
-        // Delete — only for post owner
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        if post.userId == currentUserId {
-            alert.addAction(UIAlertAction(title: "Delete Post", style: .destructive) { _ in
-                PostRepository.shared.deletePost(id: post.id)
-            })
-        }
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true)
     }
 }

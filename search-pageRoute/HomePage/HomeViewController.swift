@@ -10,7 +10,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     @IBOutlet weak var collectionView: UICollectionView!
     
     // Original Colors
-   
+    // Natural, Earthy Plant Care Colors
     let wateringBlue = UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)      // Soft water blue
     let pruningRed = UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0)       // Terracotta/clay
     let fertilizingGreen = UIColor(red: 0.52, green: 0.71, blue: 0.42, alpha: 1.0) // Sage green
@@ -75,7 +75,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc private func handleTaskUpdate() {
-        
+        // Recalculate data & refresh UI
         collectionView.reloadSections(IndexSet(integer: 0))
     }
 
@@ -117,7 +117,16 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             let allPlants = PlantStore.shared.allPlants()
             let insights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
 
-
+//            if insights.isEmpty {
+//                return [
+//                    TaskOverviewInsight(
+//                        icon: "checkmark.seal.fill", title: "All Plants Healthy",
+//                        message: "Everything is well cared  ",
+//                        level: .good,
+//                        route: ""
+//                    )
+//                ]
+//            }
         
         return [
                 TaskOverviewInsight(
@@ -130,7 +139,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 TaskOverviewInsight(
                     icon: "clock.fill",
                     title: "Missed Tasks",
-                    message: "2 plants need care soon",
+                    message: "3 plants need care soon",
                     level: .warning,
                     route: "Missed"
                 )
@@ -383,11 +392,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         switch indexPath.section {
         case 0:
-                  // Garden Tip tapped - could show more tips or do nothing
+                  // 🆕 Garden Tip tapped - could show more tips or do nothing
                   print("Garden tip tapped")
         case 1:
             // Tapped Urgent or Missed card
-            let taskInsights = taskInsightsForHome()
+            let allPlants = PlantStore.shared.allPlants()
+            let taskInsights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
             
             if indexPath.row < taskInsights.count {
                 let insight = taskInsights[indexPath.row]
@@ -456,7 +466,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
             print("✅ Got image, size: \(image.size)")
             
-           
+            // Dismiss the picker first
             picker.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
                 print("📸 Picker dismissed, showing scanning screen...")

@@ -115,7 +115,7 @@ class PlantQuantityViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toNextScreen" {
-            if let nextVC = segue.destination as? PlantRepotViewController {
+            if let nextVC = segue.destination as? PlantLightViewController {
                 nextVC.session = self.session
             }
         }

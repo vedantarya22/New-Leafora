@@ -181,12 +181,10 @@ class AddPlantImageViewController: UIViewController,
             }
             
             // 2. Select exactly `targetQuantity` plants to apply the edit to.
+            // If the user selects less than originalBatchSize, the remainder are UNTOUCHED.
             let plantsToEdit = Array(originalBatch.prefix(targetQuantity))
             
-            // 3. Identify any excess plants that need to be removed (if the user reduced the quantity)
-            let plantsToRemove = Array(originalBatch.dropFirst(targetQuantity))
-            
-            // 4. Apply edits to the selected plants (or move them to a new site)
+            // 3. Apply edits to the selected plants
             for mutPlant in plantsToEdit {
                 var updatedPlant = mutPlant
                 
@@ -214,12 +212,7 @@ class AddPlantImageViewController: UIViewController,
                 PlantStore.shared.updatePlant(updatedPlant)
             }
             
-            // 5. Remove the excess plants if quantity was reduced
-            for plantToRemove in plantsToRemove {
-                PlantStore.shared.removePlant(by: plantToRemove.id)
-            }
-            
-            print("✅ Batch edit complete. Edited \(plantsToEdit.count), Removed \(plantsToRemove.count) excess plants.")
+            print("✅ Batch edit complete. Edited \(plantsToEdit.count) out of \(originalBatch.count) plants.")
 
             // Pop back to the plant detail screen
             if let navController = navigationController {
