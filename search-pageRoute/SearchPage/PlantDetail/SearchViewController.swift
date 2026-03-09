@@ -48,6 +48,13 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleNavigateToProfilePreferences),
+            name: NSNotification.Name("NavigateToGardeningPreferences"),
+            object: nil
+        )
     }
     
     override func viewDidLayoutSubviews() {
@@ -70,9 +77,15 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //    }
     
     private func loadData() {
-        allPlants = JSONLoader.loadPlants(from: "plantData")
-        filteredPlants = allPlants
-        collectionView.reloadData()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let loadedPlants = JSONLoader.loadPlants(from: "plantData")
+            
+            DispatchQueue.main.async {
+                self?.allPlants = loadedPlants
+                self?.filteredPlants = loadedPlants
+                self?.collectionView.reloadData()
+            }
+        }
     }
     
     // MARK: - UI Setup
@@ -229,6 +242,13 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
             present(filterVC, animated: true)
         } else {
             print("Error: Could not instantiate CategoriesViewController. Check Storyboard ID.")
+        }
+    }
+    
+    @objc private func handleNavigateToProfilePreferences() {
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "GardeningPreferencesViewController") as? UIViewController {
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

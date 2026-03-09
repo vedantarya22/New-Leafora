@@ -121,7 +121,7 @@ class ARViewController: UIViewController {
 
     func loadModels() {
         models = [
-            ModelItem(name: "Monstera",       fileName: "sset",    thumbnail: "🌿"),
+            ModelItem(name: "Monstera",       fileName: "temp",    thumbnail: "🌿"),
             ModelItem(name: "Fiddle Leaf Fig", fileName: "krishna", thumbnail: "🌱"),
             ModelItem(name: "Snake Plant",     fileName: "krishna2",thumbnail: "🪴"),
         ]
