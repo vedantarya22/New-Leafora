@@ -150,6 +150,12 @@ extension profilePostsViewerController: UICollectionViewDataSource {
             self?.showPostMenu(for: currentPost)
         }
         
+        // 5. Expand Caption Action
+        cell.onSeeMoreTapped = { [weak self] in
+            self?.posts[indexPath.item].isExpanded.toggle()
+            self?.collectionView.reloadItems(at: [indexPath])
+        }
+        
         return cell
     }
 }

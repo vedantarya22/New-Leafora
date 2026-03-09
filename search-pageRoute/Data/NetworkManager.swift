@@ -56,6 +56,7 @@ extension NetworkManager {
             guard let data = data, error == nil else {
                 DispatchQueue.main.async { completion(nil) }
                 return
+                
             }
             let decoder = JSONDecoder()
             let plants = try? decoder.decode([Plant].self, from: data)

@@ -21,6 +21,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var bottomUsernameLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var menuButton: UIButton!
+    @IBOutlet weak var seeMoreButton: UIButton!
     
     // MARK: - Properties
     static let identifier = "CommunityPostCollectionViewCell"
@@ -32,6 +33,11 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     var onSaveTapped: (() -> Void)?
     var onProfileTapped: (() -> Void)?
     var onMenuTapped: (() -> Void)?
+    var onSeeMoreTapped: (() -> Void)?
+    
+    // Internal state tracking
+    private var isExpanded: Bool = false
+    private var canExpand: Bool = false
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -63,6 +69,10 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
         profileImageView.isUserInteractionEnabled = true
         profileImageView.addGestureRecognizer(tapGesture)
+        
+        let captionTapGesture = UITapGestureRecognizer(target: self, action: #selector(captionLabelTapped))
+        captionLabel.isUserInteractionEnabled = true
+        captionLabel.addGestureRecognizer(captionTapGesture)
     }
     
     private func setupDoubleTapGesture() {
@@ -168,6 +178,19 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         timestampLabel.text = post.timestamp
         likesCountLabel.text = "\(post.likesCount) likes"
         
+        // Handle see more expansion simply
+        self.isExpanded = post.isExpanded
+        self.canExpand = post.caption.count > 45
+        
+        if self.isExpanded {
+            captionLabel.numberOfLines = 0
+            seeMoreButton.isHidden = true
+        } else {
+            captionLabel.numberOfLines = 1
+            // Specifically restrict showing the button to text that exceeds approximately 45 chars
+            seeMoreButton.isHidden = !self.canExpand
+        }
+        
         // Configure images
         if let author = post.author {
             let imageName = UserSession.shared.profileImageString(for: author.id)
@@ -228,8 +251,18 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         onMenuTapped?()
     }
     
+    @IBAction func seeMoreTapped(_ sender: UIButton) {
+        onSeeMoreTapped?()
+    }
+    
     @objc private func profileImageTapped() {
         onProfileTapped?()
+    }
+    
+    @objc private func captionLabelTapped() {
+        if canExpand {
+            onSeeMoreTapped?()
+        }
     }
     
     override func prepareForReuse() {
