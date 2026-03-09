@@ -383,9 +383,21 @@ extension SearchViewController {
     }
 
     private func quickAddPlant(_ plant: Plant, to site: MyGardenSite) {
+        // ✅ Must use mongoId — not plantId string
+        guard let plantMongoId = plant.mongoId else {
+            print("❌ Plant missing mongoId — cannot quick add")
+            return
+        }
+
+        guard let siteMongoId = site.mongoId else {
+            print("❌ Site missing mongoId — cannot quick add")
+            return
+        }
+
+        // ✅ Save locally with mongoId so TaskDueEngine can find it
         let userPlant = UserPlant(
             id: UUID(),
-            plantId: plant.plantId,
+            plantId: plantMongoId,        // ✅ was plant.plantId
             siteName: site.name,
             siteID: site.id,
             imageData: nil,
@@ -401,6 +413,32 @@ extension SearchViewController {
             lastRepotted: nil
         )
         PlantStore.shared.addPlant(userPlant)
+
+        // ✅ Sync to MongoDB
+        NetworkManager.shared.addUserPlant(
+            plantId:          plantMongoId,
+            plantName:        plant.plantName,
+            siteId:           siteMongoId,
+            siteName:         site.name,
+            imageData:        plant.imageName,   // use catalogue image as fallback
+            lightRequirement: nil,
+            watering:         nil,
+            repotting:        nil,
+            quantity:         1,
+            lastWatered:      nil,
+            lastRepotted:     nil
+        ) { mongoId in
+            if let mongoId = mongoId {
+                print("✅ Quick-added \(plant.plantName) synced to MongoDB: \(mongoId)")
+                // ✅ Refresh from MongoDB so local store is consistent
+                if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                    sceneDelegate.loadAppData()
+                }
+            } else {
+                print("❌ Failed to sync quick-add to MongoDB")
+            }
+        }
+
         print("✅ Quick-added \(plant.plantName) to \(site.name)")
         showQuickAddSuccess(plantName: plant.plantName, siteName: site.name)
     }

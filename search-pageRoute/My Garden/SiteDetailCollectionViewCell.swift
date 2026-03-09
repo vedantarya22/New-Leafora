@@ -33,7 +33,8 @@ class SiteDetailCollectionViewCell: UICollectionViewCell {
 
     func configure(userPlant: UserPlant) {
             // Load plant data from JSON using plantId
-            let allPlants = JSONLoader.loadPlants(from: "plantData")
+//            let allPlants = JSONLoader.loadPlants(from: "plantData")
+        let allPlants = PlantCatalogueCache.shared.plants
             let plant = allPlants.first(where: { $0.plantId == userPlant.plantId })
             
             // Set plant name

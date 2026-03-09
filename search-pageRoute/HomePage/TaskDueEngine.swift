@@ -9,10 +9,11 @@ struct TaskDueEngine {
     static func isDue(_ userPlant: UserPlant, task: CareTask) -> Bool {
 
         // ✅ Load plants using your proven method
-        let allPlants = JSONLoader.loadPlants(from: "plantData")
+//        let allPlants = JSONLoader.loadPlants(from: "plantData")
+        let allPlants = PlantCatalogueCache.shared.plants
 
         guard let plant = allPlants.first(where: {
-            $0.plantId == userPlant.plantId
+            $0.mongoId == userPlant.plantId   // ✅ was $0.plantId
         }) else {
             return false
         }

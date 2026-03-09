@@ -92,17 +92,17 @@ class onboardingViewController: UIViewController {
             currentPage += 1
             updateUI(animated: true)
         } else {
-            // Mark onboarding as complete so it won't show again
-            UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
-            
-            // Navigate to the Main storyboard's initial view controller (your Home page)
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            guard let homeVC = storyboard.instantiateInitialViewController() else {
-                print("Could not instantiate initial view controller from Main storyboard.")
-                return
-            }
-            homeVC.modalPresentationStyle = .fullScreen
-            present(homeVC, animated: true, completion: nil)
+            // ✅ Mark onboarding as done
+             UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+
+             // ✅ Go to login, not home
+             guard let window = UIApplication.shared.connectedScenes
+                 .compactMap({ $0 as? UIWindowScene })
+                 .first?.windows.first else { return }
+
+             let storyboard = UIStoryboard(name: "Main", bundle: nil)
+             window.rootViewController = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+             UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
         }
     }
     

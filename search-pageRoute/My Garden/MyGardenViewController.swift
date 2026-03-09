@@ -175,58 +175,74 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyGardenCell", for: indexPath) as! MyGardenCollectionViewCell
-            let site = siteStore.sites[indexPath.item]
-            
-            cell.iconButton.setImage(UIImage(systemName: site.icon), for: .normal)
-            cell.siteNameLabel.text = site.name
-            
-            let plantsInSite = PlantStore.shared.plants(for: site.id)
+             let site = siteStore.sites[indexPath.item]
+             
+             cell.iconButton.setImage(UIImage(systemName: site.icon), for: .normal)
+             cell.siteNameLabel.text = site.name
+             
+             
+            let plantsInSite = PlantStore.shared.plants(for: site)
             let totalCount = plantsInSite.reduce(0) { $0 + $1.quantity }
             cell.plantCountLabel.text = "\(totalCount) plant\(totalCount == 1 ? "" : "s")"
-            
-            return cell
+             
+             return cell
         }
     }
     @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
-        
+
         let point = gesture.location(in: myGardenCollectionView)
         guard let indexPath = myGardenCollectionView.indexPathForItem(at: point),
               indexPath.section == 1 else { return }
-        
+
         if let cell = myGardenCollectionView.cellForItem(at: indexPath) as? MyGardenCollectionViewCell {
-                cell.startWobble()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    cell.stopWobble()
-                }
-            }
-        
+            cell.startWobble()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { cell.stopWobble() }
+        }
+
         let site = siteStore.sites[indexPath.item]
-        let plantCount = PlantStore.shared.plants(for: site.id).count
-        
+        let plantCount = PlantStore.shared.plants(for: site).count
+
         if plantCount == 0 {
-            // ✅ No plants — delete immediately with simple confirm
             let alert = UIAlertController(title: "Delete \(site.name)?", message: "Are you sure?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                self?.siteStore.sites.removeAll { $0.id == site.id }
-                self?.myGardenCollectionView.reloadData()
-                self?.updateEmptyState()
+                guard let mongoId = site.mongoId else { return }
+
+                // ✅ Delete from MongoDB
+                NetworkManager.shared.deleteSite(siteId: mongoId) { success in
+                    guard success else { print("❌ Failed to delete site"); return }
+                    // ✅ Then remove locally
+                    PlantStore.shared.removeAllPlants(for: site)
+                    self?.siteStore.sites.removeAll { $0.id == site.id }
+                    DispatchQueue.main.async {
+                        self?.myGardenCollectionView.reloadData()
+                        self?.updateEmptyState()
+                    }
+                }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             present(alert, animated: true)
-            
+
         } else {
-            // ✅ Has plants — show warning with plant count
             let alert = UIAlertController(
                 title: "Delete \(site.name)?",
                 message: "This site has \(plantCount) plant\(plantCount == 1 ? "" : "s"). Deleting it will remove all plants inside.",
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: "Delete Anyway", style: .destructive) { [weak self] _ in
-                PlantStore.shared.removeAllPlants(for: site.id)
-                self?.siteStore.sites.removeAll { $0.id == site.id }
-                self?.myGardenCollectionView.reloadData()
-                self?.updateEmptyState()
+                guard let mongoId = site.mongoId else { return }
+
+                // ✅ Delete site + all its plants from MongoDB
+                NetworkManager.shared.removeSiteWithPlants(siteId: mongoId) { success in
+                    guard success else { print("❌ Failed to delete site with plants"); return }
+                    // ✅ Then remove locally
+                    PlantStore.shared.removeAllPlants(for: site)
+                    self?.siteStore.sites.removeAll { $0.id == site.id }
+                    DispatchQueue.main.async {
+                        self?.myGardenCollectionView.reloadData()
+                        self?.updateEmptyState()
+                    }
+                }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             present(alert, animated: true)

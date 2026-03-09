@@ -1,60 +1,70 @@
-//
-//  SceneDelegate.swift
-//  search-pageRoute
-//
-//  Created by SDC-USER on 27/01/26.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let ws = (scene as? UIWindowScene) else { return }
-        
-        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        let storyboardName = hasSeenOnboarding ? "Main" : "onboarding"
-        let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
-        
-        guard let rootVC = storyboard.instantiateInitialViewController() else { return }
-        
+
         let win = UIWindow(windowScene: ws)
-        win.rootViewController = rootVC
         self.window = win
+
+        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
+
+        if !hasSeenOnboarding {
+            print("👋 First launch, showing onboarding")
+            let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
+            win.rootViewController = storyboard.instantiateInitialViewController()
+
+        } else if let token = KeychainManager.shared.getToken(),
+                  let userId = KeychainManager.shared.getUserId() {
+            NetworkManager.shared.currentUserId = userId
+            print("✅ Token found, going to home")
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            win.rootViewController = storyboard.instantiateInitialViewController()
+            loadAppData()
+
+        } else {
+            print("⚠️ No token, showing login")
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            win.rootViewController = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+        }
+
         win.makeKeyAndVisible()
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+    // MARK: - Load App Data
+    func loadAppData() {
+        // ✅ Load catalogue
+        PlantCatalogueCache.shared.getPlants { plants in
+            print("✅ Loaded \(plants.count) catalogue plants")
+        }
+
+        // ✅ Always replace local with MongoDB — prevents duplicates
+        NetworkManager.shared.fetchUserPlants { userPlants in
+            guard let userPlants = userPlants else {
+                print("❌ Failed to load user plants")
+                return
+            }
+            PlantStore.shared.setPlants(userPlants)
+            print("✅ Loaded \(userPlants.count) user plants from MongoDB")
+        }
+
+        // ✅ Always replace local sites with MongoDB
+        NetworkManager.shared.getUserSites { sites in
+            guard let sites = sites else {
+                print("❌ Failed to load sites")
+                return
+            }
+            SiteStore.shared.setSites(sites)
+            print("✅ Loaded \(sites.count) sites from MongoDB")
+        }
     }
 
-    func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-    }
-
-    func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-    }
-
-    func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-    }
-
-
+    func sceneDidDisconnect(_ scene: UIScene) {}
+    func sceneDidBecomeActive(_ scene: UIScene) {}
+    func sceneWillResignActive(_ scene: UIScene) {}
+    func sceneWillEnterForeground(_ scene: UIScene) {}
+    func sceneDidEnterBackground(_ scene: UIScene) {}
 }
-

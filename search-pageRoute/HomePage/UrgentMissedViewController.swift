@@ -53,7 +53,8 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     private func loadPlantData() {
         // Load all plant data from JSON
-        allPlantData = JSONLoader.loadPlants(from: "plantData")
+//        allPlantData = JSONLoader.loadPlants(from: "plantData")
+        let allPlants = PlantCatalogueCache.shared.plants
         
         if allPlantData.isEmpty {
             print("⚠️ [UrgentMissedVC] No plant data loaded from JSON!")

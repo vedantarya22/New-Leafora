@@ -6,6 +6,7 @@ struct PlantData: Codable {
 }
 
 struct Plant: Codable {
+    let mongoId: String?
     let plantId: String
     let plantName: String
     let scientificName: String
@@ -23,6 +24,7 @@ struct Plant: Codable {
     let commonIssues: [String]
     
     enum CodingKeys: String, CodingKey {
+        case mongoId = "_id"
         case plantId = "plant_id"
         case plantName = "plant_name"
         case scientificName = "scientific_name"

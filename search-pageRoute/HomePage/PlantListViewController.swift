@@ -24,7 +24,9 @@ class PlantListViewController: UIViewController,
 
 
         // ✅ Load JSON once - reuse everywhere
-        allPlants = JSONLoader.loadPlants(from: "plantData")
+//        allPlants = JSONLoader.loadPlants(from: "plantData")
+        // ✅ load from cache
+        allPlants = PlantCatalogueCache.shared.plants
         
         if allPlants.isEmpty {
                 print("⚠️ WARNING: No plants loaded from JSON! Check if 'plantData.json' exists in bundle")
@@ -147,10 +149,25 @@ class PlantListViewController: UIViewController,
     // MARK: - Task Completion
 
     func markTaskDone(for userPlant: UserPlant) {
+        // ✅ Update locally first (instant UI response)
         PlantStore.shared.markTaskDone(
             userPlantID: userPlant.id,
             taskType: taskType
         )
+
+        // ✅ Sync to MongoDB
+        guard let mongoId = userPlant.mongoId else {
+            print("❌ No mongoId on userPlant — cannot sync task to backend")
+            return
+        }
+
+        NetworkManager.shared.markTaskDone(mongoId: mongoId, taskType: taskType.lowercased()) { success in
+            if success {
+                print("✅ Task '\(self.taskType)' synced to MongoDB for plant: \(mongoId)")
+            } else {
+                print("❌ Failed to sync task to MongoDB — will be out of sync")
+            }
+        }
     }
     
     

@@ -35,8 +35,8 @@ class PlantCatalogueCache {
     }
     
     // ✅ Same as JSONLoader.plant(by:) — used by TaskDueEngine etc
-    func getPlant(by id: String) -> Plant? {
-        return plants.first { $0.plantId == id }
+    func getPlant(byMongoId mongoId: String) -> Plant? {
+        return plants.first { $0.mongoId == mongoId }
     }
     
     // ✅ Call this to force refresh if needed
