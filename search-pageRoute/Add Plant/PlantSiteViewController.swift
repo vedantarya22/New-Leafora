@@ -57,19 +57,17 @@ class PlantSiteViewController: UIViewController,UICollectionViewDataSource,UICol
     
     @IBAction func nextButtonTapped(_ sender: UIBarButtonItem) {
         // site selected by user
-        guard let _ = selectedIndex else {
+        guard let selectedIndex = selectedIndex else {
                showSelectionAlert()
                return
            }
         
-        // Use the selectedSite property if it has been set (important for custom sites!)
-        // Otherwise, fall back to the button data.
-        let finalSite = self.selectedSite ?? buttondata[selectedIndex!.row].site
-        let finalIcon = self.selectedIcon ?? buttondata[selectedIndex!.row].image
+        let selectedSite = buttondata[selectedIndex.row].site
+        let selectedIcon = buttondata[selectedIndex.row].image
         
         
-        session.siteName = finalSite
-        session.siteIcon = finalIcon   // selected icon mapping
+        session.siteName = selectedSite
+        session.siteIcon = selectedIcon   // selected icon mapping
         
         //  Go to next screen
             performSegue(withIdentifier: "toNextScreen", sender: self)

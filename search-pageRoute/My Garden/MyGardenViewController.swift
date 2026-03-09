@@ -26,25 +26,21 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     let siteStore = SiteStore.shared
-    
-    
+   
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "My Garden"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
-        
         view.layer.insertSublayer(gradientLayer, at: 0)
         setupHoldTipLabel()
-        setupBotanicalBackground()
+       setupBotanicalBackground()
         setupCollectionView()
         setupEmptyStateLabel()
         updateEmptyState()
         fetchWeatherData()
     }
-    
+     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         myGardenCollectionView.reloadData()
@@ -57,7 +53,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             holdTipLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
-    
+
     private func fetchWeatherData() {
         isLoadingWeather = true
         
@@ -122,12 +118,12 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         // This ensures the gradient is ALWAYS behind the cells
         myGardenCollectionView.backgroundView = backgroundContainer
     }
-    
+
     private func setupCollectionView() {
         myGardenCollectionView.delegate = self
         myGardenCollectionView.dataSource = self
         myGardenCollectionView.backgroundColor = .clear
-        myGardenCollectionView.backgroundView?.backgroundColor = .clear
+            myGardenCollectionView.backgroundView?.backgroundColor = .clear
         // Configure flow layout
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         myGardenCollectionView.addGestureRecognizer(longPress)
@@ -145,18 +141,18 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         
         // NOTE: Header registration removed to delete the "Rooms" heading
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
-    
+
     private func updateEmptyState() {
         let isEmpty = siteStore.sites.isEmpty
         emptyStateLabel.isHidden = !isEmpty
         myGardenCollectionView.isHidden = isEmpty
     }
-    
+
     // MARK: - Data Source
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2 // Section 0: Weather, Section 1: Garden Boxes
@@ -170,12 +166,12 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherTipCell", for: indexPath) as! WeatherTipCell
             if isLoadingWeather {
-                cell.showLoading() // Maybe show a spinner
-            } else if let weather = currentWeather {
-                cell.configure(with: weather) // Set the temp and advice
-            } else {
-                cell.showError() // Show "Weather unavailable"
-            }
+                        cell.showLoading() // Maybe show a spinner
+                    } else if let weather = currentWeather {
+                        cell.configure(with: weather) // Set the temp and advice
+                    } else {
+                        cell.showError() // Show "Weather unavailable"
+                    }
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyGardenCell", for: indexPath) as! MyGardenCollectionViewCell
@@ -199,17 +195,17 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
               indexPath.section == 1 else { return }
         
         if let cell = myGardenCollectionView.cellForItem(at: indexPath) as? MyGardenCollectionViewCell {
-            cell.startWobble()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                cell.stopWobble()
+                cell.startWobble()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    cell.stopWobble()
+                }
             }
-        }
         
         let site = siteStore.sites[indexPath.item]
         let plantCount = PlantStore.shared.plants(for: site.id).count
         
         if plantCount == 0 {
-            //  No plants — delete immediately with simple confirm
+            // ✅ No plants — delete immediately with simple confirm
             let alert = UIAlertController(title: "Delete \(site.name)?", message: "Are you sure?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
                 self?.siteStore.sites.removeAll { $0.id == site.id }
@@ -220,7 +216,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             present(alert, animated: true)
             
         } else {
-            //  Has plants — show warning with plant count
+            // ✅ Has plants — show warning with plant count
             let alert = UIAlertController(
                 title: "Delete \(site.name)?",
                 message: "This site has \(plantCount) plant\(plantCount == 1 ? "" : "s"). Deleting it will remove all plants inside.",
@@ -236,7 +232,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             present(alert, animated: true)
         }
     }
-    
+
     // MARK: - Layout Delegate
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
@@ -270,7 +266,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return section == 0 ? 0 : 16
     }
-    
+
     // MARK: - Navigation
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 1 {
@@ -278,7 +274,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             navigateToSiteDetail(for: selectedSite)
         }
     }
-    
+
     private func navigateToSiteDetail(for site: MyGardenSite) {
         let storyboard = UIStoryboard(name: "MyGarden", bundle: nil)
         guard let vc = storyboard.instantiateViewController(withIdentifier: "SiteDetailViewController") as? SiteDetailViewController else { return }

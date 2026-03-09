@@ -10,7 +10,7 @@ struct PlantWeatherInfo {
         switch condition.lowercased() {
         case let str where str.contains("clear"): return "☀️"
         case let str where str.contains("cloud"): return "☁️"
-        case let str where str.contains("rain"), let str where                    str.contains("drizzle"): return "🌧️"
+        case let str where str.contains("rain"), let str where str.contains("drizzle"): return "🌧️"
         case let str where str.contains("thunder"): return "⛈️"
         case let str where str.contains("snow"): return "❄️"
         case let str where str.contains("mist"), let str where str.contains("fog"): return "🌫️"

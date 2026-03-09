@@ -1,7 +1,6 @@
 import UIKit
-import PhotosUI
 
-class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, PHPickerViewControllerDelegate {
+class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
    @IBOutlet weak var Imageview: UIImageView!
    @IBOutlet weak var Cellview: UIView!
@@ -10,8 +9,6 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
     private var originalUser: User?
     private var draftUser: User?
     private var isEditingProfile = false
-    private var imageTapGesture: UITapGestureRecognizer?
-    private var cameraBadge: UIImageView?
     
     // Dynamic sections based on draftUser
     private var sections: [PersonalInfoSection] {
@@ -116,7 +113,6 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
         }
 
         Table.reloadData()
-        setupHeader()
     }
 
     private func setupTableView() {
@@ -129,76 +125,11 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
 
     private func setupHeader() {
         guard let user = originalUser else { return }
-        Imageview.configureImage(with: user.profileImageString)
+        let imageName = user.profileImageString
+        Imageview.image = UIImage(named: imageName) ?? UIImage(systemName: imageName)
         Imageview.layer.cornerRadius = Imageview.frame.height / 2
         Imageview.clipsToBounds = true
         Imageview.contentMode = .scaleAspectFill
-        
-        // Camera badge (hidden by default, shown in edit mode)
-        if cameraBadge == nil {
-            let badge = UIImageView(image: UIImage(systemName: "camera.circle.fill"))
-            badge.tintColor = .systemGray
-            badge.backgroundColor = .systemBackground
-            badge.layer.cornerRadius = 15
-            badge.clipsToBounds = true
-            badge.translatesAutoresizingMaskIntoConstraints = false
-            Imageview.superview?.addSubview(badge)
-            NSLayoutConstraint.activate([
-                badge.widthAnchor.constraint(equalToConstant: 30),
-                badge.heightAnchor.constraint(equalToConstant: 30),
-                badge.trailingAnchor.constraint(equalTo: Imageview.trailingAnchor, constant: 2),
-                badge.bottomAnchor.constraint(equalTo: Imageview.bottomAnchor, constant: 2)
-            ])
-            cameraBadge = badge
-        }
-        cameraBadge?.isHidden = !isEditingProfile
-        
-        // Tap gesture for image (only active during edit)
-        if imageTapGesture == nil {
-            let tap = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
-            Imageview.addGestureRecognizer(tap)
-            imageTapGesture = tap
-        }
-        Imageview.isUserInteractionEnabled = isEditingProfile
-    }
-    
-    @objc private func profileImageTapped() {
-        guard isEditingProfile else { return }
-        var config = PHPickerConfiguration()
-        config.filter = .images
-        config.selectionLimit = 1
-        let picker = PHPickerViewController(configuration: config)
-        picker.delegate = self
-        present(picker, animated: true)
-    }
-    
-    // MARK: - PHPickerViewControllerDelegate
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
-        guard let result = results.first else { return }
-        
-        result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
-            guard let self = self, let selectedImage = image as? UIImage else { return }
-            
-            // Save to Documents
-            let imageID = "profile_\(self.draftUser?.id ?? UUID().uuidString)"
-            let docsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let fileURL = docsDir.appendingPathComponent(imageID)
-            
-            if let data = selectedImage.jpegData(compressionQuality: 0.8) {
-                try? data.write(to: fileURL)
-            }
-            
-            DispatchQueue.main.async {
-                // Update draft
-                self.draftUser?.profileImageString = imageID
-                
-                // Update header image
-                self.Imageview.image = selectedImage
-                self.Imageview.contentMode = .scaleAspectFill
-                self.Imageview.clipsToBounds = true
-            }
-        }
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {

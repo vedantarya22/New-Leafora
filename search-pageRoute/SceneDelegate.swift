@@ -15,8 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let ws = (scene as? UIWindowScene) else { return }
         
-        // let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        let storyboardName = "onboarding" // FORCE ONBOARDING EVERY TIME FOR TESTING // hasSeenOnboarding ? "Main" : "onboarding"
+        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
+        let storyboardName = hasSeenOnboarding ? "Main" : "onboarding"
         let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
         
         guard let rootVC = storyboard.instantiateInitialViewController() else { return }

@@ -43,12 +43,12 @@ class SiteDetailCollectionViewCell: UICollectionViewCell {
             if let imageData = userPlant.imageData,
                let userImage = UIImage(data: imageData) {
                 plantImageView.image = userImage
-                print(" Using user-uploaded image for:", plant?.plantName ?? "plant")
+                print("✅ Using user-uploaded image for:", plant?.plantName ?? "plant")
             }
             // PRIORITY 2: Fall back to default plant image
             else if let plant = plant {
                 plantImageView.image = UIImage(named: plant.imageName)
-                print(" Using default image for:", plant.plantName)
+                print("✅ Using default image for:", plant.plantName)
             }
             // PRIORITY 3: Placeholder if no image available
             else {
