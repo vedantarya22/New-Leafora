@@ -1,5 +1,5 @@
 import UIKit
-
+import SDWebImage
 class SearchPageCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "SearchPageCollectionViewCell"
@@ -56,7 +56,15 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
     func configure(with plant: Plant) {
         plantLabel.text = plant.plantName
         scientificLabel.text = plant.scientificName
-        plantImageView.image = UIImage(named: plant.imageName)
+//        plantImageView.image = UIImage(named: plant.imageName)
+        if let url = URL(string: plant.imageName) {
+             plantImageView.sd_setImage(
+                 with: url,
+                 placeholderImage: UIImage(systemName: "leaf.fill")
+             )
+         } else {
+             plantImageView.image = UIImage(systemName: "leaf.fill")
+         }
         
         applyTag(difficultyLabel, tag: plant.tags.indices.contains(0) ? plant.tags[0] : "-")
         applyTag(lightLabel, tag: plant.tags.indices.contains(1) ? plant.tags[1] : "-")
@@ -64,8 +72,11 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
 
     // MARK: - Configure with UserPlant
     func configure(userPlant: UserPlant) {
-        let allPlants = JSONLoader.loadPlants(from: "plantData")
-        guard let plant = allPlants.first(where: { $0.plantId == userPlant.plantId }) else {
+        let allPlants = PlantCatalogueCache.shared.plants
+        
+        // ❌ was: $0.plantId == userPlant.plantId
+        // ✅ fix: $0.mongoId == userPlant.plantId
+        guard let plant = allPlants.first(where: { $0.mongoId == userPlant.plantId }) else {
             plantLabel.text = "Unknown Plant"
             scientificLabel.text = ""
             plantImageView.image = UIImage(systemName: "leaf.fill")
@@ -79,8 +90,14 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
         
         if let imageData = userPlant.imageData, let userImage = UIImage(data: imageData) {
             plantImageView.image = userImage
+        } else if let urlString = userPlant.imageUrl, let url = URL(string: urlString) {
+            // ✅ Use Cloudinary URL from userPlant first
+            plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
+        } else if let url = URL(string: plant.imageName) {
+            // fallback to catalogue image
+            plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
         } else {
-            plantImageView.image = UIImage(named: plant.imageName)
+            plantImageView.image = UIImage(systemName: "leaf.fill")
         }
         
         applyTag(difficultyLabel, tag: plant.tags.indices.contains(0) ? plant.tags[0] : "-")

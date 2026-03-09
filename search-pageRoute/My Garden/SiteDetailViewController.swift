@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var gradientLayer = CAGradientLayer()
@@ -31,10 +32,14 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Reload plants when returning from detail view
-        loadPlantsForSite()
-        collectionView.reloadData()
+
+        // ✅ Refresh from MongoDB then reload UI
+        NetworkManager.shared.fetchUserPlants { userPlants in
+            if let userPlants = userPlants {
+                PlantStore.shared.setPlants(userPlants)
+            }
+            self.loadPlantsForSite()
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -85,17 +90,22 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     private func loadPlantsForSite() {
-        guard let siteID = site?.id else { return }
-        
-        // Use new grouping method
-        let grouped = PlantStore.shared.groupedPlants(for: siteID)
-        
-        // Convert to display format
-        userPlants = grouped.map { $0.plant }
-        
-        print("✅ Showing \(userPlants.count) plant types with total \(grouped.reduce(0) { $0 + $1.count }) plants")
-        
-        updateEmptyState()
+        guard let site = site else { return }
+
+        PlantCatalogueCache.shared.getPlants { [weak self] _ in
+            guard let self = self else { return }
+
+            // ✅ Smart lookup — mongoSiteId first, siteName fallback
+            let grouped = PlantStore.shared.groupedPlants(for: site)
+            self.userPlants = grouped.map { $0.plant }
+
+            print("✅ Showing \(self.userPlants.count) plant types for site: \(site.name)")
+
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                self.updateEmptyState()
+            }
+        }
     }
     
     private func updateEmptyState() {
@@ -127,41 +137,16 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
         ) as? SearchPageCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
+
         let userPlant = userPlants[indexPath.item]
-        
-        // Configure cell with user plant data (this loads plant details from JSON)
         cell.configure(userPlant: userPlant)
-        
-        // Check plants of this specific batch (same type + same date)
-        let allPlantsInSite = PlantStore.shared.plants(for: site!.id)
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let dateKey = formatter.string(from: userPlant.createdAt)
-        
-        let sameBatchPlants = allPlantsInSite.filter {
-            $0.plantId == userPlant.plantId &&
-            formatter.string(from: $0.createdAt) == dateKey
-        }
-        
-        // Check if there are multiple batches of the same plant type (different dates)
-        let hasOtherBatches = allPlantsInSite.contains {
-            $0.plantId == userPlant.plantId &&
-            formatter.string(from: $0.createdAt) != dateKey
-        }
-        
-        // If we need to show dates, use a friendly format
-        let displayFormatter = DateFormatter()
-        displayFormatter.dateFormat = "MMM d"
-        let dateStr = displayFormatter.string(from: userPlant.createdAt)
-        
-        let allPlants = JSONLoader.loadPlants(from: "plantData")
-        if let plantName = allPlants.first(where: { $0.plantId == userPlant.plantId })?.plantName {
-            // Only show name
+
+        // ✅ Override plant name using mongoId match
+        let allPlants = PlantCatalogueCache.shared.plants
+        if let plantName = allPlants.first(where: { $0.mongoId == userPlant.plantId })?.plantName {
             cell.plantLabel.text = plantName
         }
-        
+
         return cell
     }
     

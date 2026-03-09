@@ -12,11 +12,16 @@ import UIKit
 import Foundation
 
 struct MyGardenSite: Identifiable, Codable {
-    var id: UUID
+    var id: UUID = UUID()       // local SwiftUI only
+    var mongoId: String?        // MongoDB's _id
     var name: String
-    //    var cardColor: UIColorCodable
     var icon: String
-    var plantCount : Int = 0 // default
-    
-    
+    var plantCount: Int = 0
+
+    enum CodingKeys: String, CodingKey {
+        case mongoId    = "_id"
+        case name
+        case icon
+        // id and plantCount NOT included — not in MongoDB response
+    }
 }
