@@ -38,10 +38,10 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
         nameLabel?.text = user.name
         emailLabel?.text = user.handle
         
-        let imageName = user.profileImageString
-        profileImage?.image = UIImage(named: imageName) ?? UIImage(systemName: imageName)
+        profileImage?.configureImage(with: user.profileImageString)
+        profileImage?.layer.cornerRadius = (profileImage?.frame.height ?? 0) / 2
+        profileImage?.clipsToBounds = true
     }
-    
     
     @objc private func closeButtonTapped() {
         dismiss(animated: true)

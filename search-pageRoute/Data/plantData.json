@@ -4,174 +4,207 @@
       "plant_id": "aloe_vera",
       "plant_name": "Aloe Vera",
       "scientific_name": "Aloe barbadensis miller",
-      "description": "A hardy succulent known for healing gel and minimal watering needs.",
-      "category": ["medicinal", "indoor", "low_maintenance"],
-      "tags": ["medicinal", "low maintenance"],
+      "description": "An evergreen succulent perennial native to the Arabian Peninsula, widely naturalised across tropical and subtropical regions worldwide. Recognised by its rosette of thick, fleshy, grey-green leaves with serrated margins. The leaves contain a colourless gel rich in the polysaccharide acemannan, widely used in skin and wound care. One of the most used medicinal plants in the world, with a documented history spanning over 2,000 years \u2014 used in ancient Greece, Rome, Egypt, and China.",
+      "category": [
+        "medicinal",
+        "indoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "medicinal",
+        "low maintenance"
+      ],
       "image_name": "aloe_vera",
       "care_cycle": {
         "watering": {
-          "display": " 2–3 weeks",
+          "display": "Every 2\u20133 weeks",
           "days": 18,
           "method": "light",
           "steps": [
-            "Water lightly around the base",
-            "Avoid overwatering",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water lightly around the base, allowing the soil to dry out completely before rewatering",
+            "In terracotta pots, check that soil is bone dry before watering \u2014 overwatering is the most common cause of decline",
+            "Probe the soil a few inches deep before each watering session to confirm dryness",
+            "During winter dormancy, reduce watering to once a month or less"
           ]
         },
         "repotting": {
-          "display": " 12 months",
+          "display": "Yearly",
           "days": 365,
           "method": "refresh",
           "steps": [
-            "Replace old soil with fresh mix",
-            "Can use same size pot",
-            "Use well-draining cactus mix soil",
-            "Best done in spring season"
+            "Repot when the plant has produced multiple offset pups or when roots become visibly crowded",
+            "Use a pot only slightly larger than the root ball to avoid moisture retention issues",
+            "Use a good-quality cactus and succulent mix, which provides the sharp drainage aloe requires",
+            "Best done in spring when the plant is actively growing"
           ]
         },
         "fertilizing": {
-          "display": " 2 months",
+          "display": "Every 2 months",
           "days": 60,
           "method": "light",
           "steps": [
-            "Use diluted liquid fertilizer",
-            "Apply at 1/4 strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Apply a diluted liquid fertilizer at no more than quarter strength",
+            "Avoid over-fertilizing \u2014 aloe requires very little supplemental feeding",
+            "Feed only during the spring and summer growing season",
+            "Do not fertilize in winter when the plant is dormant"
           ]
         },
         "pruning": {
-          "display": " 6 months",
+          "display": "Every 6 months",
           "days": 180,
           "method": "trim",
           "steps": [
-            "Remove dead or brown leaves",
-            "Light maintenance trimming",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Remove any dead, dried, or brown outer leaves by cutting cleanly at the base",
+            "Trim lightly to maintain the rosette form and remove sun-damaged leaf tips",
+            "Always use clean, sharp scissors or a knife to prevent infection",
+            "Remove dead plant material promptly to deter pests"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Well-draining sandy soil",
-        "soil_used": "Cactus mix"
+        "characteristics": "Well-draining, sandy soil that does not retain moisture",
+        "soil_used": "Cactus and succulent potting mix"
       },
-      "benefits": ["Heals burns", "Easy care", "Air purification"],
+      "benefits": [
+        "Gel soothes minor burns, sunburns, and skin abrasions",
+        "Exceptionally easy to care for and drought-tolerant",
+        "Mild indoor air purification qualities"
+      ],
       "pet_friendly": false,
       "toxic": true,
       "light_required": "bright_indirect",
       "care_difficulty": "easy",
-      "common_issues": ["Root rot", "Soft leaves"]
+      "common_issues": [
+        "Root rot from overwatering",
+        "Soft or mushy leaves from excess soil moisture"
+      ]
     },
-
     {
       "plant_id": "money_plant",
       "plant_name": "Money Plant",
       "scientific_name": "Epipremnum aureum",
-      "description": "Fast-growing indoor vine known for prosperity and air cleaning.",
-      "category": ["indoor", "hanging", "good_luck"],
-      "tags": ["vastu friendly", "air purifying"],
+      "description": "A naturally climbing, fast-growing tropical vine native to the Solomon Islands in the Pacific. Known for its heart-shaped, waxy leaves often variegated with golden yellow. Often called Devil's Ivy for its near-indestructible nature \u2014 it tolerates low light, drought, and neglect better than almost any other houseplant. Identified in studies for its ability to filter indoor air pollutants including formaldehyde. Its trailing vines can reach over 8 feet indoors, making it ideal for shelves, hanging baskets, or trained up a moss pole.",
+      "category": [
+        "indoor",
+        "hanging",
+        "good_luck"
+      ],
+      "tags": [
+        "vastu friendly",
+        "air purifying"
+      ],
       "image_name": "money_plant",
       "care_cycle": {
         "watering": {
-          "display": "Once a week",
+          "display": "Every 1\u20132 weeks",
           "days": 7,
           "method": "moderate",
           "steps": [
-            "Water thoroughly until it drains",
-            "Allow soil to dry between waterings",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water thoroughly until it drains freely from the bottom, then allow the top 1 to 2 inches of soil to dry before rewatering",
+            "Overwatering and root rot are the most common problems \u2014 always check soil moisture before watering",
+            "Curling or wilting leaves signal thirst; yellowing leaves typically indicate overwatering",
+            "Reduce watering frequency in winter when the plant enters semi-dormancy"
           ]
         },
         "repotting": {
-          "display": " 10 months",
+          "display": "Yearly or when root-bound",
           "days": 300,
           "method": "upgrade",
           "steps": [
-            "Use pot 2\" larger than current",
-            "Ensure good drainage",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Repot when roots begin growing out of drainage holes or when growth becomes noticeably stunted",
+            "Choose a pot 1 to 2 inches larger in diameter with good drainage",
+            "Use a well-draining potting mix rich in organic matter \u2014 add perlite or lava rock for improved aeration",
+            "Spring is the ideal time to repot as the plant is actively growing"
           ]
         },
         "fertilizing": {
-          "display": "Monthly",
+          "display": "Every 4\u20136 weeks",
           "days": 30,
           "method": "balanced",
           "steps": [
-            "Use balanced liquid fertilizer",
-            "Apply at recommended strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Apply a balanced water-soluble liquid fertilizer every four to six weeks during spring and summer",
+            "Fresh potting soil contains sufficient nutrients \u2014 only begin fertilizing a few months after repotting",
+            "Reduce or stop fertilizing entirely during autumn and winter when growth slows",
+            "Avoid overfeeding, which can cause brown leaf tips from salt accumulation in the soil"
           ]
         },
         "pruning": {
-          "display": " 2 months",
+          "display": "Every 2 months",
           "days": 60,
           "method": "trim",
           "steps": [
-            "Remove dead or brown leaves",
-            "Light maintenance trimming",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Pinch back growing tips to encourage fuller, bushier growth rather than long bare stems",
+            "Stems longer than 4 feet often shed lower leaves \u2014 cut these back to soil level to encourage fresh shoots",
+            "Remove any dead, yellowing, or damaged leaves as soon as they appear",
+            "Use clean scissors and cut just above a leaf node"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Moist well-draining soil",
-        "soil_used": "Potting mix"
+        "characteristics": "Well-draining, slightly acidic potting mix rich in organic matter",
+        "soil_used": "Standard potting mix with added perlite or vermiculite"
       },
-      "benefits": ["Improves air quality", "Decorative look"],
+      "benefits": [
+        "Filters indoor air pollutants including formaldehyde",
+        "Extremely tolerant of neglect, drought, and low light",
+        "Versatile as a trailing, hanging, or climbing display plant"
+      ],
       "pet_friendly": false,
       "toxic": true,
       "light_required": "low_to_bright_indirect",
       "care_difficulty": "easy",
-      "common_issues": ["Yellow leaves", "Leggy growth"]
+      "common_issues": [
+        "Yellow leaves from overwatering",
+        "Leggy growth and fading variegation from insufficient light"
+      ]
     },
-
     {
       "plant_id": "snake_plant",
       "plant_name": "Snake Plant",
       "scientific_name": "Sansevieria trifasciata",
-      "description": "Tough low-light plant that releases oxygen at night.",
-      "category": ["indoor", "low_light", "low_maintenance"],
-      "tags": ["low light", "air purifying"],
+      "description": "A tough, architectural succulent native to West Africa, now reclassified as Dracaena trifasciata. Distinguished by its stiff, sword-shaped upright leaves banded in shades of deep green, silver, and yellow. One of the few plants that converts carbon dioxide to oxygen at night, making it particularly well-suited to bedrooms. NASA research identified it as effective at removing indoor air toxins including formaldehyde and toluene. Exceptionally drought-tolerant and adaptable to a wide range of light conditions, from low-light corners to bright indirect spots.",
+      "category": [
+        "indoor",
+        "low_light",
+        "low_maintenance"
+      ],
+      "tags": [
+        "low light",
+        "air purifying"
+      ],
       "image_name": "snake_plant",
       "care_cycle": {
         "watering": {
-          "display": " 2 weeks",
+          "display": "Every 2\u20136 weeks",
           "days": 14,
           "method": "light",
           "steps": [
-            "Water lightly around the base",
-            "Avoid overwatering",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water only when the top 2 to 3 inches of soil are completely dry \u2014 overwatering is the primary cause of death in snake plants",
+            "Water thoroughly until it drains from the bottom, then discard any water pooling in the saucer",
+            "In low-light conditions the soil dries much more slowly \u2014 always check moisture before watering",
+            "In winter, reduce watering to once a month or less as the plant is semi-dormant"
           ]
         },
         "repotting": {
-          "display": " 18 months",
+          "display": "Every 2\u20133 years",
           "days": 540,
           "method": "check",
           "steps": [
-            "Check if roots are crowding",
-            "Look for roots growing through drainage holes",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Snake plants prefer to be slightly root-bound and rarely need repotting",
+            "Repot only when roots are visibly cracking the pot or emerging from drainage holes",
+            "Use a pot just one size larger and a 1:1 blend of potting soil and cactus/succulent mix",
+            "Best done in spring; water lightly after repotting and avoid fertilizing for at least a month"
           ]
         },
         "fertilizing": {
-          "display": " 2 months",
+          "display": "Twice a year",
           "days": 60,
           "method": "light",
           "steps": [
-            "Use diluted liquid fertilizer",
-            "Apply at 1/4 strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Feed once in spring and once in early summer with a half-strength slow-release 10-10-10 balanced fertilizer",
+            "Snake plants are not heavy feeders \u2014 over-fertilizing produces lush but weak, floppy leaves",
+            "Do not fertilize in autumn or winter",
+            "Wipe leaves occasionally with a damp cloth to remove dust and support efficient photosynthesis"
           ]
         },
         "pruning": {
@@ -179,32 +212,44 @@
           "days": 120,
           "method": "trim",
           "steps": [
-            "Remove dead or brown leaves",
-            "Light maintenance trimming",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Prune during the growing season using sterilized shears to remove dead or damaged leaves",
+            "Remove unwanted leaves by cutting cleanly at the soil level",
+            "Trim brown or damaged leaf tips carefully, following the natural pointed shape of the leaf",
+            "Do not remove healthy green leaves \u2014 this significantly slows the plant's growth rate"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Loose fast-draining soil",
-        "soil_used": "Succulent mix"
+        "characteristics": "Loose, fast-draining soil \u2014 heavy soils trap water and quickly cause root rot",
+        "soil_used": "1:1 blend of standard potting soil and cactus/succulent mix"
       },
-      "benefits": ["Improves sleep air", "Very hardy"],
+      "benefits": [
+        "Converts CO\u2082 to oxygen at night \u2014 ideal for bedrooms",
+        "Effectively removes indoor air toxins including formaldehyde and toluene",
+        "Exceptionally hardy \u2014 tolerates neglect, drought, and low-light conditions"
+      ],
       "pet_friendly": false,
       "toxic": true,
       "light_required": "low_to_medium",
       "care_difficulty": "easy",
-      "common_issues": ["Root rot", "Wrinkled leaves"]
+      "common_issues": [
+        "Root rot from overwatering or compacted, poorly draining soil",
+        "Wrinkled or soft leaves \u2014 a sign of overwatering rather than drought"
+      ]
     },
-
     {
       "plant_id": "areca_palm",
       "plant_name": "Areca Palm",
       "scientific_name": "Dypsis lutescens",
-      "description": "Elegant palm that humidifies indoor spaces.",
-      "category": ["indoor", "pet_friendly"],
-      "tags": ["pet friendly", "air purifying"],
+      "description": "An elegant, clump-forming palm native to the humid rainforests of Madagascar, widely cultivated as an ornamental indoor and garden plant. Also known as the Butterfly Palm or Bamboo Palm, it is recognisable by its golden-yellow, slender cane stems and long, feathery arching fronds. A 6-foot Areca Palm releases approximately one litre of water through transpiration daily, functioning as a natural indoor humidifier. A recipient of the Royal Horticultural Society's Award of Garden Merit and widely listed among the top indoor air-purifying plants.",
+      "category": [
+        "indoor",
+        "pet_friendly"
+      ],
+      "tags": [
+        "pet friendly",
+        "air purifying"
+      ],
       "image_name": "areca_palm",
       "care_cycle": {
         "watering": {
@@ -212,87 +257,100 @@
           "days": 3,
           "method": "moderate",
           "steps": [
-            "Water thoroughly until it drains",
-            "Allow soil to dry between waterings",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water when the top inch of soil feels dry \u2014 keep soil evenly moist but never waterlogged",
+            "Water thoroughly until it drains from the bottom; never allow the plant to sit in standing water",
+            "In spring and summer water twice weekly; reduce to once weekly in winter when growth slows",
+            "Use room-temperature water where possible \u2014 cold water can shock the roots"
           ]
         },
         "repotting": {
-          "display": "Yearly",
+          "display": "Every 2\u20133 years",
           "days": 365,
           "method": "upgrade",
           "steps": [
-            "Use pot 2\" larger than current",
-            "Ensure good drainage",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Repot every 2 to 3 years or when roots emerge from drainage holes",
+            "Choose a pot one size larger \u2014 too large a container encourages root rot from oversaturated soil",
+            "Use a well-draining palm potting mix or a blend of peat moss, perlite, and coarse sand",
+            "Water the plant thoroughly a day before repotting to minimise transplant stress"
           ]
         },
         "fertilizing": {
-          "display": "Monthly",
+          "display": "Every 4\u20136 weeks",
           "days": 30,
           "method": "balanced",
           "steps": [
-            "Use balanced liquid fertilizer",
-            "Apply at recommended strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Feed with a balanced water-soluble liquid fertilizer (NPK 3-1-2 ratio preferred) every 4 to 6 weeks in spring and summer",
+            "Always water the plant before applying fertilizer to prevent root burn",
+            "Avoid high-fluoride fertilizers \u2014 fluoride causes brown leaf tips in this species",
+            "Stop all fertilizing from autumn through winter when growth is minimal"
           ]
         },
         "pruning": {
-          "display": " 3 months",
+          "display": "Every 3 months",
           "days": 90,
           "method": "trim",
           "steps": [
-            "Remove dead or brown leaves",
-            "Light maintenance trimming",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Remove only fronds that have turned fully brown or yellow, cutting cleanly at the base",
+            "Never trim just the brown tips off a green frond \u2014 this causes the whole frond to die back",
+            "Use clean, sharp pruning shears to prevent disease transmission",
+            "Regularly mist or wipe fronds to remove dust and improve photosynthesis"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Light moisture retaining soil",
-        "soil_used": "Peat mix"
+        "characteristics": "Light, moisture-retaining but free-draining soil \u2014 slightly acidic pH 6.0 to 6.5",
+        "soil_used": "Palm potting mix or peat-based mix with added perlite and coarse sand"
       },
-      "benefits": ["Pet safe", "Humidifies air"],
+      "benefits": [
+        "Non-toxic and completely safe for pets and children",
+        "Acts as a natural indoor humidifier through daily transpiration",
+        "Highly effective at purifying indoor air quality"
+      ],
       "pet_friendly": true,
       "toxic": false,
       "light_required": "bright_indirect",
       "care_difficulty": "moderate",
-      "common_issues": ["Brown tips", "Dry air stress"]
+      "common_issues": [
+        "Brown leaf tips from low humidity, fluoride in tap water, or over-fertilizing",
+        "Dry air stress in heated or heavily air-conditioned environments"
+      ]
     },
-
     {
       "plant_id": "tulsi",
       "plant_name": "Tulsi",
       "scientific_name": "Ocimum tenuiflorum",
-      "description": "Sacred medicinal herb used in Ayurveda.",
-      "category": ["medicinal", "aromatic", "outdoor"],
-      "tags": ["medicinal", "vastu friendly"],
+      "description": "A perennial aromatic herb native to the Indian subcontinent, belonging to the Lamiaceae (mint) family. Revered in Hinduism as a sacred plant and often called the Queen of Herbs, Tulsi \u2014 also known as Holy Basil \u2014 is traditionally placed in the courtyards of Hindu homes. Its leaves are rich in essential oils, flavonoids, and phenolic compounds with documented adaptogenic, antimicrobial, and immunomodulatory properties. Over 100 named varieties exist, the most common being the green-leaved Rama Tulsi and the dark purple-leaved Krishna Tulsi.",
+      "category": [
+        "medicinal",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "medicinal",
+        "vastu friendly"
+      ],
       "image_name": "tulsi",
       "care_cycle": {
         "watering": {
-          "display": " 2 days",
+          "display": "Every 1\u20132 days",
           "days": 2,
           "method": "moderate",
           "steps": [
-            "Water thoroughly until it drains",
-            "Allow soil to dry between waterings",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water when the top inch of soil feels dry \u2014 in summer keep soil consistently slightly moist",
+            "Water deeply at the base and avoid wetting the leaves to reduce risk of fungal disease",
+            "Do not water during or after rain \u2014 overwatering is the most common cause of root rot",
+            "Reduce watering in winter to prevent disease and root rot during cooler, slower-growth periods"
           ]
         },
         "repotting": {
-          "display": " 8 months",
+          "display": "Every 6\u20138 months",
           "days": 240,
           "method": "refresh",
           "steps": [
-            "Replace old soil with fresh mix",
-            "Can use same size pot",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Refresh the top 2 inches of soil every 6 to 8 months to replenish nutrients depleted by the fast-growing plant",
+            "Use a terracotta or earthenware pot with drainage holes \u2014 plastic pots retain excessive moisture",
+            "Mix equal parts garden soil, compost, and coarse sand or cocopeat for an ideal growing medium",
+            "Best done in early spring before the main growing season"
           ]
         },
         "fertilizing": {
@@ -300,10 +358,10 @@
           "days": 30,
           "method": "organic",
           "steps": [
-            "Use organic compost or worm castings",
-            "Apply as top dressing",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Apply organic compost, worm castings, or compost tea once every four to six weeks",
+            "Avoid fast-release synthetic fertilizers \u2014 they dilute essential oil concentration and trigger premature flowering",
+            "High-nitrogen fertilizers should be specifically avoided as they reduce medicinal potency",
+            "Reduce feeding after the growing season ends"
           ]
         },
         "pruning": {
@@ -311,43 +369,55 @@
           "days": 30,
           "method": "pinch",
           "steps": [
-            "Pinch back growing tips",
-            "Encourages bushier growth",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Pinch back growing tips once the plant reaches 8 to 10 inches tall to encourage bushy, lateral growth",
+            "Remove flower buds as soon as they appear to prolong leaf production and maintain oil concentration",
+            "Never prune more than one-third of the plant at a time",
+            "Remove yellow, faded, or diseased leaves promptly throughout the year to keep the plant vigorous"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Fertile draining soil",
-        "soil_used": "Garden soil + compost"
+        "characteristics": "Fertile, well-draining soil with good organic content",
+        "soil_used": "Equal parts garden soil, organic compost, and coarse sand or cocopeat"
       },
-      "benefits": ["Boosts immunity", "Reduces stress"],
+      "benefits": [
+        "Adaptogenic herb that supports the body's response to physical and mental stress",
+        "Traditionally used to support immunity and respiratory health in Ayurvedic medicine",
+        "Sacred significance in Hinduism \u2014 considered a symbol of purity and protection"
+      ],
       "pet_friendly": true,
       "toxic": false,
       "light_required": "full_sunlight",
       "care_difficulty": "easy",
-      "common_issues": ["Wilting", "Pests"]
+      "common_issues": [
+        "Wilting from heat stress or prolonged underwatering",
+        "Aphids and whiteflies, particularly in humid or overcrowded growing conditions"
+      ]
     },
-
     {
       "plant_id": "rose",
       "plant_name": "Rose",
       "scientific_name": "Rosa spp.",
-      "description": "Beautiful flowering shrub with fragrant blooms.",
-      "category": ["flowering", "outdoor"],
-      "tags": ["decorative", "fragrant"],
+      "description": "A diverse genus of flowering shrubs in the Rosaceae family, encompassing thousands of cultivated varieties prized for their fragrant blooms and ornamental appeal. Roses require at least six hours of direct sunlight daily and thrive in rich, well-drained, slightly acidic soil. As heavy feeders, they require consistent fertilisation from spring through mid-summer for peak bloom performance. Among the most culturally significant plants in history \u2014 symbols of love, beauty, and celebration across many civilisations \u2014 and among the most rewarding flowering plants to grow when given proper care.",
+      "category": [
+        "flowering",
+        "outdoor"
+      ],
+      "tags": [
+        "decorative",
+        "fragrant"
+      ],
       "image_name": "rose",
       "care_cycle": {
         "watering": {
-          "display": "3 times a week",
+          "display": "2\u20133 times a week",
           "days": 2,
           "method": "deep",
           "steps": [
-            "Deep soak until water drains freely",
-            "Ensure soil is fully saturated",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water deeply at soil level, keeping foliage dry to prevent fungal diseases like black spot and powdery mildew",
+            "A thorough deep soaking once or twice a week is far preferable to frequent shallow watering",
+            "Apply 2 to 3 inches of organic mulch around the base to retain moisture, suppress weeds, and keep roots cool",
+            "Reduce watering in autumn and stop supplemental watering during winter dormancy"
           ]
         },
         "repotting": {
@@ -355,21 +425,21 @@
           "days": 365,
           "method": "refresh",
           "steps": [
-            "Replace old soil with fresh mix",
-            "Can use same size pot",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Refresh soil and repot container roses annually in early spring using enriched, well-draining compost",
+            "Amend the planting medium with aged manure or compost to improve fertility and soil structure",
+            "Ensure containers and garden beds have excellent drainage \u2014 waterlogged soil causes root rot and disease",
+            "Best done in spring just as new leaf buds begin to swell"
           ]
         },
         "fertilizing": {
-          "display": " 15 days",
+          "display": "Every 4\u20136 weeks",
           "days": 15,
           "method": "heavy",
           "steps": [
-            "Use full-strength fertilizer",
-            "Heavy feeders need regular feeding",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Roses are heavy feeders \u2014 apply a balanced rose-specific fertilizer (10-10-10 or similar) every four to six weeks from early spring through early summer",
+            "Begin fertilizing after the last frost when the first leaves emerge in spring",
+            "A slow-release granular fertilizer in spring, supplemented with liquid plant food mid-season, gives excellent results",
+            "Stop all feeding by late July \u2014 fertilizing after this promotes tender new growth vulnerable to frost"
           ]
         },
         "pruning": {
@@ -377,54 +447,67 @@
           "days": 90,
           "method": "shape",
           "steps": [
-            "Shape to maintain desired form",
-            "Cut above leaf nodes",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Perform the main annual pruning in late winter or early spring just as leaf buds begin to swell",
+            "Remove all dead, damaged, or diseased canes first, then cut remaining canes back by one-third to one-half",
+            "Cut at a 45-degree angle just above an outward-facing bud node to encourage open, well-ventilated growth",
+            "Deadhead spent blooms throughout the flowering season to encourage continuous new blooming"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Rich fertile soil",
-        "soil_used": "Garden soil + manure"
+        "characteristics": "Rich, fertile, well-draining soil \u2014 slightly acidic pH 5.5 to 6.5",
+        "soil_used": "Garden soil enriched with aged manure or compost"
       },
-      "benefits": ["Beautifies space", "Boosts mood"],
+      "benefits": [
+        "Highly ornamental with a long, abundant flowering season",
+        "Fragrant blooms with well-documented mood-lifting properties",
+        "Excellent as cut flowers \u2014 last longest when cut at the early bud stage"
+      ],
       "pet_friendly": true,
       "toxic": false,
       "light_required": "full_sunlight",
       "care_difficulty": "advanced",
-      "common_issues": ["Black spots", "Aphids"]
+      "common_issues": [
+        "Black spot fungal disease triggered by wet foliage",
+        "Aphid infestations on new buds and soft growing tips"
+      ]
     },
-
     {
       "plant_id": "mint",
       "plant_name": "Mint",
       "scientific_name": "Mentha",
-      "description": "Fast-growing aromatic culinary herb.",
-      "category": ["medicinal", "aromatic", "outdoor"],
-      "tags": ["edible", "fast growing"],
+      "description": "A genus of fast-growing aromatic perennial herbs in the Lamiaceae family, with over 7,000 known varieties including peppermint (Mentha \u00d7 piperita) and spearmint (Mentha spicata). Native to Europe and Asia, mint is widely cultivated for culinary, medicinal, and aromatic purposes. It spreads vigorously via underground rhizomes and surface runners, making container growing the preferred approach to avoid it taking over garden beds. Leaves are most aromatic and flavourful when harvested in the morning before the plant comes into flower.",
+      "category": [
+        "medicinal",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "edible",
+        "fast growing"
+      ],
       "image_name": "mint",
       "care_cycle": {
         "watering": {
-          "display": " 2 days",
+          "display": "Every 1\u20132 days",
           "days": 2,
           "method": "moderate",
           "steps": [
-            "Water thoroughly until it drains",
-            "Allow soil to dry between waterings",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Keep soil consistently moist \u2014 water deeply when the top inch of soil feels dry",
+            "In hot weather or during peak growing season, check and water every one to two days",
+            "Do not let the soil dry out completely, especially for container-grown plants which dry faster",
+            "Ensure pots have good drainage \u2014 waterlogged soil causes root rot and fungal disease"
           ]
         },
         "repotting": {
-          "display": " 6 months",
+          "display": "Every 2\u20133 years",
           "days": 180,
           "method": "division",
           "steps": [
-            "Divide root ball into sections",
-            "Plant each division separately",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Divide and repot every two to three years as mint quickly exhausts and fills its container",
+            "In spring, lift the root ball and divide it into sections, each with a healthy root mass",
+            "Replant each division into fresh, fertile, well-draining potting soil",
+            "Trim up to one-third of the root mass when repotting to stimulate vigorous new root growth"
           ]
         },
         "fertilizing": {
@@ -432,43 +515,56 @@
           "days": 30,
           "method": "balanced",
           "steps": [
-            "Use balanced liquid fertilizer",
-            "Apply at recommended strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Mint is not a heavy feeder \u2014 fresh soil at the start of the growing season is often sufficient",
+            "If the plant shows signs of depletion, apply a weak balanced fertilizer every three to six weeks",
+            "Avoid over-fertilizing as this dilutes essential oil concentration and reduces leaf flavour",
+            "Organic compost tea or worm castings once a month is the ideal low-input approach"
           ]
         },
         "pruning": {
-          "display": "Frequently",
+          "display": "Every 2\u20133 weeks",
           "days": 5,
           "method": "pinch",
           "steps": [
-            "Pinch back growing tips",
-            "Encourages bushier growth",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Prune every two to three weeks during active growth, cutting stems back by half to two-thirds their height",
+            "Pinch growing tips regularly to maintain a bushy, compact habit and prevent legginess",
+            "Remove all flower buds as they appear \u2014 flowering causes leaves to become bitter and reduces essential oil content",
+            "Harvest leaves in the morning when the oils are most concentrated"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Moist fertile soil",
-        "soil_used": "Garden soil"
+        "characteristics": "Moist, fertile, slightly acidic to neutral soil with good drainage \u2014 pH 6.0 to 7.0",
+        "soil_used": "Rich garden soil or moisture-retaining potting mix"
       },
-      "benefits": ["Aids digestion", "Fresh flavor"],
+      "benefits": [
+        "Widely used culinary herb with a refreshing, cooling flavour",
+        "Supports digestion and is used in herbal teas and traditional medicine",
+        "Naturally repels aphids and certain garden pests"
+      ],
       "pet_friendly": true,
       "toxic": false,
       "light_required": "partial_sunlight",
       "care_difficulty": "easy",
-      "common_issues": ["Overgrowth", "Wilting"]
+      "common_issues": [
+        "Aggressive spreading via underground rhizomes if planted directly in the ground",
+        "Wilting from underwatering or nutrient depletion in long-established containers"
+      ]
     },
-
     {
       "plant_id": "jasmine",
       "plant_name": "Jasmine",
       "scientific_name": "Jasminum",
-      "description": "Flowering plant with strong sweet fragrance.",
-      "category": ["flowering", "aromatic", "outdoor"],
-      "tags": ["fragrant", "decorative"],
+      "description": "A diverse genus of climbing and shrubby flowering plants in the Oleaceae family, widely celebrated for their intensely sweet, star-shaped blossoms. Most species are native to tropical and warm temperate regions of Asia, Africa, and Australasia. Summer jasmine (Jasminum officinale) and Arabian jasmine (Jasminum sambac) are among the most cultivated varieties. Jasmine produces its iconic white flowers on the previous season's growth, meaning pruning must be done directly after flowering to preserve the following year's blooms. Widely grown on trellises, walls, and arbors for its ornamental and aromatic value.",
+      "category": [
+        "flowering",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "fragrant",
+        "decorative"
+      ],
       "image_name": "jasmine",
       "care_cycle": {
         "watering": {
@@ -476,10 +572,10 @@
           "days": 3,
           "method": "moderate",
           "steps": [
-            "Water thoroughly until it drains",
-            "Allow soil to dry between waterings",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water when the top inch of soil feels dry \u2014 keep soil consistently moist but never waterlogged",
+            "Water at the base of the plant and avoid wetting the foliage to prevent fungal disease",
+            "Container jasmine dries faster than in-ground plants and may need twice-weekly watering in summer",
+            "Reduce watering frequency in cooler months as growth naturally slows"
           ]
         },
         "repotting": {
@@ -487,10 +583,10 @@
           "days": 365,
           "method": "refresh",
           "steps": [
-            "Replace old soil with fresh mix",
-            "Can use same size pot",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Repot container jasmine in spring into fresh, fertile, well-draining compost",
+            "Jasmine prefers moist, organically rich, free-draining soil \u2014 add grit to improve drainage on heavy soils",
+            "Use a pot slightly larger than the current one and ensure adequate drainage holes",
+            "In garden beds, apply a generous mulch of well-rotted compost around the root zone every autumn"
           ]
         },
         "fertilizing": {
@@ -498,10 +594,10 @@
           "days": 30,
           "method": "balanced",
           "steps": [
-            "Use balanced liquid fertilizer",
-            "Apply at recommended strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Feed container plants weekly in summer with a high-potassium liquid feed (similar to tomato fertilizer) to boost flowering",
+            "A balanced liquid fertilizer (10-10-10 or similar) works well when applied monthly during the growing season",
+            "Ground-planted jasmine generally does not require feeding \u2014 an annual autumn compost mulch is sufficient",
+            "Reduce or stop feeding as summer ends and the plant begins to rest"
           ]
         },
         "pruning": {
@@ -509,32 +605,44 @@
           "days": 120,
           "method": "shape",
           "steps": [
-            "Shape to maintain desired form",
-            "Cut above leaf nodes",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Prune immediately after flowering in late summer or early autumn \u2014 this gives new growth time to mature before next season",
+            "Early flushes of flowers form on the previous year's growth; later flushes form on current-year tips",
+            "Remove dead, damaged, and overcrowded stems to maintain good airflow and prevent disease",
+            "Both summer and winter jasmine tolerate hard renovation pruning if they have significantly outgrown their space"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Loose fertile soil",
-        "soil_used": "Garden soil + compost"
+        "characteristics": "Moist, fertile and free-draining soil \u2014 add grit to improve drainage on heavy clay soils",
+        "soil_used": "Well-draining garden soil or potting compost with added grit or perlite"
       },
-      "benefits": ["Pleasant fragrance", "Garden beauty"],
+      "benefits": [
+        "Intensely fragrant blooms enjoyed across an extended flowering season",
+        "Attracts pollinating insects including bees and butterflies",
+        "Versatile as a climber, wall shrub, groundcover, or container plant"
+      ],
       "pet_friendly": true,
       "toxic": false,
       "light_required": "full_sunlight",
       "care_difficulty": "moderate",
-      "common_issues": ["Bud drop", "Pests"]
+      "common_issues": [
+        "Bud drop from sudden temperature changes or inconsistent watering",
+        "Spider mites and mealybugs, particularly on indoor or greenhouse-grown plants"
+      ]
     },
-
     {
       "plant_id": "peace_lily",
       "plant_name": "Peace Lily",
       "scientific_name": "Spathiphyllum",
-      "description": "Elegant indoor plant with white flowers and air-cleaning power.",
-      "category": ["indoor", "flowering"],
-      "tags": ["air purifying", "decorative"],
+      "description": "A tropical evergreen plant native to the rainforest floors of Central and South America, belonging to the Araceae family. Recognised by its glossy, deep-green leaves and distinctive white spathe flowers \u2014 modified leaves resembling white flags of peace, which gave the plant its name. Thrives in the dappled light and high humidity of its forest floor habitat. NASA research identified it as effective at filtering indoor air pollutants including benzene, formaldehyde, and trichloroethylene. One of the very few flowering houseplants that blooms reliably in low-light conditions.",
+      "category": [
+        "indoor",
+        "flowering"
+      ],
+      "tags": [
+        "air purifying",
+        "decorative"
+      ],
       "image_name": "peace_lily",
       "care_cycle": {
         "watering": {
@@ -542,32 +650,32 @@
           "days": 7,
           "method": "bottom",
           "steps": [
-            "Place pot in water tray",
-            "Let roots absorb from bottom",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water thoroughly once the top third of the soil has dried out \u2014 never allow the soil to dry out completely",
+            "The plant droops dramatically when thirsty; water immediately and it usually recovers within hours",
+            "Use room-temperature water \u2014 peace lilies are sensitive to cold water, which shocks the roots",
+            "Use filtered or rainwater where possible \u2014 the plant is sensitive to fluoride and chlorine in tap water, which cause brown leaf tips"
           ]
         },
         "repotting": {
-          "display": "Yearly",
+          "display": "Every 1\u20132 years",
           "days": 365,
           "method": "upgrade",
           "steps": [
-            "Use pot 2\" larger than current",
-            "Ensure good drainage",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Repot every one to two years or when the plant wilts frequently despite adequate watering",
+            "Select a pot 1 to 2 inches larger in diameter \u2014 peace lilies flower better when slightly pot-bound",
+            "Use a peat-free indoor houseplant potting mix rich in moisture-retaining organic matter",
+            "Best done in late winter or early spring as new growth begins"
           ]
         },
         "fertilizing": {
-          "display": " 2 months",
+          "display": "Every 2\u20136 weeks",
           "days": 60,
           "method": "balanced",
           "steps": [
-            "Use balanced liquid fertilizer",
-            "Apply at recommended strength",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Apply a diluted balanced liquid fertilizer at quarter strength every two to six weeks during spring and summer",
+            "Over-fertilizing is a common mistake \u2014 brown spots on leaves indicate too much feed",
+            "An application every third watering is a reliable, gentle approach that avoids root damage",
+            "Stop feeding entirely in autumn and winter to allow the plant to rest"
           ]
         },
         "pruning": {
@@ -575,32 +683,44 @@
           "days": 120,
           "method": "trim",
           "steps": [
-            "Remove dead or brown leaves",
-            "Light maintenance trimming",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Remove dead or yellowing leaves by cutting all the way back to the base at the centre of the plant",
+            "Trim brown leaf tips carefully using sharp scissors, following the natural pointed outline of the leaf",
+            "Cut spent flower stems to the base once blooms have fully faded",
+            "Wipe leaves regularly with a damp cloth to remove dust and improve photosynthesis efficiency"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Moist rich soil",
-        "soil_used": "Potting mix"
+        "characteristics": "Moist, organically rich potting soil that retains moisture without becoming waterlogged",
+        "soil_used": "Peat-free indoor houseplant potting mix"
       },
-      "benefits": ["Purifies air", "Beautiful blooms"],
+      "benefits": [
+        "Filters indoor air pollutants including benzene and formaldehyde",
+        "Produces elegant white blooms reliably in low-light conditions",
+        "Low-maintenance and very forgiving \u2014 ideal for beginner plant owners"
+      ],
       "pet_friendly": false,
       "toxic": true,
       "light_required": "low_to_medium",
       "care_difficulty": "moderate",
-      "common_issues": ["Drooping leaves", "Brown tips"]
+      "common_issues": [
+        "Drooping leaves from underwatering or root-bound conditions",
+        "Brown leaf tips from fluoride or chlorine in tap water, low humidity, or over-fertilizing"
+      ]
     },
-
     {
       "plant_id": "lemon_tree",
       "plant_name": "Lemon Plant",
       "scientific_name": "Citrus limon",
-      "description": "Fruit-bearing citrus plant with fragrant flowers.",
-      "category": ["fruit", "outdoor"],
-      "tags": ["edible fruit", "fragrant"],
+      "description": "A semi-tropical evergreen citrus tree native to South Asia, cultivated worldwide for its tart, vitamin-rich fruit and highly fragrant white blossoms. Outdoors in warm climates, lemon trees grow up to 20 feet; however, dwarf grafted varieties such as the Meyer Lemon (Citrus limon 'Meyer') are well-suited to container growing and thrive indoors and on patios. Lemon trees are heavy feeders that require citrus-specific fertilisation and at least 6 to 8 hours of direct sunlight daily for healthy fruiting. Indoor trees require hand-pollination to ensure fruit set.",
+      "category": [
+        "fruit",
+        "outdoor"
+      ],
+      "tags": [
+        "edible fruit",
+        "fragrant"
+      ],
       "image_name": "lemon",
       "care_cycle": {
         "watering": {
@@ -608,32 +728,32 @@
           "days": 3,
           "method": "deep",
           "steps": [
-            "Deep soak until water drains freely",
-            "Ensure soil is fully saturated",
-            "Check soil moisture before watering",
-            "Reduce watering in winter months"
+            "Water deeply when the top 2 inches of soil feel dry \u2014 probe with a stick to confirm soil moisture at depth",
+            "Overwatering is the biggest threat to lemon tree health \u2014 yellowing leaves signal soggy, unhappy roots",
+            "Do not leave standing water in the saucer \u2014 waterlogged roots lead to irreversible root rot",
+            "Reduce watering to just enough to keep the soil moist in winter when growth slows significantly"
           ]
         },
         "repotting": {
-          "display": " 2 years",
+          "display": "Every 2 years",
           "days": 730,
           "method": "upgrade",
           "steps": [
-            "Use pot 2\" larger than current",
-            "Ensure good drainage",
-            "Use well-draining soil mix",
-            "Best done in spring season"
+            "Repot young trees every two years, moving to a pot no more than 2 inches larger each time",
+            "Over-potting leads to poor flowering and fruiting \u2014 always size up the pot incrementally",
+            "Use a well-draining potting mix specifically formulated for citrus trees",
+            "The best time to repot is between early spring and mid-summer when roots are actively growing"
           ]
         },
         "fertilizing": {
-          "display": "Monthly",
+          "display": "Every 4\u20136 weeks",
           "days": 30,
           "method": "heavy",
           "steps": [
-            "Use full-strength fertilizer",
-            "Heavy feeders need regular feeding",
-            "Apply during growing season (spring/summer)",
-            "Reduce or skip in winter"
+            "Lemon trees are heavy feeders \u2014 apply a citrus-specific fertilizer with a slightly nitrogen-rich NPK ratio every four to six weeks from spring through late summer",
+            "Fertilize at least three times in the growing season: spring, early summer, and late summer",
+            "A balanced formula (8-8-8) is an acceptable alternative if dedicated citrus fertilizer is unavailable",
+            "Stop all fertilizing by early autumn to allow the plant to harden off before winter"
           ]
         },
         "pruning": {
@@ -641,23 +761,1607 @@
           "days": 90,
           "method": "shape",
           "steps": [
-            "Shape to maintain desired form",
-            "Cut above leaf nodes",
-            "Use clean, sharp tools",
-            "Dispose of diseased material properly"
+            "Begin pruning in late winter or early spring just as new growth starts",
+            "Wait until after fruit has set before pruning branches \u2014 flower buds for next season form on late summer's growth",
+            "Remove dead, damaged, or inward-growing branches and prune to maintain good airflow through the canopy",
+            "Remove any shoots growing below the graft union immediately \u2014 these are rootstock growth and will weaken the tree"
           ]
         }
       },
       "soil_type": {
-        "characteristics": "Well-draining fertile soil",
-        "soil_used": "Garden soil + compost"
+        "characteristics": "Well-draining, fertile soil \u2014 slightly acidic pH 5.5 to 6.5",
+        "soil_used": "Citrus-specific potting mix or well-enriched garden soil with compost"
       },
-      "benefits": ["Fresh lemons", "Garden freshness"],
+      "benefits": [
+        "Produces fresh, vitamin-rich lemons year-round with proper care",
+        "Highly fragrant white blossoms bring a strong garden presence",
+        "Dwarf container varieties fruit reliably indoors and on patios"
+      ],
       "pet_friendly": true,
       "toxic": false,
       "light_required": "full_sunlight",
       "care_difficulty": "moderate",
-      "common_issues": ["Leaf curl", "Fruit drop"]
+      "common_issues": [
+        "Leaf curl from underwatering, heat stress, or pest damage (scale, mealybugs)",
+        "Fruit drop from poor pollination indoors or nutrient deficiency"
+      ]
+    },
+    {
+      "plant_id": "marigold",
+      "plant_name": "Marigold",
+      "scientific_name": "Tagetes spp.",
+      "description": "A fast-growing warm-season annual native to Mexico and Central America, belonging to the Asteraceae family. Marigolds are among the most popular and recognisable balcony and garden flowering plants in India, widely grown in containers and doorway pots for their vibrant golden-yellow and deep orange blooms. The flowers bloom from early summer until the first frost and have a clean, crisp scent that naturally repels aphids, whiteflies, and soil nematodes. Both French marigolds (Tagetes patula) and African marigolds (Tagetes erecta) thrive in containers \u2014 dwarf French types suit small balcony pots best.",
+      "category": [
+        "flowering",
+        "outdoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "decorative",
+        "pest repellent"
+      ],
+      "image_name": "marigold",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 3\u20134 days",
+          "days": 3,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 1 to 2 inches of soil feel dry \u2014 marigolds prefer consistently moist but never soggy soil",
+            "Always water at the base of the plant; wetting the foliage promotes powdery mildew and other fungal diseases",
+            "In peak summer heat, container-grown plants may need water every 2 days \u2014 check soil more frequently during hot spells",
+            "Reduce watering frequency in autumn as growth and temperature naturally slow down"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "refresh",
+          "steps": [
+            "Replant into fresh potting mix at the start of each growing season in spring",
+            "French marigolds suit 6 to 8-inch pots; larger African types need at least a 10-inch pot with multiple drainage holes",
+            "Use a 50% compost, 30% garden soil, 20% perlite or coarse sand mix for good moisture retention without waterlogging",
+            "Terracotta pots work well \u2014 their porous walls help regulate soil moisture and temperature"
+          ]
+        },
+        "fertilizing": {
+          "display": "Monthly",
+          "days": 30,
+          "method": "light",
+          "steps": [
+            "Marigolds are not heavy feeders \u2014 too much nitrogen produces lush foliage but drastically reduces flower production",
+            "Apply a balanced fertilizer with an NPK of 10-10-10 once a month during the growing season",
+            "Organic options like mustard cake liquid or banana peel fertilizer every 15 to 20 days work very well",
+            "Never use high-nitrogen formulas \u2014 they actively inhibit flowering in this plant"
+          ]
+        },
+        "pruning": {
+          "display": "Every 2 weeks",
+          "days": 14,
+          "method": "pinch",
+          "steps": [
+            "Deadhead spent blooms by snipping or pinching promptly \u2014 this is the single most effective way to keep marigolds flowering all season",
+            "Pinch growing tips of young plants to encourage bushy, branching growth rather than tall, leggy stems",
+            "Remove any dry, wilted stems and leaves as soon as they appear",
+            "Shear plants back by one-third in midsummer if they become leggy to trigger a fresh flush of flowers"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Moderately fertile, well-draining soil \u2014 slightly acidic to neutral pH 5.5 to 7.0",
+        "soil_used": "50% compost, 30% garden soil, 20% perlite or coarse sand"
+      },
+      "benefits": [
+        "Continuous bright colour from summer through winter",
+        "Natural pest deterrent \u2014 repels nematodes, aphids, and mosquitoes",
+        "Widely used in Indian religious and festive garlands"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Powdery mildew from overwatering or wet foliage",
+        "Leggy growth with few flowers from excess nitrogen fertilizing"
+      ]
+    },
+    {
+      "plant_id": "chili_pepper",
+      "plant_name": "Chili Pepper",
+      "scientific_name": "Capsicum annuum",
+      "description": "A warm-season fruiting plant native to the Americas and one of the most rewarding balcony crops you can grow. Compact varieties like Dwarf Cayenne, Bird's Eye, and the ornamental Medusa produce prolific yields of colourful fiery fruits in containers. Chili plants require at least 6 hours of direct sunlight daily and thrive in the warm, sunny conditions of Indian balconies. The plants produce star-shaped white flowers that develop into colourful fruits ripening from green to shades of red, orange, and yellow. They serve double duty \u2014 practical kitchen crop and striking ornamental display.",
+      "category": [
+        "fruit",
+        "outdoor"
+      ],
+      "tags": [
+        "edible",
+        "decorative"
+      ],
+      "image_name": "chilli_pepper",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 2\u20133 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Check soil moisture by inserting a finger 2 to 4 inches deep \u2014 water when soil feels dry at that depth",
+            "Water deeply and thoroughly at the base of the plant until it drains freely from the bottom drainage holes",
+            "Container-grown chilis are thirsty in summer heat \u2014 check daily and water whenever the soil dries out",
+            "Avoid getting water on the foliage \u2014 water the root zone only to reduce the risk of fungal disease"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "upgrade",
+          "steps": [
+            "Plant or repot into a container at least 20 to 40 cm deep and wide to support the deep root system",
+            "Use a fertile, well-draining potting mix \u2014 adding compost or perlite to standard potting mix significantly improves aeration",
+            "Repot into a slightly larger container each season to prevent the plant from becoming root-bound and stressed",
+            "Best done at the start of spring when temperatures are rising and risk of cold nights has passed"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 2 weeks",
+          "days": 14,
+          "method": "balanced",
+          "steps": [
+            "Begin feeding with a balanced vegetable fertilizer (5-10-5 or similar NPK) from the moment the first flowers appear",
+            "Feed every two weeks during the active growing and fruiting season \u2014 chilis are hungry, fast-producing plants",
+            "Switch to a potassium-rich, lower-nitrogen formula once fruits begin to set to support healthy fruit development",
+            "Reduce feeding in late summer as the harvest season ends and stop completely during winter"
+          ]
+        },
+        "pruning": {
+          "display": "Monthly",
+          "days": 30,
+          "method": "pinch",
+          "steps": [
+            "Pinch out the central growing tip when the plant reaches 15 to 20 cm tall to encourage bushy, branching growth",
+            "Never remove more than one-third of the plant at any time to avoid weakening its overall vigour",
+            "Harvest ripe chilis by cutting the stem cleanly \u2014 regular harvesting stimulates the plant to produce more fruit",
+            "Remove any dead, diseased, or yellowing leaves promptly to maintain plant vigour"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Fertile, well-draining soil \u2014 slightly acidic pH 6.0 to 6.8",
+        "soil_used": "Vegetable potting mix enriched with compost or well-rotted manure"
+      },
+      "benefits": [
+        "Prolific edible harvest of fresh chilis ideal for Indian cooking",
+        "Compact varieties suit any sized balcony container",
+        "Highly ornamental when loaded with colourful ripening fruit of different stages"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": [
+        "Leaf drop from inconsistent watering or sudden temperature swings",
+        "Aphid and whitefly infestations on new buds and growing tips"
+      ]
+    },
+    {
+      "plant_id": "hibiscus",
+      "plant_name": "Hibiscus",
+      "scientific_name": "Hibiscus rosa-sinensis",
+      "description": "A vigorous tropical flowering shrub in the Malvaceae family, native to East Asia and one of the most iconic plants of Indian homes and balconies. Also known as Gurhal or China Rose, it produces large, trumpet-shaped blooms up to 8 inches wide in vivid shades of red, pink, orange, yellow, and white. Each flower lasts only one day, but healthy, well-fed plants produce them in near-continuous succession throughout the growing season. Grows well in containers on sunny balconies and is valued in Ayurveda for the hair-strengthening properties of its flowers and leaves.",
+      "category": [
+        "flowering",
+        "outdoor",
+        "medicinal"
+      ],
+      "tags": [
+        "decorative",
+        "medicinal"
+      ],
+      "image_name": "Hibiscus",
+      "care_cycle": {
+        "watering": {
+          "display": "Daily in summer",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Check soil daily \u2014 if the top 1 to 2 inches feel dry, water thoroughly until excess drains freely from the bottom",
+            "Container-grown hibiscus may need daily watering in peak summer heat \u2014 the more sun it receives, the more water it needs",
+            "Never allow the plant to sit in standing water in the saucer \u2014 this causes root rot rapidly",
+            "Reduce watering significantly in winter when the plant is resting \u2014 water only when soil is dry to the touch"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2\u20133 years",
+          "days": 730,
+          "method": "upgrade",
+          "steps": [
+            "Hibiscus blooms best when slightly root-bound \u2014 repot only when roots visibly emerge from drainage holes or growth stalls",
+            "Move into a pot only one size larger \u2014 overpotting leads to waterlogged soil and poor flowering",
+            "Use a lightweight, fertile, well-draining potting mix; add perlite or vermiculite for improved aeration",
+            "Water the plant thoroughly the day before repotting to minimise transplant stress on the root ball"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 2 weeks",
+          "days": 14,
+          "method": "balanced",
+          "steps": [
+            "Hibiscus are heavy feeders \u2014 use a fertilizer with a high potassium and low phosphorus content (NPK 17-5-24 is ideal for tropical types)",
+            "Apply every two weeks from spring through autumn to support continuous bloom production",
+            "Always water the soil before applying fertilizer to avoid root burn",
+            "Stop all feeding in winter \u2014 fertilizing during dormancy promotes weak, tender growth vulnerable to pests and cold"
+          ]
+        },
+        "pruning": {
+          "display": "Early spring",
+          "days": 90,
+          "method": "shape",
+          "steps": [
+            "Cut back by about half in early spring to maintain shape and stimulate new wood \u2014 hibiscus blooms only on new wood",
+            "Remove all dead, crossing, or diseased branches first, then trim remaining stems back by one-third",
+            "Pinch back growing tips throughout summer to encourage a bushy, compact, floriferous plant",
+            "Remove spent flowers throughout the season to keep the plant tidy and maintain energy for new bloom production"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Lightweight, fertile, well-draining soil \u2014 slightly acidic to neutral pH 6.0 to 7.0",
+        "soil_used": "Quality all-purpose potting mix with added perlite for improved drainage"
+      },
+      "benefits": [
+        "Prolific large tropical blooms throughout the entire growing season",
+        "Flowers and leaves used in Ayurvedic hair care and herbal preparations",
+        "Compact varieties suited to any sunny balcony container"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": [
+        "Bud drop from sudden temperature changes, irregular watering, or cold draughts",
+        "Aphids, spider mites, and whiteflies on new growth and leaf undersides"
+      ]
+    },
+    {
+      "plant_id": "geranium",
+      "plant_name": "Geranium",
+      "scientific_name": "Pelargonium \u00d7 hortorum",
+      "description": "A tender perennial flowering plant in the Geraniaceae family, native to South Africa and botanically a Pelargonium rather than a true Geranium. One of the most classic and enduringly popular balcony plants in the world, prized for its long season of colourful blooms, compact growth, and ability to thrive in containers. Available in upright bushy forms (Zonal types) and trailing Ivy-leaf varieties perfect for hanging baskets and window boxes. Blooms prolifically from mid-spring to the first frost in shades of red, pink, salmon, coral, white, and purple. The RHS recommends it as one of the best container plants for sunny positions.",
+      "category": [
+        "flowering",
+        "outdoor"
+      ],
+      "tags": [
+        "decorative",
+        "fragrant"
+      ],
+      "image_name": "geranium",
+      "care_cycle": {
+        "watering": {
+          "display": "Twice a week",
+          "days": 3,
+          "method": "moderate",
+          "steps": [
+            "Allow the top 1 to 2 inches of soil to dry out before watering \u2014 geraniums prefer drier conditions over wet soil",
+            "Water containers with about half a litre per plant twice a week; always check soil moisture at 2 to 3 cm depth before watering",
+            "Water at soil level and avoid wetting the foliage \u2014 wet leaves promote mildew and fungal disease",
+            "Reduce watering substantially in winter \u2014 water only when leaves show very early signs of drooping"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "refresh",
+          "steps": [
+            "Repot in spring into fresh potting mix \u2014 geraniums bloom best when slightly pot-bound, so move into a pot only 1 to 2 inches larger",
+            "Use a peat-free, well-draining multi-purpose compost or a dedicated pelargonium compost mix",
+            "Ensure the pot has adequate drainage holes \u2014 geraniums are very susceptible to root rot in waterlogged soil",
+            "Pinch back stems after repotting to encourage compact, branching growth for the season ahead"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 10\u201314 days",
+          "days": 14,
+          "method": "balanced",
+          "steps": [
+            "Apply a balanced liquid fertilizer every 10 to 14 days in spring as per the RHS recommendation for vigorous growth",
+            "Feed every two weeks at half strength using a water-soluble balanced formula (10-10-10 or 20-20-20)",
+            "Switch to a high-potassium (tomato-type) fertilizer once flower buds form to support peak bloom performance",
+            "Stop all fertilizing in autumn and winter when the plant is dormant"
+          ]
+        },
+        "pruning": {
+          "display": "Regularly",
+          "days": 14,
+          "method": "pinch",
+          "steps": [
+            "Deadhead spent flower heads by snipping just below the old flower to encourage continuous reblooming throughout the season",
+            "Pinch back growing tips throughout the season to promote bushier, more compact growth and prevent legginess",
+            "Cut stems back by at least two-thirds in late autumn or spring at a 45-degree angle just above a leaf node",
+            "Remove yellowing leaves promptly \u2014 yellow leaves often signal overwatering or root stress"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, moderately fertile potting compost \u2014 neutral to slightly alkaline pH 6.5 to 8.0",
+        "soil_used": "Peat-free multi-purpose compost or dedicated pelargonium/geranium potting mix"
+      },
+      "benefits": [
+        "Long-lasting blooms from spring through first frost in an enormous range of colours",
+        "Classic balcony and window box plant \u2014 among the best suited to container growing",
+        "Drought-tolerant once established and low-maintenance in a sunny spot"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_to_partial_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Root rot from overwatering or compacted soil \u2014 the most common cause of decline",
+        "Yellowing leaves from excess watering or depleted nutrients in old potting mix"
+      ]
+    },
+    {
+      "plant_id": "bougainvillea",
+      "plant_name": "Bougainvillea",
+      "scientific_name": "Bougainvillea spp.",
+      "description": "A vigorous sun-loving tropical climbing shrub native to South America, belonging to the Nyctaginaceae family. Introduced to India and now one of the most iconic plants of Indian walls, terraces, and balconies. The vivid 'flowers' are actually papery bracts \u2014 modified leaves \u2014 in shades of magenta, red, orange, pink, white, and yellow, surrounding tiny white true flowers. Bougainvillea blooms most profusely when kept slightly drought-stressed, making a sunny, well-drained balcony container an ideal match. Dwarf varieties like Oo-La-La and Raspberry Ice are purpose-bred for container growing and remain compact without losing any of the spectacular colour.",
+      "category": [
+        "flowering",
+        "outdoor"
+      ],
+      "tags": [
+        "decorative",
+        "fast growing"
+      ],
+      "image_name": "bougainvillea",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 3\u20134 days",
+          "days": 3,
+          "method": "deep",
+          "steps": [
+            "Water deeply when the top 2 to 3 inches of soil are dry \u2014 allow the soil to approach dryness between waterings",
+            "Bougainvillea blooms best when kept on the dry side \u2014 overwatering produces lush green growth but drastically reduces flowering",
+            "In established pots, water thoroughly once a week; during extreme heat, water twice if plants show leaf stress",
+            "Reduce watering significantly in winter when the plant is semi-dormant"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2\u20133 years",
+          "days": 730,
+          "method": "upgrade",
+          "steps": [
+            "Bougainvillea blooms best when pot-bound \u2014 repot every 2 to 3 years only when roots are visibly crowded",
+            "Move to a pot just one size larger; too large a container leads to wet soil and reduced flowering",
+            "Use a well-draining potting mix \u2014 add perlite or coarse sand to standard potting soil for improved drainage",
+            "Handle the root ball with great care \u2014 bougainvillea has fragile roots that are easily damaged during repotting"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 2 weeks",
+          "days": 14,
+          "method": "balanced",
+          "steps": [
+            "Apply a high-potassium, low-nitrogen fertilizer every two weeks during the growing season \u2014 excess nitrogen promotes leaves over flowers",
+            "A bloom-booster formula (low nitrogen such as 5-10-10 or 6-30-30) applied fortnightly in spring and summer produces spectacular results",
+            "Always water the soil before applying any fertilizer to prevent root burn",
+            "Stop fertilizing in winter when the plant is resting \u2014 resume in late winter as new growth begins"
+          ]
+        },
+        "pruning": {
+          "display": "After flowering",
+          "days": 90,
+          "method": "shape",
+          "steps": [
+            "Prune back all long flowering stems by one-third to one-half immediately after each flowering cycle ends",
+            "Bougainvillea blooms on new growth \u2014 regular pruning directly stimulates the new shoots that carry the next flush of bracts",
+            "Hard prune in early spring to shape the plant and control size \u2014 this is the most important seasonal maintenance task",
+            "Always wear thick gloves when pruning \u2014 the stems have sharp thorns that can cause painful injury"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, slightly acidic to neutral soil \u2014 pH 5.5 to 7.0. Does not tolerate waterlogged conditions",
+        "soil_used": "Standard potting mix blended with perlite and coarse sand for fast drainage"
+      },
+      "benefits": [
+        "Spectacular papery bracts in vivid colours throughout a long blooming season",
+        "Drought-tolerant once established \u2014 ideal for hot Indian balconies in summer",
+        "One of the most iconic ornamental plants of Indian homes and outdoor spaces"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": [
+        "Bract and leaf drop from overwatering, root disturbance, or sudden environment changes",
+        "No flowering from excess nitrogen fertilizing or insufficient direct sunlight"
+      ]
+    },
+    {
+      "plant_id": "curry_leaf",
+      "plant_name": "Curry Leaf",
+      "scientific_name": "Murraya koenigii",
+      "description": "A small, fast-growing aromatic evergreen tree native to India and Sri Lanka, belonging to the Rutaceae (citrus) family. Known as Kadi Patta in India, it is an essential culinary plant in South and Southeast Asian cooking \u2014 the leaves are tossed into hot oil at the start of tempering (tadka) to release their unique citrus-pine fragrance. Documented in Ayurvedic medicine for supporting digestion, blood sugar regulation, and hair strengthening. Container-grown plants thrive on sunny Indian balconies for years and can be kept compact by regular pinching and pruning.",
+      "category": [
+        "medicinal",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "edible",
+        "medicinal"
+      ],
+      "image_name": "curry_leaf",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 2\u20133 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Water deeply but infrequently \u2014 allow the top 3 to 5 cm of soil to dry between waterings to prevent root rot",
+            "During summer, water 2 to 3 times a week; in cooler months, reduce to once a week or less",
+            "The plant tolerates underwatering far better than overwatering \u2014 when in doubt, wait another day before rewatering",
+            "Use clay pots for container growing \u2014 their porous walls allow excess moisture to escape and prevent root rot"
+          ]
+        },
+        "repotting": {
+          "display": "Every 1\u20132 years",
+          "days": 365,
+          "method": "upgrade",
+          "steps": [
+            "Repot every 1 to 2 years in early spring \u2014 pale, dull leaves and slow growth signal that roots have exhausted their space",
+            "Use a container at least 30 cm wide and deep with drainage holes to support the fast-growing root system",
+            "Use a well-draining potting mix blended with perlite or coarse sand \u2014 slightly acidic soil keeps the plant healthiest",
+            "Water thoroughly after repotting and place in a partially shaded spot for a few days to reduce transplant stress"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 3\u20134 weeks",
+          "days": 21,
+          "method": "balanced",
+          "steps": [
+            "Apply a nitrogen-rich liquid fertilizer every 3 to 4 weeks during spring and summer to support abundant leaf production",
+            "In pots, use liquid fertilizer diluted to half strength every 3 weeks; flush containers with clean water every 6 to 8 weeks to prevent salt buildup",
+            "Interveinal yellowing on leaves usually indicates magnesium deficiency \u2014 treat with a diluted Epsom salt solution",
+            "Do not fertilize in autumn or winter when the plant is semi-dormant"
+          ]
+        },
+        "pruning": {
+          "display": "Annually in spring",
+          "days": 90,
+          "method": "pinch",
+          "steps": [
+            "Prune annually in spring \u2014 cut back by at least one-third to keep the plant compact and trigger a flush of dense new leafy growth",
+            "Pinch growing tips regularly throughout the season to encourage a bushy, multi-branched form",
+            "Remove flower buds as soon as they appear \u2014 flowering diverts energy from leaf production and reduces harvest yield",
+            "The more you harvest the leaves, the bushier the plant becomes \u2014 regular harvesting is itself a form of productive pruning"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, slightly acidic, fertile soil with good aeration \u2014 pH 6.0 to 7.0",
+        "soil_used": "Potting mix blended with perlite or coarse sand; avoid heavy clay or compacted garden soil"
+      },
+      "benefits": [
+        "Essential aromatic culinary herb in South Indian and Southeast Asian cooking",
+        "Ayurvedic uses for digestion support, blood sugar regulation, and hair strengthening",
+        "Compact, productive, and thrives on a sunny Indian balcony in a container for years"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": [
+        "Interveinal leaf yellowing from magnesium deficiency",
+        "Mealybugs on stems and leaf clusters \u2014 treat with neem oil spray and a strong water rinse"
+      ]
+    },
+    {
+      "plant_id": "coriander",
+      "plant_name": "Coriander",
+      "scientific_name": "Coriandrum sativum",
+      "description": "An annual aromatic herb in the Apiaceae family, native to the Mediterranean and western Asia but cultivated across India since ancient times. Known as Dhania or Cilantro, it serves a dual purpose \u2014 the fresh leaves are used as a garnish and herb (cilantro) while the dried seeds are a major spice in Indian curries and masalas. A fast-growing, rewarding balcony crop harvestable in as little as 3 to 4 weeks from sowing. Coriander prefers cool conditions and bolts quickly in heat, so succession sowing every 3 to 4 weeks ensures a continuous fresh supply. The plant has a deep taproot and should ideally be sown directly into its final container.",
+      "category": [
+        "medicinal",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "edible",
+        "fast growing"
+      ],
+      "image_name": "coriander",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 2\u20133 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Water when the top inch of soil feels dry \u2014 keep soil consistently moist, especially for young seedlings",
+            "Inconsistent watering is a primary trigger for bolting \u2014 drought-stressed plants rush to produce flowers and seed",
+            "Container-grown coriander on balconies dries faster than in-ground plants \u2014 check daily during summer heat",
+            "Water at the base and avoid wetting foliage to reduce the risk of fungal disease in humid conditions"
+          ]
+        },
+        "repotting": {
+          "display": "Every season",
+          "days": 90,
+          "method": "refresh",
+          "steps": [
+            "Coriander has a deep taproot that resents disturbance \u2014 sow seeds directly into the final container rather than transplanting",
+            "Use a container at least 6 to 8 inches deep with drainage holes to accommodate the taproot properly",
+            "Succession-sow fresh seeds every 3 to 4 weeks into fresh potting mix for a continuous harvest",
+            "If repotting is necessary, do so on a cool day with care not to disturb the root ball"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 4\u20136 weeks",
+          "days": 45,
+          "method": "light",
+          "steps": [
+            "Coriander is not a heavy feeder \u2014 fresh compost-enriched potting soil provides sufficient nutrition for most of the growing season",
+            "If the leaves begin to yellow, apply a diluted balanced liquid fertilizer every 4 to 6 weeks during active growth",
+            "Avoid high-potassium feeds \u2014 these actively encourage premature flowering at the expense of leafy growth",
+            "Garden-bed grown coriander generally requires no supplemental fertilizing at all"
+          ]
+        },
+        "pruning": {
+          "display": "Every 1\u20132 weeks",
+          "days": 10,
+          "method": "pinch",
+          "steps": [
+            "Harvest outer leaves regularly from when the plant reaches 10 to 15 cm tall \u2014 this acts as pruning and delays bolting",
+            "Pinch growing tips to encourage a bushy, compact habit rather than a tall, leggy, bolt-prone one",
+            "Remove any flower stalks as soon as they appear to redirect energy back into leaf production",
+            "Once the plant has fully bolted, allow seeds to ripen fully before harvesting them as dried coriander seed"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, fertile, loamy soil with moderate moisture retention \u2014 pH 6.2 to 6.8",
+        "soil_used": "Herb potting mix or standard potting mix enriched with compost"
+      },
+      "benefits": [
+        "Fresh leaves (dhania) are an essential garnish in Indian cooking",
+        "Dried seeds are a major spice in Indian curries, chutneys, and masalas",
+        "Quick-growing kitchen crop producing a harvest within 3 to 4 weeks from sowing"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "partial_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Bolting triggered by heat, drought, or inconsistent watering \u2014 the most common issue",
+        "Aphid infestations on soft, young growth"
+      ]
+    },
+    {
+      "plant_id": "spider_plant",
+      "plant_name": "Spider Plant",
+      "scientific_name": "Chlorophytum comosum",
+      "description": "A clump-forming, fast-growing perennial houseplant native to tropical and subtropical South and Central Africa, belonging to the Asparagaceae family. One of the most popular beginner-friendly houseplants globally \u2014 prized for its arching, ribbon-like variegated leaves and cascading long stems producing clusters of white flowers and dangling baby plantlets (called spiderettes), which give the plant its name. Listed in NASA's Clean Air Study for filtering indoor air pollutants including formaldehyde and xylene. Works beautifully in hanging baskets on partially shaded balconies and is completely safe for pets and children.",
+      "category": [
+        "indoor",
+        "hanging",
+        "low_maintenance"
+      ],
+      "tags": [
+        "air purifying",
+        "pet friendly"
+      ],
+      "image_name": "spider_plant",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 1\u20132 weeks",
+          "days": 7,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 2 inches of soil feel dry \u2014 spider plants tolerate drought well but prefer consistent light moisture",
+            "Water thoroughly until it drains from the bottom, then allow the top layer to dry before watering again",
+            "Reduce watering in autumn and winter when growth slows \u2014 allow the top inch to dry before each watering",
+            "Use filtered, distilled, or rainwater where possible \u2014 spider plants are sensitive to fluoride and chlorine in tap water"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2\u20133 years",
+          "days": 730,
+          "method": "upgrade",
+          "steps": [
+            "Spider plants prefer slightly root-bound conditions and produce more pups when snug \u2014 repot only when roots grow from drainage holes",
+            "Choose a pot just 1 to 2 inches larger \u2014 overpotting leads to poor plantlet production and soggy soil",
+            "Use a well-draining, peat-based potting mix blended with perlite for good aeration and drainage",
+            "Water generously after repotting and keep in bright indirect light for a few days to aid recovery"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 4\u20136 weeks",
+          "days": 45,
+          "method": "light",
+          "steps": [
+            "Feed once a month during spring and summer with a balanced water-soluble fertilizer at half strength",
+            "Over-fertilizing is a common mistake \u2014 excessive feeding produces lush foliage but reduces plantlet production",
+            "Too much fertilizer also leads to fluoride build-up in the soil, worsening brown leaf tips",
+            "Stop all feeding in autumn and winter when the plant is resting"
+          ]
+        },
+        "pruning": {
+          "display": "As needed",
+          "days": 60,
+          "method": "trim",
+          "steps": [
+            "Remove brown or yellowing leaves by cutting them cleanly at the base of the plant",
+            "Trim brown leaf tips with clean scissors, following the natural pointed shape of the leaf to keep it looking neat",
+            "Remove or pot up hanging pup plantlets once they have developed a small visible root cluster",
+            "Wipe leaves occasionally with a damp cloth to remove dust and help the plant photosynthesize efficiently"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, slightly acidic to neutral potting mix \u2014 pH 6.0 to 7.0",
+        "soil_used": "Standard houseplant potting mix with added perlite or vermiculite"
+      },
+      "benefits": [
+        "Filters indoor air pollutants including formaldehyde and xylene",
+        "Non-toxic and completely safe for pets and children",
+        "Self-propagating \u2014 produces endless baby plantlets that can be potted and shared"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "low_to_bright_indirect",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Brown leaf tips from fluoride in tap water, low humidity, or over-fertilizing",
+        "Root rot from overwatering or compacted, poorly draining soil"
+      ]
+    },
+    {
+      "plant_id": "portulaca",
+      "plant_name": "Portulaca",
+      "scientific_name": "Portulaca grandiflora",
+      "description": "A low-growing, semi-succulent annual flowering plant in the Portulacaceae family, native to the sandy plains of Argentina, Brazil, and Uruguay. Also known as Moss Rose or Sun Plant, it is one of the most heat-tolerant and sun-loving flowering plants available, thriving in the intense conditions of Indian balconies where other plants wilt. Portulaca blooms prolifically from summer onwards in a rainbow of colours \u2014 yellow, orange, red, pink, magenta, and white \u2014 in single and fully double rose-like forms. The flowers open with sunlight and close at night and on overcast days. Outstanding for balcony containers, window boxes, and hanging baskets.",
+      "category": [
+        "flowering",
+        "outdoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "decorative",
+        "low maintenance"
+      ],
+      "image_name": "portulaca",
+      "care_cycle": {
+        "watering": {
+          "display": "Once a week",
+          "days": 7,
+          "method": "light",
+          "steps": [
+            "Portulaca stores water in its fleshy leaves and stems \u2014 it is highly drought-tolerant and prefers to dry out between waterings",
+            "Water when the top 1 to 2 inches of soil feel dry \u2014 once a week in a container is generally sufficient",
+            "Overwatering is the most serious threat \u2014 soggy soil causes crown and root rot almost immediately in this shallow-rooted plant",
+            "In cooler months, allow the soil to approach complete dryness before rewatering"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "refresh",
+          "steps": [
+            "Replant at the start of each growing season into fresh, sandy, well-draining potting mix",
+            "Use a container with multiple drainage holes \u2014 portulaca is extremely sensitive to waterlogged soil",
+            "Mix equal parts potting soil and coarse sand or use a cactus/succulent mix for the fast drainage this plant requires",
+            "Position in the sunniest spot available on the balcony \u2014 at least 6 to 8 hours of direct sunlight is essential for blooming"
+          ]
+        },
+        "fertilizing": {
+          "display": "Monthly",
+          "days": 30,
+          "method": "light",
+          "steps": [
+            "Portulaca prefers lean, low-fertility soil \u2014 over-fertilizing produces floppy foliage with very few flowers",
+            "Apply a balanced water-soluble fertilizer (20-10-20 or 20-20-20) once a month during the main growing season",
+            "A single application of a high-phosphorus bloom booster mid-season can extend and enhance flowering",
+            "Never use high-nitrogen fertilizers \u2014 they actively reduce flower production in this plant"
+          ]
+        },
+        "pruning": {
+          "display": "Midsummer",
+          "days": 60,
+          "method": "trim",
+          "steps": [
+            "Portulaca is largely self-cleaning \u2014 spent flowers drop freely without the need for regular deadheading",
+            "Shear the entire plant back by up to half in midsummer if it begins to look straggly or overgrown",
+            "After midsummer shearing, apply a half-strength balanced fertilizer to stimulate a fresh flush of blooms",
+            "Pinch back growing tips on young plants to encourage the bushy, spreading growth habit this plant is known for"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Sandy, gritty, fast-draining soil with very low fertility \u2014 mimics its native rocky, sandy habitat",
+        "soil_used": "50/50 blend of potting soil and coarse sand, or a succulent/cactus potting mix"
+      },
+      "benefits": [
+        "Blooms prolifically in a vibrant range of colours throughout the growing season",
+        "Thrives in intense heat \u2014 one of the best choices for hot Indian balconies",
+        "Self-cleaning \u2014 spent flowers fall freely with no deadheading required"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Crown or root rot from overwatering or compacted, poorly draining soil",
+        "Flowers fail to open on cloudy days or in insufficient direct sunlight"
+      ]
+    },
+    {
+      "plant_id": "lavender",
+      "plant_name": "Lavender",
+      "scientific_name": "Lavandula angustifolia",
+      "description": "A perennial aromatic evergreen shrub in the mint family (Lamiaceae), native to the rocky, sun-baked hillsides of the Mediterranean region. Widely celebrated for its intensely fragrant purple flower spikes and silvery-grey foliage. One of the most effective and beautiful balcony container plants when given full sun and sharp drainage. The common name comes from the Latin lavare \u2014 to wash \u2014 reflecting its ancient use in bathing and perfumery. Highly drought-tolerant once established, making it ideal for water-conscious balcony growing. Attracts bees, butterflies, and other pollinators prolifically.",
+      "category": [
+        "aromatic",
+        "medicinal",
+        "outdoor"
+      ],
+      "tags": [
+        "fragrant",
+        "low maintenance"
+      ],
+      "image_name": "lavender",
+      "care_cycle": {
+        "watering": {
+          "display": "Once a week",
+          "days": 7,
+          "method": "light",
+          "steps": [
+            "Water deeply but infrequently \u2014 allow the top inch of soil to dry out completely before watering again",
+            "Overwatering is the most common way to kill lavender \u2014 it is highly drought-tolerant and prefers slightly dry conditions",
+            "During the growing season, water once a week; in cooler months, reduce to every two to three weeks",
+            "Always water at soil level \u2014 wet foliage promotes fungal diseases in this Mediterranean plant"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2\u20133 years",
+          "days": 730,
+          "method": "refresh",
+          "steps": [
+            "Repot every two to three years or when roots begin growing out of the drainage holes",
+            "Use a terracotta pot \u2014 its porous walls allow the soil to breathe and dry more effectively between waterings",
+            "Use a sandy, well-draining mix: standard potting soil blended 50/50 with coarse sand or perlite",
+            "The pot should be at least 12 to 16 inches in diameter to allow adequate root room"
+          ]
+        },
+        "fertilizing": {
+          "display": "Once a year",
+          "days": 180,
+          "method": "light",
+          "steps": [
+            "Lavender is native to poor, rocky, low-fertility soil \u2014 over-fertilizing is one of the most damaging things you can do to it",
+            "Apply a single slow-release, low-nitrogen balanced fertilizer in early spring \u2014 this is usually sufficient for the whole season",
+            "Excess nitrogen produces a surge of soft, leafy growth at the direct expense of fragrant flower production",
+            "Avoid fertilizing in autumn or winter when the plant is dormant"
+          ]
+        },
+        "pruning": {
+          "display": "After flowering",
+          "days": 180,
+          "method": "trim",
+          "steps": [
+            "Prune by cutting back about one-third of each stem just after flowering ends \u2014 the single most important maintenance task for lavender",
+            "Always cut back only into green growth \u2014 never cut into the old woody stems as lavender cannot regenerate from old wood",
+            "Shape the plant into a neat, compact mound to prevent it from splitting open at the centre with age",
+            "A second light pruning in early spring removes winter damage and helps maintain a dense, bushy form"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Sandy, gritty, well-draining soil \u2014 slightly alkaline to neutral pH 6.5 to 7.5",
+        "soil_used": "Cactus/succulent potting mix or standard potting mix blended 50/50 with coarse sand"
+      },
+      "benefits": [
+        "Intensely fragrant flowers used in essential oils, sachets, and herbal remedies for relaxation",
+        "Attracts bees and butterflies \u2014 one of the best pollinator plants for a balcony",
+        "Highly drought-tolerant once established \u2014 ideal for low-maintenance balcony growing"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Root rot from overwatering or poorly draining soil",
+        "Woody, sparse, splitting growth habit from insufficient annual post-flower pruning"
+      ]
+    },
+    {
+      "plant_id": "ashwagandha",
+      "plant_name": "Ashwagandha",
+      "scientific_name": "Withania somnifera",
+      "description": "A perennial shrub native to the dry regions of India, North Africa, and the Mediterranean, belonging to the Solanaceae family. Also known as Indian Ginseng or Winter Cherry, it is one of the most important herbs in Ayurvedic medicine, with documented use spanning over 3,000 years. The Sanskrit name means 'smell of horse', referring to both its distinctive root odour and the strength it is traditionally believed to impart. The fleshy roots contain withanolides — steroidal lactones with adaptogenic, anti-inflammatory, and neuroprotective properties extensively studied in modern pharmacology. Grows readily in containers on sunny Indian balconies and is one of the few medicinal plants that can be cultivated at home with a meaningful harvest.",
+      "category": [
+        "medicinal",
+        "outdoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "medicinal",
+        "ayurvedic"
+      ],
+      "image_name": "ashwagandha",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 4–5 days",
+          "days": 5,
+          "method": "light",
+          "steps": [
+            "Water deeply but allow the soil to dry out almost completely between waterings — ashwagandha is native to dry, arid conditions and is highly drought-tolerant",
+            "Check that the top 3 to 5 cm of soil are fully dry before rewatering to prevent root rot",
+            "In peak summer heat, water every 3 to 4 days; in cooler months, reduce to once a week or less",
+            "Use well-drained terracotta containers — plastic pots retain too much moisture for this plant's preferences"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "upgrade",
+          "steps": [
+            "Repot annually in early spring into a deep container at least 30 to 40 cm deep to accommodate the long taproot",
+            "Use a sandy, well-draining soil blend — the plant's medicinal root compounds develop best when the roots are not waterlogged",
+            "Move to a pot one size larger each season; excessively large pots hold moisture and impede root development",
+            "After repotting, withhold water for 2 to 3 days to allow any damaged roots to heal before resuming normal care"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 6–8 weeks",
+          "days": 45,
+          "method": "organic",
+          "steps": [
+            "Apply a balanced organic fertilizer or well-aged compost every 6 to 8 weeks during the growing season",
+            "Avoid high-nitrogen synthetic fertilizers — excessive nitrogen promotes lush leafy growth at the expense of medicinal root development",
+            "A light top-dressing of vermicompost or cow dung compost once a month is the traditional and most effective feeding method",
+            "Do not fertilize during winter dormancy or after the plant begins to form berries"
+          ]
+        },
+        "pruning": {
+          "display": "Twice a year",
+          "days": 180,
+          "method": "trim",
+          "steps": [
+            "Prune back by one-third in early spring to encourage bushy, compact growth and new lateral branching",
+            "Remove any dead, dry, or crossing stems throughout the growing season using clean, sharp shears",
+            "Cut back hard after harvesting the root to allow the plant to regenerate if being grown as a multi-season plant",
+            "Remove any yellowing or diseased leaves promptly to maintain airflow and prevent fungal issues"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Sandy, well-draining, low-fertility soil — mimics its native arid habitat. pH 7.5 to 8.0",
+        "soil_used": "Sandy loam or standard potting mix blended 50/50 with coarse sand"
+      },
+      "benefits": [
+        "Adaptogenic root used in Ayurveda to reduce stress, support energy levels, and improve sleep quality",
+        "Withanolides in the root are extensively studied for anti-inflammatory and neuroprotective effects",
+        "Home-harvestable medicinal plant producing a useful root crop within 8 to 10 months"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Root rot from overwatering or poorly draining soil — the most common threat to this plant",
+        "Leaf curl and wilting from intense afternoon heat on west-facing balconies in summer"
+      ]
+    },
+    {
+      "plant_id": "brahmi",
+      "plant_name": "Brahmi",
+      "scientific_name": "Bacopa monnieri",
+      "description": "A small, creeping perennial herb native to the wetlands and marshy areas of India, widely distributed across the Indian subcontinent, Southeast Asia, and parts of Africa. One of the most revered herbs in Ayurvedic medicine — used for over 3,000 years as a medhya rasayana, meaning a herb that enhances cognitive function and mental clarity. Also known as Water Hyssop or Herb of Grace, it is distinguished from Gotu Kola (also called Brahmi in some regions) by its small, succulent oblong leaves and pale purple-to-white flowers. Active compounds called bacosides have been clinically studied for improving memory, reducing anxiety, and protecting neurons from oxidative stress. An excellent container plant for Indian balconies that requires ample moisture.",
+      "category": [
+        "medicinal",
+        "indoor",
+        "aromatic"
+      ],
+      "tags": [
+        "medicinal",
+        "ayurvedic"
+      ],
+      "image_name": "brahmi",
+      "care_cycle": {
+        "watering": {
+          "display": "Daily",
+          "days": 1,
+          "method": "deep",
+          "steps": [
+            "Brahmi is a semi-aquatic plant — keep the soil consistently moist at all times and never allow it to dry out",
+            "Water daily in warm weather, especially on sunny balconies — the plant's small succulent leaves lose moisture rapidly",
+            "Can also be grown hydroponically in shallow water trays or with the pot sitting in 1 to 2 cm of water in a saucer",
+            "In cooler months reduce watering frequency slightly but ensure the soil remains moist throughout"
+          ]
+        },
+        "repotting": {
+          "display": "Every 6–8 months",
+          "days": 210,
+          "method": "division",
+          "steps": [
+            "Repot every 6 to 8 months as brahmi spreads quickly and fills its container with a dense mat of roots",
+            "Divide the root mass and repot into multiple containers using fresh, rich, moisture-retaining potting soil",
+            "Use shallow, wide containers at least 15 to 20 cm deep — the spreading root system prefers breadth over depth",
+            "Refresh with organic-rich compost at each repotting to support vigorous leafy growth"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 3–4 weeks",
+          "days": 25,
+          "method": "organic",
+          "steps": [
+            "Apply a nitrogen-rich organic fertilizer or liquid compost tea every 3 to 4 weeks during the growing season",
+            "Brahmi is a vigorous grower when well-nourished — regular feeding sustains the dense leafy mats used for harvest",
+            "Avoid synthetic chemical fertilizers as they may reduce the concentration of medicinally active bacosides in the leaves",
+            "Reduce feeding in winter when growth naturally slows"
+          ]
+        },
+        "pruning": {
+          "display": "Every 2–3 weeks",
+          "days": 18,
+          "method": "trim",
+          "steps": [
+            "Harvest sprigs of 5 to 10 cm regularly — harvesting directly stimulates bushier, denser new growth",
+            "Trim back any long, sprawling stems to keep the plant compact and well-shaped in its container",
+            "Remove any yellowing or dead leaves promptly to maintain a healthy, dense mat",
+            "Cut back by one-third in spring to refresh the plant and encourage a strong new flush of medicinal foliage"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Rich, moisture-retaining, slightly acidic soil — pH 6.0 to 7.0. Will not tolerate drying out",
+        "soil_used": "Rich potting mix blended with cocopeat and organic compost for superior moisture retention"
+      },
+      "benefits": [
+        "Bacosides in leaves clinically studied for improving memory, concentration, and reducing anxiety",
+        "Revered Ayurvedic medhya rasayana — one of the most important cognitive herbs in traditional Indian medicine",
+        "Fresh leaves are consumed directly or as a juice for their documented neuroprotective properties"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "partial_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Wilting and leaf drop from allowing the soil to dry out — moisture stress is the primary risk",
+        "Aphid infestations on tender new growth in dry, hot conditions"
+      ]
+    },
+    {
+      "plant_id": "mogra",
+      "plant_name": "Mogra",
+      "scientific_name": "Jasminum sambac",
+      "description": "A compact, evergreen flowering shrub in the Oleaceae family, native to South Asia and one of the most beloved aromatic plants of Indian homes and culture. Also known as Arabian Jasmine, it is the official national flower of the Philippines and holds deep significance in Indian tradition — the intensely fragrant white blooms are used in religious offerings, hair garlands (gajra), wedding decorations, and attar perfumery. Unlike other jasmine species, Mogra produces multiple flushes of highly fragrant double or semi-double flowers year-round in warm conditions, with peak flowering from March through October. It thrives in the warm, sunny conditions of Indian balconies and is among the most rewarding small flowering shrubs for container growing.",
+      "category": [
+        "flowering",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "fragrant",
+        "decorative"
+      ],
+      "image_name": "mogra",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 2–3 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 1 to 2 cm of soil feel dry — mogra prefers consistently moist but never waterlogged soil",
+            "Water deeply at the base of the plant, keeping the foliage dry to reduce risk of fungal disease",
+            "In peak summer, container-grown mogra may need watering every day — check soil moisture daily during hot spells",
+            "Reduce watering frequency in winter to once every 5 to 7 days when growth and flowering naturally slow"
+          ]
+        },
+        "repotting": {
+          "display": "Every 1–2 years",
+          "days": 365,
+          "method": "upgrade",
+          "steps": [
+            "Repot every one to two years in early spring into fresh, fertile, well-draining potting mix",
+            "Use a pot one size larger — slightly pot-bound plants produce more flowers than those in oversized containers",
+            "Incorporate slow-release organic fertilizer or bone meal into the new potting mix at repotting time",
+            "After repotting, place in a partially shaded spot for one week to reduce transplant stress before returning to full sun"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 2 weeks",
+          "days": 14,
+          "method": "balanced",
+          "steps": [
+            "Feed every two weeks with a high-potassium liquid fertilizer during the main flowering season from March to October",
+            "A banana peel fertilizer or potassium-rich organic liquid is a traditional and effective choice for boosting bloom production",
+            "Apply a balanced NPK fertilizer (10-10-10 or similar) once a month in the off-season to maintain overall plant health",
+            "Always water the soil before applying any fertilizer to prevent root burn from concentrated salts"
+          ]
+        },
+        "pruning": {
+          "display": "After each flush",
+          "days": 60,
+          "method": "pinch",
+          "steps": [
+            "Prune back lightly after each flowering flush to encourage the next round of blooms — mogra flowers on new wood",
+            "Remove all spent flowers and seed pods promptly to redirect energy into new bud formation",
+            "In early spring, perform a harder pruning, cutting back by one-third to reshape the plant and stimulate vigorous new growth",
+            "Pinch back growing tips regularly throughout the season to maintain a compact, bushy, floriferous form"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Fertile, well-draining, organically rich soil — slightly acidic pH 6.0 to 7.0",
+        "soil_used": "All-purpose potting mix enriched with organic compost and a handful of bone meal"
+      },
+      "benefits": [
+        "Intensely fragrant blooms used in religious rituals, gajra garlands, and traditional Indian attar perfumery",
+        "Flowers multiple times a year in warm Indian conditions, providing a near-continuous supply of blooms",
+        "Compact and well-suited to balcony containers on any sunny Indian home"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_sunlight",
+      "care_difficulty": "moderate",
+      "common_issues": [
+        "Bud drop from inconsistent watering, sudden temperature changes, or insufficient sunlight",
+        "Mealybugs and spider mites on leaf undersides — treat with diluted neem oil spray"
+      ]
+    },
+    {
+      "plant_id": "methi",
+      "plant_name": "Methi",
+      "scientific_name": "Trigonella foenum-graecum",
+      "description": "An annual aromatic herb in the Fabaceae (legume) family, native to the Mediterranean and western Asia but cultivated in India since antiquity. Known universally in Indian cooking as Methi, it is one of the oldest documented medicinal and culinary plants in the world, with seeds found in Egyptian tombs dating to 1500 BCE. Both the fresh leaves (methi bhaji) and dried seeds are essential ingredients in Indian cuisine — from dal methi to methi paratha and spice blends. Seeds contain the compound 4-hydroxyisoleucine, clinically studied for supporting healthy blood glucose levels. One of the fastest and most rewarding crops for Indian balcony containers, producing a harvestable crop of leaves within 10 to 15 days of sowing.",
+      "category": [
+        "medicinal",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "edible",
+        "fast growing"
+      ],
+      "image_name": "methi",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 1–2 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Water when the top inch of soil feels dry — methi prefers consistent moisture, especially during germination and early growth",
+            "Young seedlings are particularly vulnerable to drying out — check containers daily in warm weather",
+            "Water at the base of the plant to reduce the risk of fungal diseases in humid conditions",
+            "Reduce watering once pods begin to form and the plant starts to dry down naturally towards seed maturity"
+          ]
+        },
+        "repotting": {
+          "display": "Each season",
+          "days": 90,
+          "method": "refresh",
+          "steps": [
+            "Methi is an annual — sow fresh seeds directly into containers each season rather than transplanting established plants",
+            "Use a container at least 15 to 20 cm deep with good drainage to support the root system",
+            "Succession-sow seeds every 3 to 4 weeks for a continuous harvest of fresh leaves throughout the growing season",
+            "Enrich the potting mix with compost between each sowing cycle to replenish nutrients rapidly depleted by this fast-growing crop"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 3–4 weeks",
+          "days": 21,
+          "method": "organic",
+          "steps": [
+            "Methi fixes atmospheric nitrogen through root nodules and generally does not require heavy supplemental feeding",
+            "Apply a light application of liquid compost tea or diluted balanced fertilizer every 3 to 4 weeks during active growth",
+            "Avoid high-nitrogen fertilizers — methi's natural nitrogen fixation means additional nitrogen primarily promotes excess leafy growth rather than quality",
+            "Fresh, compost-rich potting soil at each sowing is the most effective and low-effort feeding strategy"
+          ]
+        },
+        "pruning": {
+          "display": "Every 1–2 weeks",
+          "days": 10,
+          "method": "pinch",
+          "steps": [
+            "Harvest outer leaves regularly once the plant reaches 10 to 15 cm — this is the primary form of pruning for methi",
+            "Pinch growing tips to delay bolting and encourage a bushier, more productive form",
+            "Remove emerging flower stalks promptly to extend the leaf harvest period significantly",
+            "Once the plant has fully bolted, allow seed pods to mature and dry fully before harvesting dried seeds"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Fertile, well-draining, moderately moist soil — pH 6.0 to 7.0",
+        "soil_used": "Standard potting mix enriched with organic compost or vermicompost"
+      },
+      "benefits": [
+        "Fresh leaves and seeds are essential in Indian cooking — methi bhaji, dal methi, parathas, and spice blends",
+        "Seeds contain compounds clinically studied for supporting healthy blood glucose and cholesterol levels",
+        "Fastest kitchen crop for Indian balconies — leaves ready to harvest within 10 to 15 days of sowing"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_to_partial_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Bolting in heat — triggered by warm temperatures, inconsistent watering, or root-bound conditions",
+        "Damping off in seedlings from overwatering or poor drainage in the germination stage"
+      ]
+    },
+    {
+      "plant_id": "croton",
+      "plant_name": "Croton",
+      "scientific_name": "Codiaeum variegatum",
+      "description": "A bold, evergreen tropical shrub in the Euphorbiaceae family, native to the tropical rainforests of Southeast Asia and the western Pacific islands. One of the most dramatically colourful foliage plants in the world — its large, leathery leaves are painted in spectacular combinations of red, orange, yellow, green, and purple, with distinct leaf shapes varying from broad oval to long and narrow. The intensity of colour is directly linked to light levels — brighter sunlight produces more vivid, saturated pigmentation. Widely grown as a balcony and verandah plant across India for its year-round ornamental impact. The plant has been awarded the Royal Horticultural Society's Award of Garden Merit for outstanding ornamental value in containers.",
+      "category": [
+        "indoor",
+        "outdoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "decorative",
+        "low maintenance"
+      ],
+      "image_name": "croton",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 3–4 days",
+          "days": 3,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 2 to 3 cm of soil feel dry — croton prefers consistently moist but never waterlogged soil",
+            "Water thoroughly until it drains from the bottom, then discard excess water from the saucer to prevent root rot",
+            "In hot summer conditions on a sunny balcony, check soil moisture every 2 days — the large leaves lose moisture rapidly",
+            "Reduce watering frequency in winter when the plant slows — allow the top inch to dry before rewatering"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2 years",
+          "days": 730,
+          "method": "upgrade",
+          "steps": [
+            "Repot every two years in spring when roots begin to emerge from drainage holes or growth visibly stalls",
+            "Move to a container just one size larger — croton prefers to be moderately root-bound and overpotting causes poor leaf colour",
+            "Use a well-draining, fertile potting mix; add perlite for improved aeration and drainage",
+            "Handle the plant minimally during repotting — disturbing the roots can trigger a significant leaf drop"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 4 weeks",
+          "days": 30,
+          "method": "balanced",
+          "steps": [
+            "Feed monthly during spring and summer with a balanced liquid fertilizer at half strength",
+            "A fertilizer with a slightly higher nitrogen content encourages the lush, large, intensely coloured foliage this plant is prized for",
+            "Do not over-fertilize — excess feeding produces pale, washed-out leaf colour rather than the vivid hues the plant is known for",
+            "Stop feeding entirely in autumn and winter when the plant rests"
+          ]
+        },
+        "pruning": {
+          "display": "Every 3–4 months",
+          "days": 90,
+          "method": "shape",
+          "steps": [
+            "Prune back leggy or overgrown stems in early spring to maintain a compact, bushy form",
+            "Always use clean, sharp shears — blunt cuts damage the stems and invite disease",
+            "Wear gloves when pruning — the milky white sap (latex) is a skin and eye irritant",
+            "Remove any dead, pale, or fully green leaves that have lost their ornamental colour promptly"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Fertile, well-draining potting mix with good moisture retention — slightly acidic pH 5.5 to 6.5",
+        "soil_used": "Quality indoor or outdoor potting mix with added perlite for improved drainage"
+      },
+      "benefits": [
+        "Year-round spectacularly colourful foliage in vivid combinations of red, orange, yellow, and green",
+        "Thrives in warm Indian balcony conditions — performs best in the tropical heat it evolved in",
+        "One of the most impactful ornamental container plants available for Indian homes"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "bright_indirect",
+      "care_difficulty": "moderate",
+      "common_issues": [
+        "Mass leaf drop from repotting stress, sudden location change, or cold draughts",
+        "Spider mites on leaf undersides in dry, low-humidity conditions — mist leaves and treat with neem oil"
+      ]
+    },
+    {
+      "plant_id": "adenium",
+      "plant_name": "Desert Rose",
+      "scientific_name": "Adenium obesum",
+      "description": "A striking succulent shrub native to the arid regions of sub-Saharan Africa and the Arabian Peninsula, belonging to the Apocynaceae family. Also called Desert Rose for its large, trumpet-shaped blooms in shades of deep pink, red, magenta, white, and bi-colour produced abundantly on the tips of its bare, swollen stems. Its thickened, water-storing base — called a caudex — is one of its most distinctive and sculptural features, making it a prized ornamental specimen on Indian balconies. Adenium is exceptionally heat-tolerant and drought-resistant, thriving in the hot, sunny conditions of Indian summers where other flowering plants struggle. It is also grown as bonsai.",
+      "category": [
+        "flowering",
+        "outdoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "decorative",
+        "low maintenance"
+      ],
+      "image_name": "desert_rose",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 5–7 days",
+          "days": 6,
+          "method": "light",
+          "steps": [
+            "Water deeply once every 5 to 7 days during the active growing season — allow the soil to dry out fully between waterings",
+            "In peak summer heat with full sun exposure, check soil every 4 to 5 days — the plant grows and drinks more actively in high temperatures",
+            "Drastically reduce watering in winter when the plant drops its leaves and enters dormancy — water once every 3 to 4 weeks or less",
+            "Never allow the caudex base to sit in standing water — this causes irreversible rot in the swollen water-storing trunk"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2–3 years",
+          "days": 730,
+          "method": "upgrade",
+          "steps": [
+            "Repot every 2 to 3 years in spring just as new growth begins, when roots visibly crowd the container",
+            "Use a wide, shallow pot to showcase the sculptural caudex and provide stable drainage",
+            "Use a dedicated cactus and succulent mix or blend standard potting soil 50/50 with coarse sand and perlite",
+            "After repotting, wait 7 to 10 days before watering to allow any damaged roots to callous over and heal"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 3–4 weeks",
+          "days": 21,
+          "method": "balanced",
+          "steps": [
+            "Feed every 3 to 4 weeks during active growth with a low-nitrogen, high-phosphorus and potassium fertilizer to maximise flowering",
+            "A bloom booster with an NPK ratio such as 10-50-10 applied in spring and summer produces spectacular results",
+            "Avoid high-nitrogen formulas — they promote leafy growth at the expense of flowers",
+            "Do not fertilize during winter dormancy when the plant has dropped its leaves and is resting"
+          ]
+        },
+        "pruning": {
+          "display": "Early spring",
+          "days": 180,
+          "method": "shape",
+          "steps": [
+            "Prune back leggy or uneven stems in early spring just before new growth flushes — adenium blooms on new growth tips",
+            "Wear gloves when pruning — the milky white sap is toxic and a skin and eye irritant",
+            "Shape the plant to expose the sculptural caudex and maintain a well-balanced, compact canopy",
+            "Stem cuttings removed during pruning can be left to dry for a week and then planted to propagate new plants"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Fast-draining, sandy, low-fertility soil — replicates its native arid habitat. pH 6.0 to 7.0",
+        "soil_used": "Cactus and succulent potting mix or standard potting mix blended 50/50 with coarse sand"
+      },
+      "benefits": [
+        "Large, vivid trumpet-shaped blooms produced prolifically throughout the hot Indian summer season",
+        "Exceptionally heat and drought-tolerant — thrives in the intense conditions that challenge other balcony plants",
+        "Sculptural caudex base makes it an outstanding ornamental specimen and bonsai subject"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Caudex rot from overwatering or poor drainage — the most serious and irreversible problem",
+        "Failure to bloom from insufficient direct sunlight — requires at least 6 hours of direct sun daily"
+      ]
+    },
+    {
+      "plant_id": "aparajita",
+      "plant_name": "Aparajita",
+      "scientific_name": "Clitoria ternatea",
+      "description": "A vigorous, fast-growing perennial climbing vine in the Fabaceae family, native to tropical Asia and widely distributed across the Indian subcontinent. Known in India as Aparajita or Shankhpushpi, its name meaning 'undefeated', it is celebrated in both Ayurvedic medicine and modern food science. The vivid, butterfly-shaped flowers are an intense, striking blue — a colour rarely seen in nature — and are used in South and Southeast Asian cooking to produce natural blue food dye, blue teas, and blue rice, turning pink when lemon juice is added due to the anthocyanin pigments. Documented Ayurvedic uses include supporting cognitive function, memory, and anxiety. One of the most ornamentally rewarding fast-growing climbers for a sunny Indian balcony trellis.",
+      "category": [
+        "flowering",
+        "medicinal",
+        "outdoor"
+      ],
+      "tags": [
+        "decorative",
+        "medicinal"
+      ],
+      "image_name": "aparajita",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 2–3 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Water when the top inch of soil feels dry — aparajita prefers consistently moist but not waterlogged soil",
+            "Water deeply at the base of the plant and avoid wetting the foliage to prevent fungal disease in humid conditions",
+            "In peak summer heat, check soil daily — container plants on sunny balconies may need watering every 2 days",
+            "Reduce watering frequency in winter to once every 5 to 7 days when growth naturally slows"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "upgrade",
+          "steps": [
+            "Repot annually in spring into a larger container with fresh, fertile potting mix",
+            "Use a deep container at least 30 cm wide with a trellis, bamboo canes, or railing for the vine to climb",
+            "Mix compost into the potting soil at repotting time — aparajita is a legume and also enriches the soil with fixed nitrogen",
+            "Position the trellis support in the pot at planting time to avoid disturbing roots later"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 3–4 weeks",
+          "days": 21,
+          "method": "balanced",
+          "steps": [
+            "Apply a balanced liquid fertilizer every 3 to 4 weeks during the growing season from spring through autumn",
+            "As a legume, aparajita fixes its own atmospheric nitrogen — avoid very high-nitrogen feeds that can reduce flowering",
+            "Switch to a high-potassium, low-nitrogen formula when buds begin to form to maximise flower production",
+            "A single application of bone meal at the start of the growing season provides sustained phosphorus for abundant blooming"
+          ]
+        },
+        "pruning": {
+          "display": "After flowering",
+          "days": 90,
+          "method": "trim",
+          "steps": [
+            "Trim back overgrown or tangled stems after each main flowering flush to encourage fresh, vigorous new growth",
+            "In early spring, cut back the entire vine by one-third to one-half to reshape and prevent woody bare stems at the base",
+            "Remove spent flowers and seed pods regularly — this redirects energy into continuous new bud formation",
+            "The vine can be cut back hard if it has overgrown its trellis — it recovers quickly from hard pruning"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, fertile, moderately moist soil — slightly acidic to neutral pH 6.0 to 7.5",
+        "soil_used": "All-purpose potting mix enriched with compost; add perlite for improved drainage"
+      },
+      "benefits": [
+        "Striking vivid blue flowers that produce a natural food-safe blue dye used in Blue Pea tea and South Asian cooking",
+        "Documented Ayurvedic cognitive adaptogen — studied for supporting memory and reducing anxiety",
+        "Fast-growing balcony climber that provides ornamental cover for railings and trellises within weeks"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Fungal leaf spot from overhead watering or poor air circulation around dense foliage",
+        "Reduced flowering from excess nitrogen fertilizing or insufficient direct sunlight"
+      ]
+    },
+    {
+      "plant_id": "neem",
+      "plant_name": "Neem",
+      "scientific_name": "Azadirachta indica",
+      "description": "A fast-growing evergreen tree native to the Indian subcontinent, belonging to the Meliaceae (mahogany) family. One of the most important and extensively researched medicinal trees in Indian history — referred to in Sanskrit texts as Sarva Roga Nivarini, meaning 'the curer of all ailments'. Every part of the tree — leaves, seeds, bark, and oil — has documented medicinal, pesticidal, and cosmetic applications. The active compound azadirachtin, extracted from the seeds, is one of the most effective natural insecticides known, widely used in organic farming. Dwarf and compact container varieties can be grown productively on sunny Indian balconies for years, providing harvestable leaves for home use while remaining a manageable size.",
+      "category": [
+        "medicinal",
+        "outdoor",
+        "low_maintenance"
+      ],
+      "tags": [
+        "medicinal",
+        "pest repellent"
+      ],
+      "image_name": "neem",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 3–5 days",
+          "days": 4,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 3 to 5 cm of soil feel dry — neem is drought-tolerant once established and prefers to dry between waterings",
+            "Young plants in containers require more consistent moisture than established trees — check soil every 3 days in summer",
+            "Water deeply and thoroughly until it drains from the bottom, then discard excess to prevent waterlogging",
+            "In winter, reduce watering significantly to once a week or less as growth slows considerably"
+          ]
+        },
+        "repotting": {
+          "display": "Every 2 years",
+          "days": 730,
+          "method": "upgrade",
+          "steps": [
+            "Repot container neem every two years in spring as the tree is fast-growing and quickly outgrows its pot",
+            "Use a large, deep container at least 40 to 50 cm wide and deep to accommodate the extensive root system",
+            "Use a well-draining mix of garden soil, compost, and coarse sand — neem grows in poor, dry soils in the wild",
+            "Prune back the canopy by 15 to 20% when repotting to reduce transplant stress and maintain container-appropriate size"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 6–8 weeks",
+          "days": 56,
+          "method": "organic",
+          "steps": [
+            "Apply a balanced slow-release organic fertilizer or composted cow manure every 6 to 8 weeks during spring and summer",
+            "Neem grows naturally in poor soils and does not require heavy feeding — the focus should be on soil health rather than nutrient loading",
+            "A top-dressing of vermicompost once every 2 months is the most practical and effective approach for container plants",
+            "Do not fertilize in winter — neem slows significantly and fertilizing during this period produces weak, tender growth"
+          ]
+        },
+        "pruning": {
+          "display": "Early spring",
+          "days": 180,
+          "method": "shape",
+          "steps": [
+            "Prune in early spring to maintain a compact, container-appropriate size — without pruning, neem grows rapidly into a large tree",
+            "Cut back the main leader and lateral branches by one-third to one-half to control height and encourage a dense canopy",
+            "Remove any dead, crossing, or inward-growing branches to maintain good airflow and reduce disease risk",
+            "Harvest leaves for home use throughout the growing season — regular harvesting naturally controls size while providing useful material"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, slightly alkaline to neutral soil — pH 6.5 to 8.0. Tolerates poor, dry soil very well",
+        "soil_used": "Garden soil blended with compost and coarse sand; avoid heavy clay or waterlogged mixes"
+      },
+      "benefits": [
+        "Every part of the tree has documented medicinal, pesticidal, and cosmetic Ayurvedic applications",
+        "Neem oil from seeds is one of the most effective natural organic pesticides available",
+        "Leaves used in traditional medicine for skin health, immunity support, and as a natural antimicrobial"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Rapid overgrowth if not pruned regularly — requires consistent size management in containers",
+        "Leaf yellowing from overwatering or poorly draining soil in containers"
+      ]
+    },
+    {
+      "plant_id": "periwinkle",
+      "plant_name": "Sadabahar",
+      "scientific_name": "Catharanthus roseus",
+      "description": "A perennial flowering herb native to Madagascar, belonging to the Apocynaceae family, and widely naturalised across tropical and subtropical India. Known in India as Sadabahar — meaning 'always blooming' — it is one of the most prolifically and continuously flowering plants you can grow on an Indian balcony, producing five-petalled blooms in pink, white, red, lilac, and bicolour year-round in warm conditions. Beyond its ornamental value, it is one of the most medically important plants in the world — two compounds extracted from its leaves, vincristine and vinblastine, are used as frontline chemotherapy drugs for treating certain cancers and are listed on the WHO Model List of Essential Medicines. Thrives in heat, tolerates drought, and is ideal for sunny Indian balconies.",
+      "category": [
+        "flowering",
+        "medicinal",
+        "outdoor"
+      ],
+      "tags": [
+        "decorative",
+        "medicinal"
+      ],
+      "image_name": "periwinkle",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 3–4 days",
+          "days": 3,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 2 cm of soil feel dry — sadabahar prefers consistently moist but not waterlogged soil",
+            "Water deeply at soil level and avoid wetting the foliage to prevent fungal leaf diseases",
+            "In peak Indian summer heat, check container soil every 2 days — this plant drinks more than expected in high temperatures",
+            "Reduce watering frequency in cooler months to once every 5 to 7 days when growth and flowering slow slightly"
+          ]
+        },
+        "repotting": {
+          "display": "Yearly",
+          "days": 365,
+          "method": "refresh",
+          "steps": [
+            "Repot annually in early spring into fresh potting mix — sadabahar performs best with refreshed soil each season",
+            "Use a pot at least 20 to 25 cm wide with good drainage holes to support the fibrous root system",
+            "A potting mix of 50% compost and 50% garden soil provides the nutrient-rich but well-drained medium this plant prefers",
+            "Cut back the plant by one-third when repotting to stimulate a strong flush of new growth and flowers"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 3–4 weeks",
+          "days": 21,
+          "method": "balanced",
+          "steps": [
+            "Feed every 3 to 4 weeks with a balanced liquid fertilizer during the active growing season",
+            "A high-phosphorus formula applied monthly encourages the generous, near-continuous flowering this plant is named for",
+            "Mustard cake liquid fertilizer applied every 15 days is a traditional Indian organic approach that produces excellent results",
+            "Reduce feeding in the cooler months but do not stop entirely as sadabahar continues to flower through mild Indian winters"
+          ]
+        },
+        "pruning": {
+          "display": "Every 4–6 weeks",
+          "days": 35,
+          "method": "pinch",
+          "steps": [
+            "Pinch back growing tips every 4 to 6 weeks to maintain a compact, bushy form and encourage continuous flowering",
+            "Deadhead spent flowers regularly to redirect energy from seed production back into new bud formation",
+            "Cut back the entire plant by one-third in early spring or after any period of reduced vigour to stimulate a fresh flush",
+            "Remove yellowing or diseased leaves promptly to maintain good airflow and plant health"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, moderately fertile soil — slightly acidic to neutral pH 5.5 to 7.0",
+        "soil_used": "50% organic compost and 50% garden soil, or a quality all-purpose potting mix"
+      },
+      "benefits": [
+        "Continuous near-year-round flowering in warm Indian conditions — one of the longest-blooming balcony plants available",
+        "Leaves contain vincristine and vinblastine — among the most important chemotherapy compounds in modern medicine",
+        "Exceptionally heat-tolerant and thrives on hot Indian balconies where other flowering plants decline"
+      ],
+      "pet_friendly": false,
+      "toxic": true,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Fungal leaf spot and root rot from overhead watering or poorly draining soil in humid monsoon conditions",
+        "Leggy, sparse growth from insufficient direct sunlight — requires at least 5 to 6 hours of sun daily"
+      ]
+    },
+    {
+      "plant_id": "lemongrass",
+      "plant_name": "Lemongrass",
+      "scientific_name": "Cymbopogon citratus",
+      "description": "A tall, clump-forming perennial grass native to South and Southeast Asia, belonging to the Poaceae family. One of the most important aromatic culinary herbs in Asian cooking, widely used in Thai, Vietnamese, and South Indian cuisine for its clean, intensely citrus fragrance derived from the compound citral. In India, it is an essential ingredient in herbal teas and Ayurvedic preparations for supporting digestion and reducing fever. The essential oil is one of the most widely used in aromatherapy and natural mosquito repellents. Grows vigorously in containers on sunny Indian balconies, forming impressive clumps that can be regularly divided and harvested. A highly productive and rewarding balcony herb.",
+      "category": [
+        "medicinal",
+        "aromatic",
+        "outdoor"
+      ],
+      "tags": [
+        "edible",
+        "fragrant"
+      ],
+      "image_name": "lemongrass",
+      "care_cycle": {
+        "watering": {
+          "display": "Every 2–3 days",
+          "days": 2,
+          "method": "moderate",
+          "steps": [
+            "Water when the top 2 to 3 cm of soil feel dry — lemongrass prefers consistently moist but not waterlogged soil",
+            "Container-grown plants on sunny balconies dry quickly in summer — check soil every 2 days during hot weather",
+            "Water deeply at the base of the clump to reach the fibrous root system; shallow watering causes root stress in this large plant",
+            "Reduce watering in winter when growth slows — allow the top inch of soil to dry between waterings"
+          ]
+        },
+        "repotting": {
+          "display": "Every 1–2 years",
+          "days": 365,
+          "method": "division",
+          "steps": [
+            "Repot or divide every 1 to 2 years when the clump becomes visibly crowded or roots begin to emerge from drainage holes",
+            "Use a large, deep container at least 30 to 40 cm wide — lemongrass forms a robust clump and requires adequate space",
+            "At division time, separate the clump into sections of 3 to 5 stalks each, each with a healthy root mass attached",
+            "Repot into fresh, fertile, well-draining potting mix enriched with compost for vigorous new growth"
+          ]
+        },
+        "fertilizing": {
+          "display": "Every 4–6 weeks",
+          "days": 35,
+          "method": "balanced",
+          "steps": [
+            "Apply a balanced nitrogen-rich liquid fertilizer every 4 to 6 weeks during spring and summer to support vigorous leaf and stalk production",
+            "A fertilizer with an NPK ratio favouring nitrogen such as 20-10-10 encourages the lush, aromatic growth this plant is harvested for",
+            "Organic options including diluted compost tea or liquid seaweed fertilizer are effective and preserve the essential oil content of the leaves",
+            "Reduce fertilizing to once every 2 months in winter when growth slows"
+          ]
+        },
+        "pruning": {
+          "display": "Every 4–6 weeks",
+          "days": 35,
+          "method": "trim",
+          "steps": [
+            "Harvest outer stalks by cutting at the base when they reach 30 to 45 cm tall — this is the primary method of managing and harvesting the plant",
+            "Trim the top third of the leaf blades every 4 to 6 weeks to prevent the clump from becoming excessively tall on a balcony",
+            "Remove any dry, brown, or dead outer leaves and stalks throughout the season to maintain a neat, healthy clump",
+            "Cut the entire clump back to 15 to 20 cm in early spring to stimulate a fresh flush of vigorous new growth"
+          ]
+        }
+      },
+      "soil_type": {
+        "characteristics": "Well-draining, fertile, moderately moist soil — slightly acidic to neutral pH 6.0 to 7.0",
+        "soil_used": "Rich potting mix or garden soil enriched with compost and a handful of slow-release fertilizer"
+      },
+      "benefits": [
+        "Essential aromatic culinary herb used in South Indian, Thai, and Vietnamese cooking and in kadha herbal teas",
+        "Citral-rich essential oil is a proven natural mosquito repellent — an invaluable asset on Indian balconies",
+        "Ayurvedic herb for supporting digestion, reducing fever, and promoting relaxation in herbal preparations"
+      ],
+      "pet_friendly": true,
+      "toxic": false,
+      "light_required": "full_sunlight",
+      "care_difficulty": "easy",
+      "common_issues": [
+        "Rust fungal disease on leaf blades from overhead watering or high humidity during monsoon — improve airflow and water at the base",
+        "Clump overcrowding causing reduced vigour and smaller stalks — divide every 1 to 2 years to maintain productivity"
+      ]
     }
   ]
 }

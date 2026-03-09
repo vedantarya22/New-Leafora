@@ -24,15 +24,20 @@ class userProfileViewController: UIViewController,UICollectionViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         
         collectionView.delegate = self
         collectionView.dataSource = self
-        
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.borderWidth = 3
+        profileImageView.layer.borderColor = UIColor.white.cgColor
     }
     
-   
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+    }
     
     @IBAction func cancelButton(_ sender: UIBarButtonItem) {
         dismiss(animated: true)

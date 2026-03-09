@@ -9,6 +9,8 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
     @IBOutlet weak var shareButton: UIBarButtonItem!
     
     let placeholderText = "Write a caption..."
+    let maxCaptionLength = 100
+    var charCountLabel: UILabel!
     
     var currentUser: User?
     var onPostSuccess: (() -> Void)?
@@ -47,6 +49,20 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
         
         // Remove the default padding so it aligns with the image
         captionTextView.textContainerInset = UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
+        
+        // Character counter label
+        charCountLabel = UILabel()
+        charCountLabel.text = "0/\(maxCaptionLength)"
+        charCountLabel.font = UIFont.systemFont(ofSize: 12)
+        charCountLabel.textColor = .systemGray
+        charCountLabel.textAlignment = .right
+        charCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(charCountLabel)
+        
+        NSLayoutConstraint.activate([
+            charCountLabel.topAnchor.constraint(equalTo: captionTextView.bottomAnchor, constant: 4),
+            charCountLabel.trailingAnchor.constraint(equalTo: captionTextView.trailingAnchor, constant: -5)
+        ])
     }
     
     // TextView Delegate: Clears placeholder when you start typing
@@ -62,7 +78,29 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
         if textView.text.isEmpty {
             textView.text = placeholderText
             textView.textColor = .lightGray
+            updateCharCount(0)
         }
+    }
+    
+    // Enforce character limit
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // Don't limit if it's still the placeholder
+        if textView.textColor == .lightGray { return true }
+        
+        let currentText = textView.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: text)
+        return updatedText.count <= maxCaptionLength
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        let count = textView.textColor == .lightGray ? 0 : (textView.text?.count ?? 0)
+        updateCharCount(count)
+    }
+    
+    private func updateCharCount(_ count: Int) {
+        charCountLabel.text = "\(count)/\(maxCaptionLength)"
+        charCountLabel.textColor = count >= maxCaptionLength ? .systemRed : .systemGray
     }
     
     //recognizes tap gesture on uiview to select pic
