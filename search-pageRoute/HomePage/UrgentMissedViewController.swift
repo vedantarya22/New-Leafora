@@ -10,7 +10,7 @@ import UIKit
 class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
     private let DEBUG_FORCE_OVERDUE = true
-
+    
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -25,7 +25,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         // Do any additional setup after loading the view.
         setupUI()
         loadPlantData()
-     
+        
         registerCell()
         setupLayout()
     }
@@ -46,7 +46,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     private func setupUI() {
         self.title = urgencyLevel
-//        collectionView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
+        //        collectionView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -161,7 +161,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         if DEBUG_FORCE_OVERDUE {
             return true   // 👈 force urgent for testing
         }
-
+        
         
         let daysSince = daysBetween(from: lastDate, to: Date())
         let daysOverdue = daysSince - cycleDays
@@ -175,9 +175,9 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         guard let lastDate = lastDate else { return false }
         
         if DEBUG_FORCE_OVERDUE {
-                return true   // 👈 force missed for testing
-            }
-
+            return true   // 👈 force missed for testing
+        }
+        
         
         let daysSince = daysBetween(from: lastDate, to: Date())
         let daysOverdue = daysSince - cycleDays
@@ -247,7 +247,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         layout.minimumLineSpacing = 12
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .zero
-
+        
         collectionView.collectionViewLayout = layout
     }
     
@@ -292,7 +292,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             cell.detailLabel.text = "\(daysOverdue) days overdue"
             cell.detailLabel.textColor = .systemYellow
         } else {
-            cell.detailLabel.text = "Due today"
+            cell.detailLabel.text = "Due 2 days ago"
             cell.detailLabel.textColor = .systemOrange
         }
         
@@ -321,34 +321,6 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     
     
-    //    private func handleTaskCompletion(at indexPath: IndexPath) {
-    //          guard indexPath.row < filteredPlants.count else { return }
-    //
-    //           let completedPlant = filteredPlants[indexPath.row]
-    //           let taskToComplete = getMostOverdueTask(for: completedPlant)
-    //
-    //           // Mark task as done in PlantStore
-    //           PlantStore.shared.markTaskDone(
-    //               userPlantID: completedPlant.id,
-    //              taskType: taskToComplete
-    //          )
-    //
-    //          // Remove from filtered list
-    //          filteredPlants.remove(at: indexPath.row)
-    //
-    //          // Animate deletion
-    //          collectionView.performBatchUpdates({
-    //              collectionView.deleteItems(at: [indexPath])
-    //          }, completion: { _ in
-    //              // Optional: Show message if list is now empty
-    //             if self.filteredPlants.isEmpty {
-    //                  self.showEmptyState()
-    //             }
-    //         })
-    //
-    //          print("✅ Completed \(taskToComplete) for \(completedPlant.plantId)")
-    //      }
-    //
     private func showSwipeHint() {
         
         guard let firstCell = collectionView.cellForItem(
@@ -391,9 +363,9 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         )
         
         NotificationCenter.default.post(
-              name: .plantTaskDidUpdate,
-              object: nil
-          )
+            name: .plantTaskDidUpdate,
+            object: nil
+        )
     }
     
     private func showEmptyState() {

@@ -20,6 +20,11 @@ class ARViewController: UIViewController {
     @IBOutlet weak var luxValueLabel: UILabel?
 
     private let loadingSpinner = UIActivityIndicatorView(style: .large)
+    
+    // Compact Light Meter UI
+    private let compactLightPanel = UIView()
+    private let compactLightLabel = UILabel()
+    private var isLightPanelVisible = false
 
     var models: [ModelItem] = []
     var selectedModel: ModelItem?
@@ -29,6 +34,7 @@ class ARViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Ensure the old bulky storyboard light meter panel is hidden
         lightMeterPanel?.isHidden          = true
         lightLevelLabel?.isHidden          = true
         lightStatusIcon?.isHidden          = true
@@ -40,6 +46,7 @@ class ARViewController: UIViewController {
         setupCollectionView()
         setupGestures()
         setupLoadingSpinner()
+        setupCompactLightMeter()
 
         instructionLabel.text = "Select a plant below, then tap a surface to place it"
     }
@@ -61,6 +68,7 @@ class ARViewController: UIViewController {
 
     func setupARView() {
         arView.automaticallyConfigureSession = false
+        arView.session.delegate = self // Listen for light estimation
         let coaching = ARCoachingOverlayView()
         coaching.session                = arView.session
         coaching.autoresizingMask       = [.flexibleWidth, .flexibleHeight]
@@ -101,6 +109,51 @@ class ARViewController: UIViewController {
         visible ? loadingSpinner.startAnimating() : loadingSpinner.stopAnimating()
     }
 
+    // MARK: - Compact Light Meter
+
+    private func setupCompactLightMeter() {
+        // Toggle Button in Navigation Bar
+        let toggleButton = UIBarButtonItem(image: UIImage(systemName: "sun.max.fill"), style: .plain, target: self, action: #selector(toggleLightMeter))
+        toggleButton.tintColor = .label
+        navigationItem.rightBarButtonItem = toggleButton
+        
+        // Compact Panel
+        compactLightPanel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        compactLightPanel.layer.cornerRadius = 16
+        compactLightPanel.translatesAutoresizingMaskIntoConstraints = false
+        compactLightPanel.alpha = 0 // Hidden by default
+        view.addSubview(compactLightPanel)
+        
+        // Label inside panel
+        compactLightLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+        compactLightLabel.textColor = .white
+        compactLightLabel.textAlignment = .center
+        compactLightLabel.translatesAutoresizingMaskIntoConstraints = false
+        compactLightPanel.addSubview(compactLightLabel)
+        
+        NSLayoutConstraint.activate([
+            // Panel constraints (snug up into the navigation bar area right underneath the button)
+            compactLightPanel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -12),
+            compactLightPanel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            compactLightPanel.heightAnchor.constraint(equalToConstant: 32),
+            
+            compactLightLabel.leadingAnchor.constraint(equalTo: compactLightPanel.leadingAnchor, constant: 12),
+            compactLightLabel.trailingAnchor.constraint(equalTo: compactLightPanel.trailingAnchor, constant: -12),
+            compactLightLabel.centerYAnchor.constraint(equalTo: compactLightPanel.centerYAnchor)
+        ])
+    }
+    
+    @objc private func toggleLightMeter() {
+        isLightPanelVisible.toggle()
+        
+        // Update the sun icon color
+        navigationItem.rightBarButtonItem?.tintColor = isLightPanelVisible ? .systemBlue : .label
+        
+        UIView.animate(withDuration: 0.3) {
+            self.compactLightPanel.alpha = self.isLightPanelVisible ? 1.0 : 0.0
+        }
+    }
+
     // MARK: - Collection View
 
     func setupCollectionView() {
@@ -136,15 +189,20 @@ class ARViewController: UIViewController {
 
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
         guard let model = selectedModel else {
+            instructionLabel.alpha = 1
             instructionLabel.text = "Select a plant first"
             return
         }
         let loc     = gesture.location(in: arView)
         let results = arView.raycast(from: loc, allowing: .estimatedPlane, alignment: .horizontal)
         guard let first = results.first else {
-            instructionLabel.text = "No surface found — move slowly to scan"
+            if currentAnchor == nil {
+                instructionLabel.alpha = 1
+                instructionLabel.text = "No surface found — move slowly to scan"
+            }
             return
         }
+        instructionLabel.alpha = 1
         placeModel(model, at: first)
     }
 
@@ -174,6 +232,13 @@ class ARViewController: UIViewController {
                     anchor.addChild(entity)
                     self.arView.installGestures([.translation, .rotation, .scale], for: entity)
                     self.instructionLabel.text = "\(model.name) placed!"
+                    
+                    // Hide the instruction dialogue box after 2 seconds
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        UIView.animate(withDuration: 0.5) {
+                            self.instructionLabel.alpha = 0
+                        }
+                    }
                 }
             } catch {
                 await MainActor.run {
@@ -206,6 +271,7 @@ extension ARViewController: UICollectionViewDataSource, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedModel = models[indexPath.item]
         collectionView.reloadData()
+        instructionLabel.alpha = 1
         instructionLabel.text = "Tap a surface to place \(models[indexPath.item].name)"
     }
 }
@@ -269,5 +335,38 @@ class ModelCell: UICollectionViewCell {
         backgroundColor = isSelectedCell
             ? UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 0.35)
             : .darkGray
+    }
+}
+
+// MARK: - ARSessionDelegate for Light Meter
+
+extension ARViewController: ARSessionDelegate {
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        guard let lightEstimate = frame.lightEstimate else { return }
+        
+        let intensity = lightEstimate.ambientIntensity
+        
+        // Intensity is typically 1000 for neutral. We map this roughly for user feel.
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Artificial lux calculation just to show users numbers changing
+            let estimatedLux = Int(intensity / 3.0) 
+            self.luxValueLabel?.text = "\(estimatedLux) Lux"
+            
+            if intensity < 300 {
+                self.compactLightLabel.text = "🌙 Too Dark"
+                self.compactLightLabel.textColor = .systemOrange
+            } else if intensity >= 300 && intensity < 800 {
+                self.compactLightLabel.text = "🌤 Acceptable"
+                self.compactLightLabel.textColor = .systemYellow
+            } else if intensity >= 800 && intensity <= 2000 {
+                self.compactLightLabel.text = "✨ Perfect Light"
+                self.compactLightLabel.textColor = .systemGreen
+            } else {
+                self.compactLightLabel.text = "☀️ Too Bright"
+                self.compactLightLabel.textColor = .systemRed
+            }
+        }
     }
 }

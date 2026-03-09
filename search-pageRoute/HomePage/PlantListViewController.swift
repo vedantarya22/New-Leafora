@@ -40,6 +40,62 @@ class PlantListViewController: UIViewController,
                } else {
                    print(" Loaded \(allPlants.count) plant types from JSON")
            }
+           
+        setupMarkAllDoneButton()
+    }
+    
+    // MARK: - Navigation Bar UI
+    private func setupMarkAllDoneButton() {
+        let markAllButton = UIBarButtonItem(
+            title: "Mark All Done",
+            style: .done,
+            target: self,
+            action: #selector(markAllAsDoneTapped)
+        )
+        // Make the button match the botanical theme slightly
+        markAllButton.tintColor = UIColor(red: 0.18, green: 0.49, blue: 0.20, alpha: 1.0)
+        navigationItem.rightBarButtonItem = markAllButton
+    }
+    
+    @objc private func markAllAsDoneTapped() {
+        guard !filteredPlants.isEmpty else { return }
+        
+        let alert = UIAlertController(
+            title: "Mark All As Done?",
+            message: "This will check off the \(taskType.lowercased()) task for all \(filteredPlants.count) plants in this list.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Mark All", style: .default, handler: { [weak self] _ in
+            self?.executeMarkAllDone()
+        }))
+        
+        present(alert, animated: true)
+    }
+    
+    private func executeMarkAllDone() {
+        // Iterate over all currently displayed items
+        for plant in filteredPlants {
+            PlantStore.shared.markTaskDone(userPlantID: plant.id, taskType: taskType)
+        }
+        
+        // Remove visually
+        let totalItems = filteredPlants.count
+        filteredPlants.removeAll()
+        
+        // Batch animate wiping the collection view clean
+        var indexPaths: [IndexPath] = []
+        for i in 0..<totalItems {
+            indexPaths.append(IndexPath(item: i, section: 0))
+        }
+        
+        collectionView.performBatchUpdates {
+            self.collectionView.deleteItems(at: indexPaths)
+        } completion: { _ in
+            // Re-check visibility logic
+            self.loadAndFilterData()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
