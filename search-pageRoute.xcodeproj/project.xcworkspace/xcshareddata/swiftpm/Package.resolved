@@ -1,5 +1,5 @@
 {
-  "originHash" : "31f65194aa647911f2c75f6e5a1350dbdbfaa36b7891d0134fbd39d509426e08",
+  "originHash" : "71ce4f4f603fab48703abd21e91c1ebc81ce3c03c8aa2dc3887bffd92bbbc02b",
   "pins" : [
     {
       "identity" : "inputbaraccessoryview",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "dc48356f830d40de5acc0e126a44257d0a1329b6",
         "version" : "5.0.0"
+      }
+    },
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage.git",
+      "state" : {
+        "revision" : "2de3a496eaf6df9a1312862adcfd54acd73c39c0",
+        "version" : "5.21.7"
       }
     }
   ],

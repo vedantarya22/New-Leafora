@@ -137,14 +137,11 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //    }
     
     private func loadData() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let loadedPlants = JSONLoader.loadPlants(from: "plantData")
-            
-            DispatchQueue.main.async {
-                self?.allPlants = loadedPlants
-                self?.filteredPlants = loadedPlants
-                self?.collectionView.reloadData()
-            }
+        PlantCatalogueCache.shared.getPlants { [weak self] plants in
+            guard let self = self else { return }
+            self.allPlants = plants
+            self.filteredPlants = plants
+            self.collectionView.reloadData()
         }
     }
     
@@ -280,10 +277,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 
         // 1. Get the correct plant from the UI-backed array
         let selectedPlant = filteredPlants[indexPath.row]
-        
-
-        // 2. Pass the ID
-                navigateToPlantDetail(with: selectedPlant.plantId)
+          print(" Tapped: \(selectedPlant.plantName)")
+          print("PlantId: \(selectedPlant.plantId)")
+          navigateToPlantDetail(with: selectedPlant.plantId)
         
     
     }

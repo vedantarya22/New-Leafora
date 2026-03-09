@@ -12,7 +12,7 @@ struct Plant: Codable {
     let description: String
     let category: [String]
     let tags: [String]
-    let imageName: String
+    let imageName: String //full cloudinary url
     let careCycle: CareCycle
     let soilType: SoilType
     let benefits: [String]
