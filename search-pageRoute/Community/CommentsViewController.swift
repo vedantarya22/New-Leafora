@@ -51,6 +51,42 @@ class CommentsViewController: UIViewController, UITableViewDelegate, UITableView
         return cell
     }
     
+    // MARK: - Context Menu (Long Press) Delete
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        
+        // Ensure the post and comment exist
+        guard indexPath.row < post.comments.count else { return nil }
+        let comment = post.comments[indexPath.row]
+        
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            
+            let deleteAction = UIAction(
+                title: "Delete",
+                image: UIImage(systemName: "trash"),
+                attributes: .destructive
+            ) { [weak self] _ in
+                self?.deleteComment(at: indexPath, commentId: comment.id)
+            }
+            
+            return UIMenu(title: "", children: [deleteAction])
+        }
+        
+        return configuration
+    }
+    
+    private func deleteComment(at indexPath: IndexPath, commentId: UUID) {
+        // 1. Tell backend/Data source to remove it
+        PostRepository.shared.removeComment(from: post.id, commentId: commentId)
+        
+        // 2. Refresh our local variable
+        if let freshPost = PostRepository.shared.getPost(id: post.id) {
+            post = freshPost
+        }
+        
+        // 3. Animate row deletion from visual TableView
+        tableView.deleteRows(at: [indexPath], with: .fade)
+    }
+    
     @IBAction func closeTapped(_ sender: UIBarButtonItem) {
         self.dismiss(animated: true, completion: nil)
     }

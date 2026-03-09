@@ -205,6 +205,13 @@ class PostRepository {
         notifyPostUpdate(postId: postId)
     }
     
+    func removeComment(from postId: String, commentId: UUID) {
+        guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
+        posts[index].comments.removeAll { $0.id == commentId }
+        notifyUpdate()
+        notifyPostUpdate(postId: postId)
+    }
+    
     func deletePost(id: String) {
         posts.removeAll { $0.id == id }
         notifyUpdate()
