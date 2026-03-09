@@ -32,6 +32,10 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "My Garden"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
         view.layer.insertSublayer(gradientLayer, at: 0)
         setupHoldTipLabel()
        setupBotanicalBackground()

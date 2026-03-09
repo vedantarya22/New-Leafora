@@ -216,6 +216,7 @@ struct ModelItem {
     let name: String
     let fileName: String
     let thumbnail: String
+    
 }
 
 // MARK: - ModelCell
