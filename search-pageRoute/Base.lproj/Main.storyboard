@@ -63,7 +63,7 @@
             </objects>
             <point key="canvasLocation" x="-1168.7022900763359" y="1562.6760563380283"/>
         </scene>
-        <!--Search-->
+        <!--Add-->
         <scene sceneID="pJl-kz-yEc">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="cd9-em-9Ri" sceneMemberID="viewController">
@@ -494,8 +494,8 @@
     <resources>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="leaf.fill" catalog="system" width="128" height="109"/>
-        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
-        <image name="person.circle" catalog="system" width="128" height="93"/>
+        <image name="person.circle" catalog="system" width="128" height="123"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
