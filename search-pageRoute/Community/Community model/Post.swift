@@ -32,6 +32,9 @@ struct Post: Codable {
     // Computed/Decorated property for display
     var displayTimestamp: String?
 
+    // Local UI State
+    var isExpanded: Bool = false
+
     
     // List of comments for this post
     var comments: [Comment] = []

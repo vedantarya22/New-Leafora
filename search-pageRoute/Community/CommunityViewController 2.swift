@@ -149,12 +149,7 @@ extension CommunityViewController: UICollectionViewDataSource {
                 isLiked: isLiked,
                 newCount: newCount
             )
-            // No need to manually update local 'posts' array or reload row if we trust the Notification trigger
-            // But if we want instant optimistic UI, we could.
-            // However, the cell callback 'onLikeTapped' often comes from user interaction.
-            // The architectural goal says "Controllers should never directly modify Post properties".
-            // So we delegate to Repository. The Repository fires notification. We catch notification and reload.
-            // This ensures consistency.
+            
         }
 
         
@@ -179,6 +174,12 @@ extension CommunityViewController: UICollectionViewDataSource {
         // Handle menu tap
         cell.onMenuTapped = { [weak self] in
             self?.showPostMenu(for: post)
+        }
+        
+        // Handle see more tap
+        cell.onSeeMoreTapped = { [weak self] in
+            self?.posts[indexPath.item].isExpanded.toggle()
+            self?.postsCollectionView.reloadItems(at: [indexPath])
         }
         
         return cell

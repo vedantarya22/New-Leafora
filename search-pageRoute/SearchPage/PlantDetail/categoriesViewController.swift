@@ -125,10 +125,23 @@ extension categoriesViewController: UICollectionViewDataSource, UICollectionView
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-        // Optional: Add "Go to Profile" action if navigation is possible from here
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        let goToProfileAction = UIAlertAction(title: "Go to Profile", style: .default) { [weak self] _ in
+            self?.navigateToProfilePreferences()
+        }
+        alert.addAction(goToProfileAction)
         
         present(alert, animated: true)
+    }
+    
+    private func navigateToProfilePreferences() {
+        // Dismiss the categories pop-up first
+        dismiss(animated: true) {
+            // Give control back to the presenting view controller (e.g. SearchViewController)
+            // so it can handle the navigation
+            NotificationCenter.default.post(name: NSNotification.Name("NavigateToGardeningPreferences"), object: nil)
+        }
     }
 
 }

@@ -878,7 +878,7 @@
         "edible",
         "decorative"
       ],
-      "image_name": "chili_pepper",
+      "image_name": "chilli_pepper",
       "care_cycle": {
         "watering": {
           "display": "Every 2\u20133 days",
@@ -957,7 +957,7 @@
         "decorative",
         "medicinal"
       ],
-      "image_name": "hibiscus",
+      "image_name": "Hibiscus",
       "care_cycle": {
         "watering": {
           "display": "Daily in summer",
@@ -1982,7 +1982,7 @@
         "decorative",
         "low maintenance"
       ],
-      "image_name": "adenium",
+      "image_name": "desert_rose",
       "care_cycle": {
         "watering": {
           "display": "Every 5–7 days",

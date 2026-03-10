@@ -41,7 +41,7 @@ class PlantDetailViewController_New: UIViewController {
         gradientLayer.frame = view.bounds
         collectionView.backgroundColor = .clear
         
-        // ✅ Load plant data from JSON
+        //  Load plant data from JSON
         loadPlantData()
         
         setupCollectionView()
@@ -78,14 +78,14 @@ class PlantDetailViewController_New: UIViewController {
             return
         }
         
-        print("✅ Loaded plant data for: \(plant.plantName)")
+        print(" Loaded plant data for: \(plant.plantName)")
         
         let count = countPlantsOfType(plantId: userPlant.plantId ?? "")
         let displayFormatter = DateFormatter()
         displayFormatter.dateFormat = "MMM d, yyyy"
         let dateStr = userPlant != nil ? displayFormatter.string(from: userPlant.createdAt) : ""
 
-        // ✅ FIXED: Correct tuple order (title, value)
+        //  FIXED: Correct tuple order (title, value)
         statsData = [
             (icon: "drop.fill",
              title: "Water",
@@ -99,7 +99,7 @@ class PlantDetailViewController_New: UIViewController {
             
             (icon: "leaf.fill",
              title: "Difficulty",
-             value: plant.difficulty.displayName,  // ✅ Use displayName
+             value: plant.difficulty.displayName,  //  Use displayName
              color: UIColor.systemGreen),
             
             (icon: "calendar",
@@ -108,7 +108,7 @@ class PlantDetailViewController_New: UIViewController {
              color: UIColor.systemTeal)
         ]
         
-        // ✅ Populate care items from plant data
+        //  Populate care items from plant data
         careItems = [
             (
                 icon: "drop.fill",
@@ -143,7 +143,7 @@ class PlantDetailViewController_New: UIViewController {
     private func buildWateringSteps(from plant: Plant) -> String {
         let schedule = plant.careCycle.watering.display
         
-        // ✅ Use steps from JSON if available
+        //  Use steps from JSON if available
         if let steps = plant.careCycle.watering.steps {
             let bulletPoints = steps.map { "• \($0)" }.joined(separator: "\n")
             return "Schedule: \(schedule)\n\n\(bulletPoints)"
@@ -304,7 +304,7 @@ class PlantDetailViewController_New: UIViewController {
     }
     
     private func setupNavigationBar() {
-        // ✅ Use plant name from JSON
+        //  Use plant name from JSON
         if let plant = plantData {
             title = plant.plantName
         } else {
@@ -399,7 +399,7 @@ class PlantDetailViewController_New: UIViewController {
         
         let count = countPlantsOfType(plantId: userPlant.plantId)
         
-        // ✅ Only 1 plant — show simple confirmation instead of action sheet
+        //  Only 1 plant — show simple confirmation instead of action sheet
         if count == 1 {
             let alert = UIAlertController(title: "Remove Plant", message: "Are you sure you want to remove this plant?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Remove", style: .destructive) { [weak self] _ in
@@ -414,7 +414,7 @@ class PlantDetailViewController_New: UIViewController {
             return
         }
         
-        // ✅ Multiple plants — show action sheet with options
+        //  Multiple plants — show action sheet with options
         let alert = UIAlertController(title: "Remove Plant", message: "Choose an action", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Remove 1 Plant", style: .default) { [weak self] _ in
             PlantStore.shared.removePlant(by: userPlant.id)
@@ -557,7 +557,7 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
         case .hero:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeroImageCell", for: indexPath) as! HeroImageCell
             
-            // ✅ Priority: User's custom photo > JSON image > System icon
+            //  Priority: User's custom photo > JSON image > System icon
             if let data = userPlant?.imageData, let customImage = UIImage(data: data) {
                 cell.plantImageView.image = customImage
             } else if let plant = plantData, let assetImage = UIImage(named: plant.imageName) {
