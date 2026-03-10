@@ -91,9 +91,8 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantLightCell", for: indexPath) as! PlantLightCollectionViewCell
         let item = buttonData[indexPath.row]
         
-        // Use modern UIButton Configuration for the icon + text layout
         var config = UIButton.Configuration.plain()
-        config.title = item.light
+        config.title = item.displayName  // ✅ was item.light, now shows "Full Sun" etc
         config.image = UIImage(systemName: item.image)
         config.imagePadding = 12
         config.baseForegroundColor = .label

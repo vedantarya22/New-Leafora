@@ -1,15 +1,12 @@
 import UIKit
 
-class loginViewController: UIViewController {
+class SignUpViewController: UIViewController {
 
-    // MARK: - Outlets
-    @IBOutlet weak var usernameTextField: UITextField!  // ✅ used as email field
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var loginButton: UIButton!
-    @IBOutlet weak var forgotPasswordLabel: UILabel!
-    @IBOutlet weak var googleButton: UIButton!
-    @IBOutlet weak var appleButton: UIButton!
-    @IBOutlet weak var signUpLabel: UILabel!
+    @IBOutlet weak var signupButton: UIButton!
 
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
@@ -39,53 +36,50 @@ class loginViewController: UIViewController {
 
     // MARK: - Setup
     private func setupUI() {
-        setupGestures()
         passwordTextField.isSecureTextEntry = true
-        usernameTextField.keyboardType = .emailAddress
-        usernameTextField.autocapitalizationType = .none
-        usernameTextField.autocorrectionType = .no
+        emailTextField.keyboardType = .emailAddress
+        [nameTextField, usernameTextField, emailTextField, passwordTextField].forEach {
+            $0?.autocapitalizationType = .none
+            $0?.autocorrectionType = .no
+        }
     }
 
     private func setupErrorLabel() {
         view.addSubview(errorLabel)
         NSLayoutConstraint.activate([
-            errorLabel.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 8),
+            errorLabel.topAnchor.constraint(equalTo: signupButton.bottomAnchor, constant: 8),
             errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
         ])
     }
 
-    private func setupGestures() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleSignUpTap))
-        signUpLabel.isUserInteractionEnabled = true
-        signUpLabel.addGestureRecognizer(tapGesture)
-    }
-
     // MARK: - Actions
-    @IBAction func loginButtonTapped(_ sender: UIButton) {
-        guard let email = usernameTextField.text, !email.isEmpty,
+    @IBAction func signupButton(_ sender: Any) {
+        guard let name     = nameTextField.text,     !name.isEmpty,
+              let username = usernameTextField.text, !username.isEmpty,
+              let email    = emailTextField.text,    !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty else {
-            showError("Please enter email and password")
+            showError("Please fill in all fields")
             return
         }
 
-        loginButton.isEnabled = false
+        // ✅ Disable button to prevent double tap
+        if let button = sender as? UIButton { button.isEnabled = false }
 
-        NetworkManager.shared.login(email: email, password: password) { [weak self] success, message in
-            self?.loginButton.isEnabled = true
+        NetworkManager.shared.signup(
+            name:     name,
+            username: username,
+            email:    email,
+            password: password
+        ) { [weak self] success, message in
+            if let button = sender as? UIButton { button.isEnabled = true }
+
             if success {
+                print("✅ Signup success")
                 self?.navigateToMainApp()
             } else {
-                self?.showError(message ?? "Login failed")
+                self?.showError(message ?? "Signup failed")
             }
-        }
-    }
-
-    @objc private func handleSignUpTap() {
-        // ✅ Navigate to signup screen
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)  // ✅ replace with your signup storyboard name
-        if let signupVC = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as? SignUpViewController {
-            navigationController?.pushViewController(signupVC, animated: true)
         }
     }
 
@@ -97,14 +91,13 @@ class loginViewController: UIViewController {
 
     // MARK: - Navigation
     private func navigateToMainApp() {
-        // ✅ Load app data first then navigate
+        // ✅ Load app data in background
         if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
             sceneDelegate.loadAppData()
         }
 
-        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        let storyboardName = hasSeenOnboarding ? "Main" : "onboarding"
-        let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
+        // ✅ New user → always show onboarding first
+        let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
 
         guard let window = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })

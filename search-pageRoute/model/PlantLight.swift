@@ -9,10 +9,7 @@ import Foundation
 
 
 struct PlantLightOption {
-    var image:String
-    var light:String
-    init(image: String, light: String) {
-        self.image = image
-        self.light = light
-    }
+    var image: String
+    var light: String        // raw value for backend e.g. "full_sunlight"
+    var displayName: String  // display label for UI e.g. "Full Sun"
 }

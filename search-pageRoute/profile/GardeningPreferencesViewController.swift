@@ -79,7 +79,8 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         // 1. Load all plants (Ensure this is not on main thread if heavy, 
         // but for this dataset size it's likely fine, or dispatch async)
         DispatchQueue.global(qos: .userInitiated).async {
-            let allPlants = JSONLoader.loadPlants(from: "plantData")
+//            let allPlants = JSONLoader.loadPlants(from: "plantData")
+            let allPlants = PlantCatalogueCache.shared.plants
             
             // 2. Run Engine
             let recommendedIDs = PlantRecommendationEngine.shared.generateRecommendedPlantIDs(

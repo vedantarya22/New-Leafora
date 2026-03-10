@@ -161,7 +161,8 @@ class onboardingQuestionViewController: UIViewController, UITableViewDelegate, U
         print("🌱 Onboarding finished. Running Recommendation Engine...")
         
         DispatchQueue.global(qos: .userInitiated).async {
-             let allPlants = JSONLoader.loadPlants(from: "plantData")
+//             let allPlants = JSONLoader.loadPlants(from: "plantData")
+            let allPlants = PlantCatalogueCache.shared.plants
              
              // Run Engine with current preferences
              // Note: If userAnswers are not yet in HomeDataStore, this might run on defaults.

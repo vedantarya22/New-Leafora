@@ -30,10 +30,10 @@ class DataStore {
     
     
     var plantLightOptions: [PlantLightOption] = [
-        PlantLightOption(image: "sun.max.fill", light: "Full Sun"),
-        PlantLightOption(image: "cloud.sun.fill", light: "Part sun,part shade"),
-        PlantLightOption(image: "cloud.fill", light: "Shade"),
-        PlantLightOption(image: "moon.fill", light: "Dark")
+        PlantLightOption(image: "sun.max.fill",   light: "full_sunlight",          displayName: "Full Sun"),
+        PlantLightOption(image: "cloud.sun.fill", light: "partial_sunlight",       displayName: "Part sun, part shade"),
+        PlantLightOption(image: "cloud.fill",     light: "medium_light",           displayName: "Shade"),
+        PlantLightOption(image: "moon.fill",      light: "low_light",              displayName: "Dark")
     ]
     func getPlantLightOptions() -> [PlantLightOption] {
         return plantLightOptions

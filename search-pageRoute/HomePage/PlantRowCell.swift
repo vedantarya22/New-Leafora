@@ -1,4 +1,5 @@
 import UIKit
+import SDWebImage
 
 class PlantRowCell: UICollectionViewCell {
     
@@ -79,45 +80,38 @@ class PlantRowCell: UICollectionViewCell {
         }
     }
 
-    func configure(with userPlant: UserPlant,
-                   task: String,
-                   allPlants: [Plant]) {
+    func configure(with userPlant: UserPlant, task: String, allPlants: [Plant]) {
 
-        // ✅ Find matching plant using plantId
-        if let plant = allPlants.first(where: { $0.plantId == userPlant.plantId }) {
+        // ✅ Match by mongoId — userPlant.plantId stores MongoDB ObjectId
+        if let plant = allPlants.first(where: { $0.mongoId == userPlant.plantId }) {
 
-            // ✅ Plant Name from JSON
             nameLabel.text = plant.plantName
 
-            // ✅ Image Priority:
-            // 1. User saved image
-            // 2. JSON fallback
-            if let data = userPlant.imageData,
-               let savedImage = UIImage(data: data) {
+            // ✅ Image priority: local data → Cloudinary URL → catalogue URL → placeholder
+            if let data = userPlant.imageData, let savedImage = UIImage(data: data) {
                 plantImageView.image = savedImage
-
+            } else if let urlString = userPlant.imageUrl, let url = URL(string: urlString) {
+                // ✅ Cloudinary URL from MongoDB
+                plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
+            } else if let url = URL(string: plant.imageName) {
+                // ✅ Fallback to catalogue image
+                plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
             } else {
-                plantImageView.image =
-                    UIImage(named: plant.imageName)
-                    ?? UIImage(systemName: "leaf.fill")
+                plantImageView.image = UIImage(systemName: "leaf.fill")
             }
-            
-            // ✅ Task-specific detail label using method field
-           detailLabel.text = getTaskDetail(for: task, plant: plant)
+
+            detailLabel.text = getTaskDetail(for: task, plant: plant)
 
         } else {
-
             nameLabel.text = "Unknown Plant"
-                  plantImageView.image = UIImage(systemName: "leaf.fill")
-                     detailLabel.text = "Unknown"
+            plantImageView.image = UIImage(systemName: "leaf.fill")
+            detailLabel.text = "Unknown"
         }
 
-       
-
-        // ✅ Reset swipe UI (important!)
         mainContainerView.transform = .identity
         mainContainerView.alpha = 1.0
     }
+    
     
     private func getTaskDetail(for task: String, plant: Plant) -> String {
           switch task.lowercased() {

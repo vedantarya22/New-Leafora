@@ -6,13 +6,14 @@ struct PlantData: Codable {
 }
 
 struct Plant: Codable {
+    let mongoId: String?
     let plantId: String
     let plantName: String
     let scientificName: String
     let description: String
     let category: [String]
     let tags: [String]
-    let imageName: String
+    let imageName: String //full cloudinary url
     let careCycle: CareCycle
     let soilType: SoilType
     let benefits: [String]
@@ -23,6 +24,7 @@ struct Plant: Codable {
     let commonIssues: [String]
     
     enum CodingKeys: String, CodingKey {
+        case mongoId = "_id"
         case plantId = "plant_id"
         case plantName = "plant_name"
         case scientificName = "scientific_name"
@@ -50,7 +52,6 @@ enum LightRequirement: String, Codable {
     case mediumLight = "medium_light"
     case brightIndirect = "bright_indirect"
     case partialSunlight = "partial_sunlight"
-    case fullToPartialSunlight = "full_to_partial_sunlight"
     case fullSunlight = "full_sunlight"
     
     var displayName: String {
@@ -61,7 +62,6 @@ enum LightRequirement: String, Codable {
         case .mediumLight: return "Medium light"
         case .brightIndirect: return "Bright indirect"
         case .partialSunlight: return "Partial sunlight"
-        case .fullToPartialSunlight: return "Full to partial sunlight"
         case .fullSunlight: return "Full sunlight"
         }
     }

@@ -13,6 +13,9 @@ class SiteStore: ObservableObject {
     
     
     static let shared = SiteStore()
+    func setSites(_ newSites: [MyGardenSite]) {
+        sites = newSites
+    }
     
     @Published var sites: [MyGardenSite] = [] {
         didSet { saveSites() }

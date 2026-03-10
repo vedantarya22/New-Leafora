@@ -106,7 +106,7 @@
                         <outlet property="nextButton" destination="0Aa-5L-reo" id="ZfQ-7O-Fm7" />
                         <outlet property="plusBtn" destination="EDo-ak-AaD" id="Ej1-7r-1Cn" />
                         <outlet property="qtyLabel" destination="Fb7-f9-W6H" id="tk6-gV-lhg" />
-                        <segue destination="hNG-yV-ki5" kind="show" identifier="toNextScreen" id="srA-9r-3i2" />
+                        <segue destination="0dX-bw-vxm" kind="show" identifier="toNextScreen" id="srA-9r-3i2" />
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VFk-mq-fFr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder" />
