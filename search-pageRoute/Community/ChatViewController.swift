@@ -39,13 +39,19 @@ class ChatViewController: MessagesViewController {
 
 
     var messages: [Message] = []
+    
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
         navigationController?.navigationBar.tintColor = .brandGreen
+        
+        // Make the messages collection view transparent so the gradient shows through
+        messagesCollectionView.backgroundColor = .clear
 
         if let user = user {
             print("✅ Step 4: Chat Screen received user: \(user.name)")
@@ -56,6 +62,11 @@ class ChatViewController: MessagesViewController {
         setupSeedMessages()
         setupMessageKit()
         setupNavigationBar()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
     }
 
     // MARK: - Setup
@@ -99,6 +110,15 @@ private func setupMessageKit() {
         messageInputBar.sendButton.setTitleColor(.brandGreen, for: .normal)
         messageInputBar.sendButton.setTitleColor(.systemGray3, for: .disabled)
         messageInputBar.sendButton.setImage(nil, for: .normal)   // no icon, title only
+        
+        // Input bar appearance
+        messageInputBar.backgroundView.backgroundColor = .clear
+        messageInputBar.contentView.backgroundColor = .systemBackground
+        messageInputBar.contentView.layer.cornerRadius = 20
+        messageInputBar.contentView.layer.masksToBounds = true
+        
+        // Add some padding so the input bar doesn't touch the very edges if possible
+        messageInputBar.padding = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
 
         // Remove the mic/attachment buttons from both sides
         messageInputBar.setLeftStackViewWidthConstant(to: 0, animated: false)
@@ -132,8 +152,8 @@ private func setupMessageKit() {
 
         let imageName = UserSession.shared.profileImageString(for: user.id)
         if imageName.isEmpty {
-            avatarImageView.image = UIImage(systemName: "person.circle.fill")
-            avatarImageView.tintColor = .systemGray3
+            let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
+            avatarImageView.image = UIImage(systemName: "person.circle.fill", withConfiguration: config)
             avatarImageView.contentMode = .scaleAspectFit
         } else {
             avatarImageView.configureImage(with: imageName)
@@ -175,12 +195,11 @@ extension ChatViewController: MessagesDisplayDelegate {
 
     func backgroundColor(for message: any MessageType, at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? UIColor.brandGreen : UIColor.systemGray5
+        return isFromCurrentSender(message: message) ? UIColor.brandGreen : UIColor.white
     }
-
-    func textColor(for message: any MessageType, at indexPath: IndexPath,
-                   in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? .white : .label
+    
+    func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? .white : .darkText
     }
 
     func configureAvatarView(_ avatarView: AvatarView, for message: any MessageType,
@@ -192,8 +211,8 @@ extension ChatViewController: MessagesDisplayDelegate {
             avatarView.backgroundColor = .clear  // removes the grey ring
 
             let imageName = user.flatMap { UserSession.shared.profileImageString(for: $0.id) } ?? ""
-            let placeholder = UIImage(systemName: "person.circle.fill")?
-                .withTintColor(.systemGray3, renderingMode: .alwaysOriginal)
+            let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
+            let placeholder = UIImage(systemName: "person.circle.fill", withConfiguration: config)
 
             if imageName.isEmpty {
                 avatarView.set(avatar: Avatar(image: placeholder))

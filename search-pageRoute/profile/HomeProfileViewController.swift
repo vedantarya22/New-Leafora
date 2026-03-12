@@ -11,6 +11,7 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
    
     private var user: User?
     private let sections = HomeDataStore.shared.profileSections
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -21,6 +22,11 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: self,
@@ -29,9 +35,15 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
         
         setupUI()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
 
     private func setupUI() {
-        view.backgroundColor = .systemGroupedBackground
+        
+        viewForIcon?.backgroundColor = .clear
         
         guard let user = user else { return }
         
@@ -41,6 +53,8 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
         profileImage?.configureImage(with: user.profileImageString)
         profileImage?.layer.cornerRadius = (profileImage?.frame.height ?? 0) / 2
         profileImage?.clipsToBounds = true
+        
+        tableView.backgroundColor = .clear
     }
     
     @objc private func closeButtonTapped() {
