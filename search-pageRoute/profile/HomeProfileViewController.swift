@@ -67,8 +67,13 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
         
         cell.textLabel?.text = item.title
         cell.textLabel?.font = .systemFont(ofSize: 16)
-        cell.textLabel?.textColor = .label
         cell.textLabel?.textAlignment = .left
+        
+        if item.title == "Sign Out" {
+            cell.textLabel?.textColor = .systemRed
+        } else {
+            cell.textLabel?.textColor = .label
+        }
         
         cell.accessoryType = item.showsChevron ? .disclosureIndicator : .none
         
@@ -98,7 +103,31 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
                 navigationController?.pushViewController(vc, animated: true)
             }
         }
-
+        
+        if item.title == "Sign Out" {
+            // 1. Wipe the keychain tokens securely
+            KeychainManager.shared.clearAll()
+            
+            // 2. Dismiss the Profile modal then transition window to Login
+            self.dismiss(animated: true) {
+                guard let window = UIApplication.shared.connectedScenes
+                        .compactMap({ $0 as? UIWindowScene })
+                        .first?.windows.first else { return }
+                
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let loginVC = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+                let navVC = UINavigationController(rootViewController: loginVC)
+                navVC.isNavigationBarHidden = true
+                window.rootViewController = navVC
+                
+                // Add a cross-fade transition
+                UIView.transition(with: window,
+                                  duration: 0.3,
+                                  options: .transitionCrossDissolve,
+                                  animations: nil,
+                                  completion: nil)
+            }
+        }
     }
     
 }

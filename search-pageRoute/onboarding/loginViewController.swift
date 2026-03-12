@@ -30,6 +30,11 @@ class loginViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
         setupUI()
         setupErrorLabel()
+        
+        // Auto-fill cached email if available
+        if let cachedEmail = UserDefaults.standard.string(forKey: "cachedUserEmail") {
+            usernameTextField.text = cachedEmail
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -44,6 +49,24 @@ class loginViewController: UIViewController {
         usernameTextField.keyboardType = .emailAddress
         usernameTextField.autocapitalizationType = .none
         usernameTextField.autocorrectionType = .no
+        
+        // Native iOS Styling
+        styleTextField(usernameTextField)
+        styleTextField(passwordTextField)
+        loginButton.layer.cornerRadius = 10
+        loginButton.clipsToBounds = true
+        styleButtons()
+        
+        // Attributed Sign Up Label
+        let fullText = "Don't have an account? Sign Up"
+        let attributedString = NSMutableAttributedString(string: fullText)
+        let signUpRange = (fullText as NSString).range(of: "Sign Up")
+        
+        attributedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: NSRange(location: 0, length: fullText.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0), range: signUpRange)
+        attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: signUpLabel.font.pointSize), range: signUpRange)
+        
+        signUpLabel.attributedText = attributedString
     }
 
     private func setupErrorLabel() {
@@ -74,6 +97,8 @@ class loginViewController: UIViewController {
         NetworkManager.shared.login(email: email, password: password) { [weak self] success, message in
             self?.loginButton.isEnabled = true
             if success {
+                // Save successful login email for convenience
+                UserDefaults.standard.set(email, forKey: "cachedUserEmail")
                 self?.navigateToMainApp()
             } else {
                 self?.showError(message ?? "Login failed")
@@ -82,10 +107,58 @@ class loginViewController: UIViewController {
     }
 
     @objc private func handleSignUpTap() {
-        // ✅ Navigate to signup screen
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)  // ✅ replace with your signup storyboard name
+        // ✅ Navigate to signup screen using the new UINavigationController stack
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let signupVC = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as? SignUpViewController {
             navigationController?.pushViewController(signupVC, animated: true)
+        }
+    }
+
+    // MARK: - UI Helpers
+    private func styleTextField(_ textField: UITextField) {
+        textField.backgroundColor = .white
+        textField.layer.cornerRadius = 10
+        textField.layer.masksToBounds = true
+        
+        // Subtle native border
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray5.cgColor
+        
+        // Horizontal padding
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
+    }
+    
+    private func styleButtons() {
+        let botanicalGreen = UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0)
+        
+        // Login Button
+        loginButton.tintColor = botanicalGreen
+        if #available(iOS 15.0, *) {
+            loginButton.configuration?.baseBackgroundColor = botanicalGreen
+        } else {
+            loginButton.backgroundColor = botanicalGreen
+        }
+        
+        // Google Button
+        googleButton.tintColor = .black
+        if #available(iOS 15.0, *) {
+            googleButton.configuration?.baseBackgroundColor = .white
+            googleButton.configuration?.baseForegroundColor = .black
+        } else {
+            googleButton.backgroundColor = .white
+            googleButton.setTitleColor(.black, for: .normal)
+        }
+        
+        // Apple button
+        appleButton.tintColor = .white
+        if #available(iOS 15.0, *) {
+            appleButton.configuration?.baseBackgroundColor = .black
+            appleButton.configuration?.baseForegroundColor = .white
+        } else {
+            appleButton.backgroundColor = .black
+            appleButton.setTitleColor(.white, for: .normal)
         }
     }
 

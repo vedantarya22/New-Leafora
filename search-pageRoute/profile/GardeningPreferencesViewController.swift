@@ -42,14 +42,20 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
     private func setupUI() {
         view.backgroundColor = .systemGroupedBackground
         
-        guard let user = user else { return }
-        
-        let imageName = user.profileImageString
-        profileImage.image = UIImage(named: imageName) ?? UIImage(systemName: imageName)
+        // ✅ Use UserSession as single source of truth for profile image
+        if let user = user {
+            let imageName = UserSession.shared.profileImageString(for: user.id)
+            profileImage.configureImage(with: imageName)
+        } else {
+            // Fallback placeholder
+            profileImage.image = UIImage(systemName: "person.circle.fill")
+            profileImage.tintColor = .systemGray
+        }
         
         // Ensure image is circular
         profileImage.layer.cornerRadius = profileImage.frame.height / 2
         profileImage.clipsToBounds = true
+        profileImage.contentMode = .scaleAspectFill
         
         tableView.delegate = self
         tableView.dataSource = self

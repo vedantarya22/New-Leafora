@@ -9,6 +9,7 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
     var filteredUsers: [User] = []
     
     let searchController = UISearchController(searchResultsController: nil)
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
@@ -22,6 +23,9 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
 
         //allows the view to extend under the nav bar, preventing the "jump" or black gap
         self.extendedLayoutIncludesOpaqueBars = true
@@ -30,6 +34,11 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         setupSearchController()
         
         loadData()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,6 +91,7 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         
         let nib = UINib(nibName: "PeopleTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "PeopleTableViewCell")
+        tableView.backgroundColor = .clear
     }
     
     //Search Logic
@@ -117,6 +127,8 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         let imageName = UserSession.shared.profileImageString(for: user.id)
         cell.avatarImageView.configureImage(with: imageName)
         cell.avatarImageView.tintColor = .label
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
 
         
         cell.timeLabel.isHidden = true

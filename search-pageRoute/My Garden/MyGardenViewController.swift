@@ -208,16 +208,17 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
                 guard let mongoId = site.mongoId else { return }
 
-                // ✅ Delete from MongoDB
+                // ✅ 1. Remove locally instantly
+                PlantStore.shared.removeAllPlants(for: site)
+                self?.siteStore.sites.removeAll { $0.id == site.id }
+                DispatchQueue.main.async {
+                    self?.myGardenCollectionView.reloadData()
+                    self?.updateEmptyState()
+                }
+                
+                // ✅ 2. Delete from MongoDB in background
                 NetworkManager.shared.deleteSite(siteId: mongoId) { success in
-                    guard success else { print("❌ Failed to delete site"); return }
-                    // ✅ Then remove locally
-                    PlantStore.shared.removeAllPlants(for: site)
-                    self?.siteStore.sites.removeAll { $0.id == site.id }
-                    DispatchQueue.main.async {
-                        self?.myGardenCollectionView.reloadData()
-                        self?.updateEmptyState()
-                    }
+                    if !success { print("❌ Failed to delete site on backend") }
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -232,16 +233,17 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             alert.addAction(UIAlertAction(title: "Delete Anyway", style: .destructive) { [weak self] _ in
                 guard let mongoId = site.mongoId else { return }
 
-                // ✅ Delete site + all its plants from MongoDB
+                // ✅ 1. Remove locally instantly
+                PlantStore.shared.removeAllPlants(for: site)
+                self?.siteStore.sites.removeAll { $0.id == site.id }
+                DispatchQueue.main.async {
+                    self?.myGardenCollectionView.reloadData()
+                    self?.updateEmptyState()
+                }
+
+                // ✅ 2. Delete site + all its plants from MongoDB in background
                 NetworkManager.shared.removeSiteWithPlants(siteId: mongoId) { success in
-                    guard success else { print("❌ Failed to delete site with plants"); return }
-                    // ✅ Then remove locally
-                    PlantStore.shared.removeAllPlants(for: site)
-                    self?.siteStore.sites.removeAll { $0.id == site.id }
-                    DispatchQueue.main.async {
-                        self?.myGardenCollectionView.reloadData()
-                        self?.updateEmptyState()
-                    }
+                    if !success { print("❌ Failed to delete site and plants on backend") }
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

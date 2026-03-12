@@ -10,10 +10,60 @@ class PlantListViewController: UIViewController,
     var filteredPlants: [UserPlant] = []
     var allPlants: [Plant] = []
 
+    // App green accent
+    private let appGreen = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
+
+    // MARK: - Empty State View
+    private lazy var emptyStateView: UIView = {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.isHidden = true
+
+        let titleLabel = UILabel()
+        titleLabel.text = "Hurray!"
+        titleLabel.font = .systemFont(ofSize: 22)
+        titleLabel.textColor = appGreen
+        titleLabel.textAlignment = .center
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let subtitleLabel = UILabel()
+        subtitleLabel.text = "No care needed in this section."
+        subtitleLabel.font = .systemFont(ofSize: 16)
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(titleLabel)
+        container.addSubview(subtitleLabel)
+
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor, constant: -10),
+
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
+            subtitleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+        ])
+
+        return container
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = taskType
+
+        // ✅ Apply app green tint to navigation bar
+        navigationController?.navigationBar.tintColor = appGreen
+
+        // ✅ "Mark All as Done" bar button
+        let markAllButton = UIBarButtonItem(
+            title: "Mark as done",
+            style: .plain,
+            target: self,
+            action: #selector(markAllAsDoneTapped)
+        )
+        markAllButton.tintColor = appGreen
+        navigationItem.rightBarButtonItem = markAllButton
 
         // Register Cell XIB
         let nib = UINib(nibName: "PlantRowCell", bundle: nil)
@@ -22,17 +72,23 @@ class PlantListViewController: UIViewController,
         collectionView.dataSource = self
         collectionView.delegate = self
 
-
-        // ✅ Load JSON once - reuse everywhere
-//        allPlants = JSONLoader.loadPlants(from: "plantData")
         // ✅ load from cache
         allPlants = PlantCatalogueCache.shared.plants
         
         if allPlants.isEmpty {
-                print("⚠️ WARNING: No plants loaded from JSON! Check if 'plantData.json' exists in bundle")
+                print("⚠️ WARNING: No plants loaded! Check catalogue cache")
                } else {
-                   print("✅ Loaded \(allPlants.count) plant types from JSON")
+                   print("✅ Loaded \(allPlants.count) plant types from catalogue")
            }
+
+        // ✅ Add empty state view
+        view.addSubview(emptyStateView)
+        NSLayoutConstraint.activate([
+            emptyStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -169,6 +225,45 @@ class PlantListViewController: UIViewController,
             }
         }
     }
+
+    // MARK: - Mark All as Done
+
+    @objc private func markAllAsDoneTapped() {
+        guard !filteredPlants.isEmpty else { return }
+
+        let alert = UIAlertController(
+            title: "Mark All as Done",
+            message: "Mark all \(filteredPlants.count) \(taskType.lowercased()) tasks as completed?",
+            preferredStyle: .actionSheet
+        )
+
+        alert.addAction(UIAlertAction(title: "Mark All as Done", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+
+            // ✅ Mark each plant's task as done
+            let plantsToMark = self.filteredPlants
+            for plant in plantsToMark {
+                self.markTaskDone(for: plant)
+            }
+
+            // ✅ Clear the list and animate
+            let indexPaths = (0..<self.filteredPlants.count).map { IndexPath(item: $0, section: 0) }
+            self.filteredPlants.removeAll()
+
+            self.collectionView.performBatchUpdates({
+                self.collectionView.deleteItems(at: indexPaths)
+            }) { _ in
+                // Pop back after a brief moment so the user sees the empty state
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(alert, animated: true)
+    }
     
     
 //    private func determineTaskToShow(for plant: UserPlant) -> String {
@@ -258,6 +353,12 @@ class PlantListViewController: UIViewController,
 
            print("✅ Filtered \(filteredPlants.count) plants needing \(taskType)")
            collectionView.reloadData()
+
+           // ✅ Show/hide empty state
+           let isEmpty = filteredPlants.isEmpty
+           emptyStateView.isHidden = !isEmpty
+           collectionView.isHidden = isEmpty
+           navigationItem.rightBarButtonItem?.isEnabled = !isEmpty
        }
     
  

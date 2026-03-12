@@ -5,6 +5,8 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
+    
 
     // MARK: - Search & Data
     let searchController = UISearchController(searchResultsController: nil)
@@ -25,6 +27,10 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
+        
         // 1. Setup TableView
         setupTableView()
         
@@ -33,6 +39,11 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         // 3. Load Data
         loadData()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -66,6 +77,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         tableView.keyboardDismissMode = .onDrag
         tableView.tableFooterView = UIView()
+        tableView.backgroundColor = .clear
     }
     
     func setupSearchController() {
@@ -110,6 +122,8 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let imageName = UserSession.shared.profileImageString(for: user.id)
         cell.avatarImageView.configureImage(with: imageName)
         cell.avatarImageView.tintColor = .label
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
 
         
         

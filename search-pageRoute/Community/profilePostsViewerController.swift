@@ -70,18 +70,17 @@ class profilePostsViewerController: UIViewController, UICollectionViewDelegate {
     
     // MARK: - Layout Generator
     private func createLayout() -> UICollectionViewLayout {
-        // Item
-        // .estimated(600) allows the XIB to determine its own height based on content
+        // Item — estimated should be BELOW actual content height so the cell grows, never pads
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(600)
+            heightDimension: .estimated(350)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // Group
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(600)
+            heightDimension: .estimated(350)
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
@@ -90,6 +89,14 @@ class profilePostsViewerController: UIViewController, UICollectionViewDelegate {
         section.interGroupSpacing = 0 // Spacing between posts
         
         return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    // MARK: - Rotation Support
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
     }
     
     // MARK: - Navigation

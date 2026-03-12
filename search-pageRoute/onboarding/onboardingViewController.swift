@@ -101,7 +101,10 @@ class onboardingViewController: UIViewController {
                  .first?.windows.first else { return }
 
              let storyboard = UIStoryboard(name: "Main", bundle: nil)
-             window.rootViewController = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+             let loginVC = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+             let navVC = UINavigationController(rootViewController: loginVC)
+             navVC.isNavigationBarHidden = true
+             window.rootViewController = navVC
              UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
         }
     }

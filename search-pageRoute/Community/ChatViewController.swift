@@ -44,6 +44,9 @@ class ChatViewController: MessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // ✅ App theme
+        navigationController?.navigationBar.tintColor = .brandGreen
+
         if let user = user {
             print("✅ Step 4: Chat Screen received user: \(user.name)")
         } else {
@@ -93,7 +96,7 @@ private func setupMessageKit() {
 
         // Send button — only shows when text is present
         messageInputBar.sendButton.setTitle("Send", for: .normal)
-        messageInputBar.sendButton.setTitleColor(.systemGreen, for: .normal)
+        messageInputBar.sendButton.setTitleColor(.brandGreen, for: .normal)
         messageInputBar.sendButton.setTitleColor(.systemGray3, for: .disabled)
         messageInputBar.sendButton.setImage(nil, for: .normal)   // no icon, title only
 
@@ -172,7 +175,7 @@ extension ChatViewController: MessagesDisplayDelegate {
 
     func backgroundColor(for message: any MessageType, at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        return isFromCurrentSender(message: message) ? UIColor.systemGreen : UIColor.systemGray5
+        return isFromCurrentSender(message: message) ? UIColor.brandGreen : UIColor.systemGray5
     }
 
     func textColor(for message: any MessageType, at indexPath: IndexPath,
