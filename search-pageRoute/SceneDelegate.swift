@@ -28,7 +28,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             print("⚠️ No token, showing login")
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            win.rootViewController = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+            let loginVC = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+            let navVC = UINavigationController(rootViewController: loginVC)
+            navVC.isNavigationBarHidden = true
+            win.rootViewController = navVC
         }
 
         win.makeKeyAndVisible()

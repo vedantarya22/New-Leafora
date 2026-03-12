@@ -351,8 +351,8 @@ class PlantIdentificationResultsViewController: UIViewController {
             return
         }
         
-        // Load all plants from JSON
-        let allPlants = JSONLoader.loadPlants(from: "plantData")
+        // Load all plants from Cloud Catalogue
+        let allPlants = PlantCatalogueCache.shared.plants
         
         // Try to find a matching plant by comparing scientific name (case-insensitive)
         let matchingPlant = allPlants.first { plant in
@@ -361,12 +361,12 @@ class PlantIdentificationResultsViewController: UIViewController {
         }
         
         if let foundPlant = matchingPlant {
-            // Plant exists in JSON - navigate to PlantDetailViewController
-            print("✅ Plant found in JSON: \(foundPlant.plantName)")
+            // Plant exists in Catalogue - navigate to PlantDetailViewController
+            print("✅ Plant found in Catalogue: \(foundPlant.plantName)")
             navigateToPlantDetail(plantId: foundPlant.plantId)
         } else {
-            // Plant not found in JSON
-            print("❌ Plant not found in JSON: \(topSuggestion.plantName)")
+            // Plant not found in Catalogue
+            print("❌ Plant not found in Catalogue: \(topSuggestion.plantName)")
             showPlantNotFoundAlert()
         }
     }

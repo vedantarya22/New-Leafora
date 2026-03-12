@@ -87,6 +87,13 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
         return UICollectionViewCompositionalLayout(section: section)
     }
     
+    // MARK: - Rotation Support
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.postsCollectionView.collectionViewLayout.invalidateLayout()
+        })
+    }
     // MARK: - Data Loading
     private func loadData() {
         PostRepository.shared.fetchAllPosts { [weak self] downloadedPosts in

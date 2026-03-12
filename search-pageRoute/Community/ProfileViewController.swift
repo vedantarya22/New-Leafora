@@ -28,6 +28,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     var user: User?
     var isCurrentUser: Bool = false
     private var userPosts: [Post] = []
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
     
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
@@ -38,6 +39,11 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
+        
         setupUI()
         checkIsCurrentUser()
         updateUI()
@@ -65,16 +71,17 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     
     func setupUI() {
         profileImageView.clipsToBounds = true
-        profileImageView.layer.borderWidth = 3
-        profileImageView.layer.borderColor = UIColor.white.cgColor
+        profileImageView.contentMode = .scaleAspectFill
         
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.backgroundColor = .clear
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+        gradientLayer.frame = view.bounds
     }
     
     func checkIsCurrentUser() {
@@ -144,7 +151,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
             if postsSegmentedControl.numberOfSegments > 1 {
                 postsSegmentedControl.removeSegment(at: 1, animated: false)
             }
-
+            postsSegmentedControl.isUserInteractionEnabled = false
             
         }
         
@@ -284,10 +291,12 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
             layout collectionViewLayout: UICollectionViewLayout,
             sizeForItemAt indexPath: IndexPath
         ) -> CGSize {
-            let width = (collectionView.frame.width - 2) / 3
+            // 3 columns, 1px gap between each = 2 gaps total
+            let spacing: CGFloat = 1
+            let totalSpacing = spacing * 2
+            let width = (collectionView.frame.width - totalSpacing) / 3
             return CGSize(width: width, height: width)
         }
-        
         func collectionView(
             _ collectionView: UICollectionView,
             layout collectionViewLayout: UICollectionViewLayout,
