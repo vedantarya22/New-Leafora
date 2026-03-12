@@ -131,9 +131,9 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         //Fill Text
         nameLabel.text = user.name
         handleLabel.text = "@\(user.username)"
-        // Calculate plant count
+        // Calculate plant count for current user from local garden data
         let plantCount = isCurrentUser ? PlantStore.shared.totalPlants : 0
-        statsLabel.text = "\(plantCount) Plants in Garden"
+        statsLabel.text = "\(plantCount) \(plantCount == 1 ? "Plant" : "Plants") in Garden"
         let imageName = UserSession.shared.profileImageString(for: user.id)
         profileImageView.configureImage(with: imageName)
         
@@ -143,7 +143,6 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         //Toggle UI based on Identity
         if isCurrentUser {
             //otherUserButtonsStack.isHidden = true
-            //updateCurrentUserStats()
             messageButton.isHidden = true
             //self?.collectionView.reloadData()
             
@@ -162,19 +161,9 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         setupMenu()
     }
     
-//    private func updateCurrentUserStats() {
-//        let allUserPlants = PlantStore.shared.plants
-//        
-//        let totalPlants = allUserPlants.reduce(0) { $0 + $1.quantity }
-//        
-//        if( totalPlants == 1){
-//            statsLabel.text = "\(totalPlants) Plant"
-//        } else{
-//            statsLabel.text = "\(totalPlants) Plants"
-//        }
-//    }
     private func showOtherUserStats() {
-        statsLabel.text = "12 Plants • 3 Sites"
+        // For other users, show 0 for now until a backend route is added
+        statsLabel.text = "0 Plants in Garden"
     }
     
     
