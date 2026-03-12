@@ -131,7 +131,9 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         //Fill Text
         nameLabel.text = user.name
         handleLabel.text = "@\(user.username)"
-        //statsLabel.text = user.searchSubtitle
+        // Calculate plant count
+        let plantCount = isCurrentUser ? PlantStore.shared.totalPlants : 0
+        statsLabel.text = "\(plantCount) Plants in Garden"
         let imageName = UserSession.shared.profileImageString(for: user.id)
         profileImageView.configureImage(with: imageName)
         

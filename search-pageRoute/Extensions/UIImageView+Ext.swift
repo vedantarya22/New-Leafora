@@ -12,10 +12,12 @@ extension UIImageView {
     
     // Call this function instead of setting .image directly
     func configureImage(with name: String) {
+        // Hierarchical configuration for default profile picture: Grey person on White circle
+        let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
+        
         // 0. Empty string → neutral grey placeholder (no photo set yet)
         guard !name.isEmpty else {
-            self.image = UIImage(systemName: "person.circle.fill")
-            self.tintColor = .systemGray3
+            self.image = UIImage(systemName: "person.circle.fill", withConfiguration: config)
             self.contentMode = .scaleAspectFit
             return
         }
@@ -46,7 +48,6 @@ extension UIImageView {
         }
 
         // 4. Fallback
-        self.image = UIImage(systemName: "person.circle.fill")
-        self.tintColor = .systemGray3
+        self.image = UIImage(systemName: "person.circle.fill", withConfiguration: config)
     }
 }

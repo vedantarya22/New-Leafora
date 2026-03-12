@@ -13,6 +13,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
     // Transactional state
     private var tempPreferences: GardeningPreferences!
     private var originalPreferences: GardeningPreferences!
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -31,6 +32,10 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         super.viewDidLoad()
         title = "Gardening Preferences"
         
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
+        
         // Initialize temp state from DataStore
         originalPreferences = HomeDataStore.shared.gardeningPreferences
         tempPreferences = originalPreferences
@@ -38,9 +43,15 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         setupUI()
         setupNavigationBar()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
 
     private func setupUI() {
-        view.backgroundColor = .systemGroupedBackground
+        
+        viewForIcon?.backgroundColor = .clear
         
         // ✅ Use UserSession as single source of truth for profile image
         if let user = user {
@@ -48,8 +59,8 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
             profileImage.configureImage(with: imageName)
         } else {
             // Fallback placeholder
-            profileImage.image = UIImage(systemName: "person.circle.fill")
-            profileImage.tintColor = .systemGray
+            let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
+            profileImage.image = UIImage(systemName: "person.circle.fill", withConfiguration: config)
         }
         
         // Ensure image is circular
@@ -59,6 +70,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.backgroundColor = .clear
     }
     
     private func setupNavigationBar() {

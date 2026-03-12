@@ -14,9 +14,15 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
     
     var currentUser: User?
     var onPostSuccess: (() -> Void)?
+    
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
         
         setupImagePlaceholder()
         setupTapGesture()
@@ -30,9 +36,14 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
         }
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
     func setupImagePlaceholder() {
         selectedImageView.layer.cornerRadius = 16
-        selectedImageView.backgroundColor = .systemGray6
+        selectedImageView.backgroundColor = .white
 
         
         let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
@@ -46,6 +57,7 @@ class NewPostViewController: UIViewController, PHPickerViewControllerDelegate, U
         captionTextView.text = placeholderText
         captionTextView.textColor = .lightGray
         captionTextView.font = UIFont.systemFont(ofSize: 16)
+        captionTextView.backgroundColor = .clear
         
         // Remove the default padding so it aligns with the image
         captionTextView.textContainerInset = UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)

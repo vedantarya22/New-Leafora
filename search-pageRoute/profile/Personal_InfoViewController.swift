@@ -12,6 +12,7 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
     private var isEditingProfile = false
     private var imageTapGesture: UITapGestureRecognizer?
     private var cameraBadge: UIImageView?
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
     
     // Dynamic sections based on draftUser
     private var sections: [PersonalInfoSection] {
@@ -31,7 +32,10 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
         super.viewDidLoad()
 
         title = "Personal Info"
-        view.backgroundColor = .systemGroupedBackground
+        
+        // ✅ App theme
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        navigationController?.navigationBar.tintColor = .brandGreen
         
         // Initialize state
         if let currentUser = UserSession.shared.currentUser {
@@ -42,6 +46,11 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
         setupTableView()
         setupHeader()
         setupEditButton()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
     }
     
     private func setupEditButton() {
@@ -124,7 +133,8 @@ class Personal_InfoViewController: UIViewController, UITableViewDelegate, UITabl
         Table.dataSource = self
         Table.tableFooterView = UIView()
         Table.tableHeaderView = Cellview
-
+        Table.backgroundColor = .clear
+        Cellview.backgroundColor = .clear
     }
 
     private func setupHeader() {
