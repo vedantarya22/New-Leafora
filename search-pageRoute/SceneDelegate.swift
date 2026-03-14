@@ -50,6 +50,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 print("⚠️ Could not load current user profile")
             }
         }
+        
+        // Connect socket with logged-in user's ID
+
+        ChatSocketManager.shared.connect(userId: UserSession.shared.currentLoggedInUserID)
+
 
         // 2. Plant catalogue
         PlantCatalogueCache.shared.getPlants { plants in

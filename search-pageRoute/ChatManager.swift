@@ -1,17 +1,10 @@
 //
 //  ChatManager.swift
-//  search-pageRoute
-//
-//  Created by SDC-USER on 14/03/26.
-//
-
-//  Singleton that owns all CoreData chat operations.
-//  No network — messages live on-device only (WhatsApp model).
+//  Leafora
 //
 
 import Foundation
 import CoreData
-import UIKit
 
 final class ChatManager {
 
@@ -20,111 +13,107 @@ final class ChatManager {
 
     // MARK: - CoreData Stack
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "ChatModel") // must match .xcdatamodeld name
+        let container = NSPersistentContainer(name: "ChatModel")
         container.loadPersistentStores { _, error in
-            if let error = error {
-                fatalError("❌ CoreData failed to load: \(error)")
-            }
+            if let error = error { fatalError("❌ CoreData failed: \(error)") }
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
 
-    var context: NSManagedObjectContext {
-        persistentContainer.viewContext
-    }
+    var context: NSManagedObjectContext { persistentContainer.viewContext }
 
     // MARK: - Room ID
-    // Deterministic — same key regardless of who initiated the chat
+    // Deterministic — same key regardless of who initiated
     func roomId(with otherUserId: String) -> String {
-        let myId = UserSession.shared.currentLoggedInUserID
-        return [myId, otherUserId].sorted().joined(separator: "_")
+        [UserSession.shared.currentLoggedInUserID, otherUserId]
+            .sorted()
+            .joined(separator: "_")
     }
 
-    // MARK: - Send Message
+    // MARK: - Send  (saves locally + emits via socket)
     @discardableResult
     func sendMessage(to receiverId: String, text: String) -> MessageEntity {
-        let msg            = MessageEntity(context: context)
-        msg.id             = UUID().uuidString
-        msg.senderId       = UserSession.shared.currentLoggedInUserID
-        msg.receiverId     = receiverId
-        msg.text           = text
-        msg.timestamp      = Date()
-        msg.isRead         = false
-        msg.roomId         = roomId(with: receiverId)
+        let msgId = UUID().uuidString
+
+        // 1. Persist to CoreData immediately
+        let entity        = MessageEntity(context: context)
+        entity.id         = msgId
+        entity.senderId   = UserSession.shared.currentLoggedInUserID
+        entity.receiverId = receiverId
+        entity.text       = text
+        entity.timestamp  = Date()
+        entity.isRead     = false
+        entity.roomId     = roomId(with: receiverId)
         save()
-        return msg
+
+        // 2. Relay to receiver via Socket.io
+        ChatSocketManager.shared.sendMessage(to: receiverId, text: text, messageId: msgId)
+
+        return entity
     }
 
-    // MARK: - Fetch Messages for a Conversation
+    // MARK: - Save Incoming Socket Message
+    // Called by ChatSocketManager when a message arrives from another user
+    func saveIncoming(message: SocketMessage) {
+        // Dedup — don't save the same messageId twice
+        let check: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
+        check.predicate = NSPredicate(format: "id == %@", message.messageId)
+        if let found = try? context.fetch(check), !found.isEmpty { return }
+
+        let entity        = MessageEntity(context: context)
+        entity.id         = message.messageId
+        entity.senderId   = message.senderId
+        entity.receiverId = message.receiverId
+        entity.text       = message.text
+        entity.timestamp  = message.timestamp
+        entity.isRead     = false
+        // roomId uses senderId because from our perspective, sender is "other user"
+        entity.roomId     = roomId(with: message.senderId)
+        save()
+    }
+
+    // MARK: - Fetch Conversation
     func fetchMessages(with otherUserId: String) -> [MessageEntity] {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
-        request.predicate  = NSPredicate(format: "roomId == %@", roomId(with: otherUserId))
+        request.predicate       = NSPredicate(format: "roomId == %@", roomId(with: otherUserId))
         request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
         return (try? context.fetch(request)) ?? []
     }
 
-    // MARK: - Last Message (for People cell preview)
+    // MARK: - Last Message (People cell preview)
     func lastMessage(with otherUserId: String) -> MessageEntity? {
         let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
-        request.predicate      = NSPredicate(format: "roomId == %@", roomId(with: otherUserId))
+        request.predicate       = NSPredicate(format: "roomId == %@", roomId(with: otherUserId))
         request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
-        request.fetchLimit     = 1
+        request.fetchLimit      = 1
         return (try? context.fetch(request))?.first
-    }
-
-    // MARK: - Unread Count
-    func unreadCount(with otherUserId: String) -> Int {
-        let myId = UserSession.shared.currentLoggedInUserID
-        let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
-        request.predicate = NSPredicate(
-            format: "roomId == %@ AND receiverId == %@ AND isRead == false",
-            roomId(with: otherUserId), myId
-        )
-        return (try? context.count(for: request)) ?? 0
-    }
-
-    // MARK: - Mark All Read
-    func markAllRead(with otherUserId: String) {
-        let myId = UserSession.shared.currentLoggedInUserID
-        let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
-        request.predicate = NSPredicate(
-            format: "roomId == %@ AND receiverId == %@ AND isRead == false",
-            roomId(with: otherUserId), myId
-        )
-        let unread = (try? context.fetch(request)) ?? []
-        unread.forEach { $0.isRead = true }
-        save()
     }
 
     // MARK: - Delete Conversation
     func deleteConversation(with otherUserId: String) {
-        let request: NSFetchRequest<NSFetchRequestResult> = MessageEntity.fetchRequest()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "MessageEntity")
         request.predicate = NSPredicate(format: "roomId == %@", roomId(with: otherUserId))
-        let batch = NSBatchDeleteRequest(fetchRequest: request)
-        try? context.execute(batch)
+        try? context.execute(NSBatchDeleteRequest(fetchRequest: request))
         save()
     }
 
-    // MARK: - Formatted Timestamp
+    // MARK: - Formatted Timestamp (People cell)
     func formattedTime(for date: Date?) -> String {
         guard let date = date else { return "" }
         let cal = Calendar.current
         if cal.isDateInToday(date) {
-            let f = DateFormatter()
-            f.dateFormat = "h:mm a"
+            let f = DateFormatter(); f.dateFormat = "h:mm a"
             return f.string(from: date)
         } else if cal.isDateInYesterday(date) {
             return "Yesterday"
-        } else {
-            let f = DateFormatter()
-            f.dateFormat = "dd/MM/yy"
-            return f.string(from: date)
         }
+        let f = DateFormatter(); f.dateFormat = "dd/MM/yy"
+        return f.string(from: date)
     }
 
     // MARK: - Save
-    private func save() {
+    func save() {
         guard context.hasChanges else { return }
         try? context.save()
     }

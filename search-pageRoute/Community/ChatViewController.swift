@@ -1,3 +1,8 @@
+//
+//  ChatViewController.swift
+//  Leafora
+//
+
 import UIKit
 import MessageKit
 import InputBarAccessoryView
@@ -8,7 +13,7 @@ struct Sender: SenderType {
     var displayName: String
 }
 
-// MARK: - Message  (wraps CoreData entity for MessageKit display)
+// MARK: - Message
 struct Message: MessageType {
     var sender:    SenderType
     var messageId: String
@@ -19,20 +24,16 @@ struct Message: MessageType {
 // MARK: - ChatViewController
 class ChatViewController: MessagesViewController {
 
-    // MARK: - Properties
     // Must be set before pushing this VC
     var user: User!
 
-    private var messages: [Message] = []
+    private var messages:     [Message] = []
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     private var mySender: Sender {
-        Sender(
-            senderId:    UserSession.shared.currentLoggedInUserID,
-            displayName: UserSession.shared.currentUser?.name ?? "Me"
-        )
+        Sender(senderId:    UserSession.shared.currentLoggedInUserID,
+               displayName: UserSession.shared.currentUser?.name ?? "Me")
     }
-
     private var otherSender: Sender {
         Sender(senderId: user.id, displayName: user.name)
     }
@@ -47,6 +48,7 @@ class ChatViewController: MessagesViewController {
         setupMessageKit()
         setupNavigationBar()
         loadMessages()
+        subscribeToIncomingMessages()
     }
 
     override func viewDidLayoutSubviews() {
@@ -54,23 +56,50 @@ class ChatViewController: MessagesViewController {
         gradientLayer.frame = view.bounds
     }
 
-    // MARK: - Load Messages from CoreData
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Stop listening when we leave — prevents appending to wrong chat
+        ChatSocketManager.shared.onMessageReceived = nil
+    }
+
+    // MARK: - Load History from CoreData
     private func loadMessages() {
         let stored = ChatManager.shared.fetchMessages(with: user.id)
-
         messages = stored.map { entity in
             let isMe   = entity.senderId == UserSession.shared.currentLoggedInUserID
-            let sender = isMe ? mySender : otherSender
             return Message(
-                sender:    sender,
+                sender:    isMe ? mySender : otherSender,
                 messageId: entity.id ?? UUID().uuidString,
                 sentDate:  entity.timestamp ?? Date(),
                 kind:      .text(entity.text ?? "")
             )
         }
-
         messagesCollectionView.reloadData()
         scrollToBottom(animated: false)
+    }
+
+    // MARK: - Subscribe to Incoming Socket Messages
+    private func subscribeToIncomingMessages() {
+        ChatSocketManager.shared.onMessageReceived = { [weak self] socketMsg in
+            guard let self = self else { return }
+
+            // Only handle messages for THIS conversation
+            guard socketMsg.senderId == self.user.id else { return }
+
+            let msg = Message(
+                sender:    self.otherSender,
+                messageId: socketMsg.messageId,
+                sentDate:  socketMsg.timestamp,
+                kind:      .text(socketMsg.text)
+            )
+            self.messages.append(msg)
+            self.messagesCollectionView.reloadData()
+            self.scrollToBottom(animated: true)
+
+            // Notify People screen to refresh preview
+            NotificationCenter.default.post(name: .didSendMessage, object: nil,
+                                            userInfo: ["userId": socketMsg.senderId])
+        }
     }
 
     // MARK: - MessageKit Setup
@@ -96,7 +125,7 @@ class ChatViewController: MessagesViewController {
         messageInputBar.leftStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
 
-    // MARK: - Navigation Bar  (avatar + name centred)
+    // MARK: - Navigation Bar
     private func setupNavigationBar() {
         let avatarSize: CGFloat     = 36
         let containerWidth: CGFloat = 180
@@ -104,9 +133,8 @@ class ChatViewController: MessagesViewController {
         let spacing: CGFloat        = 3
         let totalHeight             = avatarSize + spacing + labelHeight
 
-        let container = UIView(frame: CGRect(x: 0, y: 0,
-                                             width: containerWidth, height: totalHeight))
-
+        let container  = UIView(frame: CGRect(x: 0, y: 0,
+                                              width: containerWidth, height: totalHeight))
         let avatarX    = (containerWidth - avatarSize) / 2
         let avatarView = UIImageView(frame: CGRect(x: avatarX, y: 0,
                                                    width: avatarSize, height: avatarSize))
@@ -184,11 +212,9 @@ extension ChatViewController: MessagesDisplayDelegate {
             let config      = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
             let placeholder = UIImage(systemName: "person.circle.fill", withConfiguration: config)
             let imgString   = user.profileImageString ?? ""
-            if imgString.isEmpty {
-                avatarView.set(avatar: Avatar(image: placeholder))
-            } else {
-                avatarView.set(avatar: Avatar(image: UIImage(named: imgString) ?? placeholder))
-            }
+            avatarView.set(avatar: Avatar(
+                image: imgString.isEmpty ? placeholder : UIImage(named: imgString) ?? placeholder
+            ))
         }
     }
 
@@ -216,10 +242,10 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        // 1. Persist to CoreData
+        // 1. Save to CoreData + emit via socket (ChatManager handles both)
         ChatManager.shared.sendMessage(to: user.id, text: trimmed)
 
-        // 2. Append to local array for instant display
+        // 2. Append locally for instant display (no need to wait for socket echo)
         messages.append(Message(
             sender:    mySender,
             messageId: UUID().uuidString,
@@ -233,7 +259,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         messagesCollectionView.reloadData()
         scrollToBottom(animated: true)
 
-        // 4. Tell PeopleViewController to refresh its preview row
+        // 4. Refresh People screen preview
         NotificationCenter.default.post(name: .didSendMessage, object: nil,
                                         userInfo: ["userId": user.id])
     }

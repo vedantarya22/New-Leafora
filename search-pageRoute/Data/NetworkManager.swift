@@ -107,6 +107,7 @@ extension NetworkManager {
     }
 
     func logout() {
+        ChatSocketManager.shared.disconnect()  
         KeychainManager.shared.clearAll()        // wipes token + userId from Keychain
         UserSession.shared.clearSession()        // clears cachedCurrentUser
         PlantStore.shared.setPlants([])
