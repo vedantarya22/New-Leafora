@@ -134,7 +134,7 @@ class ChatViewController: MessagesViewController {
         avatarImageView.layer.cornerRadius = avatarSize / 2
 
         // ✅ User.profileImageString is String (non-optional) — safe to call .isEmpty directly
-        if user.profileImageString.isEmpty {
+        if ((user.profileImageString?.isEmpty) != nil) {
             let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
             avatarImageView.image       = UIImage(systemName: "person.circle.fill",
                                                   withConfiguration: config)

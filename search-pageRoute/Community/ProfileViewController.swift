@@ -13,8 +13,10 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     @IBOutlet weak var postsSegmentedControl: UISegmentedControl!
     @IBOutlet weak var collectionView: UICollectionView!
 
+    // Set from outside when tapping a post author or search result.
+    // Leave nil when this VC is used as the current user's profile tab.
     var user: User?
-    var isCurrentUser: Bool = false
+    private var isCurrentUser: Bool = false
     private var userPosts: [Post] = []
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
@@ -23,15 +25,16 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         super.viewDidLoad()
         view.layer.insertSublayer(gradientLayer, at: 0)
         navigationController?.navigationBar.tintColor = .brandGreen
-        setupUI()
-        checkIsCurrentUser()
+        setupCollectionView()
         NotificationCenter.default.addObserver(self, selector: #selector(handleDataUpdate),
                                                name: .didUpdatePosts, object: nil)
+        loadUser()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        refreshUser()
+        // Refresh every time screen appears (e.g. returning from Edit Profile)
+        loadUser()
     }
 
     override func viewDidLayoutSubviews() {
@@ -44,51 +47,46 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
 
     @objc func handleDataUpdate() { refreshData() }
 
-    // MARK: - Determine Current User
-    func checkIsCurrentUser() {
-        if let passedUser = self.user {
-            // A user was passed in (e.g. from tapping someone's profile)
-            self.isCurrentUser = UserSession.shared.isCurrentUser(userID: passedUser.id)
-            updateUI()
+    // MARK: - Load User
+    private func loadUser() {
+        if let passedUser = user {
+            // A user was passed in — could be self or someone else
+            isCurrentUser = UserSession.shared.isCurrentUser(userID: passedUser.id)
+
+            if isCurrentUser {
+                // Use latest cached profile for own data
+                self.user = UserSession.shared.cachedCurrentUser ?? passedUser
+                updateUI()
+            } else {
+                // Show what we have immediately, then refresh from backend
+                updateUI()
+                NetworkManager.shared.fetchUser(userId: passedUser.id) { [weak self] fresh in
+                    guard let self = self, let fresh = fresh else { return }
+                    self.user = fresh
+                    self.updateUI()
+                }
+            }
+
         } else {
-            // No user passed — this is the logged-in user's own profile tab
-            self.isCurrentUser = true
+            // No user passed — this is the current user's own profile tab
+            isCurrentUser = true
+
             if let cached = UserSession.shared.cachedCurrentUser {
                 self.user = cached
                 updateUI()
             } else {
-                // Cache is cold — fetch from backend
-                UserSession.shared.fetchCurrentUser { [weak self] user in
-                    guard let self = self, let user = user else { return }
-                    self.user = user
+                // Cache cold — fetch from backend
+                UserSession.shared.fetchCurrentUser { [weak self] fetchedUser in
+                    guard let self = self, let fetchedUser = fetchedUser else { return }
+                    self.user = fetchedUser
                     self.updateUI()
                 }
             }
         }
     }
 
-    // MARK: - Refresh User Data
-    func refreshUser() {
-        guard let userId = user?.id else { return }
-
-        if UserSession.shared.isCurrentUser(userID: userId) {
-            // Always use the latest cached profile for current user
-            if let fresh = UserSession.shared.cachedCurrentUser {
-                self.user = fresh
-                updateUI()
-            }
-        } else {
-            // Re-fetch other user's profile from backend
-            NetworkManager.shared.fetchUser(userId: userId) { [weak self] freshUser in
-                guard let self = self, let freshUser = freshUser else { return }
-                self.user = freshUser
-                self.updateUI()
-            }
-        }
-    }
-
-    // MARK: - Setup CollectionView
-    func setupUI() {
+    // MARK: - Setup
+    private func setupCollectionView() {
         profileImageView.clipsToBounds = true
         profileImageView.contentMode   = .scaleAspectFill
         collectionView.delegate        = self
@@ -96,51 +94,69 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         collectionView.backgroundColor = .clear
     }
 
-    // MARK: - Update UI with User Data
-    func updateUI() {
+    // MARK: - Update UI
+    private func updateUI() {
         guard let user = user else { return }
 
-        // ✅ Name and handle
         nameLabel.text   = user.name
         handleLabel.text = "@\(user.username)"
 
-        // ✅ Plants only — no friends
-        let plantCount = isCurrentUser ? PlantStore.shared.totalPlants : 0
-        statsLabel.text = "\(plantCount) \(plantCount == 1 ? "Plant" : "Plants")"
+        if isCurrentUser {
+            // ── Own profile ──────────────────────────────────────────────
+            // Plant count from local PlantStore (already synced from backend)
+            let count   = PlantStore.shared.totalPlants
+            statsLabel.text = "\(count) \(count == 1 ? "Plant" : "Plants")"
 
-        // ✅ Profile image — handles Cloudinary URL, local asset, or SF symbol
-        profileImageView.configureImage(with: user.profileImageString ?? "person.circle.fill")
+            // ✅ No message button for own profile
+            messageButton.isHidden         = true
+            otherUserButtonsStack.isHidden = true
 
-        // ✅ Hide message button for current user, show for others
-        messageButton.isHidden = isCurrentUser
+            // ✅ Restore "Saved" segment if it was removed in a previous load
+            if postsSegmentedControl.numberOfSegments < 2 {
+                postsSegmentedControl.insertSegment(withTitle: "Saved", at: 1, animated: false)
+            }
+            postsSegmentedControl.isUserInteractionEnabled = true
 
-        // ✅ Remove "Saved" segment for other users — they can't see your saved posts
-        if !isCurrentUser {
+        } else {
+            // ── Other user's profile ─────────────────────────────────────
+            // plantCount comes from the backend via fetchUser (Option B above)
+            // User model needs a plantCount field populated by the backend.
+            let count   = user.plantCount
+            statsLabel.text = "\(count) \(count == 1 ? "Plant" : "Plants")"
+
+            // ✅ Show message button for other users
+            messageButton.isHidden         = false
+            otherUserButtonsStack.isHidden = false
+
+            // ✅ Hide "Saved" segment — other users can't see your saved posts
             if postsSegmentedControl.numberOfSegments > 1 {
                 postsSegmentedControl.removeSegment(at: 1, animated: false)
             }
             postsSegmentedControl.isUserInteractionEnabled = false
         }
 
+        // Profile image — handles Cloudinary URL or falls back to placeholder
+        profileImageView.configureImage(with: user.profileImageString ?? "person.circle.fill")
+
         navigationItem.rightBarButtonItem = menuButton
         setupMenu()
         refreshData()
     }
 
-    // MARK: - Load Posts
+    // MARK: - Posts
     @IBAction func segmentChanged(_ sender: UISegmentedControl) { refreshData() }
 
-    func refreshData() {
+    private func refreshData() {
         guard let user = user else { return }
 
         if postsSegmentedControl.selectedSegmentIndex == 0 {
-            // My posts / their posts
+            // ✅ Posts — works for both own profile and other users
             PostRepository.shared.fetchPosts(forUserId: user.id) { [weak self] posts in
                 self?.userPosts = posts
                 self?.collectionView.reloadData()
             }
         } else {
-            // Saved posts — current user only
+            // ✅ Saved — only reachable on own profile (segment hidden for others)
             PostRepository.shared.fetchSavedPostsForCurrentUser { [weak self] posts in
                 self?.userPosts = posts
                 self?.collectionView.reloadData()
@@ -166,35 +182,40 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     }
 
     // MARK: - Menu
-    func setupMenu() {
-        let editAction = UIAction(title: "Edit Profile",
-                                  image: UIImage(systemName: "pencil")) { [weak self] _ in
+    private func setupMenu() {
+        let editAction = UIAction(
+            title: "Edit Profile",
+            image: UIImage(systemName: "pencil")
+        ) { [weak self] _ in
             self?.openPersonalInfoSettings()
         }
-        let blockAction = UIAction(title: "Block",
-                                   image: UIImage(systemName: "hand.raised.slash"),
-                                   attributes: .destructive) { _ in
+
+        let blockAction = UIAction(
+            title: "Block",
+            image: UIImage(systemName: "hand.raised.slash"),
+            attributes: .destructive
+        ) { _ in
             print("Block tapped")
         }
+
         menuButton.menu = UIMenu(
             title: isCurrentUser ? "My Options" : "User Options",
             children: isCurrentUser ? [editAction] : [blockAction]
         )
     }
 
-    @objc func openPersonalInfoSettings() {
+    @objc private func openPersonalInfoSettings() {
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         if let vc = storyboard.instantiateViewController(
-            withIdentifier: "Personal_InfoViewController") as? Personal_InfoViewController {
+            withIdentifier: "Personal_InfoViewController"
+        ) as? Personal_InfoViewController {
             navigationController?.pushViewController(vc, animated: true)
         }
     }
 
-    // MARK: - CollectionView DataSource
+    // MARK: - CollectionView
     func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        userPosts.count
-    }
+                        numberOfItemsInSection section: Int) -> Int { userPosts.count }
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
