@@ -11,7 +11,7 @@ class NetworkManager{
     static let shared = NetworkManager()
     let baseURL = "https://plantappbackend-5mdh.onrender.com/api"
     
-    var currentUserId : String = "69a574377e957ef7c815b409" // to be set after creating test user
+//    var currentUserId : String = "69a574377e957ef7c815b409" // to be set after creating test user
     
     private init() {}
     
@@ -42,7 +42,7 @@ extension NetworkManager {
             "email":    email,
             "password": password
         ])
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
             else {
@@ -50,14 +50,16 @@ extension NetworkManager {
                 return
             }
 
-            if let token = json["token"] as? String,
-               let user = json["user"] as? [String: Any],
-               let userId = user["_id"] as? String {
+            if let token  = json["token"] as? String,
+               let user   = json["user"]  as? [String: Any],
+               let userId = user["_id"]   as? String {
+
                 KeychainManager.shared.saveToken(token)
                 KeychainManager.shared.saveUserId(userId)
-                self.currentUserId = userId
+                // ✅ No more self.currentUserId — identity lives in KeychainManager
                 print("✅ Signup success, userId: \(userId)")
                 DispatchQueue.main.async { completion(true, nil) }
+
             } else {
                 let message = json["message"] as? String ?? "Signup failed"
                 print("❌ Signup error: \(message)")
@@ -72,7 +74,7 @@ extension NetworkManager {
             "email":    email,
             "password": password
         ])
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
             else {
@@ -80,21 +82,22 @@ extension NetworkManager {
                 return
             }
 
-            if let token = json["token"] as? String,
-               let user = json["user"] as? [String: Any],
-               let userId = user["_id"] as? String {
+            if let token  = json["token"] as? String,
+               let user   = json["user"]  as? [String: Any],
+               let userId = user["_id"]   as? String {
+
                 KeychainManager.shared.saveToken(token)
                 KeychainManager.shared.saveUserId(userId)
-                self.currentUserId = userId
-                
-                
-                // ✅ Clear old local data before loading fresh
-                      PlantStore.shared.setPlants([])
-                      SiteStore.shared.setSites([])
-                      PlantCatalogueCache.shared.invalidate()
-                
+                // ✅ No more self.currentUserId
+
+                // Clear old local data before loading fresh
+                PlantStore.shared.setPlants([])
+                SiteStore.shared.setSites([])
+                PlantCatalogueCache.shared.invalidate()
+
                 print("✅ Login success, userId: \(userId)")
                 DispatchQueue.main.async { completion(true, nil) }
+
             } else {
                 let message = json["message"] as? String ?? "Login failed"
                 print("❌ Login error: \(message)")
@@ -104,8 +107,8 @@ extension NetworkManager {
     }
 
     func logout() {
-        KeychainManager.shared.clearAll()
-        currentUserId = ""
+        KeychainManager.shared.clearAll()        // wipes token + userId from Keychain
+        UserSession.shared.clearSession()        // clears cachedCurrentUser
         PlantStore.shared.setPlants([])
         SiteStore.shared.setSites([])
         PlantCatalogueCache.shared.invalidate()
@@ -113,7 +116,6 @@ extension NetworkManager {
         print("✅ Logged out")
     }
 }
-
 
 
 //MARK:- Create USER
@@ -374,6 +376,193 @@ extension NetworkManager {
 
             print("✅ Image uploaded to Cloudinary: \(imageUrl)")
             DispatchQueue.main.async { completion(imageUrl) }
+        }.resume()
+    }
+}
+
+
+//MARK: - COMMUNITY
+
+extension NetworkManager {
+
+   // MARK: - Feed
+   func fetchFeed(page: Int = 1, completion: @escaping (FeedResponse?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/feed?page=\(page)") else { return }
+       let request = makeRequest(url: url, method: "GET")
+       URLSession.shared.dataTask(with: request) { data, response, error in
+           if let error = error { print("❌ fetchFeed error: \(error.localizedDescription)") }
+           if let http = response as? HTTPURLResponse { print("📡 fetchFeed status: \(http.statusCode)") }
+           guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
+           let feed = try? JSONDecoder().decode(FeedResponse.self, from: data)
+           DispatchQueue.main.async { completion(feed) }
+       }.resume()
+   }
+
+   // MARK: - Create Post
+   func createPost(imageUrl: String, caption: String, completion: @escaping (Post?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts") else { return }
+       let request = makeRequest(url: url, method: "POST", body: [
+           "postImageString": imageUrl,
+           "caption":         caption
+       ])
+       URLSession.shared.dataTask(with: request) { data, response, error in
+           // ✅ Detailed logging so you can see exactly what came back
+           if let error = error {
+               print("❌ createPost network error: \(error.localizedDescription)")
+               DispatchQueue.main.async { completion(nil) }
+               return
+           }
+           if let http = response as? HTTPURLResponse {
+               print("📡 createPost status: \(http.statusCode)")
+           }
+           guard let data = data else {
+               print("❌ createPost: no data returned")
+               DispatchQueue.main.async { completion(nil) }
+               return
+           }
+           if let raw = String(data: data, encoding: .utf8) {
+               print("📦 createPost raw response: \(raw)")
+           }
+           do {
+               let post = try JSONDecoder().decode(Post.self, from: data)
+               print("✅ createPost decoded successfully: \(post.id)")
+               DispatchQueue.main.async { completion(post) }
+           } catch {
+               print("❌ createPost decode error: \(error)")
+               DispatchQueue.main.async { completion(nil) }
+           }
+       }.resume()
+   }
+
+   // MARK: - Delete Post
+   func deletePost(postId: String, completion: @escaping (Bool) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/\(postId)") else { return }
+       let request = makeRequest(url: url, method: "DELETE")
+       URLSession.shared.dataTask(with: request) { _, response, _ in
+           let success = (response as? HTTPURLResponse)?.statusCode == 200
+           DispatchQueue.main.async { completion(success) }
+       }.resume()
+   }
+
+   // MARK: - Toggle Like
+   func toggleLike(postId: String, completion: @escaping (Bool?, Int?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/\(postId)/like") else { return }
+       let request = makeRequest(url: url, method: "POST")
+       URLSession.shared.dataTask(with: request) { data, _, error in
+           if let error = error { print("❌ toggleLike error: \(error.localizedDescription)") }
+           guard let data = data,
+                 let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+           else { DispatchQueue.main.async { completion(nil, nil) }; return }
+           DispatchQueue.main.async {
+               completion(json["isLiked"] as? Bool, json["likesCount"] as? Int)
+           }
+       }.resume()
+   }
+
+   // MARK: - Toggle Save
+   func toggleSave(postId: String, completion: @escaping (Bool?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/\(postId)/save") else { return }
+       let request = makeRequest(url: url, method: "POST")
+       URLSession.shared.dataTask(with: request) { data, _, error in
+           if let error = error { print("❌ toggleSave error: \(error.localizedDescription)") }
+           guard let data = data,
+                 let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+           else { DispatchQueue.main.async { completion(nil) }; return }
+           DispatchQueue.main.async { completion(json["isSaved"] as? Bool) }
+       }.resume()
+   }
+
+   // MARK: - Fetch Comments
+   func fetchComments(postId: String, page: Int = 1, completion: @escaping (CommentsResponse?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/\(postId)/comments?page=\(page)") else { return }
+       let request = makeRequest(url: url, method: "GET")
+       URLSession.shared.dataTask(with: request) { data, _, _ in
+           guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
+           let response = try? JSONDecoder().decode(CommentsResponse.self, from: data)
+           DispatchQueue.main.async { completion(response) }
+       }.resume()
+   }
+
+   // MARK: - Add Comment
+   func addComment(postId: String, text: String, completion: @escaping (Comment?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/\(postId)/comments") else { return }
+       let request = makeRequest(url: url, method: "POST", body: ["text": text])
+       URLSession.shared.dataTask(with: request) { data, response, _ in
+           if let http = response as? HTTPURLResponse { print("📡 addComment status: \(http.statusCode)") }
+           guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
+           if let raw = String(data: data, encoding: .utf8) { print("📦 addComment raw: \(raw)") }
+           let comment = try? JSONDecoder().decode(Comment.self, from: data)
+           DispatchQueue.main.async { completion(comment) }
+       }.resume()
+   }
+
+   // MARK: - Delete Comment
+   func deleteComment(postId: String, commentId: String, completion: @escaping (Bool) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/\(postId)/comments/\(commentId)") else { return }
+       let request = makeRequest(url: url, method: "DELETE")
+       URLSession.shared.dataTask(with: request) { _, response, _ in
+           DispatchQueue.main.async {
+               completion((response as? HTTPURLResponse)?.statusCode == 200)
+           }
+       }.resume()
+   }
+
+   // MARK: - Saved Posts
+   func fetchSavedPosts(completion: @escaping ([Post]?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/saved") else { return }
+       let request = makeRequest(url: url, method: "GET")
+       URLSession.shared.dataTask(with: request) { data, _, _ in
+           guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
+           let posts = try? JSONDecoder().decode([Post].self, from: data)
+           DispatchQueue.main.async { completion(posts) }
+       }.resume()
+   }
+
+   // MARK: - User Posts
+   func fetchUserPosts(userId: String, completion: @escaping ([Post]?) -> Void) {
+       guard let url = URL(string: baseURL + "/posts/user/\(userId)") else { return }
+       let request = makeRequest(url: url, method: "GET")
+       URLSession.shared.dataTask(with: request) { data, _, _ in
+           guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
+           let posts = try? JSONDecoder().decode([Post].self, from: data)
+           DispatchQueue.main.async { completion(posts) }
+       }.resume()
+   }
+}
+
+
+extension NetworkManager {
+ 
+    /// GET /api/users  — returns all users (for People/Search screens)
+    func fetchAllUsers(completion: @escaping ([User]) -> Void) {
+        guard let url = URL(string: baseURL + "/users") else { return }
+        let request = makeRequest(url: url, method: "GET")
+        URLSession.shared.dataTask(with: request) { data, response, _ in
+            if let http = response as? HTTPURLResponse {
+                print("📡 fetchAllUsers status: \(http.statusCode)")
+            }
+            guard let data = data,
+                  let users = try? JSONDecoder().decode([User].self, from: data)
+            else {
+                DispatchQueue.main.async { completion([]) }
+                return
+            }
+            DispatchQueue.main.async { completion(users) }
+        }.resume()
+    }
+ 
+    /// GET /api/users/:id  — fetch a single user by their MongoDB _id
+    func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
+        guard let url = URL(string: baseURL + "/users/\(userId)") else { return }
+        let request = makeRequest(url: url, method: "GET")
+        URLSession.shared.dataTask(with: request) { data, _, _ in
+            guard let data = data,
+                  let user = try? JSONDecoder().decode(User.self, from: data)
+            else {
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            DispatchQueue.main.async { completion(user) }
         }.resume()
     }
 }

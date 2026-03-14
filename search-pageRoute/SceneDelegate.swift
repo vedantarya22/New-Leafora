@@ -17,10 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
             win.rootViewController = storyboard.instantiateInitialViewController()
 
-        } else if let token = KeychainManager.shared.getToken(),
-                  let userId = KeychainManager.shared.getUserId() {
-            NetworkManager.shared.currentUserId = userId
-            print("✅ Token found, going to home")
+        } else if KeychainManager.shared.getToken() != nil,
+                  KeychainManager.shared.getUserId() != nil {
+            // ✅ Token exists — identity is read from Keychain by UserSession automatically.
+            //    No need to set currentUserId anywhere.
+            print("✅ Token found, userId: \(UserSession.shared.currentLoggedInUserID)")
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             win.rootViewController = storyboard.instantiateInitialViewController()
             loadAppData()
@@ -38,13 +39,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     // MARK: - Load App Data
+    // Called after login/signup (from those VCs) AND on cold launch when token exists.
     func loadAppData() {
-        // ✅ Load catalogue
+
+        // 1. Current user profile — needed by PostRepository, NewPostVC, ProfileVC, etc.
+        UserSession.shared.fetchCurrentUser { user in
+            if let user = user {
+                print("✅ Current user loaded: \(user.username)")
+            } else {
+                print("⚠️ Could not load current user profile")
+            }
+        }
+
+        // 2. Plant catalogue
         PlantCatalogueCache.shared.getPlants { plants in
             print("✅ Loaded \(plants.count) catalogue plants")
         }
 
-        // ✅ Always replace local with MongoDB — prevents duplicates
+        // 3. User's plants — always replace local with MongoDB to prevent duplicates
         NetworkManager.shared.fetchUserPlants { userPlants in
             guard let userPlants = userPlants else {
                 print("❌ Failed to load user plants")
@@ -54,7 +66,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             print("✅ Loaded \(userPlants.count) user plants from MongoDB")
         }
 
-        // ✅ Always replace local sites with MongoDB
+        // 4. User's sites — always replace local with MongoDB
         NetworkManager.shared.getUserSites { sites in
             guard let sites = sites else {
                 print("❌ Failed to load sites")

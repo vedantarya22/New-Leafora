@@ -3,7 +3,7 @@ import UIKit
 class loginViewController: UIViewController {
 
     // MARK: - Outlets
-    @IBOutlet weak var usernameTextField: UITextField!  // ✅ used as email field
+    @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var forgotPasswordLabel: UILabel!
@@ -15,11 +15,11 @@ class loginViewController: UIViewController {
 
     private let errorLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemRed
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor     = .systemRed
+        label.font          = UIFont.systemFont(ofSize: 14)
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.isHidden = true
+        label.isHidden      = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -30,8 +30,7 @@ class loginViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
         setupUI()
         setupErrorLabel()
-        
-        // Auto-fill cached email if available
+
         if let cachedEmail = UserDefaults.standard.string(forKey: "cachedUserEmail") {
             usernameTextField.text = cachedEmail
         }
@@ -45,28 +44,28 @@ class loginViewController: UIViewController {
     // MARK: - Setup
     private func setupUI() {
         setupGestures()
-        passwordTextField.isSecureTextEntry = true
-        usernameTextField.keyboardType = .emailAddress
+        passwordTextField.isSecureTextEntry  = true
+        usernameTextField.keyboardType       = .emailAddress
         usernameTextField.autocapitalizationType = .none
         usernameTextField.autocorrectionType = .no
-        
-        // Native iOS Styling
         styleTextField(usernameTextField)
         styleTextField(passwordTextField)
         loginButton.layer.cornerRadius = 10
         loginButton.clipsToBounds = true
         styleButtons()
-        
-        // Attributed Sign Up Label
+
         let fullText = "Don't have an account? Sign Up"
-        let attributedString = NSMutableAttributedString(string: fullText)
-        let signUpRange = (fullText as NSString).range(of: "Sign Up")
-        
-        attributedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: NSRange(location: 0, length: fullText.count))
-        attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0), range: signUpRange)
-        attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: signUpLabel.font.pointSize), range: signUpRange)
-        
-        signUpLabel.attributedText = attributedString
+        let attr     = NSMutableAttributedString(string: fullText)
+        let range    = (fullText as NSString).range(of: "Sign Up")
+        attr.addAttribute(.foregroundColor, value: UIColor.secondaryLabel,
+                          range: NSRange(location: 0, length: fullText.count))
+        attr.addAttribute(.foregroundColor,
+                          value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0),
+                          range: range)
+        attr.addAttribute(.font,
+                          value: UIFont.boldSystemFont(ofSize: signUpLabel.font.pointSize),
+                          range: range)
+        signUpLabel.attributedText = attr
     }
 
     private func setupErrorLabel() {
@@ -79,26 +78,27 @@ class loginViewController: UIViewController {
     }
 
     private func setupGestures() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleSignUpTap))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleSignUpTap))
         signUpLabel.isUserInteractionEnabled = true
-        signUpLabel.addGestureRecognizer(tapGesture)
+        signUpLabel.addGestureRecognizer(tap)
     }
 
-    // MARK: - Actions
+    // MARK: - Login
     @IBAction func loginButtonTapped(_ sender: UIButton) {
-        guard let email = usernameTextField.text, !email.isEmpty,
+        guard let email    = usernameTextField.text, !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty else {
             showError("Please enter email and password")
             return
         }
 
+        errorLabel.isHidden = true
         loginButton.isEnabled = false
 
         NetworkManager.shared.login(email: email, password: password) { [weak self] success, message in
             self?.loginButton.isEnabled = true
             if success {
-                // Save successful login email for convenience
                 UserDefaults.standard.set(email, forKey: "cachedUserEmail")
+                // ✅ Navigate first, then load data in background
                 self?.navigateToMainApp()
             } else {
                 self?.showError(message ?? "Login failed")
@@ -107,84 +107,72 @@ class loginViewController: UIViewController {
     }
 
     @objc private func handleSignUpTap() {
-        // ✅ Navigate to signup screen using the new UINavigationController stack
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let signupVC = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as? SignUpViewController {
+        if let signupVC = storyboard.instantiateViewController(
+            withIdentifier: "SignUpViewController") as? SignUpViewController {
             navigationController?.pushViewController(signupVC, animated: true)
         }
     }
 
+    // MARK: - Navigation
+    private func navigateToMainApp() {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes
+                .first?.delegate as? SceneDelegate,
+              let window = sceneDelegate.window
+        else { return }
+
+        // ✅ 1. Switch to main app UI
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        window.rootViewController = storyboard.instantiateInitialViewController()
+        UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
+
+        // ✅ 2. Load all data AFTER navigation so UI is ready to receive notifications
+        sceneDelegate.loadAppData()
+    }
+
     // MARK: - UI Helpers
+    private func showError(_ message: String) {
+        errorLabel.text     = message
+        errorLabel.isHidden = false
+    }
+
     private func styleTextField(_ textField: UITextField) {
-        textField.backgroundColor = .white
+        textField.backgroundColor    = .white
         textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
-        
-        // Subtle native border
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.systemGray5.cgColor
-        
-        // Horizontal padding
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
-        textField.leftView = paddingView
+        textField.layer.borderWidth  = 1
+        textField.layer.borderColor  = UIColor.systemGray5.cgColor
+        let pad = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
+        textField.leftView     = pad
         textField.leftViewMode = .always
     }
-    
+
     private func styleButtons() {
-        let botanicalGreen = UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0)
-        
-        // Login Button
-        loginButton.tintColor = botanicalGreen
+        let green = UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0)
+
+        loginButton.tintColor = green
         if #available(iOS 15.0, *) {
-            loginButton.configuration?.baseBackgroundColor = botanicalGreen
+            loginButton.configuration?.baseBackgroundColor = green
         } else {
-            loginButton.backgroundColor = botanicalGreen
+            loginButton.backgroundColor = green
         }
-        
-        // Google Button
+
         googleButton.tintColor = .black
         if #available(iOS 15.0, *) {
-            googleButton.configuration?.baseBackgroundColor = .white
+            googleButton.configuration?.baseBackgroundColor  = .white
             googleButton.configuration?.baseForegroundColor = .black
         } else {
             googleButton.backgroundColor = .white
             googleButton.setTitleColor(.black, for: .normal)
         }
-        
-        // Apple button
+
         appleButton.tintColor = .white
         if #available(iOS 15.0, *) {
-            appleButton.configuration?.baseBackgroundColor = .black
+            appleButton.configuration?.baseBackgroundColor  = .black
             appleButton.configuration?.baseForegroundColor = .white
         } else {
             appleButton.backgroundColor = .black
             appleButton.setTitleColor(.white, for: .normal)
         }
-    }
-
-    // MARK: - Error
-    private func showError(_ message: String) {
-        errorLabel.text = message
-        errorLabel.isHidden = false
-    }
-
-    // MARK: - Navigation
-    private func navigateToMainApp() {
-        // ✅ Load app data first then navigate
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            sceneDelegate.loadAppData()
-        }
-
-        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        let storyboardName = hasSeenOnboarding ? "Main" : "onboarding"
-        let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
-
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first?.windows.first
-        else { return }
-
-        window.rootViewController = storyboard.instantiateInitialViewController()
-        UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
     }
 }

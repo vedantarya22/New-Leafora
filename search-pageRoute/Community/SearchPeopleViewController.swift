@@ -1,81 +1,66 @@
 import UIKit
 
-class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, UISearchControllerDelegate {
+class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,
+                                   UISearchResultsUpdating, UISearchControllerDelegate {
 
     @IBOutlet weak var tableView: UITableView!
-    
-    // MARK: - Data Variables
-    var allUsers: [User] = []
+
+    var allUsers:      [User] = []
     var filteredUsers: [User] = []
-    
-    let searchController = UISearchController(searchResultsController: nil)
+
+    let searchController      = UISearchController(searchResultsController: nil)
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
-    var isSearchBarEmpty: Bool {
-        return searchController.searchBar.text?.isEmpty ?? true
-    }
-    
-    var isSearching: Bool {
-        return searchController.isActive && !isSearchBarEmpty
-    }
+    var isSearchBarEmpty: Bool { searchController.searchBar.text?.isEmpty ?? true }
+    var isSearching: Bool { searchController.isActive && !isSearchBarEmpty }
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // ✅ App theme
         view.layer.insertSublayer(gradientLayer, at: 0)
         navigationController?.navigationBar.tintColor = .brandGreen
-
-        //allows the view to extend under the nav bar, preventing the "jump" or black gap
         self.extendedLayoutIncludesOpaqueBars = true
-        
         setupTableView()
         setupSearchController()
-        
         loadData()
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = false
+        navigationItem.hidesSearchBarWhenScrolling       = false
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.view.setNeedsLayout()
         navigationController?.view.layoutIfNeeded()
     }
 
+    // MARK: - Data
     func loadData() {
-        UserSession.shared.fetchAllUsers { [weak self] users in
-            let currentUserID = UserSession.shared.currentLoggedInUserID
+        // ✅ fetchAllUsers now lives on NetworkManager, not UserSession
+        NetworkManager.shared.fetchAllUsers { [weak self] users in
             guard let self = self else { return }
-            self.allUsers = users.filter { $0.id != currentUserID }
+            let currentId = UserSession.shared.currentLoggedInUserID
+            self.allUsers = users.filter { $0.id != currentId }
             self.tableView.reloadData()
         }
     }
-    // MARK: - Setup Functions
-    
+
+    // MARK: - Setup
     func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        
-        // 4. Connect Delegate to fix the dismiss glitch
-        searchController.delegate = self
-        
+        searchController.searchResultsUpdater                 = self
+        searchController.delegate                             = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search people..."
-        
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        
-        definesPresentationContext = true
+        searchController.searchBar.placeholder                = "Search people..."
+        navigationItem.searchController                       = searchController
+        navigationItem.hidesSearchBarWhenScrolling            = false
+        definesPresentationContext                            = true
     }
-    
+
     func didDismissSearchController(_ searchController: UISearchController) {
-        // Force the Navigation Bar to relayout itself immediately
         UIView.animate(withDuration: 0.1) {
             self.navigationController?.view.setNeedsLayout()
             self.navigationController?.view.layoutIfNeeded()
@@ -83,68 +68,59 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
     }
 
     func setupTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = 80
+        tableView.delegate        = self
+        tableView.dataSource      = self
+        tableView.rowHeight       = 80
         tableView.tableFooterView = UIView()
         tableView.keyboardDismissMode = .onDrag
-        
+        tableView.backgroundColor = .clear
         let nib = UINib(nibName: "PeopleTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "PeopleTableViewCell")
-        tableView.backgroundColor = .clear
     }
-    
-    //Search Logic
-    
+
+    // MARK: - Search
     func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        filterContentForSearchText(searchBar.text!)
+        filterContentForSearchText(searchController.searchBar.text ?? "")
     }
-    
-    func filterContentForSearchText(_ searchText: String) {
-        filteredUsers = allUsers.filter { user in
-            return user.name.lowercased().contains(searchText.lowercased()) ||
-                   user.username.lowercased().contains(searchText.lowercased())
+
+    func filterContentForSearchText(_ text: String) {
+        filteredUsers = allUsers.filter {
+            $0.name.lowercased().contains(text.lowercased()) ||
+            $0.username.lowercased().contains(text.lowercased())
         }
-        
         tableView.reloadData()
     }
 
-    //TableView Data Source
-    
+    // MARK: - TableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isSearching ? filteredUsers.count : allUsers.count
+        isSearching ? filteredUsers.count : allUsers.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell", for: indexPath) as! PeopleTableViewCell
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell",
+                                                  for: indexPath) as! PeopleTableViewCell
         let user = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
-        
-        cell.nameLabel.text = user.name
-        cell.messageLabel.text = user.searchSubtitle
-        
-        let imageName = UserSession.shared.profileImageString(for: user.id)
-        cell.avatarImageView.configureImage(with: imageName)
-        cell.avatarImageView.tintColor = .label
-        cell.backgroundColor = .clear
-        cell.contentView.backgroundColor = .clear
 
-        
-        cell.timeLabel.isHidden = true
-        cell.accessoryType = .disclosureIndicator
-        
+        cell.nameLabel.text    = user.name
+        cell.messageLabel.text = user.searchSubtitle
+
+        // ✅ profileImageString lives on User directly
+        cell.avatarImageView.configureImage(with: user.profileImageString)
+        cell.avatarImageView.tintColor   = .label
+        cell.backgroundColor             = .clear
+        cell.contentView.backgroundColor = .clear
+        cell.timeLabel.isHidden          = true
+        cell.accessoryType               = .disclosureIndicator
+
         return cell
     }
-    
-    // Nav
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedUser = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
         performSegue(withIdentifier: "ShowUserProfile", sender: selectedUser)
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowUserProfile",
            let profileVC = segue.destination as? ProfileViewController,

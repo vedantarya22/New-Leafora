@@ -1,194 +1,157 @@
 import UIKit
 
 class CommunityViewController: UIViewController, UICollectionViewDelegate {
-    
+
     // MARK: - Outlets
     @IBOutlet weak var postsCollectionView: UICollectionView!
-    
+
     // MARK: - Data
     private var posts: [Post] = []
-    
-    let timestamp = ISO8601DateFormatter().string(from: Date())
+    // ✅ isExpanded no longer lives on Post — tracked locally here
+    private var expandedPostIds: Set<String> = []
+
     let gradientLayer = CAGradientLayer()
 
-    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBotanicalBackground()
         setupCollectionView()
         loadData()
-        
-        // Subscribe to data updates
-        NotificationCenter.default.addObserver(self, selector: #selector(handleDataUpdate), name: .didUpdatePosts, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDataUpdate),
+                                               name: .didUpdatePosts, object: nil)
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    @objc func handleDataUpdate() {
-        loadData()
-    }
-    
+
+    deinit { NotificationCenter.default.removeObserver(self) }
+
+    @objc func handleDataUpdate() { loadData() }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadData()
     }
-    
+
     // MARK: - Setup
     private func setupCollectionView() {
-        postsCollectionView.delegate = self
+        postsCollectionView.delegate   = self
         postsCollectionView.dataSource = self
-        
-        // 1. Register XIB
         let nib = UINib(nibName: CommunityPostCollectionViewCell.nibName, bundle: nil)
         postsCollectionView.register(nib, forCellWithReuseIdentifier: CommunityPostCollectionViewCell.identifier)
-        
-        // 2. Set the Compositional Layout (Replaces the old FlowLayout)
         postsCollectionView.collectionViewLayout = createLayout()
-        
         postsCollectionView.delaysContentTouches = false
     }
+
     private func setupBotanicalBackground() {
-        // A soft, off-white to very pale sage green
-        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let topColor    = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
         let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
-        
-        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.colors     = [topColor, bottomColor]
         gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
-        gradientLayer.frame = view.bounds
-        
-        // Insert at index 0 so it stays behind the UICollectionView
+        gradientLayer.endPoint   = CGPoint(x: 1, y: 1)
+        gradientLayer.frame      = view.bounds
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
-    
-    // MARK: - Layout Generator
+
     private func createLayout() -> UICollectionViewLayout {
-        // Item — estimated should be below actual content height so the cell grows, never pads
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(350)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        // Group
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(350)
-        )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        // Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 10 // Spacing between posts
-        
+        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(350))
+        let item      = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(350))
+        let group     = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let section   = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
         return UICollectionViewCompositionalLayout(section: section)
     }
-    
-    // MARK: - Rotation Support
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         coordinator.animate(alongsideTransition: { _ in
             self.postsCollectionView.collectionViewLayout.invalidateLayout()
         })
     }
+
     // MARK: - Data Loading
     private func loadData() {
-        PostRepository.shared.fetchAllPosts { [weak self] downloadedPosts in
-            self?.posts = downloadedPosts
+        PostRepository.shared.fetchAllPosts { [weak self] fetchedPosts in
+            self?.posts = fetchedPosts
             self?.postsCollectionView.reloadData()
         }
     }
-    
+
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        // 1. Show Comments
-        if segue.identifier == "ShowComments" {
-            if let commentsVC = segue.destination as? CommentsViewController,
-               let post = sender as? Post {
-                commentsVC.post = post
-            }
+        if segue.identifier == "ShowComments",
+           let commentsVC = segue.destination as? CommentsViewController,
+           let post = sender as? Post {
+            commentsVC.post = post
         }
-        
-        // 2. Show User Profile
-        if segue.identifier == "ShowUserProfile" {
-            if let profileVC = segue.destination as? ProfileViewController,
-               let user = sender as? User {
-                profileVC.user = user
-            }
+        if segue.identifier == "ShowUserProfile",
+           let profileVC = segue.destination as? ProfileViewController,
+           let user = sender as? User {
+            profileVC.user = user
         }
-        
-        // 3. New Post Callback
         if let newPostVC = segue.destination as? NewPostViewController {
-            newPostVC.onPostSuccess = { [weak self] in
-                self?.loadData()
-            }
+            newPostVC.onPostSuccess = { [weak self] in self?.loadData() }
         }
     }
 }
 
 // MARK: - UICollectionView DataSource
 extension CommunityViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int { posts.count }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: CommunityPostCollectionViewCell.identifier,
             for: indexPath
-        ) as? CommunityPostCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        
-        let post = posts[indexPath.item]
-        cell.configure(with: post)
-        
-        // Handle like action
-        cell.onLikeTapped = { [weak self] isLiked, newCount in
-            // Controller acts as delegate to Repository
-            PostRepository.shared.updateLikeStatus(
-                forPostId: post.id,
-                isLiked: isLiked,
-                newCount: newCount
-            )
-            
+        ) as? CommunityPostCollectionViewCell else { return UICollectionViewCell() }
+
+        let post       = posts[indexPath.item]
+        let isExpanded = expandedPostIds.contains(post.id)
+        cell.configure(with: post, isExpanded: isExpanded)
+
+        // ✅ toggleLike replaces old updateLikeStatus(forPostId:isLiked:newCount:)
+        cell.onLikeTapped = {
+            PostRepository.shared.toggleLike(postId: post.id)
         }
 
-        
-        // Handle comment action
+
         cell.onCommentTapped = { [weak self] in
             self?.performSegue(withIdentifier: "ShowComments", sender: post)
         }
-        
-        // Handle save action
-        cell.onSaveTapped = { [weak self] in
+
+        cell.onSaveTapped = {
             PostRepository.shared.toggleSave(postId: post.id)
-            // Local update is handled via notification reload or simply by next fetch
         }
-        
-        // Handle profile tap
+
         cell.onProfileTapped = { [weak self] in
             if let author = post.author {
-                self?.performSegue(withIdentifier: "ShowUserProfile", sender: author)
+                // Build a User from PostAuthor to pass to ProfileViewController
+                let user = User(id: author.id, name: author.name,
+                                username: author.username,
+                                profileImageString: author.profileImageString ?? "",
+                                plantCount: 0)
+                self?.performSegue(withIdentifier: "ShowUserProfile", sender: user)
             }
         }
-        
-        // Handle menu tap
+
         cell.onMenuTapped = { [weak self] in
             self?.showPostMenu(for: post)
         }
-        
-        // Handle see more tap
+
+        // ✅ isExpanded tracked in local Set, not on Post struct
         cell.onSeeMoreTapped = { [weak self] in
-            self?.posts[indexPath.item].isExpanded.toggle()
-            self?.postsCollectionView.reloadItems(at: [indexPath])
+            guard let self = self else { return }
+            if self.expandedPostIds.contains(post.id) {
+                self.expandedPostIds.remove(post.id)
+            } else {
+                self.expandedPostIds.insert(post.id)
+            }
+            self.postsCollectionView.reloadItems(at: [indexPath])
         }
-        
+
         return cell
     }
 }
@@ -197,22 +160,21 @@ extension CommunityViewController: UICollectionViewDataSource {
 extension CommunityViewController {
     func showPostMenu(for post: Post) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        // Report — always visible
+
         alert.addAction(UIAlertAction(title: "Report Post", style: .destructive) { [weak self] _ in
-            let confirm = UIAlertController(title: "Post Reported", message: "Thank you for reporting. We'll review this post.", preferredStyle: .alert)
+            let confirm = UIAlertController(title: "Post Reported",
+                                            message: "Thank you for reporting. We'll review this post.",
+                                            preferredStyle: .alert)
             confirm.addAction(UIAlertAction(title: "OK", style: .default))
             self?.present(confirm, animated: true)
         })
-        
-        // Delete — only for post owner
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        if post.userId == currentUserId {
+
+        if post.userId == UserSession.shared.currentLoggedInUserID {
             alert.addAction(UIAlertAction(title: "Delete Post", style: .destructive) { _ in
                 PostRepository.shared.deletePost(id: post.id)
             })
         }
-        
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }

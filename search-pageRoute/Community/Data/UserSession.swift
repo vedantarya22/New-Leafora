@@ -1,109 +1,71 @@
+//
+//  UserSession.swift
+//  Leafora
+//
 
 import Foundation
-import UIKit
 
 class UserSession {
     static let shared = UserSession()
-    
-    var currentLoggedInUserID: String = "u2"
-    private var users: [User] = []
-    
-    var currentUser: User? {
-        return users.first(where: { $0.id == currentLoggedInUserID })
-    }
-    
-    private init() {
-        seedDummyData()
-    }
-    
-    // MARK: - Public API
-    
-    func fetchAllUsers(completion: @escaping ([User]) -> Void) {
-        completion(self.users)
-    }
-    
+    private init() {}
+
+    // MARK: - Identity  (live from Keychain — always in sync with login/logout)
+    var token:   String? { KeychainManager.shared.getToken() }
+    var mongoId: String? { KeychainManager.shared.getUserId() }
+
+    /// MongoDB _id of the logged-in user. Empty string if not logged in.
+    var currentLoggedInUserID: String { mongoId ?? "" }
+
+    var isLoggedIn: Bool { token != nil && mongoId != nil }
+
+    func isCurrentUser(userID: String) -> Bool { mongoId == userID }
+
+    // MARK: - Cached Profile
+    // Populated by fetchCurrentUser() — call once after login / app launch.
+    var cachedCurrentUser: User?
+
+    /// Synchronous convenience accessor — may be nil until fetchCurrentUser completes.
+    var currentUser: User? { cachedCurrentUser }
+
+    // MARK: - Fetch Current User Profile from Backend
+    /// Hits GET /api/users/:id, decodes into User, caches result.
     func fetchCurrentUser(completion: @escaping (User?) -> Void) {
-        completion(currentUser)
-    }
-    
-    func isCurrentUser(userID: String) -> Bool {
-        return currentLoggedInUserID == userID
-    }
-    
-    func profileImageString(for userID: String) -> String {
-        if let user = users.first(where: { $0.id == userID }) {
-            return user.profileImageString
+        guard let userId = mongoId,
+              let url = URL(string: NetworkManager.shared.baseURL + "/users/\(userId)")
+        else {
+            completion(nil)
+            return
         }
-        return "person.circle"
-    }
-    
-    func user(withId id: String) -> User? {
-        return users.first(where: { $0.id == id })
-    }
-    
-    func updateUser(_ updatedUser: User) {
-        if let index = users.firstIndex(where: { $0.id == updatedUser.id }) {
-            users[index] = updatedUser
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, _ in
+            if let http = response as? HTTPURLResponse {
+                print("📡 fetchCurrentUser status: \(http.statusCode)")
+            }
+            guard let data = data else {
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            if let raw = String(data: data, encoding: .utf8) {
+                print("📦 fetchCurrentUser raw: \(raw)")
+            }
+            guard let user = try? JSONDecoder().decode(User.self, from: data) else {
+                DispatchQueue.main.async { completion(nil) }
+                return
+            }
+            self?.cachedCurrentUser = user
+            DispatchQueue.main.async { completion(user) }
+        }.resume()
     }
-    
-    // MARK: - Seed Data
-    private func seedDummyData() {
-        let vedant = User(
-            id: "u1",
-            name: "Vedant Arya",
-            username: "vedantarya.22",
-            profileImageString: "",
-            plantCount: 12
-        )
-        
-        let shubham = User(
-            id: "u2",
-            name: "Shubham",
-            username: "shubham_r24",
-            profileImageString: "",
-            plantCount: 32
-        )
-        
-        let arya = User(
-            id: "u3",
-            name: "Arya Kulkarni",
-            username: "arya.grows",
-            profileImageString: "",
-            plantCount: 7
-        )
-        
-        let rohan = User(
-            id: "u4",
-            name: "Rohan Mehta",
-            username: "rohan.plants",
-            profileImageString: "",
-            plantCount: 18
-        )
-        
-        let neha = User(
-            id: "u5",
-            name: "Neha Sharma",
-            username: "neha.greens",
-            profileImageString: "",
-            plantCount: 25
-        )
-        
-        let kabir = User(
-            id: "u6",
-            name: "Kabir Verma",
-            username: "kabir.gardens",
-            profileImageString: "",
-            plantCount: 9
-        )
-        
-        self.users = [
-            vedant,
-            shubham,
-            arya,
-            rohan,
-            neha,
-            kabir
-        ]
+
+    // MARK: - Clear on Logout
+    func clearSession() {
+        cachedCurrentUser = nil
     }
 }

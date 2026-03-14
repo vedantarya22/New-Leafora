@@ -1,138 +1,147 @@
 //
 //  CommentsViewController.swift
-//  PlantApp
-//
-//  Created by SDC-USER on 20/01/26.
+//  Leafora
 //
 
 import UIKit
 
-class CommentsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class CommentsViewController: UIViewController,
+                               UITableViewDelegate,
+                               UITableViewDataSource,
+                               UITextFieldDelegate {
 
     // MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var commentTextField: UITextField!
-    @IBOutlet weak var inputBottomConstraint: NSLayoutConstraint! //for keyboard to move along with input text field
-    
+    @IBOutlet weak var inputBottomConstraint: NSLayoutConstraint!
+
     // MARK: - Data
-    var post: Post! // call the data from user poist dat from datastore
-    
+    var post: Post!                      // set by CommunityViewController before pushing
+    private var comments: [Comment] = [] // local copy — fetched from backend
+
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.keyboardDismissMode = .onDrag
-        if post == nil {
-                print("❌ ERROR: No Post data was passed to Comments Screen!")
-                return
-            }
-        tableView.delegate = self
+
+        guard post != nil else {
+            print("❌ ERROR: No Post passed to CommentsViewController")
+            return
+        }
+
+        tableView.delegate   = self
         tableView.dataSource = self
-        
-        // Setup Keyboard
+        tableView.keyboardDismissMode = .onDrag
+        tableView.tableFooterView = UIView()
+
         commentTextField.delegate = self
         setupKeyboardObservers()
-        
-        // Hide extra empty lines in table
-        tableView.tableFooterView = UIView()
+
+        // ── Load comments from backend ──────────────────────────────────────
+        loadComments()
     }
 
-    // MARK: - TableView Logic
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return post?.comments.count ?? 0
+    // MARK: - Load Comments
+    private func loadComments() {
+        PostRepository.shared.fetchComments(postId: post.id) { [weak self] fetched in
+            self?.comments = fetched
+            self?.tableView.reloadData()
+
+            // Scroll to bottom if there are existing comments
+            if let count = self?.comments.count, count > 0 {
+                let last = IndexPath(row: count - 1, section: 0)
+                self?.tableView.scrollToRow(at: last, at: .bottom, animated: false)
+            }
+        }
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CommentsCell", for: indexPath) as! CommentsCell
-        let comment = post.comments[indexPath.row]
-        
-        cell.usernameLabel.text = comment.username
-        cell.timeLabel.text = comment.timeAgo
-        cell.commentLabel.text = comment.text
-        
+
+    // MARK: - TableView
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        comments.count
+    }
+
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "CommentsCell", for: indexPath
+        ) as! CommentsCell
+
+        let comment = comments[indexPath.row]
+
+        // author is a PostAuthor populated by backend
+        cell.usernameLabel.text = comment.author?.username ?? "Unknown"
+        cell.commentLabel.text  = comment.text
+        cell.timeLabel.text     = comment.displayTimestamp   // uses createdAt → timeAgo
+
         return cell
     }
-    
+
+    // MARK: - Actions
     @IBAction func closeTapped(_ sender: UIBarButtonItem) {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true)
     }
-    
+
     @IBAction func postTapped(_ sender: UIButton) {
         sendComment()
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         sendComment()
         return true
     }
-    
+
+    // MARK: - Send Comment
     func sendComment() {
-        guard let text = commentTextField.text, !text.isEmpty else { return }
-        
-        let newComment = Comment(
-            id: UUID(),
-            username: UserSession.shared.currentUser?.username ?? "Anonymous",
-            text: text,
-            timeAgo: "Just now"
-        )
-        
-        // Write to the shared source of truth
-        PostRepository.shared.addComment(to: post.id, comment: newComment)
-        
-        // Refresh local copy from the repository
-        if let freshPost = PostRepository.shared.getPost(id: post.id) {
-            post = freshPost
-        }
-        
-        // Update Table
-        tableView.reloadData()
-        
-        // Scroll to bottom
-        if post.comments.count > 0 {
-            let indexPath = IndexPath(row: post.comments.count - 1, section: 0)
-            tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        }
-        
-        // Clear Input
+        guard let text = commentTextField.text?.trimmingCharacters(in: .whitespaces),
+              !text.isEmpty
+        else { return }
+
+        // Clear field immediately for snappy UX
         commentTextField.text = ""
+
+        PostRepository.shared.addComment(postId: post.id, text: text) { [weak self] comment in
+            guard let self = self else { return }
+
+            if let comment = comment {
+                // Append the server-returned comment (has real id, createdAt, author)
+                self.comments.append(comment)
+                let last = IndexPath(row: self.comments.count - 1, section: 0)
+                self.tableView.insertRows(at: [last], with: .automatic)
+                self.tableView.scrollToRow(at: last, at: .bottom, animated: true)
+            } else {
+                print("⚠️ addComment failed — backend did not return a Comment")
+            }
+        }
     }
-    
-    // MARK: - Keyboard Handling (The Slide Up Fix)
+
+    // MARK: - Keyboard
     func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-        // Tap background to dismiss keyboard
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification, object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification, object: nil
+        )
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
     }
-    
+
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            // Move up
-            let height = -(keyboardSize.height - view.safeAreaInsets.bottom)
-            inputBottomConstraint.constant = height
+        if let frame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]
+                        as? NSValue)?.cgRectValue {
+            let offset = -(frame.height - view.safeAreaInsets.bottom)
+            inputBottomConstraint.constant = offset
             UIView.animate(withDuration: 0.3) { self.view.layoutIfNeeded() }
         }
     }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-        // Move down
+
+    @objc func keyboardWillHide(_ notification: NSNotification) {
         inputBottomConstraint.constant = 0
         UIView.animate(withDuration: 0.3) { self.view.layoutIfNeeded() }
     }
-    
+
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
 }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-

@@ -14,11 +14,11 @@ class SignUpViewController: UIViewController {
 
     private let errorLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemRed
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor     = .systemRed
+        label.font          = UIFont.systemFont(ofSize: 14)
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.isHidden = true
+        label.isHidden      = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -39,36 +39,39 @@ class SignUpViewController: UIViewController {
     // MARK: - Setup
     private func setupUI() {
         passwordTextField.isSecureTextEntry = true
-        emailTextField.keyboardType = .emailAddress
+        emailTextField.keyboardType         = .emailAddress
         [nameTextField, usernameTextField, emailTextField, passwordTextField].forEach {
-            if let tf = $0 {
-                tf.autocapitalizationType = .none
-                tf.autocorrectionType = .no
-                styleTextField(tf)
-            }
+            $0?.autocapitalizationType = .none
+            $0?.autocorrectionType    = .no
+            if let tf = $0 { styleTextField(tf) }
         }
         signupButton.layer.cornerRadius = 10
         signupButton.clipsToBounds = true
         styleButtons()
         setupLoginLabelGesture()
     }
-    
+
     private func setupLoginLabelGesture() {
         func findLabel(in view: UIView) {
             for subview in view.subviews {
-                if let label = subview as? UILabel, label.text?.contains("Already") == true {
+                if let label = subview as? UILabel,
+                   label.text?.contains("Already") == true {
                     label.isUserInteractionEnabled = true
-                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleLoginTap))
-                    label.addGestureRecognizer(tapGesture)
-                    
-                    // Attributed string
+                    label.addGestureRecognizer(
+                        UITapGestureRecognizer(target: self, action: #selector(handleLoginTap))
+                    )
                     let fullText = "Already have an account? Log in"
-                    let attributedString = NSMutableAttributedString(string: fullText)
-                    let loginRange = (fullText as NSString).range(of: "Log in")
-                    attributedString.addAttribute(.foregroundColor, value: UIColor.secondaryLabel, range: NSRange(location: 0, length: fullText.count))
-                    attributedString.addAttribute(.foregroundColor, value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0), range: loginRange)
-                    attributedString.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: label.font.pointSize), range: loginRange)
-                    label.attributedText = attributedString
+                    let attr     = NSMutableAttributedString(string: fullText)
+                    let range    = (fullText as NSString).range(of: "Log in")
+                    attr.addAttribute(.foregroundColor, value: UIColor.secondaryLabel,
+                                      range: NSRange(location: 0, length: fullText.count))
+                    attr.addAttribute(.foregroundColor,
+                                      value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0),
+                                      range: range)
+                    attr.addAttribute(.font,
+                                      value: UIFont.boldSystemFont(ofSize: label.font.pointSize),
+                                      range: range)
+                    label.attributedText = attr
                     return
                 }
                 findLabel(in: subview)
@@ -78,62 +81,10 @@ class SignUpViewController: UIViewController {
     }
 
     @objc private func handleLoginTap() {
-        if let nav = navigationController {
-            nav.popViewController(animated: true)
+        if navigationController != nil {
+            navigationController?.popViewController(animated: true)
         } else {
-            self.dismiss(animated: true)
-        }
-    }
-    
-    // MARK: - UI Helpers
-    private func styleTextField(_ textField: UITextField) {
-        textField.backgroundColor = .white
-        textField.layer.cornerRadius = 10
-        textField.layer.masksToBounds = true
-        
-        // Subtle native border
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.systemGray5.cgColor
-        
-        // Horizontal padding
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
-        textField.leftView = paddingView
-        textField.leftViewMode = .always
-    }
-    
-    private func styleButtons() {
-        let botanicalGreen = UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0)
-        
-        // Signup Button
-        signupButton.tintColor = botanicalGreen
-        if #available(iOS 15.0, *) {
-            signupButton.configuration?.baseBackgroundColor = botanicalGreen
-        } else {
-            signupButton.backgroundColor = botanicalGreen
-        }
-        
-        // Google Button
-        if let gBtn = googleButton {
-            gBtn.tintColor = .black
-            if #available(iOS 15.0, *) {
-                gBtn.configuration?.baseBackgroundColor = .white
-                gBtn.configuration?.baseForegroundColor = .black
-            } else {
-                gBtn.backgroundColor = .white
-                gBtn.setTitleColor(.black, for: .normal)
-            }
-        }
-        
-        // Apple button
-        if let aBtn = appleButton {
-            aBtn.tintColor = .white
-            if #available(iOS 15.0, *) {
-                aBtn.configuration?.baseBackgroundColor = .black
-                aBtn.configuration?.baseForegroundColor = .white
-            } else {
-                aBtn.backgroundColor = .black
-                aBtn.setTitleColor(.white, for: .normal)
-            }
+            dismiss(animated: true)
         }
     }
 
@@ -146,8 +97,8 @@ class SignUpViewController: UIViewController {
         ])
     }
 
-    // MARK: - Actions
-    @IBAction func signupButton(_ sender: Any) {
+    // MARK: - Signup
+    @IBAction func signupButtonTapped(_ sender: UIButton) {
         guard let name     = nameTextField.text,     !name.isEmpty,
               let username = usernameTextField.text, !username.isEmpty,
               let email    = emailTextField.text,    !email.isEmpty,
@@ -156,56 +107,92 @@ class SignUpViewController: UIViewController {
             return
         }
 
-        // ✅ Disable button to prevent double tap
-        if let button = sender as? UIButton { button.isEnabled = false }
+        errorLabel.isHidden   = true
+        sender.isEnabled = false
 
         NetworkManager.shared.signup(
-            name:     name,
-            username: username,
-            email:    email,
-            password: password
+            name: name, username: username,
+            email: email, password: password
         ) { [weak self] success, message in
-            if let button = sender as? UIButton { button.isEnabled = true }
-
+            sender.isEnabled = true
             if success {
-                print("✅ Signup success")
-                let alert = UIAlertController(title: "Account Created!", message: "Please log in with your new credentials.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-                    if let nav = self?.navigationController {
-                        nav.popViewController(animated: true)
-                    } else {
-                        self?.dismiss(animated: true)
-                    }
-                }))
-                self?.present(alert, animated: true)
+                print("✅ Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
+                // ✅ Navigate straight to main app — no need to log in again,
+                //    token + userId are already in Keychain from NetworkManager.signup
+                self?.navigateToMainApp()
             } else {
                 self?.showError(message ?? "Signup failed")
             }
         }
     }
 
-    // MARK: - Error
+    // MARK: - Navigation
+    private func navigateToMainApp() {
+        guard let sceneDelegate = UIApplication.shared.connectedScenes
+                .first?.delegate as? SceneDelegate,
+              let window = sceneDelegate.window
+        else { return }
+
+        // ✅ New user — mark onboarding as seen so they go straight to main on next launch
+        // Remove this line if you want new users to see onboarding after signup
+        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+
+        // ✅ 1. Switch UI to main app
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        window.rootViewController = storyboard.instantiateInitialViewController()
+        UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
+
+        // ✅ 2. Load all data (plants, sites, current user profile) in background
+        sceneDelegate.loadAppData()
+    }
+
+    // MARK: - UI Helpers
     private func showError(_ message: String) {
-        errorLabel.text = message
+        errorLabel.text     = message
         errorLabel.isHidden = false
     }
 
-    // MARK: - Navigation
-    private func navigateToMainApp() {
-        // ✅ Load app data in background
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            sceneDelegate.loadAppData()
+    private func styleTextField(_ textField: UITextField) {
+        textField.backgroundColor     = .white
+        textField.layer.cornerRadius  = 10
+        textField.layer.masksToBounds = true
+        textField.layer.borderWidth   = 1
+        textField.layer.borderColor   = UIColor.systemGray5.cgColor
+        let pad = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
+        textField.leftView     = pad
+        textField.leftViewMode = .always
+    }
+
+    private func styleButtons() {
+        let green = UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0)
+
+        signupButton.tintColor = green
+        if #available(iOS 15.0, *) {
+            signupButton.configuration?.baseBackgroundColor = green
+        } else {
+            signupButton.backgroundColor = green
         }
 
-        // ✅ New user → always show onboarding first
-        let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
+        if let gBtn = googleButton {
+            gBtn.tintColor = .black
+            if #available(iOS 15.0, *) {
+                gBtn.configuration?.baseBackgroundColor  = .white
+                gBtn.configuration?.baseForegroundColor = .black
+            } else {
+                gBtn.backgroundColor = .white
+                gBtn.setTitleColor(.black, for: .normal)
+            }
+        }
 
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first?.windows.first
-        else { return }
-
-        window.rootViewController = storyboard.instantiateInitialViewController()
-        UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
+        if let aBtn = appleButton {
+            aBtn.tintColor = .white
+            if #available(iOS 15.0, *) {
+                aBtn.configuration?.baseBackgroundColor  = .black
+                aBtn.configuration?.baseForegroundColor = .white
+            } else {
+                aBtn.backgroundColor = .black
+                aBtn.setTitleColor(.white, for: .normal)
+            }
+        }
     }
 }

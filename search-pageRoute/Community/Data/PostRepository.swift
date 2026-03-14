@@ -1,341 +1,213 @@
+//
+//  PostRepository.swift
+//  Leafora
+//
 
 import Foundation
 import UIKit
 
 extension Notification.Name {
     static let didUpdatePosts = Notification.Name("didUpdatePosts")
-    static let didUpdatePost = Notification.Name("didUpdatePost")
+    static let didUpdatePost  = Notification.Name("didUpdatePost")
 }
 
 class PostRepository {
     static let shared = PostRepository()
-    
-    // The "Source of Truth" for raw post data (e.g. content, author, timestamp).
-    // Note: likesCount here will be treated as the "base" count (e.g. from server + dummy data).
-    // In a real system, we'd query the count from the DB.
-    // For this refactor, we will calculate the effective count = baseCount + (liked ? 1 : 0) - (unliked ? 1 : 0)
-    // To simplify: We will maintain `likedPostsByUser`.
-    // The `Post` objects in this array have an initial `likesCount`.
-    // When we toggle, we update the `likesCount` in this array AND track the user.
+    private init() {}
+
+    // MARK: - Source of Truth
     private(set) var posts: [Post] = []
-    
-    // Tracks which users have liked which posts.
-    // Key: UserID, Value: Set of PostIDs
-    private var likedPostsByUser: [String: Set<String>] = [:]
-    
-    // Tracks saved posts
-    private var savedPostsByUser: [String: Set<String>] = [:]
-    
-    private init() {
-        seedDummyData()
-    }
-    
-    // MARK: - Data Access
-    
+
+    // MARK: - Fetch Feed
     func fetchAllPosts(completion: @escaping ([Post]) -> Void) {
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        let decoratedPosts = posts.map { decorate(post: $0, forUserId: currentUserId) }
-        completion(decoratedPosts)
+        NetworkManager.shared.fetchFeed(page: 1) { [weak self] response in
+            guard let self = self else { return }
+            let fetched = response?.posts ?? []
+            self.posts = fetched
+            self.notifyUpdate()
+            completion(fetched)
+        }
     }
-    
+
+    // MARK: - Fetch User Posts (for Profile screen)
     func fetchPosts(forUserId userId: String, completion: @escaping ([Post]) -> Void) {
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        
-        let userPosts = posts
-            .filter { $0.userId == userId }
-            .map { decorate(post: $0, forUserId: currentUserId) }
-        
-        completion(userPosts)
+        NetworkManager.shared.fetchUserPosts(userId: userId) { posts in
+            completion(posts ?? [])
+        }
     }
-    
+
+    // MARK: - Fetch Saved Posts
     func fetchSavedPostsForCurrentUser(completion: @escaping ([Post]) -> Void) {
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        let savedIDs = savedPostsByUser[currentUserId] ?? []
-        
-        let savedPosts = posts
-            .filter { savedIDs.contains($0.id) }
-            .map { decorate(post: $0, forUserId: currentUserId) }
-        
-        completion(savedPosts)
+        NetworkManager.shared.fetchSavedPosts { posts in
+            completion(posts ?? [])
+        }
     }
-    
+
+    // MARK: - Get Single Post (from in-memory cache)
     func getPost(id: String) -> Post? {
-        guard let post = posts.first(where: { $0.id == id }) else { return nil }
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        return decorate(post: post, forUserId: currentUserId)
+        return posts.first(where: { $0.id == id })
     }
-    
-    // MARK: - Helper: Decoration
-    // Applies dynamic state (Saved, Liked) to the raw Post object
-    private func decorate(post: Post, forUserId userId: String) -> Post {
-        var p = post
-        
-        // 0. Hydrate Author
-        p.author = UserSession.shared.user(withId: p.userId)
-        
-        // 1. Saved State
-        let savedIDs = savedPostsByUser[userId] ?? []
-        p.isSaved = savedIDs.contains(p.id)
-        
-        // 2. Liked State
-        let likedIDs = likedPostsByUser[userId] ?? []
-        p.isLiked = likedIDs.contains(p.id)
-        
-        // 3. Timestamp Calculation
-        p.displayTimestamp = calculateDisplayTime(from: p.timestamp)
-        
-        return p
-    }
-    
-    private func calculateDisplayTime(from dateString: String) -> String {
-        if dateString.isEmpty { return "Just now" }
-        
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        
-        if let date = isoFormatter.date(from: dateString) {
-            return timeAgoDisplay(date: date)
-        }
-        
-        // Try without fractional seconds if first fails
-        isoFormatter.formatOptions = [.withInternetDateTime]
-        if let date = isoFormatter.date(from: dateString) {
-            return timeAgoDisplay(date: date)
-        }
-        
-        return "Just now"
-    }
-    
-    private func timeAgoDisplay(date: Date) -> String {
-        let secondsAgo = Int(Date().timeIntervalSince(date))
-        
-        let minute = 60
-        let hour = 60 * minute
-        let day = 24 * hour
-        let week = 7 * day
-        
-        if secondsAgo < minute {
-            return "Just now"
-        } else if secondsAgo < hour {
-            return "\(secondsAgo / minute)m ago"
-        } else if secondsAgo < day {
-            return "\(secondsAgo / hour)h ago"
-        } else if secondsAgo < week {
-            return "\(secondsAgo / day)d ago"
-        }
-        
-        return "\(secondsAgo / week)w ago"
-    }
-    
-    // MARK: - Mutations
-    
-    // Renamed from updateLikeStatus to be more action-oriented and precise
-    // Controllers just say "User toggled like", Repository figures out the rest.
+
+    // MARK: - Toggle Like  (optimistic UI + backend sync)
     func toggleLike(postId: String) {
         guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
-        let currentUserId = UserSession.shared.currentLoggedInUserID
-        
-        // 1. Initialize set if needed
-        if likedPostsByUser[currentUserId] == nil {
-            likedPostsByUser[currentUserId] = []
-        }
-        
-        // 2. Check current state
-        let isCurrentlyLiked = likedPostsByUser[currentUserId]!.contains(postId)
-        
-        // 3. Toggle
-        if isCurrentlyLiked {
-            // Unlike
-            likedPostsByUser[currentUserId]!.remove(postId)
-            posts[index].likesCount = max(0, posts[index].likesCount - 1)
-        } else {
-            // Like
-            likedPostsByUser[currentUserId]!.insert(postId)
-            posts[index].likesCount += 1
-        }
-        
-        // 4. Update the "isLiked" flag in the source purely for debugging or unused references,
-        // (Since 'fetch' overwrites this anyway).
-        // But importantly, we updated `likesCount`.
-        
-        // 5. Broadcast
-        notifyUpdate()
+
+        // 1. Optimistic update
+        let wasLiked = posts[index].isLikedByMe
+        posts[index].isLikedByMe  = !wasLiked
+        posts[index].likesCount   = max(0, posts[index].likesCount + (wasLiked ? -1 : 1))
         notifyPostUpdate(postId: postId)
+
+        // 2. Sync to backend
+        NetworkManager.shared.toggleLike(postId: postId) { [weak self] isLiked, likesCount in
+            guard let self = self,
+                  let idx = self.posts.firstIndex(where: { $0.id == postId }),
+                  let isLiked = isLiked,
+                  let likesCount = likesCount
+            else { return }
+            // Reconcile with server truth
+            self.posts[idx].isLikedByMe = isLiked
+            self.posts[idx].likesCount  = likesCount
+            self.notifyPostUpdate(postId: postId)
+        }
     }
-    
-    // Kept for backward compatibility if strict signature match is needed during refactor steps,
-    // but we should move callers to `toggleLike`.
-    // The implementation plan mainly focused on "The like action should toggle state".
-    // I will map the old signature to the new logic if needed, but better to update callers.
-    // Leaving this here as a bridge if I missed any callers, but purely delegating.
-     func updateLikeStatus(forPostId postId: String, isLiked: Bool, newCount: Int) {
-         // IGNORE the passed `isLiked` and `newCount`. Trust the Source of Truth.
-         // This prevents the "Client tells Server what the count is" anti-pattern.
-         // We just treat this as a "Toggle" request or strictly "Set" request?
-         // Since the UI buttons usually toggle, calling toggleLike is safer.
-         // However, if the UI state was desynced (e.g. user force-clicked 'Like' when it was already liked),
-         // toggling might invert it wrong.
-         // But `toggleLike` is robust: it checks current state in Repos.
-         
-         // Logic: The user tapped "Heart".
-         toggleLike(postId: postId)
-     }
-    
+
+    // MARK: - Toggle Save  (optimistic UI + backend sync)
     func toggleSave(postId: String) {
-        let userId = UserSession.shared.currentLoggedInUserID
-        
-        if savedPostsByUser[userId] == nil {
-            savedPostsByUser[userId] = []
-        }
-        
-        if savedPostsByUser[userId]!.contains(postId) {
-            savedPostsByUser[userId]!.remove(postId)
-        } else {
-            savedPostsByUser[userId]!.insert(postId)
-        }
-        
-        notifyUpdate()
-        notifyPostUpdate(postId: postId)
-    }
-    
-    func addComment(to postId: String, comment: Comment) {
         guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
-        posts[index].comments.append(comment)
-        notifyUpdate()
+
+        // 1. Optimistic update
+        posts[index].isSaved = !posts[index].isSaved
         notifyPostUpdate(postId: postId)
+
+        // 2. Sync to backend
+        NetworkManager.shared.toggleSave(postId: postId) { [weak self] isSaved in
+            guard let self = self,
+                  let idx = self.posts.firstIndex(where: { $0.id == postId }),
+                  let isSaved = isSaved
+            else { return }
+            self.posts[idx].isSaved = isSaved
+            self.notifyPostUpdate(postId: postId)
+        }
     }
-    
+
+    // MARK: - Delete Post  (local first, then backend)
     func deletePost(id: String) {
         posts.removeAll { $0.id == id }
         notifyUpdate()
+
+        NetworkManager.shared.deletePost(postId: id) { success in
+            if !success { print("⚠️ deletePost backend failed for \(id)") }
+        }
     }
-    
+
+    // MARK: - Create New Post  (upload image → create post → insert at top)
     func addNewPost(caption: String, image: UIImage, completion: @escaping (Bool) -> Void) {
-        guard let currentUser = UserSession.shared.currentUser else {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            print("❌ Could not compress image")
             completion(false)
             return
         }
-        
-        // Save Image to Disk
-        let imageID = UUID().uuidString
-        if let data = image.jpegData(compressionQuality: 0.8) {
-            let filename = getDocumentsDirectory().appendingPathComponent(imageID)
-            try? data.write(to: filename)
+
+        // Step 1: Upload image to Cloudinary via backend
+        NetworkManager.shared.uploadImageToCloudinary(imageData) { [weak self] imageUrl in
+            guard let self = self, let imageUrl = imageUrl else {
+                print("❌ Cloudinary upload failed")
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+
+            // Step 2: Create post on backend
+            NetworkManager.shared.createPost(imageUrl: imageUrl, caption: caption) { post in
+                guard let post = post else {
+                    print("❌ createPost failed")
+                    DispatchQueue.main.async { completion(false) }
+                    return
+                }
+                // Step 3: Insert at top of local feed
+                self.posts.insert(post, at: 0)
+                self.notifyUpdate()
+                print("✅ New post created: \(post.id)")
+                DispatchQueue.main.async { completion(true) }
+            }
         }
-         
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        let timestamp = isoFormatter.string(from: Date())
-        
-        let newPost = Post(
-            id: UUID().uuidString,
-            userId: currentUser.id,
-            postImageString: imageID,
-            likesCount: 0,
-            caption: caption,
-            timestamp: timestamp,
-            // author is no longer stored, it's hydrated at runtime
-            isLiked: false,
-            comments: []
-        )
-        
-        self.posts.insert(newPost, at: 0)
-        
-        notifyUpdate()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+    }
+
+    // MARK: - Comments  (delegated directly to NetworkManager)
+    func fetchComments(postId: String, completion: @escaping ([Comment]) -> Void) {
+        NetworkManager.shared.fetchComments(postId: postId) { response in
+            completion(response?.comments ?? [])
+        }
+    }
+
+    func addComment(postId: String, text: String, completion: @escaping (Comment?) -> Void) {
+        NetworkManager.shared.addComment(postId: postId, text: text) { [weak self] comment in
+            guard let self = self, let comment = comment else {
+                completion(nil)
+                return
+            }
+            // Update local commentsCount
+            if let idx = self.posts.firstIndex(where: { $0.id == postId }) {
+                self.posts[idx].commentsCount += 1
+                self.notifyPostUpdate(postId: postId)
+            }
+            completion(comment)
+        }
+    }
+
+    func deleteComment(postId: String, commentId: String, completion: @escaping (Bool) -> Void) {
+        NetworkManager.shared.deleteComment(postId: postId, commentId: commentId) { [weak self] success in
+            guard let self = self, success else {
+                completion(false)
+                return
+            }
+            if let idx = self.posts.firstIndex(where: { $0.id == postId }) {
+                self.posts[idx].commentsCount = max(0, self.posts[idx].commentsCount - 1)
+                self.notifyPostUpdate(postId: postId)
+            }
             completion(true)
         }
     }
-    
-    // MARK: - Private Helpers
-    
+
+    // MARK: - Time Ago Helper  (used by Post.displayTimestamp & Comment.displayTimestamp)
+    func timeAgo(from dateString: String) -> String {
+        guard !dateString.isEmpty else { return "Just now" }
+
+        let isoFormatter = ISO8601DateFormatter()
+
+        // Try with fractional seconds first (MongoDB default)
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = isoFormatter.date(from: dateString) {
+            return format(date: date)
+        }
+
+        // Fallback without fractional seconds
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        if let date = isoFormatter.date(from: dateString) {
+            return format(date: date)
+        }
+
+        return "Just now"
+    }
+
+    private func format(date: Date) -> String {
+        let s = Int(Date().timeIntervalSince(date))
+        let m = 60, h = 3600, d = 86400, w = 604800
+        switch s {
+        case ..<m:      return "Just now"
+        case ..<h:      return "\(s / m)m ago"
+        case ..<d:      return "\(s / h)h ago"
+        case ..<w:      return "\(s / d)d ago"
+        default:        return "\(s / w)w ago"
+        }
+    }
+
+    // MARK: - Notifications
     private func notifyUpdate() {
         NotificationCenter.default.post(name: .didUpdatePosts, object: nil)
     }
-    
+
     private func notifyPostUpdate(postId: String) {
-        // Send the updated post object if needed, or just the ID
         NotificationCenter.default.post(name: .didUpdatePost, object: nil, userInfo: ["postId": postId])
-    }
-    
-    private func getDocumentsDirectory() -> URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
-    
-    private func seedDummyData() {
-        UserSession.shared.fetchAllUsers { users in
-            let vedant = users.first { $0.id == "u1" }
-            let shubham = users.first { $0.id == "u2" }
-            let arya = users.first { $0.id == "u3" }
-            let rohan = users.first { $0.id == "u4" }
-            let neha = users.first { $0.id == "u5" }
-            let kabir = users.first { $0.id == "u6" }
-            
-            // Generate some past dates
-            let isoFormatter = ISO8601DateFormatter()
-            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            
-            func dateAgo(hours: Int) -> String {
-                let date = Date().addingTimeInterval(TimeInterval(-hours * 3600))
-                return isoFormatter.string(from: date)
-            }
-            
-            let p1 = Post(
-                id: "p1",
-                userId: "u1",
-                postImageString: "plant_vedant",
-                likesCount: 5,
-                caption: "New leaf alert! 🌿",
-                timestamp: dateAgo(hours: 2)
-            )
-            
-            let p2 = Post(
-                id: "p2",
-                userId: "u2",
-                postImageString: "plant_shubham",
-                likesCount: 3,
-                caption: "Watering day 💧",
-                timestamp: dateAgo(hours: 5)
-            )
-            
-            let p3 = Post(
-                id: "p3",
-                userId: "u3",
-                postImageString: "plant_arya",
-                likesCount: 12,
-                caption: "My balcony jungle is thriving 🌱",
-                timestamp: dateAgo(hours: 24)
-            )
-            
-            let p4 = Post(
-                id: "p4",
-                userId: "u4",
-                postImageString: "plant_rohan",
-                likesCount: 8,
-                caption: "Repotted my monstera today 🪴",
-                timestamp: dateAgo(hours: 48)
-            )
-            
-            let p5 = Post(
-                id: "p5",
-                userId: "u5",
-                postImageString: "plant_neha",
-                likesCount: 21,
-                caption: "Sunlight & happy plants ☀️",
-                timestamp: dateAgo(hours: 72)
-            )
-            
-            let p6 = Post(
-                id: "p6",
-                userId: "u6",
-                postImageString: "plant_kabir",
-                likesCount: 2,
-                caption: "Still learning, but loving it 🌿",
-                timestamp: dateAgo(hours: 500)
-            )
-            
-            self.posts = [p1, p2, p3, p4, p5, p6]
-        }
     }
 }

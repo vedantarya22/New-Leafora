@@ -55,8 +55,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         
         // ✅ Use UserSession as single source of truth for profile image
         if let user = user {
-            let imageName = UserSession.shared.profileImageString(for: user.id)
-            profileImage.configureImage(with: imageName)
+            profileImage.configureImage(with: user.profileImageString)
         } else {
             // Fallback placeholder
             let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
