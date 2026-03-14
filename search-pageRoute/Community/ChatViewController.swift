@@ -8,7 +8,7 @@ struct Sender: SenderType {
     var displayName: String
 }
 
-// MARK: - Message
+// MARK: - Message  (wraps CoreData entity for MessageKit display)
 struct Message: MessageType {
     var sender:    SenderType
     var messageId: String
@@ -20,25 +20,22 @@ struct Message: MessageType {
 class ChatViewController: MessagesViewController {
 
     // MARK: - Properties
-    var user: User?
+    // Must be set before pushing this VC
+    var user: User!
 
-    // ✅ Computed so it reads the latest cached user at access time
-    var mySender: Sender {
+    private var messages: [Message] = []
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
+
+    private var mySender: Sender {
         Sender(
             senderId:    UserSession.shared.currentLoggedInUserID,
             displayName: UserSession.shared.currentUser?.name ?? "Me"
         )
     }
 
-    var otherSender: Sender {
-        Sender(
-            senderId:    user?.id ?? "other",
-            displayName: user?.name ?? "User"
-        )
+    private var otherSender: Sender {
+        Sender(senderId: user.id, displayName: user.name)
     }
-
-    var messages: [Message] = []
-    private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -47,9 +44,9 @@ class ChatViewController: MessagesViewController {
         navigationController?.navigationBar.tintColor = .brandGreen
         messagesCollectionView.backgroundColor = .clear
 
-        setupSeedMessages()
         setupMessageKit()
         setupNavigationBar()
+        loadMessages()
     }
 
     override func viewDidLayoutSubviews() {
@@ -57,28 +54,23 @@ class ChatViewController: MessagesViewController {
         gradientLayer.frame = view.bounds
     }
 
-    // MARK: - Seed Messages
-    private func setupSeedMessages() {
-        messages = [
-            Message(
-                sender:    mySender,
-                messageId: UUID().uuidString,
-                sentDate:  Date().addingTimeInterval(-300),
-                kind:      .text("May I know about the plants you have? 🤗")
-            ),
-            Message(
-                sender:    otherSender,
-                messageId: UUID().uuidString,
-                sentDate:  Date().addingTimeInterval(-200),
-                kind:      .text("Sureee I would love to tell lets meet at 7? 🤗")
-            ),
-            Message(
-                sender:    mySender,
-                messageId: UUID().uuidString,
-                sentDate:  Date().addingTimeInterval(-100),
-                kind:      .text("That sounds perfect! See you then.")
+    // MARK: - Load Messages from CoreData
+    private func loadMessages() {
+        let stored = ChatManager.shared.fetchMessages(with: user.id)
+
+        messages = stored.map { entity in
+            let isMe   = entity.senderId == UserSession.shared.currentLoggedInUserID
+            let sender = isMe ? mySender : otherSender
+            return Message(
+                sender:    sender,
+                messageId: entity.id ?? UUID().uuidString,
+                sentDate:  entity.timestamp ?? Date(),
+                kind:      .text(entity.text ?? "")
             )
-        ]
+        }
+
+        messagesCollectionView.reloadData()
+        scrollToBottom(animated: false)
     }
 
     // MARK: - MessageKit Setup
@@ -89,8 +81,7 @@ class ChatViewController: MessagesViewController {
         messageInputBar.delegate                       = self
 
         messageInputBar.inputTextView.placeholder = "Message..."
-        messageInputBar.inputTextView.font        = UIFont.systemFont(ofSize: 15)
-
+        messageInputBar.inputTextView.font        = .systemFont(ofSize: 15)
         messageInputBar.sendButton.setTitle("Send", for: .normal)
         messageInputBar.sendButton.setTitleColor(.brandGreen,  for: .normal)
         messageInputBar.sendButton.setTitleColor(.systemGray3, for: .disabled)
@@ -101,59 +92,55 @@ class ChatViewController: MessagesViewController {
         messageInputBar.contentView.layer.cornerRadius  = 20
         messageInputBar.contentView.layer.masksToBounds = true
         messageInputBar.padding = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-
         messageInputBar.setLeftStackViewWidthConstant(to: 0, animated: false)
         messageInputBar.leftStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
-        messagesCollectionView.reloadData()
-        DispatchQueue.main.async {
-            self.messagesCollectionView.scrollToLastItem(animated: false)
-        }
     }
 
-    // MARK: - Navigation Bar
+    // MARK: - Navigation Bar  (avatar + name centred)
     private func setupNavigationBar() {
-        guard let user = user else { return }
-
         let avatarSize: CGFloat     = 36
         let containerWidth: CGFloat = 180
         let labelHeight: CGFloat    = 16
         let spacing: CGFloat        = 3
         let totalHeight             = avatarSize + spacing + labelHeight
 
-        let containerView = UIView(frame: CGRect(
-            x: 0, y: 0, width: containerWidth, height: totalHeight
-        ))
+        let container = UIView(frame: CGRect(x: 0, y: 0,
+                                             width: containerWidth, height: totalHeight))
 
-        let avatarX = (containerWidth - avatarSize) / 2
-        let avatarImageView = UIImageView(frame: CGRect(
-            x: avatarX, y: 0, width: avatarSize, height: avatarSize
-        ))
-        avatarImageView.contentMode        = .scaleAspectFill
-        avatarImageView.clipsToBounds      = true
-        avatarImageView.layer.cornerRadius = avatarSize / 2
+        let avatarX    = (containerWidth - avatarSize) / 2
+        let avatarView = UIImageView(frame: CGRect(x: avatarX, y: 0,
+                                                   width: avatarSize, height: avatarSize))
+        avatarView.contentMode        = .scaleAspectFill
+        avatarView.clipsToBounds      = true
+        avatarView.layer.cornerRadius = avatarSize / 2
 
-        // ✅ User.profileImageString is String (non-optional) — safe to call .isEmpty directly
-        if ((user.profileImageString?.isEmpty) != nil) {
-            let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
-            avatarImageView.image       = UIImage(systemName: "person.circle.fill",
-                                                  withConfiguration: config)
-            avatarImageView.contentMode = .scaleAspectFit
+        if let img = user.profileImageString, !img.isEmpty {
+            avatarView.configureImage(with: img)
         } else {
-            avatarImageView.configureImage(with: user.profileImageString)
+            let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
+            avatarView.image       = UIImage(systemName: "person.circle.fill",
+                                             withConfiguration: config)
+            avatarView.contentMode = .scaleAspectFit
         }
 
-        let nameLabel = UILabel(frame: CGRect(
-            x: 0, y: avatarSize + spacing, width: containerWidth, height: labelHeight
-        ))
+        let nameLabel = UILabel(frame: CGRect(x: 0, y: avatarSize + spacing,
+                                              width: containerWidth, height: labelHeight))
         nameLabel.text          = user.name
-        nameLabel.font          = UIFont.boldSystemFont(ofSize: 13)
+        nameLabel.font          = .boldSystemFont(ofSize: 13)
         nameLabel.textAlignment = .center
 
-        containerView.addSubview(avatarImageView)
-        containerView.addSubview(nameLabel)
-        navigationItem.titleView          = containerView
+        container.addSubview(avatarView)
+        container.addSubview(nameLabel)
+        navigationItem.titleView          = container
         navigationItem.rightBarButtonItem = nil
+    }
+
+    // MARK: - Helpers
+    private func scrollToBottom(animated: Bool) {
+        guard !messages.isEmpty else { return }
+        DispatchQueue.main.async {
+            self.messagesCollectionView.scrollToLastItem(animated: animated)
+        }
     }
 }
 
@@ -175,14 +162,12 @@ extension ChatViewController: MessagesDataSource {
 // MARK: - MessagesDisplayDelegate
 extension ChatViewController: MessagesDisplayDelegate {
 
-    func backgroundColor(for message: any MessageType,
-                         at indexPath: IndexPath,
+    func backgroundColor(for message: any MessageType, at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
         isFromCurrentSender(message: message) ? .brandGreen : .white
     }
 
-    func textColor(for message: any MessageType,
-                   at indexPath: IndexPath,
+    func textColor(for message: any MessageType, at indexPath: IndexPath,
                    in messagesCollectionView: MessagesCollectionView) -> UIColor {
         isFromCurrentSender(message: message) ? .white : .darkText
     }
@@ -196,23 +181,18 @@ extension ChatViewController: MessagesDisplayDelegate {
         } else {
             avatarView.isHidden        = false
             avatarView.backgroundColor = .clear
-
             let config      = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
             let placeholder = UIImage(systemName: "person.circle.fill", withConfiguration: config)
-
-            // ✅ User.profileImageString is String — use directly, no ?? needed
-            let imageString = user?.profileImageString ?? ""
-            if imageString.isEmpty {
+            let imgString   = user.profileImageString ?? ""
+            if imgString.isEmpty {
                 avatarView.set(avatar: Avatar(image: placeholder))
             } else {
-                let img = UIImage(named: imageString) ?? placeholder
-                avatarView.set(avatar: Avatar(image: img))
+                avatarView.set(avatar: Avatar(image: UIImage(named: imgString) ?? placeholder))
             }
         }
     }
 
-    func messageStyle(for message: any MessageType,
-                      at indexPath: IndexPath,
+    func messageStyle(for message: any MessageType, at indexPath: IndexPath,
                       in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         let corner: MessageStyle.TailCorner = isFromCurrentSender(message: message)
             ? .bottomRight : .bottomLeft
@@ -223,8 +203,7 @@ extension ChatViewController: MessagesDisplayDelegate {
 // MARK: - MessagesLayoutDelegate
 extension ChatViewController: MessagesLayoutDelegate {
 
-    func avatarSize(for message: any MessageType,
-                    at indexPath: IndexPath,
+    func avatarSize(for message: any MessageType, at indexPath: IndexPath,
                     in messagesCollectionView: MessagesCollectionView) -> CGSize? {
         isFromCurrentSender(message: message) ? .zero : CGSize(width: 32, height: 32)
     }
@@ -237,6 +216,10 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
+        // 1. Persist to CoreData
+        ChatManager.shared.sendMessage(to: user.id, text: trimmed)
+
+        // 2. Append to local array for instant display
         messages.append(Message(
             sender:    mySender,
             messageId: UUID().uuidString,
@@ -244,9 +227,14 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             kind:      .text(trimmed)
         ))
 
+        // 3. Update UI
         inputBar.inputTextView.text = ""
         inputBar.invalidatePlugins()
         messagesCollectionView.reloadData()
-        messagesCollectionView.scrollToLastItem(animated: true)
+        scrollToBottom(animated: true)
+
+        // 4. Tell PeopleViewController to refresh its preview row
+        NotificationCenter.default.post(name: .didSendMessage, object: nil,
+                                        userInfo: ["userId": user.id])
     }
 }

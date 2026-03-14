@@ -1,14 +1,19 @@
 import UIKit
 
-class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
+extension Notification.Name {
+    static let didSendMessage = Notification.Name("didSendMessage")
+}
+
+class PeopleViewController: UIViewController, UITableViewDelegate,
+                             UITableViewDataSource, UISearchResultsUpdating {
 
     @IBOutlet weak var tableView: UITableView!
 
     private let gradientLayer = CAGradientLayer.backgroundGreen()
     let searchController = UISearchController(searchResultsController: nil)
 
-    var allUsers:      [User] = []
-    var filteredUsers: [User] = []
+    private var allUsers:      [User] = []
+    private var filteredUsers: [User] = []
 
     var isSearchBarEmpty: Bool { searchController.searchBar.text?.isEmpty ?? true }
     var isSearching: Bool { searchController.isActive && !isSearchBarEmpty }
@@ -21,7 +26,15 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         setupTableView()
         setupSearchController()
         loadData()
+
+        // Refresh preview when a message is sent inside ChatViewController
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(refreshPreviews),
+            name: .didSendMessage, object: nil
+        )
     }
+
+    deinit { NotificationCenter.default.removeObserver(self) }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -31,16 +44,28 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationItem.hidesSearchBarWhenScrolling = false
+        // Always refresh previews when coming back from a chat
+        tableView.reloadData()
         loadData()
+    }
+
+    @objc private func refreshPreviews() {
+        tableView.reloadData()
     }
 
     // MARK: - Data
     func loadData() {
-        // ✅ fetchAllUsers now lives on NetworkManager, not UserSession
         NetworkManager.shared.fetchAllUsers { [weak self] users in
             guard let self = self else { return }
             let currentId = UserSession.shared.currentLoggedInUserID
-            self.allUsers = users.filter { $0.id != currentId }
+            // Sort: users with recent messages first, then alphabetical
+            self.allUsers = users
+                .filter { $0.id != currentId }
+                .sorted { a, b in
+                    let lastA = ChatManager.shared.lastMessage(with: a.id)?.timestamp ?? .distantPast
+                    let lastB = ChatManager.shared.lastMessage(with: b.id)?.timestamp ?? .distantPast
+                    return lastA > lastB
+                }
             self.tableView.reloadData()
         }
     }
@@ -58,12 +83,12 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func setupSearchController() {
-        searchController.searchResultsUpdater            = self
+        searchController.searchResultsUpdater                 = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder           = "Search friends..."
-        navigationItem.searchController                  = searchController
-        navigationItem.hidesSearchBarWhenScrolling       = false
-        definesPresentationContext                        = true
+        searchController.searchBar.placeholder                = "Search friends..."
+        navigationItem.searchController                       = searchController
+        navigationItem.hidesSearchBarWhenScrolling            = false
+        definesPresentationContext                            = true
     }
 
     // MARK: - Search
@@ -80,29 +105,45 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     // MARK: - TableView
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int) -> Int {
         isSearching ? filteredUsers.count : allUsers.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PeopleTableViewCell",
-                                                  for: indexPath) as! PeopleTableViewCell
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "PeopleTableViewCell",
+            for: indexPath) as! PeopleTableViewCell
+
         let user = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
 
-        cell.nameLabel.text    = user.name
-        cell.messageLabel.text = "Hey! How are your plants? 🌱"
-        cell.timeLabel.text    = "9:41 AM"
+        // Name
+        cell.nameLabel.text = user.name
 
-        // ✅ profileImageString lives on User directly — no UserSession helper needed
-        cell.avatarImageView.configureImage(with: user.profileImageString)
-        cell.avatarImageView.tintColor        = .label
-        cell.backgroundColor                  = .clear
-        cell.contentView.backgroundColor      = .clear
+        // Last message preview or fallback to plant count
+        if let last = ChatManager.shared.lastMessage(with: user.id) {
+            let myId   = UserSession.shared.currentLoggedInUserID
+            let prefix = last.senderId == myId ? "You: " : ""
+            cell.messageLabel.text  = "\(prefix)\(last.text ?? "")"
+            cell.timeLabel.text     = ChatManager.shared.formattedTime(for: last.timestamp)
+            cell.timeLabel.isHidden = false
+        } else {
+            cell.messageLabel.text  = user.searchSubtitle
+            cell.timeLabel.isHidden = true
+        }
+
+        // Avatar
+        cell.avatarImageView.configureImage(with: user.profileImageString ?? "person.circle.fill")
+        cell.avatarImageView.tintColor   = .label
+        cell.backgroundColor             = .clear
+        cell.contentView.backgroundColor = .clear
 
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView,
+                   didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedUser = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
 
@@ -111,5 +152,20 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
             withIdentifier: "ChatViewController") as! ChatViewController
         chatVC.user = selectedUser
         navigationController?.pushViewController(chatVC, animated: true)
+    }
+
+    // Swipe to delete conversation
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    -> UISwipeActionsConfiguration? {
+        let user = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
+        let delete = UIContextualAction(style: .destructive,
+                                        title: "Delete Chat") { [weak self] _, _, done in
+            ChatManager.shared.deleteConversation(with: user.id)
+            self?.tableView.reloadData()
+            done(true)
+        }
+        delete.image = UIImage(systemName: "trash")
+        return UISwipeActionsConfiguration(actions: [delete])
     }
 }

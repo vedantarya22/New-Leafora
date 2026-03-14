@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1920066D2F584476008AB1EC /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 1920066C2F584476008AB1EC /* SDWebImage */; };
 		1920066F2F584476008AB1EC /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1920066E2F584476008AB1EC /* SDWebImageMapKit */; };
+		195F56F52F655DE200E2F2C5 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 195F56F42F655DE200E2F2C5 /* SocketIO */; };
 		19BB146F2F55708B002E872D /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 19BB146E2F55708B002E872D /* MessageKit */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1920066D2F584476008AB1EC /* SDWebImage in Frameworks */,
+				195F56F52F655DE200E2F2C5 /* SocketIO in Frameworks */,
 				1920066F2F584476008AB1EC /* SDWebImageMapKit in Frameworks */,
 				19BB146F2F55708B002E872D /* MessageKit in Frameworks */,
 			);
@@ -90,6 +92,7 @@
 				19BB146E2F55708B002E872D /* MessageKit */,
 				1920066C2F584476008AB1EC /* SDWebImage */,
 				1920066E2F584476008AB1EC /* SDWebImageMapKit */,
+				195F56F42F655DE200E2F2C5 /* SocketIO */,
 			);
 			productName = "search-pageRoute";
 			productReference = 19D1293C2F288EB200B6F32B /* search-pageRoute.app */;
@@ -122,6 +125,7 @@
 			packageReferences = (
 				19BB146D2F55708B002E872D /* XCRemoteSwiftPackageReference "MessageKit" */,
 				1920066B2F584476008AB1EC /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				195F56F32F655DE200E2F2C5 /* XCRemoteSwiftPackageReference "socket" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 19D1293D2F288EB200B6F32B /* Products */;
@@ -381,6 +385,14 @@
 				minimumVersion = 5.21.7;
 			};
 		};
+		195F56F32F655DE200E2F2C5 /* XCRemoteSwiftPackageReference "socket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		19BB146D2F55708B002E872D /* XCRemoteSwiftPackageReference "MessageKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/MessageKit/MessageKit";
@@ -401,6 +413,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1920066B2F584476008AB1EC /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImageMapKit;
+		};
+		195F56F42F655DE200E2F2C5 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 195F56F32F655DE200E2F2C5 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
 		};
 		19BB146E2F55708B002E872D /* MessageKit */ = {
 			isa = XCSwiftPackageProductDependency;
