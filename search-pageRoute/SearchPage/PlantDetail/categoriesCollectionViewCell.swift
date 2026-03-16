@@ -34,7 +34,22 @@ class categoriesCollectionViewCell: UICollectionViewCell {
         // 2. Image Styling
         categoryImageView.contentMode = .scaleAspectFit
         
-        // 3. Text Safety
+        // 3. Dynamic image size — removes dependency on the XIB's fixed 65pt constraints.
+        //    Width = 30% of the cell's content view width; height = width (1:1 square).
+        //    This makes the image scale correctly on iPhone 17 and 17 Pro Max alike.
+        categoryImageView.translatesAutoresizingMaskIntoConstraints = false
+        // Deactivate any existing width/height constraints set in the XIB
+        categoryImageView.constraints.forEach { constraint in
+            if constraint.firstAttribute == .width || constraint.firstAttribute == .height {
+                constraint.isActive = false
+            }
+        }
+        NSLayoutConstraint.activate([
+            categoryImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.30),
+            categoryImageView.heightAnchor.constraint(equalTo: categoryImageView.widthAnchor, multiplier: 1.0)
+        ])
+        
+        // 4. Text Safety
         categoryLabel.adjustsFontSizeToFitWidth = true
         categoryLabel.minimumScaleFactor = 0.6
         categoryLabel.numberOfLines = 2
