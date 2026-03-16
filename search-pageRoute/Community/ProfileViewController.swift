@@ -92,6 +92,11 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         collectionView.delegate        = self
         collectionView.dataSource      = self
         collectionView.backgroundColor = .clear
+        
+        // Disable automatic cell sizing so sizeForItemAt is respected
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.estimatedItemSize = .zero
+        }
     }
 
     // MARK: - Update UI

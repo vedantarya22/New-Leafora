@@ -7,8 +7,8 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - Data
     private var posts: [Post] = []
-    // ✅ isExpanded no longer lives on Post — tracked locally here
     private var expandedPostIds: Set<String> = []
+    private var isLoading: Bool = true
 
     let gradientLayer = CAGradientLayer()
 
@@ -34,10 +34,12 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - Setup
     private func setupCollectionView() {
-        postsCollectionView.delegate   = self
-        postsCollectionView.dataSource = self
+        postsCollectionView.delegate        = self
+        postsCollectionView.dataSource      = self
+        postsCollectionView.backgroundColor = .clear
         let nib = UINib(nibName: CommunityPostCollectionViewCell.nibName, bundle: nil)
         postsCollectionView.register(nib, forCellWithReuseIdentifier: CommunityPostCollectionViewCell.identifier)
+        postsCollectionView.register(ShimmerPostCell.self, forCellWithReuseIdentifier: ShimmerPostCell.identifier)
         postsCollectionView.collectionViewLayout = createLayout()
         postsCollectionView.delaysContentTouches = false
     }
@@ -53,12 +55,13 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     }
 
     private func createLayout() -> UICollectionViewLayout {
-        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(350))
+        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(400))
         let item      = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(350))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(400))
         let group     = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         let section   = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 10
+        section.interGroupSpacing = 16
+        section.contentInsets     = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
         return UICollectionViewCompositionalLayout(section: section)
     }
 
@@ -71,9 +74,14 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - Data Loading
     private func loadData() {
+        isLoading = true
+        postsCollectionView.reloadData()
+
         PostRepository.shared.fetchAllPosts { [weak self] fetchedPosts in
-            self?.posts = fetchedPosts
-            self?.postsCollectionView.reloadData()
+            guard let self = self else { return }
+            self.posts = fetchedPosts
+            self.isLoading = false
+            self.postsCollectionView.reloadData()
         }
     }
 
@@ -99,10 +107,18 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
 extension CommunityViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int { posts.count }
+                        numberOfItemsInSection section: Int) -> Int {
+        return isLoading ? 3 : posts.count
+    }
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        if isLoading {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShimmerPostCell.identifier, for: indexPath) as! ShimmerPostCell
+            return cell
+        }
+
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: CommunityPostCollectionViewCell.identifier,
             for: indexPath
@@ -177,5 +193,86 @@ extension CommunityViewController {
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
+    }
+}
+
+// MARK: - Shimmer Cell
+class ShimmerPostCell: UICollectionViewCell {
+    static let identifier = "ShimmerPostCell"
+
+    private let containerView = UIView()
+    private let avatarShimmer = UIView()
+    private let nameShimmer = UIView()
+    private let dateShimmer = UIView()
+    private let imageShimmer = UIView()
+    private let textShimmer1 = UIView()
+    private let textShimmer2 = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    private func setupUI() {
+        contentView.addSubview(containerView)
+        containerView.backgroundColor = .white
+        containerView.layer.cornerRadius = 24
+        containerView.layer.masksToBounds = true
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        let elements = [avatarShimmer, nameShimmer, dateShimmer, imageShimmer, textShimmer1, textShimmer2]
+        elements.forEach {
+            $0.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
+            $0.layer.cornerRadius = 8
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview($0)
+        }
+        avatarShimmer.layer.cornerRadius = 20
+
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+
+            avatarShimmer.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
+            avatarShimmer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            avatarShimmer.widthAnchor.constraint(equalToConstant: 40),
+            avatarShimmer.heightAnchor.constraint(equalToConstant: 40),
+
+            nameShimmer.centerYAnchor.constraint(equalTo: avatarShimmer.centerYAnchor, constant: -8),
+            nameShimmer.leadingAnchor.constraint(equalTo: avatarShimmer.trailingAnchor, constant: 12),
+            nameShimmer.widthAnchor.constraint(equalToConstant: 120),
+            nameShimmer.heightAnchor.constraint(equalToConstant: 16),
+
+            dateShimmer.centerYAnchor.constraint(equalTo: avatarShimmer.centerYAnchor, constant: 12),
+            dateShimmer.leadingAnchor.constraint(equalTo: avatarShimmer.trailingAnchor, constant: 12),
+            dateShimmer.widthAnchor.constraint(equalToConstant: 60),
+            dateShimmer.heightAnchor.constraint(equalToConstant: 12),
+
+            imageShimmer.topAnchor.constraint(equalTo: avatarShimmer.bottomAnchor, constant: 16),
+            imageShimmer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            imageShimmer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            imageShimmer.heightAnchor.constraint(equalToConstant: 300),
+
+            textShimmer1.topAnchor.constraint(equalTo: imageShimmer.bottomAnchor, constant: 16),
+            textShimmer1.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            textShimmer1.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -32),
+            textShimmer1.heightAnchor.constraint(equalToConstant: 16),
+
+            textShimmer2.topAnchor.constraint(equalTo: textShimmer1.bottomAnchor, constant: 8),
+            textShimmer2.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            textShimmer2.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -64),
+            textShimmer2.heightAnchor.constraint(equalToConstant: 16),
+            textShimmer2.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -24)
+        ])
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let elements = [avatarShimmer, nameShimmer, dateShimmer, imageShimmer, textShimmer1, textShimmer2]
+        elements.forEach { $0.startShimmering() }
     }
 }

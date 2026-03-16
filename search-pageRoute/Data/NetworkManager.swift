@@ -11,7 +11,12 @@ class NetworkManager{
     static let shared = NetworkManager()
     let baseURL = "https://plantappbackend-5mdh.onrender.com/api"
     
-//    var currentUserId : String = "69a574377e957ef7c815b409" // to be set after creating test user
+    private let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 90
+        config.timeoutIntervalForResource = 120
+        return URLSession(configuration: config)
+    }()
     
     private init() {}
     
@@ -42,7 +47,7 @@ extension NetworkManager {
             "email":    email,
             "password": password
         ])
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
             else {
@@ -56,7 +61,6 @@ extension NetworkManager {
 
                 KeychainManager.shared.saveToken(token)
                 KeychainManager.shared.saveUserId(userId)
-                // ✅ No more self.currentUserId — identity lives in KeychainManager
                 print("✅ Signup success, userId: \(userId)")
                 DispatchQueue.main.async { completion(true, nil) }
 
@@ -74,7 +78,7 @@ extension NetworkManager {
             "email":    email,
             "password": password
         ])
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
             else {
@@ -88,9 +92,7 @@ extension NetworkManager {
 
                 KeychainManager.shared.saveToken(token)
                 KeychainManager.shared.saveUserId(userId)
-                // ✅ No more self.currentUserId
 
-                // Clear old local data before loading fresh
                 PlantStore.shared.setPlants([])
                 SiteStore.shared.setSites([])
                 PlantCatalogueCache.shared.invalidate()
@@ -107,9 +109,9 @@ extension NetworkManager {
     }
 
     func logout() {
-        ChatSocketManager.shared.disconnect()  
-        KeychainManager.shared.clearAll()        // wipes token + userId from Keychain
-        UserSession.shared.clearSession()        // clears cachedCurrentUser
+        ChatSocketManager.shared.disconnect()
+        KeychainManager.shared.clearAll()
+        UserSession.shared.clearSession()
         PlantStore.shared.setPlants([])
         SiteStore.shared.setSites([])
         PlantCatalogueCache.shared.invalidate()
@@ -130,7 +132,7 @@ extension NetworkManager {
             "email": email,
             "profileImageString": "person.circle.fill"
         ])
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let mongoId = json["_id"] as? String
@@ -145,9 +147,7 @@ extension NetworkManager {
     
     func fetchAllPlants(completion: @escaping ([Plant]?) -> Void) {
         guard let url = URL(string: "\(baseURL)/plants") else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-
-            // ✅ Add these debug prints
+        session.dataTask(with: url) { data, response, error in
             if let error = error {
                 print("❌ Network error: \(error.localizedDescription)")
             }
@@ -170,7 +170,7 @@ extension NetworkManager {
     
     func fetchPlant(by id: String, completion: @escaping (Plant?) -> Void) {
         guard let url = URL(string: "\(baseURL)/plants/\(id)") else { return }
-        URLSession.shared.dataTask(with: url) { data, _, _ in
+        session.dataTask(with: url) { data, _, _ in
             guard let data = data else {
                 DispatchQueue.main.async { completion(nil) }
                 return
@@ -186,12 +186,11 @@ extension NetworkManager {
     
     func addSite(name: String, icon: String, completion: @escaping (String?) -> Void) {
         guard let url = URL(string: baseURL + "/sites") else { return }
-        // ✅ no userId in body — backend gets it from JWT
         let request = makeRequest(url: url, method: "POST", body: [
             "name": name,
             "icon": icon
         ])
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let mongoId = json["_id"] as? String
@@ -200,11 +199,10 @@ extension NetworkManager {
         }.resume()
     }
     
-    // ✅ was: baseURL + "/sites/user/" + currentUserId
     func getUserSites(completion: @escaping ([MyGardenSite]?) -> Void) {
         guard let url = URL(string: baseURL + "/sites/user") else { return }
-        let request = makeRequest(url: url, method: "GET")  // JWT carries userId
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        let request = makeRequest(url: url, method: "GET")
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let sites = try? JSONDecoder().decode([MyGardenSite].self, from: data)
             else { DispatchQueue.main.async { completion(nil) }; return }
@@ -215,7 +213,7 @@ extension NetworkManager {
     func deleteSite(siteId: String, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: baseURL + "/sites/" + siteId) else { return }
         let request = makeRequest(url: url, method: "DELETE")
-        URLSession.shared.dataTask(with: request) { _, response, _ in
+        session.dataTask(with: request) { _, response, _ in
             let success = (response as? HTTPURLResponse)?.statusCode == 200
             DispatchQueue.main.async { completion(success) }
         }.resume()
@@ -247,7 +245,6 @@ extension NetworkManager {
             "plantName":       plantName,
             "siteId":          siteId,
             "siteName":        siteName,
-            // ✅ removed userId — JWT provides it
             "quantity":        quantity,
             "isAddedToGarden": true
         ]
@@ -262,7 +259,7 @@ extension NetworkManager {
         print("📤 Sending userPlant body: \(body)")
 
         let request = makeRequest(url: url, method: "POST", body: body)
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { data, response, error in
             if let httpResponse = response as? HTTPURLResponse {
                 print("📡 userPlant status: \(httpResponse.statusCode)")
             }
@@ -284,13 +281,12 @@ extension NetworkManager {
         }.resume()
     }
     
-    // ✅ was: baseURL + "/userplants/user/" + currentUserId
     func fetchUserPlants(completion: @escaping ([UserPlant]?) -> Void) {
         guard let url = URL(string: baseURL + "/userplants/user") else { return }
-        let request = makeRequest(url: url, method: "GET")  // JWT carries userId
+        let request = makeRequest(url: url, method: "GET")
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let plants = try? decoder.decode([UserPlant].self, from: data)
             else { DispatchQueue.main.async { completion(nil) }; return }
@@ -301,7 +297,7 @@ extension NetworkManager {
     func markTaskDone(mongoId: String, taskType: String, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: "\(baseURL)/userplants/\(mongoId)/done/\(taskType)") else { return }
         let request = makeRequest(url: url, method: "PATCH")
-        URLSession.shared.dataTask(with: request) { _, response, _ in
+        session.dataTask(with: request) { _, response, _ in
             DispatchQueue.main.async {
                 completion((response as? HTTPURLResponse)?.statusCode == 200)
             }
@@ -311,7 +307,7 @@ extension NetworkManager {
     func removePlant(mongoId: String, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: baseURL + "/userplants/" + mongoId) else { return }
         let request = makeRequest(url: url, method: "DELETE")
-        URLSession.shared.dataTask(with: request) { _, response, _ in
+        session.dataTask(with: request) { _, response, _ in
             let success = (response as? HTTPURLResponse)?.statusCode == 200
             DispatchQueue.main.async { completion(success) }
         }.resume()
@@ -320,7 +316,7 @@ extension NetworkManager {
     func removeAllPlantsOfType(plantId: String, siteId: String, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: baseURL + "/userplants/type/" + plantId + "/site/" + siteId) else { return }
         let request = makeRequest(url: url, method: "DELETE")
-        URLSession.shared.dataTask(with: request) { _, response, _ in
+        session.dataTask(with: request) { _, response, _ in
             let success = (response as? HTTPURLResponse)?.statusCode == 200
             DispatchQueue.main.async { completion(success) }
         }.resume()
@@ -329,7 +325,7 @@ extension NetworkManager {
     func removeSiteWithPlants(siteId: String, completion: @escaping (Bool) -> Void) {
         guard let url = URL(string: baseURL + "/userplants/site/" + siteId) else { return }
         let request = makeRequest(url: url, method: "DELETE")
-        URLSession.shared.dataTask(with: request) { _, response, _ in
+        session.dataTask(with: request) { _, response, _ in
             let success = (response as? HTTPURLResponse)?.statusCode == 200
             DispatchQueue.main.async { completion(success) }
         }.resume()
@@ -359,7 +355,7 @@ extension NetworkManager {
             "image": base64String
         ])
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("❌ Upload error: \(error.localizedDescription)")
                 DispatchQueue.main.async { completion(nil) }
@@ -390,9 +386,8 @@ extension NetworkManager {
    func fetchFeed(page: Int = 1, completion: @escaping (FeedResponse?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/feed?page=\(page)") else { return }
        let request = makeRequest(url: url, method: "GET")
-       URLSession.shared.dataTask(with: request) { data, response, error in
+       session.dataTask(with: request) { data, response, error in
            if let error = error { print("❌ fetchFeed error: \(error.localizedDescription)") }
-//           if let http = response as? HTTPURLResponse { print("📡 fetchFeed status: \(http.statusCode)") }
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            let feed = try? JSONDecoder().decode(FeedResponse.self, from: data)
            DispatchQueue.main.async { completion(feed) }
@@ -406,8 +401,7 @@ extension NetworkManager {
            "postImageString": imageUrl,
            "caption":         caption
        ])
-       URLSession.shared.dataTask(with: request) { data, response, error in
-           // ✅ Detailed logging so you can see exactly what came back
+       session.dataTask(with: request) { data, response, error in
            if let error = error {
                print("❌ createPost network error: \(error.localizedDescription)")
                DispatchQueue.main.async { completion(nil) }
@@ -439,7 +433,7 @@ extension NetworkManager {
    func deletePost(postId: String, completion: @escaping (Bool) -> Void) {
        guard let url = URL(string: baseURL + "/posts/\(postId)") else { return }
        let request = makeRequest(url: url, method: "DELETE")
-       URLSession.shared.dataTask(with: request) { _, response, _ in
+       session.dataTask(with: request) { _, response, _ in
            let success = (response as? HTTPURLResponse)?.statusCode == 200
            DispatchQueue.main.async { completion(success) }
        }.resume()
@@ -449,7 +443,7 @@ extension NetworkManager {
    func toggleLike(postId: String, completion: @escaping (Bool?, Int?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/\(postId)/like") else { return }
        let request = makeRequest(url: url, method: "POST")
-       URLSession.shared.dataTask(with: request) { data, _, error in
+       session.dataTask(with: request) { data, _, error in
            if let error = error { print("❌ toggleLike error: \(error.localizedDescription)") }
            guard let data = data,
                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -464,7 +458,7 @@ extension NetworkManager {
    func toggleSave(postId: String, completion: @escaping (Bool?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/\(postId)/save") else { return }
        let request = makeRequest(url: url, method: "POST")
-       URLSession.shared.dataTask(with: request) { data, _, error in
+       session.dataTask(with: request) { data, _, error in
            if let error = error { print("❌ toggleSave error: \(error.localizedDescription)") }
            guard let data = data,
                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -477,7 +471,7 @@ extension NetworkManager {
    func fetchComments(postId: String, page: Int = 1, completion: @escaping (CommentsResponse?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/\(postId)/comments?page=\(page)") else { return }
        let request = makeRequest(url: url, method: "GET")
-       URLSession.shared.dataTask(with: request) { data, _, _ in
+       session.dataTask(with: request) { data, _, _ in
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            let response = try? JSONDecoder().decode(CommentsResponse.self, from: data)
            DispatchQueue.main.async { completion(response) }
@@ -488,7 +482,7 @@ extension NetworkManager {
    func addComment(postId: String, text: String, completion: @escaping (Comment?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/\(postId)/comments") else { return }
        let request = makeRequest(url: url, method: "POST", body: ["text": text])
-       URLSession.shared.dataTask(with: request) { data, response, _ in
+       session.dataTask(with: request) { data, response, _ in
            if let http = response as? HTTPURLResponse { print("📡 addComment status: \(http.statusCode)") }
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            if let raw = String(data: data, encoding: .utf8) { print("📦 addComment raw: \(raw)") }
@@ -501,7 +495,7 @@ extension NetworkManager {
    func deleteComment(postId: String, commentId: String, completion: @escaping (Bool) -> Void) {
        guard let url = URL(string: baseURL + "/posts/\(postId)/comments/\(commentId)") else { return }
        let request = makeRequest(url: url, method: "DELETE")
-       URLSession.shared.dataTask(with: request) { _, response, _ in
+       session.dataTask(with: request) { _, response, _ in
            DispatchQueue.main.async {
                completion((response as? HTTPURLResponse)?.statusCode == 200)
            }
@@ -512,7 +506,7 @@ extension NetworkManager {
    func fetchSavedPosts(completion: @escaping ([Post]?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/saved") else { return }
        let request = makeRequest(url: url, method: "GET")
-       URLSession.shared.dataTask(with: request) { data, _, _ in
+       session.dataTask(with: request) { data, _, _ in
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            let posts = try? JSONDecoder().decode([Post].self, from: data)
            DispatchQueue.main.async { completion(posts) }
@@ -523,7 +517,7 @@ extension NetworkManager {
    func fetchUserPosts(userId: String, completion: @escaping ([Post]?) -> Void) {
        guard let url = URL(string: baseURL + "/posts/user/\(userId)") else { return }
        let request = makeRequest(url: url, method: "GET")
-       URLSession.shared.dataTask(with: request) { data, _, _ in
+       session.dataTask(with: request) { data, _, _ in
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            let posts = try? JSONDecoder().decode([Post].self, from: data)
            DispatchQueue.main.async { completion(posts) }
@@ -534,11 +528,10 @@ extension NetworkManager {
 
 extension NetworkManager {
  
-    /// GET /api/users  — returns all users (for People/Search screens)
     func fetchAllUsers(completion: @escaping ([User]) -> Void) {
         guard let url = URL(string: baseURL + "/users") else { return }
         let request = makeRequest(url: url, method: "GET")
-        URLSession.shared.dataTask(with: request) { data, response, _ in
+        session.dataTask(with: request) { data, response, _ in
             if let http = response as? HTTPURLResponse {
                 print("📡 fetchAllUsers status: \(http.statusCode)")
             }
@@ -552,11 +545,10 @@ extension NetworkManager {
         }.resume()
     }
  
-    /// GET /api/users/:id  — fetch a single user by their MongoDB _id
     func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
         guard let url = URL(string: baseURL + "/users/\(userId)") else { return }
         let request = makeRequest(url: url, method: "GET")
-        URLSession.shared.dataTask(with: request) { data, _, _ in
+        session.dataTask(with: request) { data, _, _ in
             guard let data = data,
                   let user = try? JSONDecoder().decode(User.self, from: data)
             else {
@@ -571,16 +563,14 @@ extension NetworkManager {
 
 extension NetworkManager {
  
-    /// PATCH /api/users/:id  — updates name, username, profileImageString
     func updateUserProfile(userId: String,
                            name: String,
                            username: String,
                            profileImageString: String?,
                            completion: @escaping (Bool) -> Void) {
  
-     
         guard let url = URL(string: baseURL + "/users/\(userId)") else { return }
-           print("📡 PATCH URL: \(url)")  // ✅ add this
+           print("📡 PATCH URL: \(url)")
            print("📦 body: name=\(name), username=\(username), image=\(profileImageString ?? "nil")")
  
         var body: [String: Any] = [
@@ -593,7 +583,7 @@ extension NetworkManager {
  
         let request = makeRequest(url: url, method: "PATCH", body: body)
  
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { data, response, error in
             if let error = error {
                 print(" updateUserProfile error: \(error.localizedDescription)")
                 DispatchQueue.main.async { completion(false) }
@@ -610,4 +600,3 @@ extension NetworkManager {
         }.resume()
     }
 }
- 

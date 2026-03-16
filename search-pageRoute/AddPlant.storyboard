@@ -70,7 +70,7 @@
                                 <rect key="frame" x="36" y="714" width="321" height="4" />
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3" />
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 2 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V07-7I-D35">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 2 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V07-7I-D35">
                                 <rect key="frame" x="16" y="738" width="361" height="20.333333333333371" />
                                 <fontDescription key="fontDescription" type="system" pointSize="17" />
                                 <nil key="textColor" />
@@ -106,7 +106,7 @@
                         <outlet property="nextButton" destination="0Aa-5L-reo" id="ZfQ-7O-Fm7" />
                         <outlet property="plusBtn" destination="EDo-ak-AaD" id="Ej1-7r-1Cn" />
                         <outlet property="qtyLabel" destination="Fb7-f9-W6H" id="tk6-gV-lhg" />
-                        <segue destination="0dX-bw-vxm" kind="show" identifier="toNextScreen" id="srA-9r-3i2" />
+                        <segue destination="1Jc-ec-z46" kind="show" identifier="toNextScreen" id="srA-9r-3i2" />
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VFk-mq-fFr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder" />
@@ -315,11 +315,11 @@ this plant?</string>
                                 <nil key="textColor" />
                                 <nil key="highlightedColor" />
                             </label>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.571" translatesAutoresizingMaskIntoConstraints="NO" id="abd-fy-M7K">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.500" translatesAutoresizingMaskIntoConstraints="NO" id="abd-fy-M7K">
                                 <rect key="frame" x="36" y="714" width="321" height="4" />
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3" />
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 4 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6uQ-9m-UYj">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 3 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6uQ-9m-UYj">
                                 <rect key="frame" x="16" y="738" width="361" height="21" />
                                 <fontDescription key="fontDescription" type="system" pointSize="17" />
                                 <nil key="textColor" />
@@ -396,11 +396,11 @@ this plant?</string>
                                 <nil key="textColor" />
                                 <nil key="highlightedColor" />
                             </label>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.857" translatesAutoresizingMaskIntoConstraints="NO" id="frt-PV-002">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.833" translatesAutoresizingMaskIntoConstraints="NO" id="frt-PV-002">
                                 <rect key="frame" x="36" y="714" width="321" height="4" />
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3" />
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 6 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frt-SL-003">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 5 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frt-SL-003">
                                 <rect key="frame" x="16" y="738" width="361" height="21" />
                                 <fontDescription key="fontDescription" type="system" pointSize="17" />
                                 <nil key="textColor" />
@@ -477,11 +477,11 @@ this plant?</string>
                                 <nil key="textColor" />
                                 <nil key="highlightedColor" />
                             </label>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.714" translatesAutoresizingMaskIntoConstraints="NO" id="prn-PV-002">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.666" translatesAutoresizingMaskIntoConstraints="NO" id="prn-PV-002">
                                 <rect key="frame" x="36" y="714" width="321" height="4" />
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3" />
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 5 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prn-SL-003">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 4 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prn-SL-003">
                                 <rect key="frame" x="16" y="738" width="361" height="21" />
                                 <fontDescription key="fontDescription" type="system" pointSize="17" />
                                 <nil key="textColor" />
@@ -561,7 +561,7 @@ this plant?</string>
                                 <rect key="frame" x="36" y="710" width="321" height="4" />
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3" />
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 7 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NUd-G8-MNx">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 6 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NUd-G8-MNx">
                                 <rect key="frame" x="16" y="734" width="361" height="21" />
                                 <fontDescription key="fontDescription" type="system" pointSize="17" />
                                 <nil key="textColor" />
@@ -738,11 +738,11 @@ garden</string>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.143" translatesAutoresizingMaskIntoConstraints="NO" id="S6R-p4-VBm">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.166" translatesAutoresizingMaskIntoConstraints="NO" id="S6R-p4-VBm">
                                 <rect key="frame" x="36" y="714" width="321" height="4" />
                                 <color key="tintColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3" />
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 1 of 7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vI5-bD-3oj">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Step 1 of 6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vI5-bD-3oj">
                                 <rect key="frame" x="16" y="738" width="361" height="21" />
                                 <fontDescription key="fontDescription" type="system" pointSize="17" />
                                 <nil key="textColor" />

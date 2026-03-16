@@ -96,7 +96,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 
             case 1: // Merged About & Info
                 // Increased estimated height and bottom inset to ensure shadow visibility
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(220))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(350))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
@@ -104,7 +104,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 return section
                 
             case 2, 3, 4: // Care, Soil, Issues
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(120))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(280))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
@@ -141,7 +141,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                }
             return cell
             
-        case 1:
+        case 1: // About
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantInfoCardCell",
                 for: indexPath
@@ -149,57 +149,65 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
 
             let petStatus = plant.petFriendly ? "Pet Friendly" : "Toxic to Pets"
 
-            let combinedText = """
-            \(plant.description)
-
-            • Light: \(plant.lightRequirement.displayName)
-            • Difficulty: \(plant.difficulty.displayName)
-            • \(petStatus)
-            """
-
-            cell.configure(
-                title: "About",
-                text: combinedText,
-                iconName: "info.circle.fill",
-                iconColor: .systemBlue
+            cell.configureAbout(
+                description: plant.description,
+                light: plant.lightRequirement.displayName,
+                difficulty: plant.difficulty.displayName,
+                petStatus: petStatus,
+                isPetFriendly: plant.petFriendly
             )
 
             return cell
 
-            
         case 2: // Care Cycle
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantInfoCardCell",
                 for: indexPath
             ) as! PlantInfoCardCell
 
-            let careText = """
-            • Water: \(plant.careCycle.watering.display)
-            • Fertilizer: \(plant.careCycle.fertilizing.display)
-            • Repotting: \(plant.careCycle.repotting.display)
-            • Pruning: \(plant.careCycle.pruning.display)
-            """
-
-            cell.configure(
+            cell.configureDetailRows(
                 title: "Care Cycle",
-                text: careText,
-                iconName: "drop.fill",
-                iconColor: .systemCyan
+                iconName: "arrow.2.circlepath",
+                iconColor: .systemCyan,
+                rows: [
+                    (icon: "drop.fill",             label: "Water",      value: plant.careCycle.watering.display),
+                    (icon: "leaf.fill",             label: "Fertilizer", value: plant.careCycle.fertilizing.display),
+                    (icon: "basket.fill",           label: "Repotting",  value: plant.careCycle.repotting.display),
+                    (icon: "scissors",              label: "Pruning",    value: plant.careCycle.pruning.display)
+                ]
             )
 
             return cell
 
-            
         case 3: // Soil Type
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantInfoCardCell", for: indexPath) as! PlantInfoCardCell
-            let soilText = "• Mix: \(plant.soilType.soilUsed)\n• Features: \(plant.soilType.characteristics)"
-            cell.configure(title: "Soil Type", text: soilText, iconName: "circle.grid.cross.fill", iconColor: .systemBrown)
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "PlantInfoCardCell",
+                for: indexPath
+            ) as! PlantInfoCardCell
+
+            cell.configureDetailRows(
+                title: "Soil Type",
+                iconName: "circle.grid.cross.fill",
+                iconColor: .systemBrown,
+                rows: [
+                    (icon: "bag.fill", label: "Mix",      value: plant.soilType.soilUsed),
+                    (icon: "star.fill",            label: "Features", value: plant.soilType.characteristics)
+                ]
+            )
+
             return cell
 
         case 4: // Common Issues
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantInfoCardCell", for: indexPath) as! PlantInfoCardCell
-            let issuesText = plant.commonIssues.map { "• \($0)" }.joined(separator: "\n")
-            cell.configure(title: "Common Issues", text: issuesText, iconName: "exclamationmark.triangle.fill", iconColor: .systemOrange)
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "PlantInfoCardCell",
+                for: indexPath
+            ) as! PlantInfoCardCell
+
+            cell.configureIssueList(
+                title: "Common Issues",
+                issues: plant.commonIssues
+            )
+
             return cell
             
         case 5: // AR Button
