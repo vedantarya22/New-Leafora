@@ -235,7 +235,7 @@ class PlantInfoCardCell: UICollectionViewCell {
         valueLabel.font = .systemFont(ofSize: 15, weight: .regular)
         valueLabel.textColor = .secondaryLabel
         valueLabel.textAlignment = .right
-        valueLabel.numberOfLines = 2
+        valueLabel.numberOfLines = 0
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
 
         row.addSubview(iconBg)

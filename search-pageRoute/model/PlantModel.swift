@@ -52,6 +52,7 @@ enum LightRequirement: String, Codable {
     case mediumLight = "medium_light"
     case brightIndirect = "bright_indirect"
     case partialSunlight = "partial_sunlight"
+    case fullToPartialSunlight = "full_to_partial_sunlight"  // ← added
     case fullSunlight = "full_sunlight"
     
     var displayName: String {
@@ -62,6 +63,7 @@ enum LightRequirement: String, Codable {
         case .mediumLight: return "Medium light"
         case .brightIndirect: return "Bright indirect"
         case .partialSunlight: return "Partial sunlight"
+        case .fullToPartialSunlight: return "Full to partial sunlight"  // ← added
         case .fullSunlight: return "Full sunlight"
         }
     }
