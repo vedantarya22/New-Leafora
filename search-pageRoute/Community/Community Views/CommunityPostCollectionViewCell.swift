@@ -51,8 +51,11 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         profileImageView.clipsToBounds      = true
         profileImageView.contentMode        = .scaleAspectFill
 
+        postImageView.contentMode  = .scaleAspectFill
+        postImageView.clipsToBounds = true
+
         let separator = UIView()
-        separator.backgroundColor = UIColor.label.withAlphaComponent(0.12)
+        separator.backgroundColor = UIColor.label.withAlphaComponent(0.1)
         separator.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(separator)
         NSLayoutConstraint.activate([

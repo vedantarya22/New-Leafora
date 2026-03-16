@@ -90,6 +90,16 @@ final class ChatManager {
         return (try? context.fetch(request))?.first
     }
 
+    // MARK: - Delete Single Message
+    func deleteMessage(byId messageId: String) {
+        let request: NSFetchRequest<MessageEntity> = MessageEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", messageId)
+        if let results = try? context.fetch(request) {
+            results.forEach { context.delete($0) }
+            save()
+        }
+    }
+
     // MARK: - Delete Conversation
     func deleteConversation(with otherUserId: String) {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "MessageEntity")

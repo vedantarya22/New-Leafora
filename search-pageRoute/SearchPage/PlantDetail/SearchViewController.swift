@@ -68,6 +68,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //    private let dataProvider = JSONLoader()
     private var allPlants: [Plant] = []
     private var filteredPlants: [Plant] = []
+    private var isLoading: Bool = true
 
     // MARK: - Lifecycle
 
@@ -137,10 +138,14 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 //    }
     
     private func loadData() {
+        isLoading = true
+        collectionView.reloadData()
+
         PlantCatalogueCache.shared.getPlants { [weak self] plants in
             guard let self = self else { return }
             self.allPlants = plants
             self.filteredPlants = plants
+            self.isLoading = false
             self.collectionView.reloadData()
         }
     }
@@ -194,6 +199,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         // Register Cell
         let nib = UINib(nibName: "SearchPageCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: SearchPageCollectionViewCell.identifier)
+        collectionView.register(ShimmerSearchCell.self, forCellWithReuseIdentifier: ShimmerSearchCell.identifier)
     }
     
     // MARK: - Layout Generator (User Provided)
@@ -421,10 +427,15 @@ extension SearchViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredPlants.count
+        return isLoading ? 6 : filteredPlants.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if isLoading {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShimmerSearchCell.identifier, for: indexPath) as! ShimmerSearchCell
+            return cell
+        }
+
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchPageCollectionViewCell.identifier, for: indexPath) as? SearchPageCollectionViewCell else {
             return UICollectionViewCell()
         }
@@ -549,5 +560,73 @@ extension SearchViewController {
         )
         alert.addAction(UIAlertAction(title: "Got it", style: .default))
         present(alert, animated: true)
+    }
+}
+
+// MARK: - Shimmer Cell
+class ShimmerSearchCell: UICollectionViewCell {
+    static let identifier = "ShimmerSearchCell"
+
+    private let containerView = UIView()
+    private let imageShimmer = UIView()
+    private let titleShimmer = UIView()
+    private let subtitleShimmer = UIView()
+    private let badgeShimmer = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    private func setupUI() {
+        contentView.addSubview(containerView)
+        containerView.backgroundColor = .white
+        containerView.layer.cornerRadius = 16
+        containerView.layer.masksToBounds = true
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        let elements = [imageShimmer, titleShimmer, subtitleShimmer, badgeShimmer]
+        elements.forEach {
+            $0.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
+            $0.layer.cornerRadius = 8
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview($0)
+        }
+
+        imageShimmer.layer.cornerRadius = 12
+
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+
+            imageShimmer.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
+            imageShimmer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+            imageShimmer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12),
+            imageShimmer.widthAnchor.constraint(equalTo: imageShimmer.heightAnchor), // Square image
+
+            titleShimmer.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20),
+            titleShimmer.leadingAnchor.constraint(equalTo: imageShimmer.trailingAnchor, constant: 16),
+            titleShimmer.widthAnchor.constraint(equalToConstant: 140),
+            titleShimmer.heightAnchor.constraint(equalToConstant: 18),
+
+            subtitleShimmer.topAnchor.constraint(equalTo: titleShimmer.bottomAnchor, constant: 8),
+            subtitleShimmer.leadingAnchor.constraint(equalTo: imageShimmer.trailingAnchor, constant: 16),
+            subtitleShimmer.widthAnchor.constraint(equalToConstant: 100),
+            subtitleShimmer.heightAnchor.constraint(equalToConstant: 14),
+
+            badgeShimmer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20),
+            badgeShimmer.leadingAnchor.constraint(equalTo: imageShimmer.trailingAnchor, constant: 16),
+            badgeShimmer.widthAnchor.constraint(equalToConstant: 60),
+            badgeShimmer.heightAnchor.constraint(equalToConstant: 24)
+        ])
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        [imageShimmer, titleShimmer, subtitleShimmer, badgeShimmer].forEach { $0.startShimmering() }
     }
 }

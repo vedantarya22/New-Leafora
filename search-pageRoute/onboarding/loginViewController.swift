@@ -81,6 +81,15 @@ class loginViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleSignUpTap))
         signUpLabel.isUserInteractionEnabled = true
         signUpLabel.addGestureRecognizer(tap)
+
+        // Dismiss keyboard on tap outside
+        let dismissTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        dismissTap.cancelsTouchesInView = false
+        view.addGestureRecognizer(dismissTap)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     // MARK: - Login
@@ -95,13 +104,15 @@ class loginViewController: UIViewController {
         loginButton.isEnabled = false
 
         NetworkManager.shared.login(email: email, password: password) { [weak self] success, message in
-            self?.loginButton.isEnabled = true
+            guard let self = self else { return }
+            self.loginButton.isEnabled = true
             if success {
                 UserDefaults.standard.set(email, forKey: "cachedUserEmail")
-                // ✅ Navigate first, then load data in background
-                self?.navigateToMainApp()
+                self.showSuccessFlash(message: "Login Successful") {
+                    self.navigateToMainApp()
+                }
             } else {
-                self?.showError(message ?? "Login failed")
+                self.showError(message ?? "Login failed")
             }
         }
     }
