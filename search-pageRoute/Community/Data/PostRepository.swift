@@ -23,13 +23,13 @@ class PostRepository {
         NetworkManager.shared.fetchFeed(page: 1) { [weak self] response in
             guard let self = self else { return }
             let fetched = response?.posts ?? []
-            self.posts = fetched
+            self.posts  = fetched
             self.notifyUpdate()
             completion(fetched)
         }
     }
 
-    // MARK: - Fetch User Posts (for Profile screen)
+    // MARK: - Fetch User Posts (Profile screen)
     func fetchPosts(forUserId userId: String, completion: @escaping ([Post]) -> Void) {
         NetworkManager.shared.fetchUserPosts(userId: userId) { posts in
             completion(posts ?? [])
@@ -43,47 +43,57 @@ class PostRepository {
         }
     }
 
-    // MARK: - Get Single Post (from in-memory cache)
+    // MARK: - Get Single Post (in-memory cache)
     func getPost(id: String) -> Post? {
-        return posts.first(where: { $0.id == id })
+        posts.first(where: { $0.id == id })
     }
 
-    // MARK: - Toggle Like  (optimistic UI + backend sync)
+    // MARK: - Update Author Profile Image in Cached Posts
+    // Called after user saves a new profile image so the feed reflects it immediately
+    // without waiting for the next full fetch.
+    // Since PostAuthor is an immutable struct inside Post, we can't mutate it in place —
+    // the cleanest approach is to re-fetch the feed which fires didUpdatePosts and
+    // reloads the collection view automatically.
+    func updateAuthorImage(userId: String, newImageUrl: String) {
+        let affected = posts.contains(where: { $0.author?.id == userId })
+        guard affected else { return }
+        // Re-fetch feed — notifyUpdate() inside fetchAllPosts reloads the UI
+        fetchAllPosts { _ in
+            print("✅ Feed refreshed after profile image update for \(userId)")
+        }
+    }
+
+    // MARK: - Toggle Like  (optimistic + backend sync)
     func toggleLike(postId: String) {
         guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
 
-        // 1. Optimistic update
-        let wasLiked = posts[index].isLikedByMe
-        posts[index].isLikedByMe  = !wasLiked
-        posts[index].likesCount   = max(0, posts[index].likesCount + (wasLiked ? -1 : 1))
+        let wasLiked               = posts[index].isLikedByMe
+        posts[index].isLikedByMe   = !wasLiked
+        posts[index].likesCount    = max(0, posts[index].likesCount + (wasLiked ? -1 : 1))
         notifyPostUpdate(postId: postId)
 
-        // 2. Sync to backend
         NetworkManager.shared.toggleLike(postId: postId) { [weak self] isLiked, likesCount in
             guard let self = self,
-                  let idx = self.posts.firstIndex(where: { $0.id == postId }),
-                  let isLiked = isLiked,
+                  let idx  = self.posts.firstIndex(where: { $0.id == postId }),
+                  let isLiked    = isLiked,
                   let likesCount = likesCount
             else { return }
-            // Reconcile with server truth
             self.posts[idx].isLikedByMe = isLiked
             self.posts[idx].likesCount  = likesCount
             self.notifyPostUpdate(postId: postId)
         }
     }
 
-    // MARK: - Toggle Save  (optimistic UI + backend sync)
+    // MARK: - Toggle Save  (optimistic + backend sync)
     func toggleSave(postId: String) {
         guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
 
-        // 1. Optimistic update
         posts[index].isSaved = !posts[index].isSaved
         notifyPostUpdate(postId: postId)
 
-        // 2. Sync to backend
         NetworkManager.shared.toggleSave(postId: postId) { [weak self] isSaved in
             guard let self = self,
-                  let idx = self.posts.firstIndex(where: { $0.id == postId }),
+                  let idx    = self.posts.firstIndex(where: { $0.id == postId }),
                   let isSaved = isSaved
             else { return }
             self.posts[idx].isSaved = isSaved
@@ -101,7 +111,7 @@ class PostRepository {
         }
     }
 
-    // MARK: - Create New Post  (upload image → create post → insert at top)
+    // MARK: - Create New Post  (Cloudinary upload → backend → insert at top)
     func addNewPost(caption: String, image: UIImage, completion: @escaping (Bool) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             print("❌ Could not compress image")
@@ -109,7 +119,6 @@ class PostRepository {
             return
         }
 
-        // Step 1: Upload image to Cloudinary via backend
         NetworkManager.shared.uploadImageToCloudinary(imageData) { [weak self] imageUrl in
             guard let self = self, let imageUrl = imageUrl else {
                 print("❌ Cloudinary upload failed")
@@ -117,14 +126,12 @@ class PostRepository {
                 return
             }
 
-            // Step 2: Create post on backend
             NetworkManager.shared.createPost(imageUrl: imageUrl, caption: caption) { post in
                 guard let post = post else {
                     print("❌ createPost failed")
                     DispatchQueue.main.async { completion(false) }
                     return
                 }
-                // Step 3: Insert at top of local feed
                 self.posts.insert(post, at: 0)
                 self.notifyUpdate()
                 print("✅ New post created: \(post.id)")
@@ -133,7 +140,7 @@ class PostRepository {
         }
     }
 
-    // MARK: - Comments  (delegated directly to NetworkManager)
+    // MARK: - Comments
     func fetchComments(postId: String, completion: @escaping ([Comment]) -> Void) {
         NetworkManager.shared.fetchComments(postId: postId) { response in
             completion(response?.comments ?? [])
@@ -146,7 +153,6 @@ class PostRepository {
                 completion(nil)
                 return
             }
-            // Update local commentsCount
             if let idx = self.posts.firstIndex(where: { $0.id == postId }) {
                 self.posts[idx].commentsCount += 1
                 self.notifyPostUpdate(postId: postId)
@@ -169,24 +175,14 @@ class PostRepository {
         }
     }
 
-    // MARK: - Time Ago Helper  (used by Post.displayTimestamp & Comment.displayTimestamp)
+    // MARK: - Time Ago Helper
     func timeAgo(from dateString: String) -> String {
         guard !dateString.isEmpty else { return "Just now" }
-
-        let isoFormatter = ISO8601DateFormatter()
-
-        // Try with fractional seconds first (MongoDB default)
-        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let date = isoFormatter.date(from: dateString) {
-            return format(date: date)
-        }
-
-        // Fallback without fractional seconds
-        isoFormatter.formatOptions = [.withInternetDateTime]
-        if let date = isoFormatter.date(from: dateString) {
-            return format(date: date)
-        }
-
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = iso.date(from: dateString) { return format(date: date) }
+        iso.formatOptions = [.withInternetDateTime]
+        if let date = iso.date(from: dateString) { return format(date: date) }
         return "Just now"
     }
 
@@ -194,11 +190,11 @@ class PostRepository {
         let s = Int(Date().timeIntervalSince(date))
         let m = 60, h = 3600, d = 86400, w = 604800
         switch s {
-        case ..<m:      return "Just now"
-        case ..<h:      return "\(s / m)m ago"
-        case ..<d:      return "\(s / h)h ago"
-        case ..<w:      return "\(s / d)d ago"
-        default:        return "\(s / w)w ago"
+        case ..<m: return "Just now"
+        case ..<h: return "\(s / m)m ago"
+        case ..<d: return "\(s / h)h ago"
+        case ..<w: return "\(s / d)d ago"
+        default:   return "\(s / w)w ago"
         }
     }
 
@@ -208,6 +204,7 @@ class PostRepository {
     }
 
     private func notifyPostUpdate(postId: String) {
-        NotificationCenter.default.post(name: .didUpdatePost, object: nil, userInfo: ["postId": postId])
+        NotificationCenter.default.post(name: .didUpdatePost, object: nil,
+                                        userInfo: ["postId": postId])
     }
 }

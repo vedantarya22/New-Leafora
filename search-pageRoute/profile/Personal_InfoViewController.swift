@@ -22,11 +22,11 @@ class Personal_InfoViewController: UIViewController,
         guard let user = draftUser else { return [] }
         return [
             PersonalInfoSection(title: "Basic Info", items: [
-                PersonalInfoItem(title: "Full Name",    value: user.name,            showsChevron: false),
-                PersonalInfoItem(title: "Username",     value: user.username,        showsChevron: false),
-                PersonalInfoItem(title: "Email",        value: user.email ?? "",     showsChevron: false),
-                PersonalInfoItem(title: "Phone Number", value: user.phoneNumber ?? "", showsChevron: false),
-                PersonalInfoItem(title: "Date Of Birth",value: user.dateOfBirth ?? "", showsChevron: false)
+                PersonalInfoItem(title: "Full Name",     value: user.name,             showsChevron: false),
+                PersonalInfoItem(title: "Username",      value: user.username,         showsChevron: false),
+                PersonalInfoItem(title: "Email",         value: user.email ?? "",      showsChevron: false),
+                PersonalInfoItem(title: "Phone Number",  value: user.phoneNumber ?? "", showsChevron: false),
+                PersonalInfoItem(title: "Date Of Birth", value: user.dateOfBirth ?? "", showsChevron: false)
             ])
         ]
     }
@@ -35,16 +35,13 @@ class Personal_InfoViewController: UIViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Personal Info"
-
         view.layer.insertSublayer(gradientLayer, at: 0)
         navigationController?.navigationBar.tintColor = .brandGreen
 
-        // ✅ Use cachedCurrentUser — populated by fetchCurrentUser() after login
         if let currentUser = UserSession.shared.currentUser {
             originalUser = currentUser
             draftUser    = currentUser.copy()
         } else {
-            // Fallback: fetch from backend if cache is cold
             UserSession.shared.fetchCurrentUser { [weak self] user in
                 guard let user = user else { return }
                 self?.originalUser = user
@@ -64,7 +61,7 @@ class Personal_InfoViewController: UIViewController,
         gradientLayer.frame = view.bounds
     }
 
-    // MARK: - Edit Button
+    // MARK: - Edit / Save Button
     private func setupEditButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Edit", style: .plain,
@@ -92,13 +89,13 @@ class Personal_InfoViewController: UIViewController,
         setupHeader()
     }
 
-    // MARK: - Save
+    // MARK: - Collect text field values into draftUser
     private func updateDraftState() {
         guard let draftUser = draftUser else { return }
         for cell in Table.visibleCells {
             guard let indexPath = Table.indexPath(for: cell),
-                  let cell = cell as? PersonalInfoTableViewCell,
-                  let text = cell.valueTextField.text else { continue }
+                  let cell      = cell as? PersonalInfoTableViewCell,
+                  let text      = cell.valueTextField.text else { continue }
             let itemTitle = sections[indexPath.section].items[indexPath.row].title
             switch itemTitle {
             case "Full Name":    draftUser.name        = text
@@ -111,16 +108,50 @@ class Personal_InfoViewController: UIViewController,
         }
     }
 
+    // MARK: - Save Profile (text fields + optional new image)
     private func saveProfileData() {
         updateDraftState()
-        guard let finalUser = draftUser else { return }
+        guard let finalUser = draftUser,
+              let userId    = UserSession.shared.mongoId else { return }
 
-        // ✅ updateUser no longer exists on UserSession — update the cache directly
-        UserSession.shared.cachedCurrentUser = finalUser
-        originalUser = finalUser.copy()
+        // Disable edit button while saving
+        navigationItem.rightBarButtonItem?.isEnabled = false
 
-        // TODO: when you add PATCH /api/users/:id to the backend, call it here:
-        // NetworkManager.shared.updateUserProfile(finalUser) { success in ... }
+        // ✅ Call the real PATCH route
+        NetworkManager.shared.updateUserProfile(
+            userId:             userId,
+            name:               finalUser.name,
+            username:           finalUser.username,
+            profileImageString: finalUser.profileImageString
+        ) { [weak self] success in
+            guard let self = self else { return }
+
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+
+            if success {
+                print("✅ Profile saved to MongoDB")
+
+                // Update local cache so all screens reflect the change immediately
+                UserSession.shared.cachedCurrentUser = finalUser
+                self.originalUser = finalUser.copy()
+
+                // If image changed, refresh the community feed so post avatars update
+                if let newImage = finalUser.profileImageString {
+                    PostRepository.shared.updateAuthorImage(userId: userId, newImageUrl: newImage)
+                }
+
+                // Refresh the header to show the new image
+                self.setupHeader()
+
+            } else {
+                print("❌ Profile save failed")
+                let alert = UIAlertController(title: "Error",
+                                              message: "Failed to save. Please try again.",
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(alert, animated: true)
+            }
+        }
     }
 
     // MARK: - Table Setup
@@ -135,19 +166,18 @@ class Personal_InfoViewController: UIViewController,
 
     // MARK: - Header
     private func setupHeader() {
-        // ✅ profileImageString lives on the User object — no UserSession helper needed
         let imageString = originalUser?.profileImageString ?? "person.circle.fill"
         Imageview.configureImage(with: imageString)
         Imageview.layer.cornerRadius = Imageview.frame.height / 2
-        Imageview.clipsToBounds  = true
-        Imageview.contentMode    = .scaleAspectFill
+        Imageview.clipsToBounds      = true
+        Imageview.contentMode        = .scaleAspectFill
 
         if cameraBadge == nil {
             let badge = UIImageView(image: UIImage(systemName: "camera.circle.fill"))
-            badge.tintColor       = .systemGray
-            badge.backgroundColor = .systemBackground
+            badge.tintColor          = .systemGray
+            badge.backgroundColor    = .systemBackground
             badge.layer.cornerRadius = 15
-            badge.clipsToBounds   = true
+            badge.clipsToBounds      = true
             badge.translatesAutoresizingMaskIntoConstraints = false
             Imageview.superview?.addSubview(badge)
             NSLayoutConstraint.activate([
@@ -171,11 +201,11 @@ class Personal_InfoViewController: UIViewController,
     // MARK: - Profile Image Picker
     @objc private func profileImageTapped() {
         guard isEditingProfile else { return }
-        var config = PHPickerConfiguration()
+        var config            = PHPickerConfiguration()
         config.filter         = .images
         config.selectionLimit = 1
-        let picker = PHPickerViewController(configuration: config)
-        picker.delegate = self
+        let picker            = PHPickerViewController(configuration: config)
+        picker.delegate       = self
         present(picker, animated: true)
     }
 
@@ -184,21 +214,27 @@ class Personal_InfoViewController: UIViewController,
         guard let result = results.first else { return }
 
         result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
-            guard let self = self, let selectedImage = image as? UIImage else { return }
+            guard let self = self,
+                  let selectedImage = image as? UIImage,
+                  let imageData     = selectedImage.jpegData(compressionQuality: 0.8)
+            else { return }
 
-            // Upload to Cloudinary so the URL is persistent across devices
-            guard let imageData = selectedImage.jpegData(compressionQuality: 0.8) else { return }
-
+            // ✅ Upload to Cloudinary immediately when image is picked
             NetworkManager.shared.uploadImageToCloudinary(imageData) { [weak self] imageUrl in
                 guard let self = self, let imageUrl = imageUrl else {
                     print("❌ Profile image upload failed")
                     return
                 }
-                // Store the Cloudinary URL on the draft
+                print("✅ Profile image uploaded: \(imageUrl)")
+
+                // Store URL on draft — will be sent in PATCH when user taps checkmark
                 self.draftUser?.profileImageString = imageUrl
-                self.Imageview.image         = selectedImage
-                self.Imageview.contentMode   = .scaleAspectFill
-                self.Imageview.clipsToBounds = true
+
+                // Show the new image in the header immediately
+                DispatchQueue.main.async {
+                    self.Imageview.image       = selectedImage
+                    self.Imageview.contentMode = .scaleAspectFill
+                }
             }
         }
     }
@@ -206,11 +242,13 @@ class Personal_InfoViewController: UIViewController,
     // MARK: - TableView DataSource
     func numberOfSections(in tableView: UITableView) -> Int { sections.count }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int) -> Int {
         sections[section].items.count
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView,
+                   titleForHeaderInSection section: Int) -> String? {
         sections[section].title
     }
 

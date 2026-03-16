@@ -392,7 +392,7 @@ extension NetworkManager {
        let request = makeRequest(url: url, method: "GET")
        URLSession.shared.dataTask(with: request) { data, response, error in
            if let error = error { print("❌ fetchFeed error: \(error.localizedDescription)") }
-           if let http = response as? HTTPURLResponse { print("📡 fetchFeed status: \(http.statusCode)") }
+//           if let http = response as? HTTPURLResponse { print("📡 fetchFeed status: \(http.statusCode)") }
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            let feed = try? JSONDecoder().decode(FeedResponse.self, from: data)
            DispatchQueue.main.async { completion(feed) }
@@ -567,3 +567,47 @@ extension NetworkManager {
         }.resume()
     }
 }
+
+
+extension NetworkManager {
+ 
+    /// PATCH /api/users/:id  — updates name, username, profileImageString
+    func updateUserProfile(userId: String,
+                           name: String,
+                           username: String,
+                           profileImageString: String?,
+                           completion: @escaping (Bool) -> Void) {
+ 
+     
+        guard let url = URL(string: baseURL + "/users/\(userId)") else { return }
+           print("📡 PATCH URL: \(url)")  // ✅ add this
+           print("📦 body: name=\(name), username=\(username), image=\(profileImageString ?? "nil")")
+ 
+        var body: [String: Any] = [
+            "name":     name,
+            "username": username
+        ]
+        if let img = profileImageString {
+            body["profileImageString"] = img
+        }
+ 
+        let request = makeRequest(url: url, method: "PATCH", body: body)
+ 
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print(" updateUserProfile error: \(error.localizedDescription)")
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+            if let http = response as? HTTPURLResponse {
+                print(" updateUserProfile status: \(http.statusCode)")
+            }
+            if let data = data, let raw = String(data: data, encoding: .utf8) {
+                print(" updateUserProfile response: \(raw)")
+            }
+            let success = (response as? HTTPURLResponse)?.statusCode == 200
+            DispatchQueue.main.async { completion(success) }
+        }.resume()
+    }
+}
+ 

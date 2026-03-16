@@ -614,7 +614,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f4E-iw-Ijc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3805" y="1127"/>
+            <point key="canvasLocation" x="4445" y="295"/>
         </scene>
         <!--Comments View Controller-->
         <scene sceneID="kgZ-7b-XSR">
@@ -770,7 +770,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="rla-jb-8pf"/>
+        <segue reference="qj5-9z-Xao"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="camera.circle.fill" catalog="system" width="128" height="123"/>
