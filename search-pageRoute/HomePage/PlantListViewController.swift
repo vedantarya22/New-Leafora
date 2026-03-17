@@ -14,37 +14,30 @@ class PlantListViewController: UIViewController,
     private let appGreen = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
 
     // MARK: - Empty State View
-    private lazy var emptyStateView: UIView = {
-        let container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.isHidden = true
+    private lazy var emptyStateView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 8
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.isHidden = true
 
         let titleLabel = UILabel()
         titleLabel.text = "Hurray!"
-        titleLabel.font = .systemFont(ofSize: 22)
-        titleLabel.textColor = appGreen
+        titleLabel.font = .systemFont(ofSize: 22, weight: .semibold)
+        titleLabel.textColor = .systemGreen
         titleLabel.textAlignment = .center
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let subtitleLabel = UILabel()
         subtitleLabel.text = "No care needed in this section."
         subtitleLabel.font = .systemFont(ofSize: 16)
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.textAlignment = .center
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        container.addSubview(titleLabel)
-        container.addSubview(subtitleLabel)
+        stack.addArrangedSubview(titleLabel)
+        stack.addArrangedSubview(subtitleLabel)
 
-        NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: container.centerYAnchor, constant: -10),
-
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
-            subtitleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-        ])
-
-        return container
+        return stack
     }()
 
     override func viewDidLoad() {
@@ -84,10 +77,10 @@ class PlantListViewController: UIViewController,
         // ✅ Add empty state view
         view.addSubview(emptyStateView)
         NSLayoutConstraint.activate([
-            emptyStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyStateView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 20),
+            emptyStateView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
         ])
     }
     

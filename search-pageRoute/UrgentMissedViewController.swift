@@ -52,13 +52,12 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     }
     
     private func loadPlantData() {
-        // Load all plant data from JSON
-//        allPlantData = JSONLoader.loadPlants(from: "plantData")
-        let allPlants = PlantCatalogueCache.shared.plants
+        // Load all plant data from JSON or cache
+        self.allPlantData = PlantCatalogueCache.shared.plants
         
         if allPlantData.isEmpty {
-            print("⚠️ [UrgentMissedVC] No plant data loaded from JSON!")
-            showAlert(title: "Error", message: "Could not load plant data. Please check your JSON file.")
+            print("⚠️ [UrgentMissedVC] No plant data loaded from Cache/JSON!")
+            showAlert(title: "Error", message: "Could not load plant data. Please wait for the catalog to load.")
         } else {
             print("✅ [UrgentMissedVC] Loaded \(allPlantData.count) plant types")
         }
@@ -90,47 +89,27 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     /// Get plants that are 3+ days overdue on ANY task
     private func getUrgentPlants(from plants: [UserPlant]) -> [UserPlant] {
-        return plants.filter { userPlant in
-            guard let plantData = getPlantData(for: userPlant) else { return false }
-            
-            // Check each task type for urgent status
-            if isTaskUrgent(lastDate: userPlant.lastWatered,
-                            cycleDays: plantData.careCycle.watering.days) { return true }
-            
-            if isTaskUrgent(lastDate: userPlant.lastFertilized,
-                            cycleDays: plantData.careCycle.fertilizing.days) { return true }
-            
-            if isTaskUrgent(lastDate: userPlant.lastPruned,
-                            cycleDays: plantData.careCycle.pruning.days) { return true }
-            
-            if isTaskUrgent(lastDate: userPlant.lastRepotted,
-                            cycleDays: plantData.careCycle.repotting.days) { return true }
-            
-            return false
-        }
+        // --- SIMPLE MOCK DATA FOR TESTING ---
+        guard allPlantData.count >= 3 else { return [] }
+        
+        let mock1 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[0].plantId, siteID: UUID(), quantity: 1, lastWatered: Calendar.current.date(byAdding: .day, value: -5, to: Date()), lastPruned: nil, lastFertilized: nil, lastRepotted: nil)
+        let mock2 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[1].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: nil, lastFertilized: Calendar.current.date(byAdding: .day, value: -6, to: Date()), lastRepotted: nil)
+        let mock3 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[2].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: Calendar.current.date(byAdding: .day, value: -4, to: Date()), lastFertilized: nil, lastRepotted: nil)
+        
+        return [mock1, mock2, mock3]
     }
     
     
     /// Get plants that are 1-2 days overdue on ANY task
     private func getMissedPlants(from plants: [UserPlant]) -> [UserPlant] {
-        return plants.filter { userPlant in
-            guard let plantData = getPlantData(for: userPlant) else { return false }
-            
-            // Check each task type for missed status
-            if isTaskMissed(lastDate: userPlant.lastWatered,
-                            cycleDays: plantData.careCycle.watering.days) { return true }
-            
-            if isTaskMissed(lastDate: userPlant.lastFertilized,
-                            cycleDays: plantData.careCycle.fertilizing.days) { return true }
-            
-            if isTaskMissed(lastDate: userPlant.lastPruned,
-                            cycleDays: plantData.careCycle.pruning.days) { return true }
-            
-            if isTaskMissed(lastDate: userPlant.lastRepotted,
-                            cycleDays: plantData.careCycle.repotting.days) { return true }
-            
-            return false
-        }
+        // --- SIMPLE MOCK DATA FOR TESTING ---
+        guard allPlantData.count >= 3 else { return [] }
+        
+        let mock1 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[0].plantId, siteID: UUID(), quantity: 1, lastWatered: Calendar.current.date(byAdding: .day, value: -2, to: Date()), lastPruned: nil, lastFertilized: nil, lastRepotted: nil)
+        let mock2 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[1].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: nil, lastFertilized: Calendar.current.date(byAdding: .day, value: -1, to: Date()), lastRepotted: nil)
+        let mock3 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[2].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: Calendar.current.date(byAdding: .day, value: -2, to: Date()), lastFertilized: nil, lastRepotted: nil)
+        
+        return [mock1, mock2, mock3]
     }
     
     private func getPlantData(for userPlant: UserPlant) -> Plant? {

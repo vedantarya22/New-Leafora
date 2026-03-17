@@ -15,6 +15,7 @@ class PlantQuantityViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupBotanicalBackground()
 
         // 🔢 Define max plants based on mode
         let maxAllowed = session.isEditMode ? session.originalBatchSize : 10
@@ -30,6 +31,25 @@ class PlantQuantityViewController: UIViewController {
         minusBtn.isHidden = true
         plusBtn.isHidden = true
         qtyLabel.isHidden = true
+    }
+
+    private let gradientLayer = CAGradientLayer()
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
+    private func setupBotanicalBackground() {
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+        
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
 
     private func setupPicker() {

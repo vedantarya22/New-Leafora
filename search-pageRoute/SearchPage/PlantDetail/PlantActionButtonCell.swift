@@ -31,7 +31,7 @@ class PlantActionButtonCell: UICollectionViewCell {
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
         config.cornerStyle = .capsule // Pill shape is modern iOS standard
-//        config.baseBackgroundColor = .systemGreen
+        config.baseBackgroundColor = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
         config.baseForegroundColor = .white
         
         // Add the SF Symbol icon

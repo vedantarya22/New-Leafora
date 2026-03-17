@@ -82,8 +82,8 @@ class PlantRowCell: UICollectionViewCell {
 
     func configure(with userPlant: UserPlant, task: String, allPlants: [Plant]) {
 
-        // ✅ Match by mongoId — userPlant.plantId stores MongoDB ObjectId
-        if let plant = allPlants.first(where: { $0.mongoId == userPlant.plantId }) {
+        // ✅ Match by mongoId if available, otherwise fallback to local plantId mapping for mock data
+        if let plant = allPlants.first(where: { $0.mongoId == userPlant.plantId || $0.plantId == userPlant.plantId }) {
 
             nameLabel.text = plant.plantName
 

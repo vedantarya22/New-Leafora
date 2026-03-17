@@ -39,7 +39,8 @@ class PlantIdentificationResultsViewController: UIViewController {
     private let confidenceLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .systemMint
+        // Set to standard app green
+        label.textColor = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -106,7 +107,8 @@ class PlantIdentificationResultsViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Go to Plant", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        button.backgroundColor = .systemMint
+        // Dark green
+        button.backgroundColor = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 12
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -131,8 +133,22 @@ class PlantIdentificationResultsViewController: UIViewController {
         populateData()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
+    private let gradientLayer = CAGradientLayer()
+
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        // Apply the same soft botanical background used in HomeViewController
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        view.layer.insertSublayer(gradientLayer, at: 0)
         
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -148,6 +164,10 @@ class PlantIdentificationResultsViewController: UIViewController {
         contentView.addSubview(otherMatchesLabel)
         contentView.addSubview(otherMatchesStackView)
         contentView.addSubview(goToPlantButton)
+        
+        // Ensure gradient layer resizes properly
+        gradientLayer.frame = view.bounds
+
         
         goToPlantButton.addTarget(self, action: #selector(goToPlantTapped), for: .touchUpInside)
         
@@ -324,7 +344,8 @@ class PlantIdentificationResultsViewController: UIViewController {
         let percentage = Int(suggestion.probability * 100)
         probabilityLabel.text = "\(percentage)%"
         probabilityLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        probabilityLabel.textColor = .systemMint
+        // Set to standard app green
+        probabilityLabel.textColor = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
         probabilityLabel.translatesAutoresizingMaskIntoConstraints = false
         
         containerView.addSubview(nameLabel)
@@ -354,10 +375,24 @@ class PlantIdentificationResultsViewController: UIViewController {
         // Load all plants from Cloud Catalogue
         let allPlants = PlantCatalogueCache.shared.plants
         
-        // Try to find a matching plant by comparing scientific name (case-insensitive)
+        // Try to find a matching plant by comparing scientific name, common names, or description (case-insensitive)
+        let mlName = topSuggestion.plantName.lowercased()
+        let mlCommonNames = topSuggestion.plantDetails?.commonNames?.map { $0.lowercased() } ?? []
+        let mlDescription = topSuggestion.plantDetails?.description?.value?.lowercased() ?? ""
+        
         let matchingPlant = allPlants.first { plant in
-            // Compare scientific names - the plant name from API is the scientific name
-            plant.plantName.lowercased() == topSuggestion.plantName.lowercased()
+            let catalogName = plant.plantName.lowercased()
+            
+            // Check 1: Does the ML scientific name match our catalog name?
+            if catalogName == mlName || mlName.contains(catalogName) { return true }
+            
+            // Check 2: Do any of the ML common names match our catalog name?
+            if mlCommonNames.contains(where: { $0.contains(catalogName) || catalogName.contains($0) }) { return true }
+            
+            // Check 3: Is our catalog name explicitly mentioned in the ML description?
+            if mlDescription.contains(catalogName) { return true }
+            
+            return false
         }
         
         if let foundPlant = matchingPlant {

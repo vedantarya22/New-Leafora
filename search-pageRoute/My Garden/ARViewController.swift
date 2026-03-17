@@ -132,6 +132,15 @@ class ARViewController: UIViewController {
         )
         sunButton.tintColor = .label
 
+        // Left: back chevron
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.left"),
+            style: .plain,
+            target: self,
+            action: #selector(goBack)
+        )
+        backButton.tintColor = .label
+
         // Left: trash (clear all)
         let trashButton = UIBarButtonItem(
             image: UIImage(systemName: "trash"),
@@ -142,8 +151,13 @@ class ARViewController: UIViewController {
         trashButton.tintColor = .systemRed
 
         navigationItem.rightBarButtonItem = sunButton
-        navigationItem.leftBarButtonItem  = trashButton
+        navigationItem.leftBarButtonItems = [backButton, trashButton]
     }
+
+    @objc private func goBack() {
+        navigationController?.popViewController(animated: true)
+    }
+
 
     // MARK: - Loading Spinner
 
@@ -281,7 +295,7 @@ class ARViewController: UIViewController {
             ModelItem(name: "Monstera",       fileName: "krishna", thumbnail: "🌿", image: nil),
             ModelItem(name: "Rose",           fileName: "pop",      thumbnail: "🌹", image: nil),
             ModelItem(name: "Snake Plant",    fileName: "krishna2", thumbnail: "🪴", image: nil),
-            ModelItem(name: "Potted Plant 1", fileName: "temp 2",   thumbnail: "🌵", image: "extracted_image_0 2"),
+            ModelItem(name: "Potted Plant 1", fileName: "krishna3",   thumbnail: "🌵", image: nil),
             ModelItem(name: "Potted Plant 2", fileName: "temp 3",   thumbnail: "🎋", image: "extracted_image_0 3"),
         ]
     }
