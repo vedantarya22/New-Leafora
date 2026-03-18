@@ -98,7 +98,7 @@ class PlantSiteViewController: UIViewController,UICollectionViewDataSource,UICol
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toNextScreen" {
-            if let nextVC = segue.destination as? PlantQuantityViewController {
+            if let nextVC = segue.destination as? AddPlantQuestionnaireViewController {
                 nextVC.session = self.session // session model passing
             }
         }
@@ -129,7 +129,7 @@ class PlantSiteViewController: UIViewController,UICollectionViewDataSource,UICol
         
         cell.plantSiteLabel.text = item.site
         cell.plantSiteButton.setImage(UIImage(systemName: item.image), for: .normal)
-        cell.plantSiteButton.tintColor = .black
+        // Let the cell handle its own tintColor based on selection state
         
         // Tell CollectionView which cell is selected
            if let selected = selectedIndex, selected == indexPath {

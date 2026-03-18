@@ -15,47 +15,47 @@ class PlantSiteCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         
         plantSiteButton.clipsToBounds = true
         plantSiteButton.layer.cornerRadius = plantSiteButton.frame.width / 2
         
-        plantSiteButton.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        
-        plantSiteLabel.textAlignment = .center
-//        plantSiteLabel.textColor = .darkGray
-        
         plantSiteButton.isUserInteractionEnabled = false
+        plantSiteLabel.textAlignment = .center
         
+        // Default: white background, brandGreen icon
+        setDeselectedAppearance()
     }
     
     override var isSelected: Bool {
         didSet {
-            if isSelected {
-                setSelectedAppearance()
-            } else {
-                setDeselectedAppearance()
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut) {
+                if self.isSelected {
+                    self.setSelectedAppearance()
+                } else {
+                    self.setDeselectedAppearance()
+                }
             }
         }
     }
     
     
     func setSelectedAppearance() {
-        plantSiteButton.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.7)
-        //               plantSiteButton.tintColor = .systemGreen
-//        plantSiteLabel.textColor = .darkGray
-        
+        // Selected: brandGreen background, white SF symbol
+        plantSiteButton.backgroundColor = .brandGreen
+        plantSiteButton.tintColor = .white
     }
     
     func setDeselectedAppearance() {
-        plantSiteButton.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        plantSiteButton.tintColor = .black
-//        plantSiteLabel.textColor = .darkGray
+        // Default: white background, brandGreen SF symbol
+        plantSiteButton.backgroundColor = .white
+        plantSiteButton.tintColor = .brandGreen
         
         layer.borderWidth = 0
     }
     
     func animateSelection() {
+        UISelectionFeedbackGenerator().selectionChanged()
+        
         UIView.animate(withDuration: 0.1, animations: {
             self.plantSiteButton.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         }) { _ in
@@ -64,8 +64,5 @@ class PlantSiteCollectionViewCell: UICollectionViewCell {
             }
         }
     }
-    
-    
-    
-    
 }
+

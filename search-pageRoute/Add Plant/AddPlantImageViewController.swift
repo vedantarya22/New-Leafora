@@ -66,18 +66,14 @@ class AddPlantImageViewController: UIViewController,
     }
     
     func setupImagePlaceholder() {
-        plantImageView.layer.cornerRadius = 20
-        plantImageView.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.08)
+        plantImageView.layer.cornerRadius = 16
+        plantImageView.backgroundColor = .white
         
-        let config = UIImage.SymbolConfiguration(pointSize: 45, weight: .light)
-        plantImageView.image = UIImage(systemName: "camera", withConfiguration: config)
-        plantImageView.tintColor = .systemGreen
+        let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
+        plantImageView.image = UIImage(systemName: "camera.fill", withConfiguration: config)
+        plantImageView.tintColor = .systemGray3
         
-        borderLayer.strokeColor = UIColor.systemGreen.withAlphaComponent(0.5).cgColor
-        borderLayer.lineDashPattern = [6, 4]
-        borderLayer.fillColor = nil
-        borderLayer.lineWidth = 2
-        plantImageView.layer.addSublayer(borderLayer)
+        borderLayer.isHidden = true
     }
     
     @objc func showImagePickerOptions() {

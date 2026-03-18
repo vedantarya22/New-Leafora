@@ -65,7 +65,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         }
         
         let storyboard = UIStoryboard(name: "AddPlant", bundle: nil)
-        if let addPlantVC = storyboard.instantiateInitialViewController() as? PlantSiteViewController {
+        if let addPlantVC = storyboard.instantiateViewController(withIdentifier: "PlantSiteView") as? PlantSiteViewController {
             addPlantVC.plantId = plantId
             navigationController?.pushViewController(addPlantVC, animated: true)
         }

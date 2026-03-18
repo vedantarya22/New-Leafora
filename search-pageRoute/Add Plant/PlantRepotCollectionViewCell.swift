@@ -11,7 +11,7 @@ class PlantRepotCollectionViewCell: UICollectionViewCell {
     
     private func setupPlantAppStyle() {
         // 1. Creative Card Look
-        contentView.backgroundColor = .secondarySystemGroupedBackground
+        contentView.backgroundColor = .white
         contentView.layer.cornerRadius = 24 // Softer, more organic corners
         contentView.layer.borderWidth = 1.5
         contentView.layer.borderColor = UIColor.systemGray6.cgColor
@@ -19,7 +19,7 @@ class PlantRepotCollectionViewCell: UICollectionViewCell {
         // 2. Button as a passive Label
         optionBtn.isUserInteractionEnabled = false
         var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = .label
+        config.baseForegroundColor = .brandGreen
         config.titleAlignment = .center
         optionBtn.configuration = config
         
@@ -35,15 +35,16 @@ class PlantRepotCollectionViewCell: UICollectionViewCell {
         didSet {
             UIView.animate(withDuration: 0.2) {
                 if self.isSelected {
-                    // Selection Style: Soft Green with vibrant border
-                    self.contentView.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.1)
-                    self.contentView.layer.borderColor = UIColor.systemGreen.cgColor
-                    self.optionBtn.tintColor = .systemGreen
+                    // Selection Style: Solid brandGreen background with white text
+                    self.contentView.backgroundColor = .brandGreen
+                    self.contentView.layer.borderColor = UIColor.clear.cgColor
+                    self.optionBtn.configuration?.baseForegroundColor = .white
                     self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98) // "Pressed" look
                 } else {
-                    self.contentView.backgroundColor = .secondarySystemGroupedBackground
+                    // Default Style: White background with brandGreen text
+                    self.contentView.backgroundColor = .white
                     self.contentView.layer.borderColor = UIColor.systemGray6.cgColor
-                    self.optionBtn.tintColor = .label
+                    self.optionBtn.configuration?.baseForegroundColor = .brandGreen
                     self.transform = .identity
                 }
             }
