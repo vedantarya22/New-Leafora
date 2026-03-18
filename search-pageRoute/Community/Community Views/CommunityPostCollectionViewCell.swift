@@ -15,11 +15,13 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var commentButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var likesCountLabel: UILabel!
+    @IBOutlet weak var commentsCountLabel: UILabel!
     @IBOutlet weak var captionLabel: UILabel!
     @IBOutlet weak var bottomUsernameLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var menuButton: UIButton!
     @IBOutlet weak var seeMoreButton: UIButton!
+    @IBOutlet weak var viewAllCommentsButton: UIButton!
 
     // MARK: - Identity
     static let identifier = "CommunityPostCollectionViewCell"
@@ -94,7 +96,11 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         seeMoreButton.isHidden     = isExpanded ? true : !canExpand
 
         // ✅ Count comes entirely from the Post model — cell never mutates it
-        likesCountLabel.text = "\(post.likesCount) \(post.likesCount == 1 ? "like" : "likes")"
+        likesCountLabel.text = "\(post.likesCount)"
+        commentsCountLabel.text = "\(post.commentsCount)"
+
+        // Show "View all comments" only when there are comments
+        viewAllCommentsButton.isHidden = post.commentsCount == 0
 
         timestampLabel.text    = post.displayTimestamp
         timestampLabel.isHidden = false
@@ -147,6 +153,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
 
     @IBAction func menuButtonTapped(_ sender: UIButton) { onMenuTapped?() }
     @IBAction func seeMoreTapped(_ sender: UIButton)    { onSeeMoreTapped?() }
+    @IBAction func viewAllCommentsTapped(_ sender: UIButton) { onCommentTapped?() }
 
     @objc private func profileImageTapped() { onProfileTapped?() }
     @objc private func captionLabelTapped() { if canExpand { onSeeMoreTapped?() } }
@@ -169,6 +176,8 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         profileImageView.image = nil
         postImageView.image    = nil
+        commentsCountLabel.text = nil
+        viewAllCommentsButton.isHidden = true
         setLikeButton(liked: false)
         setSaveButton(saved: false)
         isExpanded = false

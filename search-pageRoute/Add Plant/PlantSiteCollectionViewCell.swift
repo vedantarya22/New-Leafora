@@ -20,10 +20,10 @@ class PlantSiteCollectionViewCell: UICollectionViewCell {
         plantSiteButton.clipsToBounds = true
         plantSiteButton.layer.cornerRadius = plantSiteButton.frame.width / 2
         
-        plantSiteButton.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        plantSiteButton.backgroundColor = .white
         
         plantSiteLabel.textAlignment = .center
-        plantSiteLabel.textColor = .darkGray
+//        plantSiteLabel.textColor = .darkGray
         
         plantSiteButton.isUserInteractionEnabled = false
         
@@ -43,12 +43,12 @@ class PlantSiteCollectionViewCell: UICollectionViewCell {
     func setSelectedAppearance() {
         plantSiteButton.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.7)
         //               plantSiteButton.tintColor = .systemGreen
-        plantSiteLabel.textColor = .darkGray
+//        plantSiteLabel.textColor = .darkGray
         
     }
     
     func setDeselectedAppearance() {
-        plantSiteButton.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        plantSiteButton.backgroundColor = .white
         plantSiteButton.tintColor = .black
         plantSiteLabel.textColor = .darkGray
         

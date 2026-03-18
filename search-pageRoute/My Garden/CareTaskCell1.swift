@@ -120,6 +120,8 @@ class CareTaskCell1: UICollectionViewCell {
             return ("leaf.fill", UIColor.systemGreen, UIColor.systemGreen.withAlphaComponent(0.3))
         case "repotting":
             return ("arrow.up.bin.fill", UIColor.systemOrange, UIColor.systemOrange.withAlphaComponent(0.3))
+        case "pruning":
+            return ("scissors", UIColor.systemPurple, UIColor.systemPurple.withAlphaComponent(0.3))
         default:
             return ("info.circle.fill", UIColor.systemPurple, UIColor.systemPurple.withAlphaComponent(0.3))
         }
