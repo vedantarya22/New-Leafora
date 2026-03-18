@@ -40,7 +40,7 @@ class DataStore {
     }
     
     var repottingOptions: [OptionItem] = [
-        OptionItem(title: "Never/In nursery pot"),
+        OptionItem(title: "Never"),
         OptionItem(title: "Last 7 days"),
         OptionItem(title: "About 1 month ago"),
         OptionItem(title: "About 3–6 months ago"),
@@ -77,11 +77,11 @@ class DataStore {
     }
 
     var pruningOptions: [OptionItem] = [
-        OptionItem(title: "Recently (last week)"),
+        OptionItem(title: "Last week"),
         OptionItem(title: "About 1 month ago"),
         OptionItem(title: "About 3 months ago"),
         OptionItem(title: "6 months ago or more"),
-        OptionItem(title: "Never pruned")
+        OptionItem(title: "Never")
     ]
 
     func getPruningOptions() -> [OptionItem] {
