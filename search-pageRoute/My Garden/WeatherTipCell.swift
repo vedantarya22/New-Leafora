@@ -21,6 +21,10 @@ class WeatherTipCell: UICollectionViewCell {
         containerView.layer.cornerRadius = 20
         containerView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
         
+        // Subtle Green Outline (matches site cards)
+        containerView.layer.borderWidth = 1.0
+        containerView.layer.borderColor = UIColor(red: 0.72, green: 0.88, blue: 0.76, alpha: 1.0).cgColor
+        
         // Soft Shadow
         containerView.layer.shadowColor = UIColor.black.cgColor
         containerView.layer.shadowOpacity = 0.05

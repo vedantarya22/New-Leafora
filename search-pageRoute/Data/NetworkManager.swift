@@ -9,7 +9,7 @@ import Foundation
 
 class NetworkManager{
     static let shared = NetworkManager()
-    let baseURL = "https://plantappbackend-5mdh.onrender.com/api"
+    let baseURL = "https://plantappbackend-933m.onrender.com/api"
     
     private let session: URLSession = {
         let config = URLSessionConfiguration.default

@@ -128,9 +128,10 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         myGardenCollectionView.addGestureRecognizer(longPress)
         if let flowLayout = myGardenCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            flowLayout.minimumInteritemSpacing = 16
-            flowLayout.minimumLineSpacing = 16
+            flowLayout.minimumInteritemSpacing = 12
+            flowLayout.minimumLineSpacing = 12
             flowLayout.sectionInset = UIEdgeInsets(top: 20, left: 16, bottom: 20, right: 16)
+            flowLayout.estimatedItemSize = .zero
         }
         
         // Register existing garden cell
@@ -175,17 +176,14 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyGardenCell", for: indexPath) as! MyGardenCollectionViewCell
-             let site = siteStore.sites[indexPath.item]
-             
-             cell.iconButton.setImage(UIImage(systemName: site.icon), for: .normal)
-             cell.siteNameLabel.text = site.name
-             
-             
+            let site = siteStore.sites[indexPath.item]
+            
             let plantsInSite = PlantStore.shared.plants(for: site)
             let totalCount = plantsInSite.reduce(0) { $0 + $1.quantity }
-            cell.plantCountLabel.text = "\(totalCount) plant\(totalCount == 1 ? "" : "s")"
-             
-             return cell
+            
+            cell.configure(name: site.name, icon: site.icon, plantCount: totalCount, index: indexPath.item)
+            
+            return cell
         }
     }
     @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
@@ -258,12 +256,13 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
             let width = collectionView.bounds.width - 32 // 16pt padding on each side
             return CGSize(width: width, height: 100)
         } else {
-            // 2-Column Garden Boxes
-            let totalHorizontalPadding: CGFloat = 32 // 16pt on left + 16pt on right
-            let interItemSpacing: CGFloat = 16 // spacing between the two columns
+            // 3-Column Garden Tiles
+            let numberOfColumns: CGFloat = 3
+            let totalHorizontalPadding: CGFloat = 32
+            let interItemSpacing: CGFloat = 12 * (numberOfColumns - 1)
             let availableWidth = collectionView.bounds.width - totalHorizontalPadding - interItemSpacing
-            let itemWidth = floor(availableWidth / 2)
-            return CGSize(width: itemWidth, height: 120)
+            let itemWidth = floor(availableWidth / numberOfColumns)
+            return CGSize(width: itemWidth, height: itemWidth)
         }
     }
     
@@ -278,11 +277,11 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return section == 0 ? 0 : 16
+        return section == 0 ? 0 : 12
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return section == 0 ? 0 : 16
+        return section == 0 ? 0 : 12
     }
 
     // MARK: - Navigation
