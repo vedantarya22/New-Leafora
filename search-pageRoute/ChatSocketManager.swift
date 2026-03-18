@@ -33,13 +33,15 @@ final class ChatSocketManager {
     // MARK: - Connect
     // Call this after login, passing the logged-in user's MongoDB _id
     func connect(userId: String) {
-        let serverURL = URL(string: "https://plantappbackend-5mdh.onrender.com")!
+        let serverURL = URL(string: "https://plantappbackend-933m.onrender.com")!
 
         manager = SocketManager(socketURL: serverURL, config: [
-            .log(false),
+            .log(true),
             .compress,
             .reconnects(true),
-            .reconnectWait(3)
+            .reconnectWait(3),
+            .forcePolling(true),
+            
         ])
 
         socket = manager?.defaultSocket
