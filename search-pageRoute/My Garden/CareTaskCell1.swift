@@ -119,7 +119,7 @@ class CareTaskCell1: UICollectionViewCell {
         case "fertilizing":
             return ("leaf.fill", UIColor.systemGreen, UIColor.systemGreen.withAlphaComponent(0.3))
         case "repotting":
-            return ("arrow.triangle.2.circlepath", UIColor.systemOrange, UIColor.systemOrange.withAlphaComponent(0.3))
+            return ("arrow.up.bin.fill", UIColor.systemOrange, UIColor.systemOrange.withAlphaComponent(0.3))
         default:
             return ("info.circle.fill", UIColor.systemPurple, UIColor.systemPurple.withAlphaComponent(0.3))
         }

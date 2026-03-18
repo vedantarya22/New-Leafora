@@ -172,7 +172,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 rows: [
                     (icon: "drop.fill",             label: "Water",      value: plant.careCycle.watering.display),
                     (icon: "leaf.fill",             label: "Fertilizer", value: plant.careCycle.fertilizing.display),
-                    (icon: "basket.fill",           label: "Repotting",  value: plant.careCycle.repotting.display),
+                    (icon: "arrow.up.bin.fill",           label: "Repotting",  value: plant.careCycle.repotting.display),
                     (icon: "scissors",              label: "Pruning",    value: plant.careCycle.pruning.display)
                 ]
             )

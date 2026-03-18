@@ -10,7 +10,7 @@ struct PostAuthor: Codable {
     let id: String
     let name: String
     let username: String
-    // ✅ null in backend when user hasn't set a profile image yet
+    // null in backend when user hasn't set a profile image yet
     let profileImageString: String?
 
     enum CodingKeys: String, CodingKey {

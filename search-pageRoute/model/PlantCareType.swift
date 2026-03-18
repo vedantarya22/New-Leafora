@@ -48,7 +48,7 @@
 //        case .trimming:
 //            return UIImage(systemName: "scissors")
 //        case .repotting:
-//            return UIImage(systemName: "arrow.triangle.2.circlepath")
+//            return UIImage(systemName: "arrow.up.bin.fill")
 //        case .fertilizing:
 //            return UIImage(systemName: "leaf.fill")
 //        }

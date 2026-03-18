@@ -101,7 +101,7 @@ class PlantDetailViewController_New: UIViewController {
         careItems = [
             (icon: "drop.fill",    title: "Watering",    steps: buildWateringSteps(from: plant),    color: UIColor.systemBlue),
             (icon: "leaf.fill",    title: "Fertilizing", steps: buildFertilizingSteps(from: plant), color: UIColor.systemGreen),
-            (icon: "arrow.triangle.2.circlepath", title: "Repotting", steps: buildRepottingSteps(from: plant), color: UIColor.systemOrange),
+            (icon: "arrow.up.bin.fill", title: "Repotting", steps: buildRepottingSteps(from: plant), color: UIColor.systemOrange),
             (icon: "scissors",     title: "Pruning",     steps: buildPruningSteps(from: plant),     color: UIColor.systemPurple)
         ]
     }
