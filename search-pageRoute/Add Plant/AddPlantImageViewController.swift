@@ -13,17 +13,50 @@ class AddPlantImageViewController: UIViewController,
     @IBOutlet weak var plantImageView: UIImageView!
     @IBOutlet weak var saveButton: UIButton!
     
+    private let gradientLayer = CAGradientLayer()
+    private let borderLayer = CAShapeLayer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupBotanicalBackground()
         setupImageTapGesture()
+        setupSaveButton()
+        
         if session.isEditMode, let existingData = session.imageData, let existingImage = UIImage(data: existingData) {
-            plantImageView.layer.cornerRadius = 16
+            plantImageView.layer.cornerRadius = 20
             plantImageView.image = existingImage
             plantImageView.contentMode = .scaleAspectFill
             plantImageView.clipsToBounds = true
+            borderLayer.isHidden = true
         } else {
             setupImagePlaceholder()
         }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+        borderLayer.path = UIBezierPath(roundedRect: plantImageView.bounds, cornerRadius: 20).cgPath
+        borderLayer.frame = plantImageView.bounds
+    }
+    
+    private func setupBotanicalBackground() {
+        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
+        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
+        
+        gradientLayer.colors = [topColor, bottomColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        gradientLayer.frame = view.bounds
+        
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    private func setupSaveButton() {
+        saveButton.layer.cornerRadius = 14
+        saveButton.backgroundColor = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
     }
     
     func setupImageTapGesture() {
@@ -33,11 +66,18 @@ class AddPlantImageViewController: UIViewController,
     }
     
     func setupImagePlaceholder() {
-        plantImageView.layer.cornerRadius = 16
-        plantImageView.backgroundColor = .systemGray6
-        let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
-        plantImageView.image = UIImage(systemName: "camera.fill", withConfiguration: config)
-        plantImageView.tintColor = .systemGray3
+        plantImageView.layer.cornerRadius = 20
+        plantImageView.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.08)
+        
+        let config = UIImage.SymbolConfiguration(pointSize: 45, weight: .light)
+        plantImageView.image = UIImage(systemName: "camera", withConfiguration: config)
+        plantImageView.tintColor = .systemGreen
+        
+        borderLayer.strokeColor = UIColor.systemGreen.withAlphaComponent(0.5).cgColor
+        borderLayer.lineDashPattern = [6, 4]
+        borderLayer.fillColor = nil
+        borderLayer.lineWidth = 2
+        plantImageView.layer.addSublayer(borderLayer)
     }
     
     @objc func showImagePickerOptions() {
@@ -78,6 +118,8 @@ class AddPlantImageViewController: UIViewController,
     
     func updateSelectedImage(_ image: UIImage) {
         plantImageView.image = image
+        plantImageView.contentMode = .scaleAspectFill
+        borderLayer.isHidden = true
         session.imageData = image.jpegData(compressionQuality: 0.8)
         print("Image saved in session")
     }

@@ -20,7 +20,7 @@ class PlantSiteCollectionViewCell: UICollectionViewCell {
         plantSiteButton.clipsToBounds = true
         plantSiteButton.layer.cornerRadius = plantSiteButton.frame.width / 2
         
-        plantSiteButton.backgroundColor = .white
+        plantSiteButton.backgroundColor = UIColor(white: 0.95, alpha: 1)
         
         plantSiteLabel.textAlignment = .center
 //        plantSiteLabel.textColor = .darkGray
@@ -48,9 +48,9 @@ class PlantSiteCollectionViewCell: UICollectionViewCell {
     }
     
     func setDeselectedAppearance() {
-        plantSiteButton.backgroundColor = .white
+        plantSiteButton.backgroundColor = UIColor(white: 0.95, alpha: 1)
         plantSiteButton.tintColor = .black
-        plantSiteLabel.textColor = .darkGray
+//        plantSiteLabel.textColor = .darkGray
         
         layer.borderWidth = 0
     }
