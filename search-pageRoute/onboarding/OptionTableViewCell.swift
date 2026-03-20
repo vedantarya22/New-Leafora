@@ -12,7 +12,7 @@ class OptionTableViewCell: UITableViewCell {
         backgroundColor = .clear
     }
 
-    // UPDATED: Added isMultiSelect parameter
+    // supports single/multi select icon styles
     func configure(option: String, isSelected: Bool, isMultiSelect: Bool) {
         optionLabel.text = option
         

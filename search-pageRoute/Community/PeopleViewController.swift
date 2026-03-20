@@ -27,7 +27,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         setupSearchController()
         loadData()
 
-        // Refresh preview when a message is sent inside ChatViewController
+        // preview refresh if sm1 sent a new msg
         NotificationCenter.default.addObserver(
             self, selector: #selector(refreshPreviews),
             name: .didSendMessage, object: nil
@@ -44,7 +44,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationItem.hidesSearchBarWhenScrolling = false
-        // Always refresh previews when coming back from a chat
+        // refresh preview when coming from a chat
         tableView.reloadData()
         loadData()
     }
@@ -121,7 +121,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         // Name
         cell.nameLabel.text = user.name
 
-        // Last message preview or fallback to plant count
+        // Last message preview
         if let last = ChatManager.shared.lastMessage(with: user.id) {
             let myId   = UserSession.shared.currentLoggedInUserID
             let prefix = last.senderId == myId ? "You: " : ""
@@ -154,7 +154,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         navigationController?.pushViewController(chatVC, animated: true)
     }
 
-    // Swipe to delete conversation
+    // swipe to delete conversation b/w ppl
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {

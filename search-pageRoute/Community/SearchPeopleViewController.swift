@@ -40,7 +40,7 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
 
     // MARK: - Data
     func loadData() {
-        // ✅ fetchAllUsers now lives on NetworkManager, not UserSession
+        // fetch users from backend and remove current user
         NetworkManager.shared.fetchAllUsers { [weak self] users in
             guard let self = self else { return }
             let currentId = UserSession.shared.currentLoggedInUserID
@@ -104,7 +104,7 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         cell.nameLabel.text    = user.name
         cell.messageLabel.text = user.searchSubtitle
 
-        // ✅ profileImageString lives on User directly
+        // profile image on User model
         cell.avatarImageView.configureImage(with: user.profileImageString)
         cell.avatarImageView.tintColor   = .label
         cell.backgroundColor             = .clear

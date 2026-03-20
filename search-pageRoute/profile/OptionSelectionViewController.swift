@@ -2,9 +2,9 @@ import UIKit
 
 class OptionSelectionViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    @IBOutlet weak var Imageview: UIImageView! // From reused PersonalInfoVC
-    @IBOutlet weak var Cellview: UIView!      // From reused PersonalInfoVC
-    @IBOutlet weak var Table: UITableView!    // From reused PersonalInfoVC
+    @IBOutlet weak var Imageview: UIImageView! // reused PersonalInfoVC outlet
+    @IBOutlet weak var Cellview: UIView!      // reused PersonalInfoVC outlet
+    @IBOutlet weak var Table: UITableView!    // reused PersonalInfoVC outlet
 
     var preferenceType: GardeningPreferenceType?
     var currentValue: String?
@@ -19,10 +19,7 @@ class OptionSelectionViewController: UIViewController, UITableViewDelegate, UITa
         super.viewDidLoad()
         title = preferenceType?.rawValue ?? "Select Option"
         
-        // We reuse the PersonalInfoVC layout but we might want to hide the header image if not needed.
-        // The user said: "simple single-selection list (similar to the iOS Repeat screen)".
-        // Usually these don't have a big header image.
-        // So let's hide the table header view.
+        // hide reused header for simple single-select list
         Table.tableHeaderView = nil
         
         setupTableView()
@@ -43,24 +40,15 @@ class OptionSelectionViewController: UIViewController, UITableViewDelegate, UITa
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Reuse the same identifier "cell" from the storyboard
-        // Since this VC is reused from Personal_InfoViewController, check that cell class.
-        // It was PersonalInfoTableViewCell.
-        // However, for this simple list, we don't need the text field.
-        // We can just use the cell's basic properties or standard config.
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        // If it's a PersonalInfoTableViewCell, we might need to cast to access outlets if we wanted to use them,
-        // but since we want a standard look, let's use content configuration which overrides custom subclass views usually.
-        
+
         let option = options[indexPath.row]
         
         var content = cell.defaultContentConfiguration()
         content.text = option
         cell.contentConfiguration = content
         
-        // Show checkmark if selected
+        // show checkmark for selected value
         if option == currentValue {
             cell.accessoryType = .checkmark
         } else {
@@ -77,13 +65,13 @@ class OptionSelectionViewController: UIViewController, UITableViewDelegate, UITa
         let selectedOption = options[indexPath.row]
         currentValue = selectedOption
         
-        // Notify parent via callback
+        // send selection back to parent
         onSelectionChanged?(selectedOption)
         
-        // Reload to update checkmarks
+        // reload to refresh checkmarks
         tableView.reloadData()
         
-        // Return to previous screen immediately as per standard iOS selection behavior
+        // return right away after selection
         navigationController?.popViewController(animated: true)
     }
 }

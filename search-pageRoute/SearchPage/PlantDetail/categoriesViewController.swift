@@ -11,7 +11,7 @@ class categoriesViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
-    // Callback to pass data back to SearchViewController
+    // pass selected category back
     var selectionHandler: ((String) -> Void)?
     
     
@@ -21,7 +21,7 @@ class categoriesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Fix: Bring the Navigation Bar to the front so it covers the collection view when scrolling
+        // keep nav bar above scrolling content
         if let navBar = view.subviews.first(where: { $0 is UINavigationBar }) {
             view.bringSubviewToFront(navBar)
         }
@@ -30,14 +30,14 @@ class categoriesViewController: UIViewController {
     }
     
     private func setupCollectionView() {
-        // Register XIB
+        // register xib
         let nib = UINib(nibName: "categoriesCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: categoriesCollectionViewCell.identifier)
         
-        // Layout
+        // layout
         collectionView.collectionViewLayout = createLayout()
         
-        // Delegates
+        // delegates
         collectionView.delegate = self
         collectionView.dataSource = self
     }
@@ -46,7 +46,7 @@ class categoriesViewController: UIViewController {
         // 2 items per row
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.5),
-            heightDimension: .absolute(100) // Adjusted height for 2-column look, maybe 100-120
+            heightDimension: .absolute(100) // tuned for 2-column layout
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
@@ -59,7 +59,7 @@ class categoriesViewController: UIViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         
-        // Fix: Add top padding so the first row starts BELOW the navigation bar.
+        // keep first row below nav bar
         section.contentInsets = NSDirectionalEdgeInsets(top: 80, leading: 16, bottom: 16, trailing: 16)
         
         return UICollectionViewCompositionalLayout(section: section)
@@ -113,7 +113,7 @@ extension categoriesViewController: UICollectionViewDataSource, UICollectionView
         }
         
         dismiss(animated: true) {
-            // Pass selection back AFTER dismissal to avoid presentation conflicts
+            // pass selection after dismiss
             self.selectionHandler?(category.normalizedKey)
         }
     }
@@ -136,10 +136,9 @@ extension categoriesViewController: UICollectionViewDataSource, UICollectionView
     }
     
     private func navigateToProfilePreferences() {
-        // Dismiss the categories pop-up first
+        // dismiss categories first
         dismiss(animated: true) {
-            // Give control back to the presenting view controller (e.g. SearchViewController)
-            // so it can handle the navigation
+            // let parent screen handle navigation
             NotificationCenter.default.post(name: NSNotification.Name("NavigateToGardeningPreferences"), object: nil)
         }
     }

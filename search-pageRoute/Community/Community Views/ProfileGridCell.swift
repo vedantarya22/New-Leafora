@@ -16,7 +16,7 @@ class ProfileGridCell: UICollectionViewCell {
             imageView.contentMode  = .scaleAspectFill
             imageView.clipsToBounds = true
             
-            // Pin imageView to fill the entire cell
+            // fill whole cell with image
             imageView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 imageView.topAnchor.constraint(equalTo: contentView.topAnchor),

@@ -28,7 +28,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     static let nibName    = "CommunityPostCollectionViewCell"
 
     // MARK: - Callbacks
-    // ✅ onLikeTapped no longer passes count — cell doesn't own that data
+    // callbacks only; counts come from Post model
     var onLikeTapped:    (() -> Void)?
     var onCommentTapped: (() -> Void)?
     var onSaveTapped:    (() -> Void)?
@@ -95,11 +95,11 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         captionLabel.numberOfLines = isExpanded ? 0 : 1
         seeMoreButton.isHidden     = isExpanded ? true : !canExpand
 
-        // ✅ Count comes entirely from the Post model — cell never mutates it
+        // counts come from current post
         likesCountLabel.text = "\(post.likesCount)"
         commentsCountLabel.text = "\(post.commentsCount)"
 
-        // Show "View all comments" only when there are comments
+        // show only when comments exist
         viewAllCommentsButton.isHidden = post.commentsCount == 0
 
         timestampLabel.text    = post.displayTimestamp
@@ -108,10 +108,10 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         profileImageView.configureImage(with: post.author?.profileImageString ?? "person.circle.fill")
         postImageView.configureImage(with: post.postImageString)
 
-        // ✅ Like button state driven entirely by post.isLikedByMe from server
+        // like state from post model
         setLikeButton(liked: post.isLikedByMe)
 
-        // ✅ Save button state driven entirely by post.isSaved from server
+        // save state from post model
         setSaveButton(saved: post.isSaved)
     }
 
@@ -130,13 +130,11 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     // MARK: - Actions
 
     @IBAction func likeButtonTapped(_ sender: UIButton) {
-        // ✅ Toggle icon immediately for snappy feel (optimistic UI)
+        // update icon immediately
         let willLike = likeButton.tintColor != .systemRed
         setLikeButton(liked: willLike)
 
-        // ✅ Do NOT touch likesCountLabel here — PostRepository.toggleLike
-        //    does optimistic count update, then the notification triggers
-        //    configure() which sets the correct count from the model.
+        // repository handles count update
         onLikeTapped?()
     }
 
@@ -145,7 +143,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     }
 
     @IBAction func saveButtonTapped(_ sender: UIButton) {
-        // ✅ Toggle icon immediately for snappy feel
+        // update icon immediately
         let willSave = saveButton.image(for: .normal) == UIImage(systemName: "bookmark")
         setSaveButton(saved: willSave)
         onSaveTapped?()
@@ -158,15 +156,15 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @objc private func profileImageTapped() { onProfileTapped?() }
     @objc private func captionLabelTapped() { if canExpand { onSeeMoreTapped?() } }
 
-    // MARK: - Double Tap (like only, never unlike)
+    // MARK: - Double Tap
     @objc private func handleDoubleTap(_ gesture: UITapGestureRecognizer) {
-        // Only fire if not already liked
+        // if already liked, just animate
         guard likeButton.tintColor != .systemRed else {
             showHeartAnimation(at: gesture.location(in: postImageView))
             return
         }
         setLikeButton(liked: true)
-        // ✅ Same as button tap — repository handles the count
+        // same as like button tap
         onLikeTapped?()
         showHeartAnimation(at: gesture.location(in: postImageView))
     }

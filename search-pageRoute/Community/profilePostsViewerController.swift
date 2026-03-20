@@ -117,30 +117,30 @@ extension profilePostsViewerController: UICollectionViewDataSource {
         let isExpanded  = expandedPostIds.contains(currentPost.id)
         cell.configure(with: currentPost, isExpanded: isExpanded)
 
-        // ✅ Capture postId as String before closures to avoid SwiftUI .id() ambiguity
+        // keep post id once for all callbacks
         let postId = currentPost.id
 
-        // 1. Like
+        // like
         cell.onLikeTapped = {
             PostRepository.shared.toggleLike(postId: postId)
         }
 
-        // 2. Save
+        // save
         cell.onSaveTapped = {
             PostRepository.shared.toggleSave(postId: postId)
         }
 
-        // 3. Comments
+        // comments
         cell.onCommentTapped = { [weak self] in
             self?.performSegue(withIdentifier: "ShowComments", sender: currentPost)
         }
 
-        // 4. Menu
+        // post menu
         cell.onMenuTapped = { [weak self] in
             self?.showPostMenu(for: currentPost)
         }
 
-        // 5. Expand caption
+        // expand caption
         cell.onSeeMoreTapped = { [weak self] in
             guard let self = self else { return }
             if self.expandedPostIds.contains(postId) {

@@ -23,7 +23,7 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // ✅ App theme
+        // app theme
         view.layer.insertSublayer(gradientLayer, at: 0)
         navigationController?.navigationBar.tintColor = .brandGreen
         
@@ -119,10 +119,10 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         if item.title == "Sign Out" {
-            // 1. Wipe the keychain tokens securely
+            // clear auth tokens
             KeychainManager.shared.clearAll()
             
-            // 2. Dismiss the Profile modal then transition window to Login
+            // close profile then go to login
             self.dismiss(animated: true) {
                 guard let window = UIApplication.shared.connectedScenes
                         .compactMap({ $0 as? UIWindowScene })
@@ -134,7 +134,7 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
                 navVC.isNavigationBarHidden = true
                 window.rootViewController = navVC
                 
-                // Add a cross-fade transition
+                // cross-fade transition
                 UIView.transition(with: window,
                                   duration: 0.3,
                                   options: .transitionCrossDissolve,

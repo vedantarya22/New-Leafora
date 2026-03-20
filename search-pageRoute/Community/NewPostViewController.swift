@@ -22,7 +22,7 @@ class NewPostViewController: UIViewController,
     let maxCaptionLength = 100
     var charCountLabel: UILabel!
 
-    // Callback — CommunityViewController sets this to reload the feed
+    // recals to refresh the feed for new post
     var onPostSuccess: (() -> Void)?
 
     private let gradientLayer = CAGradientLayer.backgroundGreen()
@@ -38,8 +38,7 @@ class NewPostViewController: UIViewController,
         setupCaptionTextView()
         captionTextView.keyboardDismissMode = .onDrag
 
-        // ── No longer needs to fetch currentUser ──────────────────────────
-        // The backend derives the author from the JWT — we just need isLoggedIn.
+        //backend fetches curr user from jwt/isLoggedin
     }
 
     override func viewDidLayoutSubviews() {
@@ -132,19 +131,19 @@ class NewPostViewController: UIViewController,
 
     // MARK: - Share
     @IBAction func shareTapped(_ sender: UIBarButtonItem) {
-        // 1. Must be logged in (JWT present)
+        // checking if user is logged in with jwt
         guard UserSession.shared.isLoggedIn else {
             showAlert(message: "Please log in to share a post.")
             return
         }
 
-        // 2. Must have picked an image (contentMode changes from .center after selection)
+        // choosing pic
         guard selectedImageView.contentMode != .center else {
             showAlert(message: "Please choose a picture first!")
             return
         }
 
-        // 3. Must have a non-placeholder caption
+        // writing caption
         let caption = captionTextView.text ?? ""
         guard caption != placeholderText, !caption.isEmpty else {
             showAlert(message: "Please write a caption!")
@@ -153,17 +152,17 @@ class NewPostViewController: UIViewController,
 
         guard let image = selectedImageView.image else { return }
 
-        // 4. Disable button to prevent double-tap
+        // preventing double tap on share button
         shareButton.isEnabled = false
 
-        // 5. Upload → create post → notify feed
+        // uploading post and sharing to feed
         PostRepository.shared.addNewPost(caption: caption, image: image) { [weak self] success in
             guard let self = self else { return }
 
-            self.shareButton.isEnabled = true   // re-enable in case of failure
+            self.shareButton.isEnabled = true   // re-enable share button
 
             if success {
-                self.onPostSuccess?()           // reload feed in CommunityVC
+                self.onPostSuccess?()           // reloading feed
                 self.dismiss(animated: true)
             } else {
                 self.showAlert(message: "Failed to share post. Please try again.")

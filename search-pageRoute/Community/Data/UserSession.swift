@@ -9,11 +9,11 @@ class UserSession {
     static let shared = UserSession()
     private init() {}
 
-    // MARK: - Identity  (live from Keychain — always in sync with login/logout)
+    // MARK: - Identity
     var token:   String? { KeychainManager.shared.getToken() }
     var mongoId: String? { KeychainManager.shared.getUserId() }
 
-    /// MongoDB _id of the logged-in user. Empty string if not logged in.
+    // MongoDB _id of logged-in user; empty when logged out
     var currentLoggedInUserID: String { mongoId ?? "" }
 
     var isLoggedIn: Bool { token != nil && mongoId != nil }
@@ -21,14 +21,14 @@ class UserSession {
     func isCurrentUser(userID: String) -> Bool { mongoId == userID }
 
     // MARK: - Cached Profile
-    // Populated by fetchCurrentUser() — call once after login / app launch.
+    // set by fetchCurrentUser()
     var cachedCurrentUser: User?
 
-    /// Synchronous convenience accessor — may be nil until fetchCurrentUser completes.
+    // may be nil until fetchCurrentUser completes
     var currentUser: User? { cachedCurrentUser }
 
-    // MARK: - Fetch Current User Profile from Backend
-    /// Hits GET /api/users/:id, decodes into User, caches result.
+    // MARK: - Fetch Current User Profile
+    // GET /users/:id then cache the result
     func fetchCurrentUser(completion: @escaping (User?) -> Void) {
         guard let userId = mongoId,
               let url = URL(string: NetworkManager.shared.baseURL + "/users/\(userId)")
@@ -46,14 +46,14 @@ class UserSession {
 
         URLSession.shared.dataTask(with: request) { [weak self] data, response, _ in
             if let http = response as? HTTPURLResponse {
-                print("📡 fetchCurrentUser status: \(http.statusCode)")
+                print("fetchCurrentUser status: \(http.statusCode)")
             }
             guard let data = data else {
                 DispatchQueue.main.async { completion(nil) }
                 return
             }
             if let raw = String(data: data, encoding: .utf8) {
-                print("📦 fetchCurrentUser raw: \(raw)")
+                print("fetchCurrentUser raw: \(raw)")
             }
             guard let user = try? JSONDecoder().decode(User.self, from: data) else {
                 DispatchQueue.main.async { completion(nil) }

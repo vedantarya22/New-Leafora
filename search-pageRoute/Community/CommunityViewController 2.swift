@@ -55,8 +55,7 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     }
 
     private func createLayout() -> UICollectionViewLayout {
-        // Increased estimated height slightly to match actual average post sizes better
-        // and reduce violent layout passes during scroll.
+        // keep estimated height close to post size for smoother scroll
         let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(450))
         let item      = NSCollectionLayoutItem(layoutSize: itemSize)
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(450))
@@ -130,7 +129,6 @@ extension CommunityViewController: UICollectionViewDataSource {
         let isExpanded = expandedPostIds.contains(post.id)
         cell.configure(with: post, isExpanded: isExpanded)
 
-        // ✅ toggleLike replaces old updateLikeStatus(forPostId:isLiked:newCount:)
         cell.onLikeTapped = {
             PostRepository.shared.toggleLike(postId: post.id)
         }
@@ -146,7 +144,7 @@ extension CommunityViewController: UICollectionViewDataSource {
 
         cell.onProfileTapped = { [weak self] in
             if let author = post.author {
-                // Build a User from PostAuthor to pass to ProfileViewController
+                // make User model from post author for profile screen
                 let user = User(id: author.id, name: author.name,
                                 username: author.username,
                                 profileImageString: author.profileImageString ?? "",
@@ -159,7 +157,7 @@ extension CommunityViewController: UICollectionViewDataSource {
             self?.showPostMenu(for: post)
         }
 
-        // ✅ isExpanded tracked in local Set, not on Post struct
+        // expanded state is local to this screen
         cell.onSeeMoreTapped = { [weak self] in
             guard let self = self else { return }
             if self.expandedPostIds.contains(post.id) {
@@ -276,7 +274,7 @@ class ShimmerPostCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        // ✅ Only add shimmer animations once, not every time the layout pass triggers
+        // start shimmer only once
         if !isShimmeringSetup {
             let elements = [avatarShimmer, nameShimmer, dateShimmer, imageShimmer, textShimmer1, textShimmer2]
             elements.forEach { $0.startShimmering() }

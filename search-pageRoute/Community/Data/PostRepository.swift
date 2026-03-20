@@ -29,7 +29,7 @@ class PostRepository {
         }
     }
 
-    // MARK: - Fetch User Posts (Profile screen)
+    // MARK: - Fetch User Posts
     func fetchPosts(forUserId userId: String, completion: @escaping ([Post]) -> Void) {
         NetworkManager.shared.fetchUserPosts(userId: userId) { posts in
             completion(posts ?? [])
@@ -43,27 +43,23 @@ class PostRepository {
         }
     }
 
-    // MARK: - Get Single Post (in-memory cache)
+    // MARK: - Get Single Post
     func getPost(id: String) -> Post? {
         posts.first(where: { $0.id == id })
     }
 
     // MARK: - Update Author Profile Image in Cached Posts
-    // Called after user saves a new profile image so the feed reflects it immediately
-    // without waiting for the next full fetch.
-    // Since PostAuthor is an immutable struct inside Post, we can't mutate it in place —
-    // the cleanest approach is to re-fetch the feed which fires didUpdatePosts and
-    // reloads the collection view automatically.
+    // re-fetch feed so author image updates everywhere
     func updateAuthorImage(userId: String, newImageUrl: String) {
         let affected = posts.contains(where: { $0.author?.id == userId })
         guard affected else { return }
-        // Re-fetch feed — notifyUpdate() inside fetchAllPosts reloads the UI
+        // fetchAllPosts triggers didUpdatePosts
         fetchAllPosts { _ in
-            print("✅ Feed refreshed after profile image update for \(userId)")
+            print("Feed refreshed after profile image update for \(userId)")
         }
     }
 
-    // MARK: - Toggle Like  (optimistic + backend sync)
+    // MARK: - Toggle Like
     func toggleLike(postId: String) {
         guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
 
@@ -84,7 +80,7 @@ class PostRepository {
         }
     }
 
-    // MARK: - Toggle Save  (optimistic + backend sync)
+    // MARK: - Toggle Save
     func toggleSave(postId: String) {
         guard let index = posts.firstIndex(where: { $0.id == postId }) else { return }
 
@@ -101,40 +97,40 @@ class PostRepository {
         }
     }
 
-    // MARK: - Delete Post  (local first, then backend)
+    // MARK: - Delete Post
     func deletePost(id: String) {
         posts.removeAll { $0.id == id }
         notifyUpdate()
 
         NetworkManager.shared.deletePost(postId: id) { success in
-            if !success { print("⚠️ deletePost backend failed for \(id)") }
+            if !success { print("deletePost backend failed for \(id)") }
         }
     }
 
-    // MARK: - Create New Post  (Cloudinary upload → backend → insert at top)
+    // MARK: - Create New Post
     func addNewPost(caption: String, image: UIImage, completion: @escaping (Bool) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-            print("❌ Could not compress image")
+            print("Could not compress image")
             completion(false)
             return
         }
 
         NetworkManager.shared.uploadImageToCloudinary(imageData) { [weak self] imageUrl in
             guard let self = self, let imageUrl = imageUrl else {
-                print("❌ Cloudinary upload failed")
+                print("Cloudinary upload failed")
                 DispatchQueue.main.async { completion(false) }
                 return
             }
 
             NetworkManager.shared.createPost(imageUrl: imageUrl, caption: caption) { post in
                 guard let post = post else {
-                    print("❌ createPost failed")
+                    print("createPost failed")
                     DispatchQueue.main.async { completion(false) }
                     return
                 }
                 self.posts.insert(post, at: 0)
                 self.notifyUpdate()
-                print("✅ New post created: \(post.id)")
+                print("New post created: \(post.id)")
                 DispatchQueue.main.async { completion(true) }
             }
         }
@@ -175,7 +171,7 @@ class PostRepository {
         }
     }
 
-    // MARK: - Time Ago Helper
+    // MARK: - Time Ago
     func timeAgo(from dateString: String) -> String {
         guard !dateString.isEmpty else { return "Just now" }
         let iso = ISO8601DateFormatter()

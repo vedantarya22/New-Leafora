@@ -75,8 +75,7 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
     func configure(userPlant: UserPlant) {
         let allPlants = PlantCatalogueCache.shared.plants
         
-        // ❌ was: $0.plantId == userPlant.plantId
-        // ✅ fix: $0.mongoId == userPlant.plantId
+        // match userPlant id against plant mongoId
         guard let plant = allPlants.first(where: { $0.mongoId == userPlant.plantId }) else {
             plantLabel.text = "Unknown Plant"
             scientificLabel.text = ""
@@ -92,7 +91,7 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
         if let imageData = userPlant.imageData, let userImage = UIImage(data: imageData) {
             plantImageView.image = userImage
         } else if let urlString = userPlant.imageUrl, let url = URL(string: urlString) {
-            // ✅ Use Cloudinary URL from userPlant first
+            // prefer Cloudinary URL from userPlant
             plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
         } else if let url = URL(string: plant.imageName) {
             // fallback to catalogue image

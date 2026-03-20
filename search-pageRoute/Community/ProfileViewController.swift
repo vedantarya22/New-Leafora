@@ -13,8 +13,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     @IBOutlet weak var postsSegmentedControl: UISegmentedControl!
     @IBOutlet weak var collectionView: UICollectionView!
 
-    // Set from outside when tapping a post author or search result.
-    // Leave nil when this VC is used as the current user's profile tab.
+    // set from post author/search user; nil means own profile tab
     var user: User?
     private var isCurrentUser: Bool = false
     private var userPosts: [Post] = []
@@ -33,7 +32,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Refresh every time screen appears (e.g. returning from Edit Profile)
+        // refresh on every appear (eg after edit profile)
         loadUser()
     }
 
@@ -50,15 +49,15 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
     // MARK: - Load User
     private func loadUser() {
         if let passedUser = user {
-            // A user was passed in — could be self or someone else
+            // passed user can be self or other user
             isCurrentUser = UserSession.shared.isCurrentUser(userID: passedUser.id)
 
             if isCurrentUser {
-                // Use latest cached profile for own data
+                // use latest cached self profile
                 self.user = UserSession.shared.cachedCurrentUser ?? passedUser
                 updateUI()
             } else {
-                // Show what we have immediately, then refresh from backend
+                // show now, then refresh from backend
                 updateUI()
                 NetworkManager.shared.fetchUser(userId: passedUser.id) { [weak self] fresh in
                     guard let self = self, let fresh = fresh else { return }
@@ -68,14 +67,14 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
             }
 
         } else {
-            // No user passed — this is the current user's own profile tab
+            // no user passed means this is own profile tab
             isCurrentUser = true
 
             if let cached = UserSession.shared.cachedCurrentUser {
                 self.user = cached
                 updateUI()
             } else {
-                // Cache cold — fetch from backend
+                // if cache empty then fetch from backend
                 UserSession.shared.fetchCurrentUser { [weak self] fetchedUser in
                     guard let self = self, let fetchedUser = fetchedUser else { return }
                     self.user = fetchedUser
@@ -93,7 +92,7 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         collectionView.dataSource      = self
         collectionView.backgroundColor = .clear
         
-        // Disable automatic cell sizing so sizeForItemAt is respected
+        // keep item sizing manual via sizeForItemAt
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.estimatedItemSize = .zero
         }
@@ -107,40 +106,37 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         handleLabel.text = "@\(user.username)"
 
         if isCurrentUser {
-            // ── Own profile ──────────────────────────────────────────────
-            // Plant count from local PlantStore (already synced from backend)
+            // own profile uses local plant count
             let count   = PlantStore.shared.totalPlants
             statsLabel.text = "\(count) \(count == 1 ? "Plant" : "Plants")"
 
-            // ✅ No message button for own profile
+            // hide other-user actions for self
             messageButton.isHidden         = true
             otherUserButtonsStack.isHidden = true
 
-            // ✅ Restore "Saved" segment if it was removed in a previous load
+            // ensure saved segment exists on own profile
             if postsSegmentedControl.numberOfSegments < 2 {
                 postsSegmentedControl.insertSegment(withTitle: "Saved", at: 1, animated: false)
             }
             postsSegmentedControl.isUserInteractionEnabled = true
 
         } else {
-            // ── Other user's profile ─────────────────────────────────────
-            // plantCount comes from the backend via fetchUser (Option B above)
-            // User model needs a plantCount field populated by the backend.
+            // other user uses plant count from backend
             let count   = user.plantCount
             statsLabel.text = "\(count) \(count == 1 ? "Plant" : "Plants")"
 
-            // ✅ Show message button for other users
+            // show actions for other user
             messageButton.isHidden         = false
             otherUserButtonsStack.isHidden = false
 
-            // ✅ Hide "Saved" segment — other users can't see your saved posts
+            // hide saved segment for other users
             if postsSegmentedControl.numberOfSegments > 1 {
                 postsSegmentedControl.removeSegment(at: 1, animated: false)
             }
             postsSegmentedControl.isUserInteractionEnabled = false
         }
 
-        // Profile image — handles Cloudinary URL or falls back to placeholder
+        // cloudinary url or placeholder
         profileImageView.configureImage(with: user.profileImageString ?? "person.circle.fill")
 
         navigationItem.rightBarButtonItem = menuButton
@@ -155,13 +151,13 @@ class ProfileViewController: UIViewController, UICollectionViewDelegate,
         guard let user = user else { return }
 
         if postsSegmentedControl.selectedSegmentIndex == 0 {
-            // ✅ Posts — works for both own profile and other users
+            // normal posts
             PostRepository.shared.fetchPosts(forUserId: user.id) { [weak self] posts in
                 self?.userPosts = posts
                 self?.collectionView.reloadData()
             }
         } else {
-            // ✅ Saved — only reachable on own profile (segment hidden for others)
+            // saved posts (only for own profile)
             PostRepository.shared.fetchSavedPostsForCurrentUser { [weak self] posts in
                 self?.userPosts = posts
                 self?.collectionView.reloadData()

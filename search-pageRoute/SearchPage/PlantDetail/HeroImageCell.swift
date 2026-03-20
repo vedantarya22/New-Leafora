@@ -16,11 +16,8 @@ class HeroImageCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-
-
+        // setup
             setupDesign()
-//
     }
     
     
@@ -35,7 +32,7 @@ class HeroImageCell: UICollectionViewCell {
     }
     
     func configure(with plant: Plant) {
-        // Set image from asset catalog or bundle
+        // image from local asset
        
                plantImageView.image = UIImage(named: plant.imageName)
         

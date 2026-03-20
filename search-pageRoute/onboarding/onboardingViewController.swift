@@ -92,10 +92,10 @@ class onboardingViewController: UIViewController {
             currentPage += 1
             updateUI(animated: true)
         } else {
-            // ✅ Mark onboarding as done
+            // mark onboarding as done
              UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
 
-             // ✅ Go to login, not home
+             // go to login, not home
              guard let window = UIApplication.shared.connectedScenes
                  .compactMap({ $0 as? UIWindowScene })
                  .first?.windows.first else { return }
@@ -171,7 +171,7 @@ class onboardingViewController: UIViewController {
             functionalityDesc.text = slide.description
             functionalityPic.image = UIImage(named: slide.imageName)
             
-            // Initial animation when view loads
+            // initial load animation
             self.functionalityPic.alpha = 0
             self.functionalityTitle.alpha = 0
             self.functionalityDesc.alpha = 0

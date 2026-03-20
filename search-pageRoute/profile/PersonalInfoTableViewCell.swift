@@ -10,7 +10,7 @@ class PersonalInfoTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // setup
         valueTextField.textAlignment = .right
         valueTextField.textColor = .secondaryLabel
         valueTextField.delegate = self
@@ -67,4 +67,3 @@ extension PersonalInfoTableViewCell: UITextFieldDelegate {
 
     }
 }
-

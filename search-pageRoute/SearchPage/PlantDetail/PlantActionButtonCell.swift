@@ -1,13 +1,13 @@
 import UIKit
 
-// Move this outside the class so 'PlantDetailViewController' can see it easily
+// keep enum outside for shared access
 enum PlantActionType {
     case visualizeAR
 }
 
 class PlantActionButtonCell: UICollectionViewCell {
     
-    // Ensure this name matches EXACTLY what you connect in the XIB
+    // should match xib outlet name
     @IBOutlet weak var actionButton: UIButton!
     var onTap: (() -> Void)?
 
@@ -22,25 +22,25 @@ class PlantActionButtonCell: UICollectionViewCell {
         }
 
     func configure(type: PlantActionType) {
-        // Keep the text concise and native
+        // concise button title
         actionButton.setTitle("Visualize in AR View", for: .normal)
     }
 
     private func setupNativeStyle() {
-        // iOS 15+ Native Configuration
+        // iOS 15+ button config
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
-        config.cornerStyle = .capsule // Pill shape is modern iOS standard
+        config.cornerStyle = .capsule // pill style
         config.baseBackgroundColor = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
         config.baseForegroundColor = .white
         
-        // Add the SF Symbol icon
+        // SF symbol icon
         config.image = UIImage(systemName: "viewfinder.circle.fill")
         config.imagePadding = 2
         
         actionButton.configuration = config
         
-        // Set a fixed height so it isn't "big ass"
+        // fixed height
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             actionButton.heightAnchor.constraint(equalToConstant: 54)

@@ -33,8 +33,7 @@ class HomeDataStore {
     private init() {}
     
     func arePreferencesSet() -> Bool {
-        // Check if AT LEAST ONE preference is set to something other than "Not Set"
-        // Or check if ALL are set. Based on previous context, checking if any is not "Not Set".
+        // true when at least one preference is set
         let prefs = gardeningPreferences.preferences
         let isAnySet = prefs.contains { $0.value != "Not Set" }
         return isAnySet

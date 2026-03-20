@@ -16,7 +16,7 @@ class PlantTitleCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // setup
     }
     
     func configure(with plant: Plant) {

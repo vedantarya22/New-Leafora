@@ -15,7 +15,7 @@ class preQuestionsViewController: UIViewController {
         super.viewDidLoad()
         
         view.layer.insertSublayer(gradientLayer, at: 0)
-        // Do any additional setup after loading the view.
+        // setup done in storyboard and gradient here
     }
     
     override func viewDidLayoutSubviews() {
@@ -26,7 +26,7 @@ class preQuestionsViewController: UIViewController {
     @IBAction func beginButtonTapped(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
         if let questionsVC = storyboard.instantiateViewController(withIdentifier: "onboardingQuestionViewController") as? onboardingQuestionViewController {
-            // Check if we are in a navigation controller
+            // push if embedded in nav, else present full screen
             if let nav = navigationController {
                 nav.pushViewController(questionsVC, animated: true)
             } else {
