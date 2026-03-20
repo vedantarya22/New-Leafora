@@ -12,10 +12,10 @@ final class GardenInsightEngine {
       func generateTaskOverview(from userPlants: [UserPlant]) -> [TaskOverviewInsight] {
           var insights: [TaskOverviewInsight] = []
           
-          // 1. Urgent Tasks (overdue by 3+ days)
+          // 1. Urgent Tasks (overdue by 3+ days then only it appears)
           generateUrgentTaskInsight(userPlants: userPlants, insights: &insights)
           
-          // 2. Missed Tasks (overdue by 1-2 days)
+          // 2. Missed Tasks (overdue by 1-2 days same as urgent)
           generateMissedTaskInsight(userPlants: userPlants, insights: &insights)
           
           return insights
@@ -75,7 +75,7 @@ final class GardenInsightEngine {
                   message: "\(urgentCount) plant\(urgentCount == 1 ? "" : "s") are past their schedule",
                   level: .critical,
                   route: "Urgent"
-              ))
+              ))// plant or plants
           }
       }
       
@@ -140,57 +140,58 @@ final class GardenInsightEngine {
     
     
 
-    func generateInsights(from userPlants: [UserPlant]) -> [GardenInsight] {
-
-        var insights: [GardenInsight] = []
-
-        for userPlant in userPlants {
-
-            guard let plant = JSONLoader.plant(by: userPlant.plantId) else { continue }
-
-            generateTaskInsight(
-                plantName: plant.plantName,
-                taskName: "Watering",
-                lastDate: userPlant.lastWatered,
-                frequency: plant.careCycle.watering.days,
-                goodIcon: "💧",
-                insights: &insights
-            )
-
-            generateTaskInsight(
-                plantName: plant.plantName,
-                taskName: "Pruning",
-                lastDate: userPlant.lastPruned,
-                frequency: plant.careCycle.pruning.days,
-                goodIcon: "✂️",
-                insights: &insights
-            )
-
-            generateTaskInsight(
-                plantName: plant.plantName,
-                taskName: "Fertilizing",
-                lastDate: userPlant.lastFertilized,
-                frequency: plant.careCycle.fertilizing.days,
-                goodIcon: "🌱",
-                insights: &insights
-            )
-
-            generateTaskInsight(
-                plantName: plant.plantName,
-                taskName: "Repotting",
-                lastDate: userPlant.lastRepotted,
-                frequency: plant.careCycle.repotting.days,
-                goodIcon: "🪴",
-                insights: &insights
-            )
-        }
-
-        generateLocationInsights(plants: userPlants, insights: &insights)
-
-        return insights.sorted { $0.level.priority > $1.level.priority }
-    }
+//    func generateInsights(from userPlants: [UserPlant]) -> [GardenInsight] {
+//
+//        var insights: [GardenInsight] = []
+//
+//        for userPlant in userPlants {
+//
+//            guard let plant = JSONLoader.plant(by: userPlant.plantId) else { continue }
+//
+//            generateTaskInsight(
+//                plantName: plant.plantName,
+//                taskName: "Watering",
+//                lastDate: userPlant.lastWatered,
+//                frequency: plant.careCycle.watering.days,
+//                goodIcon: "💧",
+//                insights: &insights
+//            )
+//
+//            generateTaskInsight(
+//                plantName: plant.plantName,
+//                taskName: "Pruning",
+//                lastDate: userPlant.lastPruned,
+//                frequency: plant.careCycle.pruning.days,
+//                goodIcon: "✂️",
+//                insights: &insights
+//            )
+//
+//            generateTaskInsight(
+//                plantName: plant.plantName,
+//                taskName: "Fertilizing",
+//                lastDate: userPlant.lastFertilized,
+//                frequency: plant.careCycle.fertilizing.days,
+//                goodIcon: "🌱",
+//                insights: &insights
+//            )
+//
+//            generateTaskInsight(
+//                plantName: plant.plantName,
+//                taskName: "Repotting",
+//                lastDate: userPlant.lastRepotted,
+//                frequency: plant.careCycle.repotting.days,
+//                goodIcon: "🪴",
+//                insights: &insights
+//            )
+//        }
+//
+//        generateLocationInsights(plants: userPlants, insights: &insights)
+//
+//        return insights.sorted { $0.level.priority > $1.level.priority }
+//    }
 
     // MARK: - Core logic
+    //for task comming in plant list view controller
 
     private func generateTaskInsight(
         plantName: String,

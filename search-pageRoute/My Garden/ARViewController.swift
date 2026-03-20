@@ -327,7 +327,7 @@ class ARViewController: UIViewController {
         placeModel(model, at: first)
     }
 
-    /// Long-press on a placed entity → confirm removal.
+    
     @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
         let loc = gesture.location(in: arView)

@@ -82,19 +82,19 @@ class PlantRowCell: UICollectionViewCell {
 
     func configure(with userPlant: UserPlant, task: String, allPlants: [Plant]) {
 
-        // ✅ Match by mongoId if available, otherwise fallback to local plantId mapping for mock data
+        //  Match by mongoId if available, otherwise fallback to local plantId mapping for mock data
         if let plant = allPlants.first(where: { $0.mongoId == userPlant.plantId || $0.plantId == userPlant.plantId }) {
 
             nameLabel.text = plant.plantName
 
-            // ✅ Image priority: local data → Cloudinary URL → catalogue URL → placeholder
+            //  Image priority: local data → Cloudinary URL → catalogue URL → placeholder
             if let data = userPlant.imageData, let savedImage = UIImage(data: data) {
                 plantImageView.image = savedImage
             } else if let urlString = userPlant.imageUrl, let url = URL(string: urlString) {
-                // ✅ Cloudinary URL from MongoDB
+                //  Cloudinary URL from MongoDB
                 plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
             } else if let url = URL(string: plant.imageName) {
-                // ✅ Fallback to catalogue image
+                //  Fallback to catalogue image
                 plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
             } else {
                 plantImageView.image = UIImage(systemName: "leaf.fill")

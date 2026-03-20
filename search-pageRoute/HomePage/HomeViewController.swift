@@ -1,15 +1,16 @@
 import UIKit
 
-struct GardenMemory {
-    let image: UIImage
-    let timestamp: Date
-}
+//struct GardenMemory {
+//    let image: UIImage
+//    let timestamp: Date
+//}
 
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var tipTimer: Timer?
     @IBOutlet weak var collectionView: UICollectionView!
     
     // Original Colors
+    //clay colors
     // Natural, Earthy Plant Care Colors
     let wateringBlue = UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)      // Soft water blue
     let pruningRed = UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0)       // Terracotta/clay
@@ -17,7 +18,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     let repottingOrange = UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0)  // Warm sand/pot
     
     let gradientLayer = CAGradientLayer()
-    var memories: [GardenMemory] = []
+//    var memories: [GardenMemory] = []
     
     struct Task {
         let name: String
@@ -53,8 +54,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             tipTimer?.invalidate()
             tipTimer = nil
         }
-        // Register XIBs
-        let cells = ["CareTaskCell", "InsightCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
+        // Register XIB's
+        let cells = ["CareTaskCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
         cells.forEach { name in
             collectionView.register(UINib(nibName: name, bundle: nil), forCellWithReuseIdentifier: name)
         }
@@ -75,7 +76,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc private func handleTaskUpdate() {
-        // Recalculate data & refresh UI
+        // refresh UI
         collectionView.reloadSections(IndexSet(integer: 0))
     }
 
@@ -117,16 +118,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             let allPlants = PlantStore.shared.allPlants()
             let insights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
 
-//            if insights.isEmpty {
-//                return [
-//                    TaskOverviewInsight(
-//                        icon: "checkmark.seal.fill", title: "All Plants Healthy",
-//                        message: "Everything is well cared  ",
-//                        level: .good,
-//                        route: ""
-//                    )
-//                ]
-//            }
+
         
         return [
                 TaskOverviewInsight(
@@ -179,6 +171,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     // MARK: - Layout Logic
+    
+    //order of UI
     func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, env in
             switch sectionIndex {
@@ -278,37 +272,37 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         return section
     }
     
-    func gridLayout() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(100)))
-        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 12)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100)), subitems: [item])
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 8, leading: 20, bottom: 20, trailing: 8)
-        
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-        section.boundarySupplementaryItems = [header]
-        return section
-    }
+//    func gridLayout() -> NSCollectionLayoutSection {
+//        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(100)))
+//        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 12)
+//        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100)), subitems: [item])
+//        let section = NSCollectionLayoutSection(group: group)
+//        section.contentInsets = .init(top: 8, leading: 20, bottom: 20, trailing: 8)
+//        
+//        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
+//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+//        section.boundarySupplementaryItems = [header]
+//        return section
+//    }
     
-    func scrollLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 15)
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(160), heightDimension: .absolute(200))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = .init(top: 15, leading: 20, bottom: 30, trailing: 20)
-        
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-        section.boundarySupplementaryItems = [header]
-        
-        return section
-    }
+//    func scrollLayout() -> NSCollectionLayoutSection {
+//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+//        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 15)
+//        
+//        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(160), heightDimension: .absolute(200))
+//        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//        
+//        let section = NSCollectionLayoutSection(group: group)
+//        section.orthogonalScrollingBehavior = .continuous
+//        section.contentInsets = .init(top: 15, leading: 20, bottom: 30, trailing: 20)
+//        
+//        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
+//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+//        section.boundarySupplementaryItems = [header]
+//        
+//        return section
+//    }
     
     
     
@@ -382,7 +376,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             print("Garden tip tapped")
             
         case 1:
-            // PLANT SCANNING - Open camera for plant identification
+            //scan feature
             self.openCameraForPlantScan()
             
         case 2:
@@ -414,7 +408,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
-    // MARK: - 🆕 Plant Scanning Methods
+    // MARK: -  Plant Scanning Methods
     func openCameraForPlantScan() {
         let alert = UIAlertController(
             title: "Scan Plant",
@@ -446,27 +440,27 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        print("📸 Image picked, preparing to scan...")
+        print(" Image picked, preparing to scan...")
         
         if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
-            print("✅ Got image, size: \(image.size)")
+            print(" Got image, size: \(image.size)")
             
             // Dismiss the picker first
             picker.dismiss(animated: true) { [weak self] in
                 guard let self = self else { return }
-                print("📸 Picker dismissed, showing scanning screen...")
+                print(" Picker dismissed, showing scanning screen...")
                 
                 // Small delay to ensure smooth transition
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     let scanningVC = PlantScanningViewController(image: image)
                     scanningVC.modalPresentationStyle = .overFullScreen
                     self.present(scanningVC, animated: true) {
-                        print("✅ Scanning view controller presented")
+                        print(" Scanning view controller presented")
                     }
                 }
             }
         } else {
-            print("❌ ERROR: Could not get image from picker")
+            print(" ERROR: Could not get image from picker")
             picker.dismiss(animated: true)
         }
     }
@@ -503,5 +497,5 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             navigationController?.pushViewController(plantListVC, animated: true)
         }
     }
-    func openAllMemories() { /* Navigate to gallery */ }
+   
 }

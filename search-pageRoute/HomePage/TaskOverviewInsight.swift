@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 struct TaskOverviewInsight {
-    let icon: String            // SF Symbol name
+    let icon: String          
     let title: String
     let message: String
     let level: InsightLevel

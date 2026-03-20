@@ -19,11 +19,11 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
         super.viewDidLoad()
         setupBotanicalBackground()
         guard let site = site else {
-            print("❌ No site data received")
+            print(" No site data received")
             return
         }
         
-        print("✅ SiteDetailViewController loaded for:", site.name)
+        print(" SiteDetailViewController loaded for:", site.name)
         
         setupUI(with: site)
         loadPlantsForSite()
@@ -33,7 +33,7 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // ✅ Refresh from MongoDB then reload UI
+        //  Refresh from MongoDB then reload UI
         NetworkManager.shared.fetchUserPlants { userPlants in
             if let userPlants = userPlants {
                 PlantStore.shared.setPlants(userPlants)
@@ -95,11 +95,11 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
         PlantCatalogueCache.shared.getPlants { [weak self] _ in
             guard let self = self else { return }
 
-            // ✅ Smart lookup — mongoSiteId first, siteName fallback
+            //  Smart lookup — mongoSiteId first, siteName fallback
             let grouped = PlantStore.shared.groupedPlants(for: site)
             self.userPlants = grouped.map { $0.plant }
 
-            print("✅ Showing \(self.userPlants.count) plant types for site: \(site.name)")
+            print(" Showing \(self.userPlants.count) plant types for site: \(site.name)")
 
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -141,7 +141,7 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
         let userPlant = userPlants[indexPath.item]
         cell.configure(userPlant: userPlant)
 
-        // ✅ Override plant name using mongoId match
+        //  Override plant name using mongoId match
         let allPlants = PlantCatalogueCache.shared.plants
         if let plantName = allPlants.first(where: { $0.mongoId == userPlant.plantId })?.plantName {
             cell.plantLabel.text = plantName
@@ -155,7 +155,7 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedUserPlant = userPlants[indexPath.item]
         
-        print("✅ Tapped plant:", selectedUserPlant.plantId)
+        print(" Tapped plant:", selectedUserPlant.plantId)
         
         // Navigate to NEW plant detail view
         navigateToPlantDetail(for: selectedUserPlant)
@@ -187,6 +187,6 @@ class SiteDetailViewController: UIViewController, UICollectionViewDataSource, UI
          
          navigationController?.pushViewController(detailVC, animated: true)
          
-         print("✅ Navigating to PlantDetailViewController")
+         print(" Navigating to PlantDetailViewController")
     }
 }

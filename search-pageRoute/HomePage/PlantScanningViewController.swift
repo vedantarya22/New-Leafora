@@ -26,7 +26,7 @@ class PlantScanningViewController: UIViewController {
     
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.text = "Analyzing image with AI"
+        label.text = "Analyzing image"
         label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
