@@ -45,10 +45,19 @@ class PlantListViewController: UIViewController,
 
         self.title = taskType
 
-        // ✅ Apply app green tint to navigation bar
+        //  Apply app green tint to navigation bar
         navigationController?.navigationBar.tintColor = appGreen
 
-        // ✅ "Mark All as Done" bar button
+        //  Native info button in nav bar
+        let infoButton = UIBarButtonItem(
+            image: UIImage(systemName: "info.circle"),
+            style: .plain,
+            target: self,
+            action: #selector(infoButtonTapped)
+        )
+        infoButton.tintColor = appGreen
+
+        //  "Mark All as Done" bar button
         let markAllButton = UIBarButtonItem(
             title: "Mark as done",
             style: .plain,
@@ -56,6 +65,7 @@ class PlantListViewController: UIViewController,
             action: #selector(markAllAsDoneTapped)
         )
         markAllButton.tintColor = appGreen
+        navigationItem.leftBarButtonItem = infoButton
         navigationItem.rightBarButtonItem = markAllButton
 
         // Register Cell XIB
@@ -65,16 +75,16 @@ class PlantListViewController: UIViewController,
         collectionView.dataSource = self
         collectionView.delegate = self
 
-        // ✅ load from cache
+        //  load from cache
         allPlants = PlantCatalogueCache.shared.plants
         
         if allPlants.isEmpty {
                 print("⚠️ WARNING: No plants loaded! Check catalogue cache")
                } else {
-                   print("✅ Loaded \(allPlants.count) plant types from catalogue")
+                   print(" Loaded \(allPlants.count) plant types from catalogue")
            }
 
-        // ✅ Add empty state view
+        //  Add empty state view
         view.addSubview(emptyStateView)
         NSLayoutConstraint.activate([
             emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -117,10 +127,10 @@ class PlantListViewController: UIViewController,
             for: indexPath
         ) as! PlantRowCell
 
-        // ✅ Get correct UserPlant
+        //  Get correct UserPlant
         let userPlant = filteredPlants[indexPath.row]
 
-        // ✅ Configure cell
+        //  Configure cell
         cell.configure(
               with: userPlant,
               task: taskType,
@@ -128,7 +138,7 @@ class PlantListViewController: UIViewController,
           )
 
 
-        // ✅ Swipe Done Closure
+        //  Swipe Done Closure
         cell.onDone = { [weak self, weak cell] in
             guard let self = self,
                   let currentCell = cell,
@@ -137,13 +147,13 @@ class PlantListViewController: UIViewController,
 
             let completedPlant = self.filteredPlants[currentIndexPath.row]
 
-            // ✅ Mark task completed in PlantStore
+            //  Mark task completed in PlantStore
             self.markTaskDone(for: completedPlant)
 
-            // ✅ Remove from list instantly
+            //  Remove from list instantly
             self.filteredPlants.remove(at: currentIndexPath.row)
 
-            // ✅ Animate deletion
+            //  Animate deletion
             self.collectionView.performBatchUpdates({
                 self.collectionView.deleteItems(at: [currentIndexPath])
             })
@@ -198,13 +208,13 @@ class PlantListViewController: UIViewController,
     // MARK: - Task Completion
 
     func markTaskDone(for userPlant: UserPlant) {
-        // ✅ Update locally first (instant UI response)
+        //  Update locally first (instant UI response)
         PlantStore.shared.markTaskDone(
             userPlantID: userPlant.id,
             taskType: taskType
         )
 
-        // ✅ Sync to MongoDB
+        //  Sync to MongoDB
         guard let mongoId = userPlant.mongoId else {
             print("❌ No mongoId on userPlant — cannot sync task to backend")
             return
@@ -212,7 +222,7 @@ class PlantListViewController: UIViewController,
 
         NetworkManager.shared.markTaskDone(mongoId: mongoId, taskType: taskType.lowercased()) { success in
             if success {
-                print("✅ Task '\(self.taskType)' synced to MongoDB for plant: \(mongoId)")
+                print(" Task '\(self.taskType)' synced to MongoDB for plant: \(mongoId)")
             } else {
                 print("❌ Failed to sync task to MongoDB — will be out of sync")
             }
@@ -233,13 +243,13 @@ class PlantListViewController: UIViewController,
         alert.addAction(UIAlertAction(title: "Mark All as Done", style: .default) { [weak self] _ in
             guard let self = self else { return }
 
-            // ✅ Mark each plant's task as done
+            //  Mark each plant's task as done
             let plantsToMark = self.filteredPlants
             for plant in plantsToMark {
                 self.markTaskDone(for: plant)
             }
 
-            // ✅ Clear the list and animate
+            //  Clear the list and animate
             let indexPaths = (0..<self.filteredPlants.count).map { IndexPath(item: $0, section: 0) }
             self.filteredPlants.removeAll()
 
@@ -316,10 +326,10 @@ class PlantListViewController: UIViewController,
     // MARK: - Load + Filter Pending Plants
 
     func loadAndFilterData() {
-           // ✅ Get ALL individual plants (no grouping)
+           //  Get ALL individual plants (no grouping)
            let allUserPlants = PlantStore.shared.allPlants()
 
-           // ✅ Filter plants that have tasks due
+           //  Filter plants that have tasks due
            filteredPlants = allUserPlants.filter { userPlant in
                let isDue: Bool
 
@@ -344,10 +354,10 @@ class PlantListViewController: UIViewController,
                return isDue
            }
 
-           print("✅ Filtered \(filteredPlants.count) plants needing \(taskType)")
+           print(" Filtered \(filteredPlants.count) plants needing \(taskType)")
            collectionView.reloadData()
 
-           // ✅ Show/hide empty state
+           //  Show/hide empty state
            let isEmpty = filteredPlants.isEmpty
            emptyStateView.isHidden = !isEmpty
            collectionView.isHidden = isEmpty
@@ -361,4 +371,109 @@ class PlantListViewController: UIViewController,
 //        }
 
 
+    // MARK: - Info Button
+
+    @objc private func infoButtonTapped() {
+        let items = careItems(for: taskType)
+        let infoVC = CareGuideViewController(taskType: taskType, items: items, tintColor: appGreen)
+        let nav = UINavigationController(rootViewController: infoVC)
+        nav.modalPresentationStyle = .pageSheet
+
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+
+        present(nav, animated: true)
+    }
+
+    private func careItems(for task: String) -> [(icon: String, term: String, detail: String)] {
+        switch task.lowercased() {
+        case "watering":
+            return [
+                ("humidity.fill",       "Spray misting",      "Mist leaves with a spray bottle to boost humidity"),
+                ("drop",                "Light watering",      "Small amount of water when soil is fully dry"),
+                ("drop.fill",           "Moderate watering",   "Water when the top 1–2 inches of soil feel dry"),
+                ("drop.triangle.fill",  "Deep watering",       "Soak soil until water drains from the bottom"),
+                ("cup.and.saucer.fill", "Bottom watering",     "Let roots absorb water from a tray underneath")
+            ]
+        case "fertilizing":
+            return [
+                ("eyedropper.halffull", "Light feeding",       "Diluted fertilizer for gentle nourishment"),
+                ("scalemass",           "Balanced feeding",    "Standard all-purpose liquid feed"),
+                ("bolt.fill",           "Heavy feeding",       "Full-strength fertilizer for heavy growers"),
+                ("leaf.fill",           "Organic compost",     "Enrich the soil naturally with compost")
+            ]
+        case "pruning":
+            return [
+                ("scissors",            "Light trimming",      "Snip off dead or yellowing leaves"),
+                ("leaf.arrow.triangle.circlepath", "Shape pruning", "Trim stems to maintain a compact shape"),
+                ("tree.fill",           "Heavy pruning",       "Cut back hard to encourage fresh growth"),
+                ("hand.pinch",          "Pinching back",       "Pinch soft tips so the plant branches out")
+            ]
+        case "repotting":
+            return [
+                ("magnifyingglass",     "Root check needed",   "Check if roots are circling the pot"),
+                ("arrow.up.right.and.arrow.down.left", "Pot upgrade needed",  "Move to a pot 1–2 inches larger"),
+                ("arrow.3.trianglepath", "Soil refresh needed", "Replace old, depleted soil with a fresh mix"),
+                ("square.split.2x1",    "Division needed",     "Split an overcrowded plant into smaller ones")
+            ]
+        default:
+            return [("leaf", "General care", "Follow the care instructions for your plant")]
+        }
+    }
+}
+
+// MARK: - Care Guide Presentation
+
+private class CareGuideViewController: UITableViewController {
+
+    private let taskType: String
+    private let items: [(icon: String, term: String, detail: String)]
+    private let tintColor: UIColor
+
+    init(taskType: String, items: [(icon: String, term: String, detail: String)], tintColor: UIColor) {
+        self.taskType = taskType
+        self.items = items
+        self.tintColor = tintColor
+        super.init(style: .insetGrouped)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "\(taskType) Guide"
+        navigationController?.navigationBar.tintColor = tintColor
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissSelf))
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    }
+
+    @objc private func dismissSelf() { dismiss(animated: true) }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { items.count }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let item = items[indexPath.row]
+
+        var config = cell.defaultContentConfiguration()
+
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+        config.image = UIImage(systemName: item.icon, withConfiguration: symbolConfig)
+        config.imageProperties.tintColor = tintColor
+
+        config.text = item.term
+        config.textProperties.font = .systemFont(ofSize: 17, weight: .semibold)
+
+        config.secondaryText = item.detail
+        config.secondaryTextProperties.font = .systemFont(ofSize: 14)
+        config.secondaryTextProperties.color = .secondaryLabel
+        config.secondaryTextProperties.numberOfLines = 0
+
+        cell.contentConfiguration = config
+        cell.selectionStyle = .none
+        return cell
+    }
 }

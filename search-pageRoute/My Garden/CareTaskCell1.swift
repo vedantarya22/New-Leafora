@@ -45,7 +45,9 @@ class CareTaskCell1: UICollectionViewCell {
         iconImageView.image = UIImage(systemName: symbolName, withConfiguration: config)
         
         titleLabel.text = title
-        stepsLabel.text = steps
+        
+        // Build a visually formatted attributed string
+        stepsLabel.attributedText = buildFormattedSteps(from: steps, color: symbolColor, isExpanded: isExpanded)
         
         // Get color scheme
         let backgroundColor = getColorForTitle(title)
@@ -140,6 +142,69 @@ class CareTaskCell1: UICollectionViewCell {
         }
     }
     
+    // MARK: - Formatted Steps Builder
+    private func buildFormattedSteps(from raw: String, color: UIColor, isExpanded: Bool) -> NSAttributedString {
+        let result = NSMutableAttributedString()
+        let lines = raw.components(separatedBy: "\n").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let textColor: UIColor = isExpanded ? .white : .secondaryLabel
+        let scheduleColor: UIColor = isExpanded ? UIColor.white.withAlphaComponent(0.9) : color
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.paragraphSpacing = 4
+        
+        let bulletSymbolConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+        let checkImage = UIImage(systemName: "checkmark.circle.fill", withConfiguration: bulletSymbolConfig)?
+            .withTintColor(isExpanded ? .white : color, renderingMode: .alwaysOriginal)
+        
+        for (index, line) in lines.enumerated() {
+            let cleanLine = line.trimmingCharacters(in: .whitespaces)
+            
+            if cleanLine.lowercased().hasPrefix("schedule:") {
+                // Schedule header line — bold + tinted
+                let scheduleAttrs: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 14, weight: .bold),
+                    .foregroundColor: scheduleColor,
+                    .paragraphStyle: paragraphStyle
+                ]
+                result.append(NSAttributedString(string: cleanLine + "\n\n", attributes: scheduleAttrs))
+                
+            } else if cleanLine.hasPrefix("•") {
+                // Bullet step — replace text bullet with SF Symbol image
+                let stepText = cleanLine.replacingOccurrences(of: "•", with: "").trimmingCharacters(in: .whitespaces)
+                
+                if let img = checkImage {
+                    let attachment = NSTextAttachment()
+                    attachment.image = img
+                    attachment.bounds = CGRect(x: 0, y: -2, width: 16, height: 16)
+                    result.append(NSAttributedString(attachment: attachment))
+                    result.append(NSAttributedString(string: "  "))
+                }
+                
+                let stepAttrs: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 15, weight: .regular),
+                    .foregroundColor: textColor,
+                    .paragraphStyle: paragraphStyle
+                ]
+                let suffix = (index < lines.count - 1) ? "\n" : ""
+                result.append(NSAttributedString(string: stepText + suffix, attributes: stepAttrs))
+                
+            } else {
+                // Any other line
+                let attrs: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 15, weight: .regular),
+                    .foregroundColor: textColor,
+                    .paragraphStyle: paragraphStyle
+                ]
+                let suffix = (index < lines.count - 1) ? "\n" : ""
+                result.append(NSAttributedString(string: cleanLine + suffix, attributes: attrs))
+            }
+        }
+        
+        return result
+    }
+
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let targetSize = CGSize(width: layoutAttributes.frame.width, height: UIView.layoutFittingCompressedSize.height)
         let size = contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)

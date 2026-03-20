@@ -64,16 +64,21 @@ extension UIImageView {
                   error == nil
             else { return }
 
-            // Cache it
+            // Cache the raw image
             ImageCache.shared.set(image, for: urlString)
 
-            DispatchQueue.main.async {
-                // Fade in for smoother UX
-                UIView.transition(with: self,
-                                  duration: 0.2,
-                                  options: .transitionCrossDissolve,
-                                  animations: { self.image = image },
-                                  completion: nil)
+            // ✅ iOS 15+: Decode the heavy image on a background thread before touching the UI
+            if #available(iOS 15.0, *) {
+                image.prepareForDisplay { preparedImage in
+                    DispatchQueue.main.async {
+                        // Ensure the image belongs to the current URL in case cell was reused
+                        self.image = preparedImage ?? image
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.image = image
+                }
             }
         }.resume()
     }

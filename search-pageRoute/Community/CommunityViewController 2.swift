@@ -55,9 +55,11 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     }
 
     private func createLayout() -> UICollectionViewLayout {
-        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(400))
+        // Increased estimated height slightly to match actual average post sizes better
+        // and reduce violent layout passes during scroll.
+        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(450))
         let item      = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(400))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(450))
         let group     = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         let section   = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 16
@@ -270,9 +272,15 @@ class ShimmerPostCell: UICollectionViewCell {
         ])
     }
 
+    private var isShimmeringSetup = false
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        let elements = [avatarShimmer, nameShimmer, dateShimmer, imageShimmer, textShimmer1, textShimmer2]
-        elements.forEach { $0.startShimmering() }
+        // ✅ Only add shimmer animations once, not every time the layout pass triggers
+        if !isShimmeringSetup {
+            let elements = [avatarShimmer, nameShimmer, dateShimmer, imageShimmer, textShimmer1, textShimmer2]
+            elements.forEach { $0.startShimmering() }
+            isShimmeringSetup = true
+        }
     }
 }
