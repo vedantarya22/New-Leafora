@@ -16,14 +16,13 @@ final class PlantRecommendationEngine {
 
     // MARK: - Public API
 
-//    - Call this ONLY when:
-//    - onboarding is completed
-//    - gardening preferences are changed
-//    - plant dataset is updated
+//    - run after onboarding
+//    - run when preferences change
+//    - run when plant data updates
     func generateRecommendedPlantIDs(
         plants: [Plant],
         preferences: GardeningPreferences,
-        hasPets: Bool = false, // Default to false if not provided, though logic should pass it
+        hasPets: Bool = false, // pass real value when available
         limit: Int = 20
     ) -> [String] {
 
@@ -33,14 +32,14 @@ final class PlantRecommendationEngine {
             (plant.plantId, scorePlant(plant: plant, user: userProfile))
         }
 
-        // Filter out negative scores and sort by score descending
+        // keep positive scores and sort high to low
         let recommended = scoredPlants
             .filter { $0.1 > 0 }
             .sorted { $0.1 > $1.1 }
             .prefix(limit)
             .map { $0.0 }
         
-        // Cache the results
+        // cache results
         RecommendedPlantsCache.shared.save(plantIDs: Array(recommended))
         
         return Array(recommended)
@@ -57,7 +56,7 @@ final class PlantRecommendationEngine {
             preferences.preferences.first { $0.type == type }?.value
         }
         
-        // Helper to parse complex strings like "Beginner (Easy)" if needed, currently assumes simple strings matches
+        // normalize selected values for scoring
         return NormalizedUserProfile(
             plantType: value(for: .plantTypes)?.lowercased(),
             experienceLevel: value(for: .experienceLevel)?.lowercased(),
@@ -79,16 +78,13 @@ final class PlantRecommendationEngine {
     }
 
     private func normalizeSunlight(_ value: String?) -> String? {
-        // Map user preference strings to a normalized key if possible, or leave as is to match with Enum rawValue if compatible
-        // The Plant model uses 'LightRequirement' enum. 
-        // User Prefs: "Low Light", "Partial Shade", "Full Sun", "Direct Sunlight"
-        // Plant Model: low_light, partial_sunlight, full_sun, etc.
+        // map UI sunlight labels to normalized keys
         
         switch value?.lowercased() {
-        case "low light": return "low_light"
-        case "partial shade": return "partial_sunlight" // or partial_shade if existed
-        case "full sun", "direct sunlight": return "full_sunlight"
-        default: return nil
+            case "low light": return "low_light"
+            case "partial shade": return "partial_sunlight" // fallback mapping
+            case "full sun", "direct sunlight": return "full_sunlight"
+            default: return nil
         }
     }
 
@@ -99,14 +95,12 @@ final class PlantRecommendationEngine {
         user: NormalizedUserProfile
     ) -> Double {
 
-        // HARD CONSTRAINT: Pet Safety
+        // hard constraint: pet safety
         if user.hasPets && !plant.petFriendly {
             return -1000
         }
         
-        // HARD CONSTRAINT: Toxicity (Similar to pets, but explicit check)
-        // If user has pets, we already checked petFriendly. 
-        // Additional logic could go here if 'toxic' flag is different.
+        // hard constraint: toxicity
         if user.hasPets && plant.toxic {
              return -1000
         }
@@ -129,15 +123,15 @@ final class PlantRecommendationEngine {
     private func sunlightScore(_ plant: Plant, _ user: NormalizedUserProfile) -> Double {
         guard let pref = user.sunlight else { return 0 }
         
-        // Plant Light Requirement is an Enum: LightRequirement
+        // plant light enum raw value
         let plantLight = plant.lightRequirement.rawValue
 
-        // Simple matching logic
+        // exact match
         if pref == plantLight { return 3 }
         
-        // Partial matches
+        // partial matches
         if pref == "partial_sunlight" && (plantLight == "low_to_medium" || plantLight == "medium_light") { return 1 }
-        if pref == "full_sunlight" && plantLight == "bright_indirect" { return -1 } // Direct sun might burn bright indirect plants
+        if pref == "full_sunlight" && plantLight == "bright_indirect" { return -1 } // direct sun can burn bright-indirect plants
         
         return 0
     }
@@ -145,7 +139,7 @@ final class PlantRecommendationEngine {
     private func experienceScore(_ plant: Plant, _ user: NormalizedUserProfile) -> Double {
         guard let level = user.experienceLevel else { return 0 }
 
-        // Plant Difficulty is Enum: easy, moderate, advanced
+        // difficulty enum: easy/moderate/advanced
         let difficulty = plant.difficulty
 
         switch (level, difficulty) {
@@ -164,7 +158,7 @@ final class PlantRecommendationEngine {
     private func careSkillScore(_ plant: Plant, _ user: NormalizedUserProfile) -> Double {
         guard let skill = user.careSkillLevel else { return 0 }
 
-        // "Basic: Watering", "Intermediate: Pruning", "Advanced: All Skills"
+        // examples: basic/intermediate/advanced
         
         if skill.contains("basic") && plant.difficulty == .easy { return 3 }
         if skill.contains("advanced") && plant.difficulty == .advanced { return 3 }
@@ -184,7 +178,7 @@ final class PlantRecommendationEngine {
     private func plantTypeScore(_ plant: Plant, _ user: NormalizedUserProfile) -> Double {
         guard let type = user.plantType else { return 0 }
 
-        // plant.category is [String]
+        // try category first, then tags
         if plant.category.contains(where: { $0.lowercased().contains(type) }) { return 3 }
         if plant.tags.contains(where: { $0.lowercased().contains(type) }) { return 1 }
         
@@ -194,8 +188,7 @@ final class PlantRecommendationEngine {
     private func climateScore(_ plant: Plant, _ user: NormalizedUserProfile) -> Double {
         guard let climate = user.climate else { return 0 }
 
-        // Mapping simple climate strings to tags or specific properties if available
-        // For now, checking tags
+        // climate match via tags
         if plant.tags.contains(where: { $0.lowercased().contains(climate) }) {
             return 2
         }
@@ -217,7 +210,7 @@ final class PlantRecommendationEngine {
     }
 }
 
-// MARK: - Internal Normalized User Profile
+// MARK: - Internal User Profile
 
 private struct NormalizedUserProfile {
     let plantType: String?

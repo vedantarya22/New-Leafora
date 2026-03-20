@@ -9,7 +9,7 @@ import UIKit
 
 class PeopleTableViewCell: UITableViewCell {
 
-    //xib connections
+    // xib outlets
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
@@ -18,15 +18,15 @@ class PeopleTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // setup
         
-        avatarImageView.layer.cornerRadius = 25 // Half of height (50)
+        avatarImageView.layer.cornerRadius = 25 // half of 50
         avatarImageView.clipsToBounds = true
         
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        //chnage view for the selected state
+        // default selected behavior
     }
 }

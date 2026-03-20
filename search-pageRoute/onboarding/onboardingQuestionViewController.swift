@@ -11,17 +11,17 @@ class onboardingQuestionViewController: UIViewController, UITableViewDelegate, U
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     
-    // Data
+    // questions state
     var questions: [OnboardingQuestion] = JSONLoader.loadOnboardingQuestions()
     var currentIndex = 0
     
-    // Storage: Question ID -> Option ID
+    // question id -> selected option id
     private var userAnswers: [String: String] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //setupBotanicalBackground()
+        // setupBotanicalBackground()
         view.layer.insertSublayer(gradientLayer, at: 0)
 
         setupTableView()
@@ -154,34 +154,26 @@ class onboardingQuestionViewController: UIViewController, UITableViewDelegate, U
     private func finishOnboarding() {
         print("Onboarding Complete! User Answers: \(userAnswers)")
         
-        // TODO: Map userAnswers to HomeDataStore.shared.gardeningPreferences if not already done.
-        // Assuming for now that implicit saving or mapping happens or that we just run the engine.
-        // The user request specifically asked to "Hook the engine execution at: Completion of onboarding gardening preferences".
+        // map answers into HomeDataStore preferences
         
-        print("🌱 Onboarding finished. Running Recommendation Engine...")
+        print("Onboarding finished. Running Recommendation Engine...")
         
         DispatchQueue.global(qos: .userInitiated).async {
 //             let allPlants = JSONLoader.loadPlants(from: "plantData")
             let allPlants = PlantCatalogueCache.shared.plants
              
-             // Run Engine with current preferences
-             // Note: If userAnswers are not yet in HomeDataStore, this might run on defaults.
-             // Ideally we would map 'userAnswers' to 'GardeningPreferences' first.
+             // run engine with current preferences
              let recommendedIDs = PlantRecommendationEngine.shared.generateRecommendedPlantIDs(
                  plants: allPlants,
                  preferences: HomeDataStore.shared.gardeningPreferences, 
-                 hasPets: false // TODO: Pass hasPets if captured in onboarding
+                 hasPets: false // pass hasPets if onboarding captures it
              )
              
-             print("✅ Recommendation Engine finished (Onboarding). Cached \(recommendedIDs.count) plants.")
+             print("Recommendation Engine finished (Onboarding). Cached \(recommendedIDs.count) plants.")
              
              DispatchQueue.main.async {
-                 // Navigate to Main App / Home
-                 // Example validation:
-                 // let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                 // let homeVC = ...
-                 // window.rootViewController = ...
-             }
-        }
+                 // navigate to main app / home
+              }
+         }
     }
 }

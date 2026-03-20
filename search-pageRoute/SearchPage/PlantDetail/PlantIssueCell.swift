@@ -16,7 +16,7 @@ class PlantIssueCell: UICollectionViewCell {
     @IBOutlet weak var separatorView: UIView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // setup
     }
     
     

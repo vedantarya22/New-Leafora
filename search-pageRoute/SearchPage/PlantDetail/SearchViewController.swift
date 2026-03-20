@@ -11,16 +11,16 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - UI Components
 
-    // Custom Search Bar (Fixed at top)
+    // fixed top search bar
     private let searchBar = UISearchBar()
     
-    // Filter Button (Fixed at top)
+    // fixed top filter button
     private let filterButton = UIButton()
 
-    // Collection View
+    // plant list
     private var collectionView: UICollectionView!
     
-    // Background Gradient Layer
+    // background gradient
     private let gradientLayer = CAGradientLayer()
 
     // MARK: - Banner UI Components
@@ -52,7 +52,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         button.setTitle("Update", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor(red: 0.35, green: 0.58, blue: 0.45, alpha: 1.0) // Botanical dark green
+        button.backgroundColor = UIColor(red: 0.35, green: 0.58, blue: 0.45, alpha: 1.0) // dark green
         button.layer.cornerRadius = 14
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -63,7 +63,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - Lifecycle
 
-    // MARK: - Data Properties
+    // MARK: - Data
 //
 //    private let dataProvider = JSONLoader()
     private var allPlants: [Plant] = []
@@ -83,7 +83,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         
         loadData()
         
-        // Optional: Dismiss keyboard on tap outside
+        // dismiss keyboard on outside tap
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
@@ -153,7 +153,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     // MARK: - UI Setup
     
     private func setupBotanicalBackground() {
-        // A soft, off-white to very pale sage green
+        // soft green gradient background
         let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
         let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
         
@@ -162,25 +162,25 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         gradientLayer.endPoint = CGPoint(x: 1, y: 1)
         gradientLayer.frame = view.bounds
         
-        // Insert at index 0 so it stays behind the UICollectionView
+        // keep behind collection view
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     
     private func setupUI() {
-        // Configure Search Bar
+        // search bar
         searchBar.placeholder = "Search"
         searchBar.delegate = self
-        searchBar.backgroundImage = UIImage() // Remove background
+        searchBar.backgroundImage = UIImage() // remove background
         searchBar.searchBarStyle = .minimal
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         
         let searchTextField = searchBar.searchTextField
-        searchTextField.backgroundColor = .systemGray6 // Light gray
+        searchTextField.backgroundColor = .systemGray6 // light gray
         searchTextField.layer.cornerRadius = 10
         searchTextField.clipsToBounds = true
         
-        // Configure Filter Button
+        // filter button
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "slider.horizontal.3")
         config.baseForegroundColor = .label
@@ -189,20 +189,20 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         filterButton.addTarget(self, action: #selector(didTapFilter), for: .touchUpInside)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         
-        // Configure Collection View
+        // collection view
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        // Register Cell
+        // register cells
         let nib = UINib(nibName: "SearchPageCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: SearchPageCollectionViewCell.identifier)
         collectionView.register(ShimmerSearchCell.self, forCellWithReuseIdentifier: ShimmerSearchCell.identifier)
     }
     
-    // MARK: - Layout Generator (User Provided)
+    // MARK: - Layout
     
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
@@ -211,25 +211,25 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        // Group
+        // group
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: itemSize.heightDimension
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
-        // Section
+        // section
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = -2.8// Small standard gap between list items
+        section.interGroupSpacing = -2.8 // small gap between items
         
-        // Padding around the section content
+        // section padding
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
         
         return UICollectionViewCompositionalLayout(section: section)
     }
 
     private func setupFixedHeaderAndCollectionView() {
-        // Add Subviews
+        // add subviews
         view.addSubview(searchBar)
         view.addSubview(filterButton)
         view.addSubview(profileBannerView)
@@ -243,20 +243,20 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         bannerHeightConstraint = profileBannerView.heightAnchor.constraint(equalToConstant: 0)
         
         NSLayoutConstraint.activate([
-            // 1. Search Bar (Top Left)
+            // search bar
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             searchBar.heightAnchor.constraint(equalToConstant: 44),
             
-            // 2. Filter Button (Top Right)
+            // filter button
             filterButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
             filterButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            filterButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 44), // Adjusted for icon only
+            filterButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 44), // icon-only width
             
-            // Pin Search Bar trailing to Filter Button leading
+            // align search trailing to filter leading
             searchBar.trailingAnchor.constraint(equalTo: filterButton.leadingAnchor, constant: 6),
             
-            // Banner constraints
+            // banner constraints
             bannerTopConstraint,
             bannerHeightConstraint,
             profileBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -271,8 +271,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
             bannerLabel.trailingAnchor.constraint(equalTo: bannerButton.leadingAnchor, constant: -12),
             bannerLabel.centerYAnchor.constraint(equalTo: profileBannerView.centerYAnchor),
             
-            // 3. Collection View (Below Header)
-            collectionView.topAnchor.constraint(equalTo: profileBannerView.bottomAnchor, constant: 16), // Gap below banner
+            // collection view
+            collectionView.topAnchor.constraint(equalTo: profileBannerView.bottomAnchor, constant: 16), // gap below banner
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -281,11 +281,11 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
-        // 1. Get the correct plant from the UI-backed array
+        // selected plant from filtered list
         let selectedPlant = filteredPlants[indexPath.row]
         
 
-        // 2. Pass the ID
+        // pass plant id
                 navigateToPlantDetail(with: selectedPlant.plantId)
         
     
@@ -299,8 +299,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
                 withIdentifier: "PlantDetailViewController"
             ) as? PlantDetailViewController {
 
-                // CORRECT WAY:
-                // Pass the ID string. Let the Detail VC handle the loading/filtering.
+                // pass id and let detail screen load data
                 detailVC.plantId = plantId
                 
                 navigationController?.pushViewController(detailVC, animated: true)
@@ -316,10 +315,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let filterVC = storyboard.instantiateViewController(withIdentifier: "CategoriesViewController") as? categoriesViewController {
             
-            // Inject Data: Get dynamic categories from the data provider
-            // filterVC.categories = dataProvider.getAllCategories() // No longer needed as CategoryVC has static list
+            // category list already handled in category screen
             
-            // Set selection handler
+            // category selection callback
             filterVC.selectionHandler = { [weak self] selectedCategory in
                 guard let self = self else { return }
                 self.applyFilter(category: selectedCategory)
@@ -346,43 +344,38 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         print("Applying filter for category: \(category)")
         
         if category == "recommended_plant" {
-            // ---------------------------------------------------------
-            // RECOMMENDED PLANTS LOGIC
-            // ---------------------------------------------------------
+            // recommended plants flow
             
-            // 1. Check if preferences are set (Safety check)
+            // preferences must be set first
             if !HomeDataStore.shared.arePreferencesSet() {
-                // Clear the list just in case, but no alert (handled by modal)
+                // clear list; modal handles alert
                 filteredPlants = []
                 collectionView.reloadData()
                 return 
             }
             
             if let cachedIDs = RecommendedPlantsCache.shared.get() {
-                print("✨ Loading \(cachedIDs.count) recommended plants from cache.")
+                print("Loading \(cachedIDs.count) recommended plants from cache.")
                 
                 let plantsMap = Dictionary(uniqueKeysWithValues: allPlants.map { ($0.plantId, $0) })
                 filteredPlants = cachedIDs.compactMap { plantsMap[$0] }
                 
             } else {
-                print("⚠️ No recommended plants in cache (but prefs set). Triggering engine or showing empty.")
-                // If prefs are set but no cache (e.g. migration), we could trigger engine here or show empty.
-                // For now showing empty as per safety rules (no engine in UI).
+                print("No recommended plants in cache (but prefs set). Triggering engine or showing empty.")
+                // no cache yet; show empty for now
                 filteredPlants = [] 
             }
             
         } else if category == "all_plants" || category == "all" { // Assuming 'all' or similar key exists
              filteredPlants = allPlants
         } else {
-            // Basic filtering logic: Check if the plant's category array contains the selected category
+            // filter by matching category key
             filteredPlants = allPlants.filter { plant in
                 plant.category.contains(where: { $0.caseInsensitiveCompare(category) == .orderedSame })
             }
         }
         
-        // If no results (or "All"), maybe reset? For now strict filtering.
-        // If you want "All" to reset, handle that case.
-        // Assuming strict filter for now.
+        // keep strict filtering behavior
         
         collectionView.reloadData()
     }
@@ -448,7 +441,7 @@ extension SearchViewController: UICollectionViewDataSource {
 // MARK: - Helper Methods
 
 extension SearchViewController {
-    // Helper methods moved to HomeDataStore and categoriesViewController
+    // helpers moved to HomeDataStore and categories screen
 }
 
 // MARK: - Quick Add
@@ -492,21 +485,21 @@ extension SearchViewController {
     }
 
     private func quickAddPlant(_ plant: Plant, to site: MyGardenSite) {
-        // ✅ Must use mongoId — not plantId string
+        // must use mongoId, not plantId
         guard let plantMongoId = plant.mongoId else {
-            print("❌ Plant missing mongoId — cannot quick add")
+            print("Plant missing mongoId - cannot quick add")
             return
         }
 
         guard let siteMongoId = site.mongoId else {
-            print("❌ Site missing mongoId — cannot quick add")
+            print("Site missing mongoId - cannot quick add")
             return
         }
 
-        // ✅ Save locally with mongoId so TaskDueEngine can find it
+        // save locally with mongoId
         let userPlant = UserPlant(
             id: UUID(),
-            plantId: plantMongoId,        // ✅ was plant.plantId
+            plantId: plantMongoId,        // was plant.plantId
             siteName: site.name,
             siteID: site.id,
             imageData: nil,
@@ -523,7 +516,7 @@ extension SearchViewController {
         )
         PlantStore.shared.addPlant(userPlant)
 
-        // ✅ Sync to MongoDB
+        // sync to MongoDB
         NetworkManager.shared.addUserPlant(
             plantId:          plantMongoId,
             plantName:        plant.plantName,
@@ -538,17 +531,17 @@ extension SearchViewController {
             lastRepotted:     nil
         ) { mongoId in
             if let mongoId = mongoId {
-                print("✅ Quick-added \(plant.plantName) synced to MongoDB: \(mongoId)")
-                // ✅ Refresh from MongoDB so local store is consistent
+                print("Quick-added \(plant.plantName) synced to MongoDB: \(mongoId)")
+                // refresh from MongoDB for local consistency
                 if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                     sceneDelegate.loadAppData()
                 }
             } else {
-                print("❌ Failed to sync quick-add to MongoDB")
+                print("Failed to sync quick-add to MongoDB")
             }
         }
 
-        print("✅ Quick-added \(plant.plantName) to \(site.name)")
+        print("Quick-added \(plant.plantName) to \(site.name)")
         showQuickAddSuccess(plantName: plant.plantName, siteName: site.name)
     }
 

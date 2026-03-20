@@ -19,8 +19,8 @@ class ExpandableDetailCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         containerView.layer.cornerRadius = 20
-        containerView.backgroundColor = .systemGray6 // Subtle difference from the white card
-        detailLabel.numberOfLines = 2 // Start collapsed
+        containerView.backgroundColor = .systemGray6 // subtle contrast from white card
+        detailLabel.numberOfLines = 2 // start collapsed
     }
     
     func configure(title: String, detailText: String) {

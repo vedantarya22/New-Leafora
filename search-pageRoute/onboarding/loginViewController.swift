@@ -82,7 +82,7 @@ class loginViewController: UIViewController {
         signUpLabel.isUserInteractionEnabled = true
         signUpLabel.addGestureRecognizer(tap)
 
-        // Dismiss keyboard on tap outside
+        // dismiss keyboard on outside tap
         let dismissTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissTap.cancelsTouchesInView = false
         view.addGestureRecognizer(dismissTap)
@@ -132,12 +132,12 @@ class loginViewController: UIViewController {
               let window = sceneDelegate.window
         else { return }
 
-        // ✅ 1. Switch to main app UI
+        // switch to main app UI
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateInitialViewController()
         UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
 
-        // ✅ 2. Load all data AFTER navigation so UI is ready to receive notifications
+        // load data after navigation
         sceneDelegate.loadAppData()
     }
 

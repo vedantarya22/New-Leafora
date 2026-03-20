@@ -6,12 +6,12 @@ class PlantInfoCardCell: UICollectionViewCell {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var iconImageView: UIImageView!
 
-    // The main stack view from the XIB that holds the title stack and description label
+    // main stack from xib
     private var mainStack: UIStackView? {
         return containerView.subviews.first(where: { $0 is UIStackView }) as? UIStackView
     }
 
-    // Programmatic subview added to mainStack
+    // dynamic stack added at runtime
     private var customStack: UIStackView?
 
     override func awakeFromNib() {
@@ -21,7 +21,7 @@ class PlantInfoCardCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        // Remove custom stack from mainStack and views
+        // clear dynamic stack before reuse
         customStack?.removeFromSuperview()
         customStack = nil
         
@@ -31,11 +31,11 @@ class PlantInfoCardCell: UICollectionViewCell {
     }
 
     private func setupCard() {
-        // Flat, modern iOS 15+ inset grouped look
+        // card background style
         containerView.backgroundColor = UIColor.secondarySystemGroupedBackground
         containerView.layer.cornerRadius = 20
         
-        // Remove old heavy shadows to match modern clean look
+        // subtle shadow
         containerView.layer.shadowColor = UIColor.black.cgColor
         containerView.layer.shadowOffset = CGSize(width: 0, height: 2)
         containerView.layer.shadowRadius = 8
@@ -82,7 +82,7 @@ class PlantInfoCardCell: UICollectionViewCell {
         stack.distribution = .fillEqually
         stack.spacing = 8
         
-        // Add padding to top of stack to separate from description
+        // spacing above chips
         stack.layoutMargins = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
         stack.isLayoutMarginsRelativeArrangement = true
 
@@ -90,7 +90,7 @@ class PlantInfoCardCell: UICollectionViewCell {
         customStack = stack
     }
 
-    // MARK: - Detail Rows (Care Cycle, Soil)
+    // MARK: - Detail Rows
     func configureDetailRows(title: String, iconName: String, iconColor: UIColor, rows: [(icon: String, label: String, value: String)]) {
         titleLabel.text = title
         iconImageView.image = UIImage(systemName: iconName)
@@ -243,7 +243,7 @@ class PlantInfoCardCell: UICollectionViewCell {
         row.addSubview(valueLabel)
 
         NSLayoutConstraint.activate([
-            row.heightAnchor.constraint(greaterThanOrEqualToConstant: 52), // More padding
+            row.heightAnchor.constraint(greaterThanOrEqualToConstant: 52), // extra padding
 
             iconBg.leadingAnchor.constraint(equalTo: row.leadingAnchor),
             iconBg.centerYAnchor.constraint(equalTo: row.centerYAnchor),

@@ -17,7 +17,7 @@ class Personal_InfoViewController: UIViewController,
     private var cameraBadge: UIImageView?
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
-    // Dynamic sections built from draftUser
+    // sections built from draft user
     private var sections: [PersonalInfoSection] {
         guard let user = draftUser else { return [] }
         return [
@@ -89,7 +89,7 @@ class Personal_InfoViewController: UIViewController,
         setupHeader()
     }
 
-    // MARK: - Collect text field values into draftUser
+    // MARK: - Collect Field Values
     private func updateDraftState() {
         guard let draftUser = draftUser else { return }
         for cell in Table.visibleCells {
@@ -108,16 +108,16 @@ class Personal_InfoViewController: UIViewController,
         }
     }
 
-    // MARK: - Save Profile (text fields + optional new image)
+    // MARK: - Save Profile
     private func saveProfileData() {
         updateDraftState()
         guard let finalUser = draftUser,
               let userId    = UserSession.shared.mongoId else { return }
 
-        // Disable edit button while saving
+        // disable save while request runs
         navigationItem.rightBarButtonItem?.isEnabled = false
 
-        // ✅ Call the real PATCH route
+        // call profile update route
         NetworkManager.shared.updateUserProfile(
             userId:             userId,
             name:               finalUser.name,
@@ -129,22 +129,22 @@ class Personal_InfoViewController: UIViewController,
             self.navigationItem.rightBarButtonItem?.isEnabled = true
 
             if success {
-                print("✅ Profile saved to MongoDB")
+                print("Profile saved to MongoDB")
 
-                // Update local cache so all screens reflect the change immediately
+                // update local cache
                 UserSession.shared.cachedCurrentUser = finalUser
                 self.originalUser = finalUser.copy()
 
-                // If image changed, refresh the community feed so post avatars update
+                // refresh community avatars if image changed
                 if let newImage = finalUser.profileImageString {
                     PostRepository.shared.updateAuthorImage(userId: userId, newImageUrl: newImage)
                 }
 
-                // Refresh the header to show the new image
+                // refresh header image
                 self.setupHeader()
 
             } else {
-                print("❌ Profile save failed")
+                print("Profile save failed")
                 let alert = UIAlertController(title: "Error",
                                               message: "Failed to save. Please try again.",
                                               preferredStyle: .alert)
@@ -219,18 +219,18 @@ class Personal_InfoViewController: UIViewController,
                   let imageData     = selectedImage.jpegData(compressionQuality: 0.8)
             else { return }
 
-            // ✅ Upload to Cloudinary immediately when image is picked
+            // upload image right after picking
             NetworkManager.shared.uploadImageToCloudinary(imageData) { [weak self] imageUrl in
                 guard let self = self, let imageUrl = imageUrl else {
-                    print("❌ Profile image upload failed")
+                    print("Profile image upload failed")
                     return
                 }
-                print("✅ Profile image uploaded: \(imageUrl)")
+                print("Profile image uploaded: \(imageUrl)")
 
-                // Store URL on draft — will be sent in PATCH when user taps checkmark
+                // store URL in draft for next save
                 self.draftUser?.profileImageString = imageUrl
 
-                // Show the new image in the header immediately
+                // show selected image right away
                 DispatchQueue.main.async {
                     self.Imageview.image       = selectedImage
                     self.Imageview.contentMode = .scaleAspectFill

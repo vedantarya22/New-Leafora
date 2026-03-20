@@ -10,7 +10,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
     
     private let user = UserSession.shared.currentUser
     
-    // Transactional state
+    // local editable state
     private var tempPreferences: GardeningPreferences!
     private var originalPreferences: GardeningPreferences!
     private let gradientLayer = CAGradientLayer.backgroundGreen()
@@ -19,8 +19,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         super.viewWillAppear(animated)
         tableView.reloadData()
         
-        // Hide name and email labels if not needed for this screen, or keep them if part of design.
-        // Based on user request: "circular profile picture at the top. Below that... list"
+        // keep top labels aligned with this screen layout
         
         if let user = user {
             nameLabel.text = user.name
@@ -32,11 +31,11 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         super.viewDidLoad()
         title = "Gardening Preferences"
         
-        // ✅ App theme
+        // app theme
         view.layer.insertSublayer(gradientLayer, at: 0)
         navigationController?.navigationBar.tintColor = .brandGreen
         
-        // Initialize temp state from DataStore
+        // initialize local state from datastore
         originalPreferences = HomeDataStore.shared.gardeningPreferences
         tempPreferences = originalPreferences
         
@@ -53,16 +52,16 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         
         viewForIcon?.backgroundColor = .clear
         
-        // ✅ Use UserSession as single source of truth for profile image
+        // use session user image if available
         if let user = user {
             profileImage.configureImage(with: user.profileImageString)
         } else {
-            // Fallback placeholder
+            // fallback placeholder
             let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
             profileImage.image = UIImage(systemName: "person.circle.fill", withConfiguration: config)
         }
         
-        // Ensure image is circular
+        // circular profile image
         profileImage.layer.cornerRadius = profileImage.frame.height / 2
         profileImage.clipsToBounds = true
         profileImage.contentMode = .scaleAspectFill
@@ -73,40 +72,37 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
     }
     
     private func setupNavigationBar() {
-        // Right Tick Button (Save)
+        // save button
         let saveButton = UIBarButtonItem(image: UIImage(systemName: "checkmark"), style: .done, target: self, action: #selector(saveTapped))
         // tint color #377D29
         saveButton.tintColor = UIColor(red: 0x37/255.0, green: 0x7D/255.0, blue: 0x29/255.0, alpha: 1.0)
         navigationItem.rightBarButtonItem = saveButton
         
-        // Custom Back Button to intercept navigation
+        // custom back button to catch unsaved changes
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(backTapped))
         navigationItem.leftBarButtonItem = backButton
     }
     
     @objc private func saveTapped() {
-        // Save changes to DataStore
+        // save to datastore
         HomeDataStore.shared.gardeningPreferences = tempPreferences
         
-        // ---------------------------------------------------------
-        // Trigger Recommendation Engine
-        // ---------------------------------------------------------
-        print("🌱 GardeningPreferences changed. Running Recommendation Engine...")
+        // trigger recommendation engine
+        print("GardeningPreferences changed. Running Recommendation Engine...")
         
-        // 1. Load all plants (Ensure this is not on main thread if heavy, 
-        // but for this dataset size it's likely fine, or dispatch async)
+        // load plants then run engine in background
         DispatchQueue.global(qos: .userInitiated).async {
 //            let allPlants = JSONLoader.loadPlants(from: "plantData")
             let allPlants = PlantCatalogueCache.shared.plants
             
-            // 2. Run Engine
+            // run engine
             let recommendedIDs = PlantRecommendationEngine.shared.generateRecommendedPlantIDs(
                 plants: allPlants,
                 preferences: self.tempPreferences,
-                hasPets: false // TODO: if we have a pet setting, pass it. Defaulting to false for now based on available data.
+                hasPets: false // pass pet setting when available
             )
             
-            print("✅ Recommendation Engine finished. Cached \(recommendedIDs.count) plants.")
+            print("Recommendation Engine finished. Cached \(recommendedIDs.count) plants.")
         }
         
         navigationController?.popViewController(animated: true)
@@ -156,25 +152,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         
         cell.textLabel?.text = item.title
         
-        // Add detail label for the value
-        // The default "cell" in the storyboard might be effectively "Basic".
-        // To show "Title ......... Value", we ideally need a "Right Detail" or "Value 1" style.
-        // Since we are reusing the cell from the storyboard which seemed to be custom or basic,
-        // we might not have a detailTextLabel unless we change the style in storyboard or code.
-        // However, looking at PersonalInfoTableViewCell, it had a TextField.
-        // The duplicate VC likely uses the same cell prototype "cell".
-        // If it's a standard cell, we can try using a configuration or just text.
-        // But the user asked for "showing the selected value on the right".
-        // If the storyboard cell style is "Basic", detailTextLabel won't show.
-        // Let's assume we can configure it or it's a Value1 style.
-        // If not, we might need to modify the storyboard to set the cell style to "Right Detail".
-        // For now, let's try setting detailTextLabel.
-        
-        // WORKAROUND: If the cell is the `PersonalInfoTableViewCell` (from the copy), it has a textField.
-        // But this VC was duplicated from HomeProfileViewController, which had a basic cell.
-        
-        // Let's create a simpler cell logic:
-        // Use Swift's modern content configuration if available (iOS 14+)
+        // show value on the right using content configuration
         var content = cell.defaultContentConfiguration()
         content.text = item.title
         content.secondaryText = item.value
@@ -193,13 +171,13 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         
         let item = tempPreferences.preferences[indexPath.row]
         
-        // Navigate to OptionSelectionViewController
+        // open option picker
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         if let vc = storyboard.instantiateViewController(withIdentifier: "OptionSelectionViewController") as? OptionSelectionViewController {
             vc.preferenceType = item.type
             vc.currentValue = item.value
             
-            // Set callback to update temp state
+            // update temp state from selection callback
             vc.onSelectionChanged = { [weak self] newValue in
                 self?.tempPreferences.preferences[indexPath.row].value = newValue
                 self?.tableView.reloadRows(at: [indexPath], with: .none)

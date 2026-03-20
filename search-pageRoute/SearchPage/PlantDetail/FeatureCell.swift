@@ -15,7 +15,7 @@ class FeatureCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // setup
         setupCard()
     }
     

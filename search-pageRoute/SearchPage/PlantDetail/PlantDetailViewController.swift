@@ -12,7 +12,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Pure white background
+        // keep detail card readable on light bg
         view.backgroundColor = .systemBackground
         collectionView.backgroundColor = .clear
         setupBotanicalBackground()
@@ -27,17 +27,17 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         navigateToAddPlantQuestionnaire()
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            // Section 5 is the AR Button section
+            // AR button section
             if indexPath.section == 5 {
                 print("AR Button Tapped at section 5")
                 navigateToAR()
             }
         }
     private func navigateToAR() {
-        // If your storyboard file is named "Main.storyboard", use "Main"
+        // AR storyboard entry
         let storyboard = UIStoryboard(name: "ARlightmeter", bundle: nil)
         
-        // This identifier MUST match the Storyboard ID you just typed in the inspector
+        // must match storyboard id
         if let arVC = storyboard.instantiateViewController(withIdentifier: "ARViewController") as? ARViewController {
             arVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(arVC, animated: true)
@@ -45,7 +45,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     }
     
     private func setupBotanicalBackground() {
-        // A soft, off-white to very pale sage green
+        // soft green gradient background
         let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
         let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
         
@@ -54,13 +54,13 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         gradientLayer.endPoint = CGPoint(x: 1, y: 1)
         gradientLayer.frame = view.bounds
         
-        // Insert at index 0 so it stays behind the UICollectionView
+        // keep behind collection view
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     func navigateToAddPlantQuestionnaire() {
         guard let plantId = currentPlant?.plantId else {
-            print("❌ No plant ID available")
+            print("No plant ID available")
             return
         }
         
@@ -87,15 +87,14 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             let spacing: CGFloat = 16
             
             switch sectionIndex {
-            case 0: // Hero Image
+            case 0: // hero image
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(300))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let section = NSCollectionLayoutSection(group: NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item]))
                 section.contentInsets = .init(top: 10, leading: 16, bottom: 20, trailing: 16)
                 return section
                 
-            case 1: // Merged About & Info
-                // Increased estimated height and bottom inset to ensure shadow visibility
+            case 1: // about and info
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(350))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
@@ -103,7 +102,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 section.contentInsets = .init(top: 0, leading: spacing, bottom: 20, trailing: spacing)
                 return section
                 
-            case 2, 3, 4: // Care, Soil, Issues
+            case 2, 3, 4: // care, soil, issues
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(280))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
@@ -111,7 +110,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 section.contentInsets = .init(top: 0, leading: spacing, bottom: 20, trailing: spacing)
                 return section
                 
-            default: // AR Button
+            default: // AR button
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(100))
                 let section = NSCollectionLayoutSection(group: NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [NSCollectionLayoutItem(layoutSize: itemSize)]))
                 section.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
@@ -121,7 +120,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 6 // Image, Merged About, Care, Soil, Issues, Button
+        return 6 // image, about, care, soil, issues, button
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { return 1 }
@@ -141,7 +140,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                }
             return cell
             
-        case 1: // About
+        case 1: // about
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantInfoCardCell",
                 for: indexPath
@@ -159,7 +158,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
 
             return cell
 
-        case 2: // Care Cycle
+        case 2: // care cycle
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantInfoCardCell",
                 for: indexPath
@@ -179,7 +178,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
 
             return cell
 
-        case 3: // Soil Type
+        case 3: // soil type
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantInfoCardCell",
                 for: indexPath
@@ -197,7 +196,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
 
             return cell
 
-        case 4: // Common Issues
+        case 4: // common issues
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "PlantInfoCardCell",
                 for: indexPath
@@ -210,7 +209,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
 
             return cell
             
-        case 5: // AR Button
+        case 5: // AR button
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlantActionButtonCell", for: indexPath) as! PlantActionButtonCell
             cell.configure(type: .visualizeAR)
             cell.onTap = { [weak self] in
@@ -232,13 +231,13 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
             print(" Cache has \(plants.count) plants")
             
             if let found = plants.first(where: { $0.plantId == self.plantId }) {
-                print("✅ Found plant: \(found.plantName)")
-                print("🖼️ Image URL: \(found.imageName)")
-                print("💡 Light: \(found.lightRequirement.displayName)")
-                print("🌱 Difficulty: \(found.difficulty.displayName)")
+                print("Found plant: \(found.plantName)")
+                print("Image URL: \(found.imageName)")
+                print("Light: \(found.lightRequirement.displayName)")
+                print("Difficulty: \(found.difficulty.displayName)")
                 self.plants = [found]
             } else {
-                print("⚠️ Plant not found, loading first plant as fallback")
+                print("Plant not found, loading first plant as fallback")
                 self.plants = [plants[0]]
             }
             

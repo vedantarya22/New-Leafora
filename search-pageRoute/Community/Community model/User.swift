@@ -14,7 +14,7 @@ class User: Codable {
     var phoneNumber: String?
     var dateOfBirth: String?
 
-    // ✅ Populated by backend via getUserById (Option B) or own profile from PlantStore
+    // from backend (or local count for own profile)
     var plantCount: Int
 
     init(id: String,
@@ -35,7 +35,7 @@ class User: Codable {
         self.dateOfBirth        = dateOfBirth
     }
 
-    //  Custom decoder — plantCount defaults to 0 if not in response
+    // default plantCount to 0 when field is missing
     required init(from decoder: Decoder) throws {
         let c               = try decoder.container(keyedBy: CodingKeys.self)
         id                  = try c.decode(String.self,           forKey: .id)

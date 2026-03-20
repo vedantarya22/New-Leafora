@@ -15,7 +15,7 @@ class PlantSoilCell: UICollectionViewCell {
     @IBOutlet weak var plantSoilView: UIView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // setup
      
         
        
@@ -57,7 +57,7 @@ class PlantSoilCell: UICollectionViewCell {
     
     func configure(value:String,isLast : Bool){
         valueLabel.text = value
-        // Hide separator for last cell
+        // hide separator for last row
            separatorView.isHidden = isLast
     }
 

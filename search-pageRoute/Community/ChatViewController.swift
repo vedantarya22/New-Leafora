@@ -24,7 +24,7 @@ struct Message: MessageType {
 // MARK: - ChatViewController
 class ChatViewController: MessagesViewController {
 
-    // Must be set before pushing this VC
+    // set before opening this screen
     var user: User!
 
     private var messages:     [Message] = []
@@ -59,7 +59,7 @@ class ChatViewController: MessagesViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // Stop listening when we leave — prevents appending to wrong chat
+        // stop socket callback when leaving chat
         ChatSocketManager.shared.onMessageReceived = nil
     }
 
@@ -84,7 +84,7 @@ class ChatViewController: MessagesViewController {
         ChatSocketManager.shared.onMessageReceived = { [weak self] socketMsg in
             guard let self = self else { return }
 
-            // Only handle messages for THIS conversation
+            // only messages from this user
             guard socketMsg.senderId == self.user.id else { return }
 
             let msg = Message(
@@ -97,7 +97,7 @@ class ChatViewController: MessagesViewController {
             self.messagesCollectionView.reloadData()
             self.scrollToBottom(animated: true)
 
-            // Notify People screen to refresh preview
+            // refresh chat preview list
             NotificationCenter.default.post(name: .didSendMessage, object: nil,
                                             userInfo: ["userId": socketMsg.senderId])
         }
@@ -110,7 +110,7 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate                       = self
 
-        // ─── Input text view ───
+        // input text view
         let inputTV = messageInputBar.inputTextView
         inputTV.placeholder      = "Type a message..."
         inputTV.placeholderTextColor = UIColor.systemGray3
@@ -121,7 +121,7 @@ class ChatViewController: MessagesViewController {
         inputTV.layer.borderColor   = UIColor.systemGray5.cgColor
         inputTV.backgroundColor     = .white
 
-        // ─── Send button ───
+        // send button
         let sendButton = messageInputBar.sendButton
         sendButton.setTitle(nil, for: .normal)
         let sendConfig = UIImage.SymbolConfiguration(pointSize: 22, weight: .semibold)
@@ -130,7 +130,6 @@ class ChatViewController: MessagesViewController {
         sendButton.setSize(CGSize(width: 36, height: 36), animated: false)
         sendButton.contentEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
 
-        // ─── Input bar chrome ───
         messageInputBar.backgroundView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
         messageInputBar.separatorLine.backgroundColor  = UIColor.brandGreen.withAlphaComponent(0.15)
         messageInputBar.separatorLine.height           = 1.0
@@ -138,7 +137,6 @@ class ChatViewController: MessagesViewController {
         messageInputBar.setLeftStackViewWidthConstant(to: 0, animated: false)
         messageInputBar.leftStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        // Remove old content view rounding — we style the text view itself now
         messageInputBar.contentView.backgroundColor    = .clear
         messageInputBar.contentView.layer.cornerRadius  = 0
         messageInputBar.contentView.layer.masksToBounds = false
@@ -202,7 +200,7 @@ class ChatViewController: MessagesViewController {
 
         let point = gesture.location(in: messagesCollectionView)
 
-        // Find the section by checking all visible cells
+        // find pressed message section
         var targetSection: Int?
         for cell in messagesCollectionView.visibleCells {
             if let ip = messagesCollectionView.indexPath(for: cell),
@@ -212,7 +210,6 @@ class ChatViewController: MessagesViewController {
             }
         }
 
-        // Fallback: try indexPathForItem directly
         if targetSection == nil,
            let ip = messagesCollectionView.indexPathForItem(at: point) {
             targetSection = ip.section
@@ -275,7 +272,7 @@ extension ChatViewController: MessagesDataSource {
         messages.count
     }
 
-    // ─── Date header above first message of each day ───
+    // date header for first message of each day
     func cellTopLabelAttributedText(for message: any MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         guard shouldShowDateHeader(at: indexPath) else { return nil }
 
@@ -289,7 +286,7 @@ extension ChatViewController: MessagesDataSource {
         )
     }
 
-    // ─── Timestamp below each message ───
+    // time below each message
     func messageBottomLabelAttributedText(for message: any MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         let time = timeString(for: message.sentDate)
         return NSAttributedString(
@@ -308,10 +305,8 @@ extension ChatViewController: MessagesDisplayDelegate {
     func backgroundColor(for message: any MessageType, at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
         if isFromCurrentSender(message: message) {
-            // Rich green for sent messages
             return .brandGreen
         } else {
-            // Soft off-white for received
             return UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1.0)
         }
     }
@@ -355,7 +350,7 @@ extension ChatViewController: MessagesLayoutDelegate {
         isFromCurrentSender(message: message) ? .zero : CGSize(width: 32, height: 32)
     }
 
-    // ─── Space between message groups ───
+    // space between message groups
     func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         .zero
     }
@@ -364,19 +359,18 @@ extension ChatViewController: MessagesLayoutDelegate {
         CGSize(width: 0, height: 4)
     }
 
-    // ─── Date header height ───
+    // date header height
     func cellTopLabelHeight(for message: any MessageType, at indexPath: IndexPath,
                             in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         shouldShowDateHeader(at: indexPath) ? 32 : 0
     }
 
-    // ─── Timestamp below each message ───
     func messageBottomLabelHeight(for message: any MessageType, at indexPath: IndexPath,
                                   in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         16
     }
 
-    // ─── Alignment for bottom label ───
+    // bottom time alignment
     func messageBottomLabelAlignment(for message: any MessageType, at indexPath: IndexPath,
                                      in messagesCollectionView: MessagesCollectionView) -> LabelAlignment? {
         isFromCurrentSender(message: message)
@@ -384,7 +378,7 @@ extension ChatViewController: MessagesLayoutDelegate {
             : LabelAlignment(textAlignment: .left, textInsets: UIEdgeInsets(top: 2, left: 48, bottom: 0, right: 0))
     }
 
-    // ─── Alignment for date header ───
+    // date header alignment
     func cellTopLabelAlignment(for message: any MessageType, at indexPath: IndexPath,
                                in messagesCollectionView: MessagesCollectionView) -> LabelAlignment? {
         LabelAlignment(textAlignment: .center, textInsets: .zero)
@@ -398,10 +392,10 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        // 1. Save to CoreData + emit via socket (ChatManager handles both)
+        // save locally and send via socket
         ChatManager.shared.sendMessage(to: user.id, text: trimmed)
 
-        // 2. Append locally for instant display (no need to wait for socket echo)
+        // append immediately for fast UI update
         messages.append(Message(
             sender:    mySender,
             messageId: UUID().uuidString,
@@ -409,13 +403,13 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             kind:      .text(trimmed)
         ))
 
-        // 3. Update UI
+        // update chat UI
         inputBar.inputTextView.text = ""
         inputBar.invalidatePlugins()
         messagesCollectionView.reloadData()
         scrollToBottom(animated: true)
 
-        // 4. Refresh People screen preview
+        // refresh chat preview list
         NotificationCenter.default.post(name: .didSendMessage, object: nil,
                                         userInfo: ["userId": user.id])
     }

@@ -16,7 +16,7 @@
 //
 //    // MARK: - Properties
 //    var user: User?
-//    private var selectedImage: UIImage?   // holds the newly picked image before upload
+//    private var selectedImage: UIImage?   // picked image before upload
 //
 //    let personalities = [
 //        "Indoor Gardener 🏠",
@@ -52,12 +52,12 @@
 //        saveButton.layer.cornerRadius = 20
 //        saveButton.clipsToBounds      = true
 //
-//        // ✅ Tap gesture on profile image to change it
+//        // tap profile image to change photo
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
 //        profileImageView.isUserInteractionEnabled = true
 //        profileImageView.addGestureRecognizer(tap)
 //
-//        // Also tappable via the camera badge
+//        // camera badge also opens picker
 //        let badgeTap = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
 //        cameraBadgeView.isUserInteractionEnabled = true
 //        cameraBadgeView.addGestureRecognizer(badgeTap)
@@ -93,7 +93,7 @@
 //        usernameTextField.text = user.username.replacingOccurrences(of: "@", with: "")
 //    }
 //
-//    // MARK: - Profile Image Tap
+//    // MARK: - Profile Image
 //    @objc func profileImageTapped() {
 //        let alert = UIAlertController(title: "Change Photo",
 //                                      message: nil,
@@ -126,7 +126,7 @@
 //        present(picker, animated: true)
 //    }
 //
-//    // MARK: - PHPickerViewControllerDelegate
+//    // MARK: - PHPicker
 //    func picker(_ picker: PHPickerViewController,
 //                didFinishPicking results: [PHPickerResult]) {
 //        picker.dismiss(animated: true)
@@ -156,7 +156,7 @@
 //        let username = usernameTextField.text?.trimmingCharacters(in: .whitespaces) ?? user.username
 //
 //        if let newImage = selectedImage {
-//            // ✅ Upload new image to Cloudinary first, then save profile
+//            // upload image first, then save profile
 //            guard let imageData = newImage.jpegData(compressionQuality: 0.8) else { return }
 //
 //            NetworkManager.shared.uploadImageToCloudinary(imageData) { [weak self] imageUrl in
@@ -165,13 +165,13 @@
 //                                 username: username, profileImageUrl: imageUrl)
 //            }
 //        } else {
-//            // No image change — just update name/username
+//            // no image change, just save text fields
 //            saveProfile(userId: user.id, name: name,
 //                        username: username, profileImageUrl: nil)
 //        }
 //    }
 //
-//    // MARK: - Save Profile to Backend
+//    // MARK: - Save Profile
 //    private func saveProfile(userId: String, name: String,
 //                              username: String, profileImageUrl: String?) {
 //        NetworkManager.shared.updateUserProfile(
@@ -182,13 +182,13 @@
 //            self.saveButton.isEnabled = true
 //
 //            if success {
-//                // Update local cache
+//                // update local cache
 //                if let cached = UserSession.shared.cachedCurrentUser {
 //                    cached.name     = name
 //                    cached.username = username
 //                    if let url = profileImageUrl {
 //                        cached.profileImageString = url
-//                        // ✅ Refresh feed so post author images update too
+//                        // refresh feed so author image updates
 //                        PostRepository.shared.updateAuthorImage(userId: userId, newImageUrl: url)
 //                    }
 //                    UserSession.shared.cachedCurrentUser = cached

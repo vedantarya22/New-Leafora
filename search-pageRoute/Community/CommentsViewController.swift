@@ -17,14 +17,14 @@ class CommentsViewController: UIViewController,
 
     // MARK: - Data
     var post: Post!                      // set by CommunityViewController before pushing
-    private var comments: [Comment] = [] // local copy — fetched from backend
+    private var comments: [Comment] = [] // local copy that is grabbed from postrepo/backend
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         guard post != nil else {
-            print("❌ ERROR: No Post passed to CommentsViewController")
+            print("ERROR: No Post passed to CommentsViewController")
             return
         }
 
@@ -36,7 +36,7 @@ class CommentsViewController: UIViewController,
         commentTextField.delegate = self
         setupKeyboardObservers()
 
-        // ── Load comments from backend ──────────────────────────────────────
+        // comments from backend
         loadComments()
     }
 
@@ -95,20 +95,20 @@ class CommentsViewController: UIViewController,
               !text.isEmpty
         else { return }
 
-        // Clear field immediately for snappy UX
+        // clearnig field immediately for quick ux
         commentTextField.text = ""
 
         PostRepository.shared.addComment(postId: post.id, text: text) { [weak self] comment in
             guard let self = self else { return }
 
             if let comment = comment {
-                // Append the server-returned comment (has real id, createdAt, author)
+                // Append the comment to server req
                 self.comments.append(comment)
                 let last = IndexPath(row: self.comments.count - 1, section: 0)
                 self.tableView.insertRows(at: [last], with: .automatic)
                 self.tableView.scrollToRow(at: last, at: .bottom, animated: true)
             } else {
-                print("⚠️ addComment failed — backend did not return a Comment")
+                print("addComment failed - backend did not return a Comment")
             }
         }
     }
