@@ -49,6 +49,15 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         loadData()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Must be here (not viewWillAppear) — nav bar animation resets the color after appear;
+        // dispatching to next run loop ensures we win that race
+        DispatchQueue.main.async {
+            self.searchController.searchBar.searchTextField.backgroundColor = .white
+        }
+    }
+
     @objc private func refreshPreviews() {
         tableView.reloadData()
     }
@@ -89,6 +98,9 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         navigationItem.searchController                       = searchController
         navigationItem.hidesSearchBarWhenScrolling            = false
         definesPresentationContext                            = true
+
+        // white background for contrast against green gradient
+        searchController.searchBar.searchTextField.backgroundColor = .white
     }
 
     // MARK: - Search

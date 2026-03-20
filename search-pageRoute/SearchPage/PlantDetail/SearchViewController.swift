@@ -178,7 +178,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         
         let searchTextField = searchBar.searchTextField
-        searchTextField.backgroundColor = .systemGray6 // light gray
+        searchTextField.backgroundColor = .white // white for contrast against green gradient
         searchTextField.layer.cornerRadius = 10
         searchTextField.clipsToBounds = true
         
