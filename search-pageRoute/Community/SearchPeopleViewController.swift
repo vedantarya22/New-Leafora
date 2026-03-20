@@ -38,6 +38,15 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         navigationController?.view.layoutIfNeeded()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Must be here (not viewWillAppear) — nav bar animation resets the color after appear;
+        // dispatching to next run loop ensures we win that race
+        DispatchQueue.main.async {
+            self.searchController.searchBar.searchTextField.backgroundColor = .white
+        }
+    }
+
     // MARK: - Data
     func loadData() {
         // fetch users from backend and remove current user
@@ -58,6 +67,9 @@ class SearchPeopleViewController: UIViewController, UITableViewDelegate, UITable
         navigationItem.searchController                       = searchController
         navigationItem.hidesSearchBarWhenScrolling            = false
         definesPresentationContext                            = true
+
+        // white background for contrast against green gradient
+        searchController.searchBar.searchTextField.backgroundColor = .white
     }
 
     func didDismissSearchController(_ searchController: UISearchController) {
