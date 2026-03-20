@@ -115,30 +115,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     private func taskInsightsForHome() -> [TaskOverviewInsight] {
-            let allPlants = PlantStore.shared.allPlants()
-            let insights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
-
-
+        let allPlants = PlantStore.shared.allPlants()
+        let insights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
         
-        return [
-                TaskOverviewInsight(
-                    icon: "exclamationmark.triangle.fill",
-                    title: "Urgent Care Needed",
-                    message: "3 plants need attention now",
-                    level: .critical,
-                    route: "Urgent"
-                ),
-                TaskOverviewInsight(
-                    icon: "clock.fill",
-                    title: "Missed Tasks",
-                    message: "3 plants need care soon",
-                    level: .warning,
-                    route: "Missed"
-                )
-            ]
-
-//            return insights
-        }
+        return insights
+    }
     
     
     

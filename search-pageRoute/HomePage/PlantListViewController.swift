@@ -48,6 +48,15 @@ class PlantListViewController: UIViewController,
         //  Apply app green tint to navigation bar
         navigationController?.navigationBar.tintColor = appGreen
         
+        // Custom Back button since leftBarButtonItem overrides the system back button
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.backward"),
+            style: .plain,
+            target: self,
+            action: #selector(backButtonTapped)
+        )
+        backButton.tintColor = .black
+        
         //  Native info button in nav bar
         let infoButton = UIBarButtonItem(
             image: UIImage(systemName: "info.circle"),
@@ -64,8 +73,11 @@ class PlantListViewController: UIViewController,
             target: self,
             action: #selector(markAllAsDoneTapped)
         )
-        markAllButton.tintColor = appGreen
-        navigationItem.leftBarButtonItem = infoButton
+        // A noticeably darker green than appGreen (0.45, 0.70, 0.55)
+        markAllButton.tintColor = UIColor(red: 0.25, green: 0.55, blue: 0.35, alpha: 1.0)
+        
+        // Place both Back and Info buttons on the left
+        navigationItem.leftBarButtonItems = [backButton, infoButton]
         navigationItem.rightBarButtonItem = markAllButton
         
         // Register Cell XIB
@@ -268,8 +280,10 @@ class PlantListViewController: UIViewController,
         present(alert, animated: true)
     }
     
-    
-    
+    // MARK: - Navigation
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
     
     // MARK: - Load + Filter Pending Plants
     
