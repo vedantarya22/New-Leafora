@@ -9,6 +9,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     var tipTimer: Timer?
     @IBOutlet weak var collectionView: UICollectionView!
     
+    private let refreshControl = UIRefreshControl()
+    
     // Original Colors
     //clay colors
     // Natural, Earthy Plant Care Colors
@@ -69,10 +71,21 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         collectionView.delegate = self
         collectionView.collectionViewLayout = createLayout()
         
+        // Setup Pull to Refresh
+        refreshControl.tintColor = fertilizingGreen
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+        
         // DEBUG: List all JSON files in bundle
         JSONLoader.debugListBundleJSONFiles()
+    }
+    
+    @objc private func handleRefresh() {
+        collectionView.reloadData()
         
-        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.refreshControl.endRefreshing()
+        }
     }
     
     @objc private func handleTaskUpdate() {

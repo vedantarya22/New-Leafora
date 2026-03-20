@@ -69,6 +69,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     private var allPlants: [Plant] = []
     private var filteredPlants: [Plant] = []
     private var isLoading: Bool = true
+    
+    private let refreshControl = UIRefreshControl()
 
     // MARK: - Lifecycle
 
@@ -196,10 +198,23 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         collectionView.delegate = self
         collectionView.dataSource = self
         
+        // Setup Pull to Refresh
+        refreshControl.tintColor = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+        
         // register cells
         let nib = UINib(nibName: "SearchPageCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: SearchPageCollectionViewCell.identifier)
         collectionView.register(ShimmerSearchCell.self, forCellWithReuseIdentifier: ShimmerSearchCell.identifier)
+    }
+    
+    @objc private func handleRefresh() {
+        loadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.refreshControl.endRefreshing()
+        }
     }
     
     // MARK: - Layout

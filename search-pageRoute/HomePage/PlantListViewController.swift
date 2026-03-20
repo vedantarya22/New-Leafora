@@ -13,6 +13,8 @@ class PlantListViewController: UIViewController,
     // App green accent
     private let appGreen = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
     
+    private let refreshControl = UIRefreshControl()
+    
     // MARK: - Empty State View
     private lazy var emptyStateView: UIStackView = {
         let stack = UIStackView()
@@ -104,6 +106,19 @@ class PlantListViewController: UIViewController,
             emptyStateView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 20),
             emptyStateView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
         ])
+        
+        // Setup Pull to Refresh
+        refreshControl.tintColor = appGreen
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+    }
+    
+    @objc private func handleRefresh() {
+        loadAndFilterData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.refreshControl.endRefreshing()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -9,6 +9,8 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     private var posts: [Post] = []
     private var expandedPostIds: Set<String> = []
     private var isLoading: Bool = true
+    
+    private let refreshControl = UIRefreshControl()
 
     let gradientLayer = CAGradientLayer()
 
@@ -42,6 +44,19 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
         postsCollectionView.register(ShimmerPostCell.self, forCellWithReuseIdentifier: ShimmerPostCell.identifier)
         postsCollectionView.collectionViewLayout = createLayout()
         postsCollectionView.delaysContentTouches = false
+        
+        // Setup Pull to Refresh
+        refreshControl.tintColor = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        postsCollectionView.refreshControl = refreshControl
+    }
+    
+    @objc private func handleRefresh() {
+        loadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.refreshControl.endRefreshing()
+        }
     }
 
     private func setupBotanicalBackground() {
