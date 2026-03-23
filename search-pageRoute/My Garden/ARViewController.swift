@@ -310,18 +310,31 @@ class ARViewController: UIViewController {
 
     private func loadModels() {
         models = [
-            // Newly added 7 models mapped to their real plant names
+            // Newly added list of 24 models mapped to their real plant names
+            ModelItem(name: "Aloe Vera",      fileName: "aloe_vera", thumbnail: "🌵", image: nil),
+            ModelItem(name: "Areca Palm",     fileName: "arcea_palm", thumbnail: "🌴", image: nil),
+            ModelItem(name: "Bougainvillea",  fileName: "bougainvillea", thumbnail: "🌺", image: nil),
+            ModelItem(name: "Brahmi",         fileName: "brahmi", thumbnail: "🌿", image: nil),
+            ModelItem(name: "Chilli Pepper",  fileName: "chilli_pepper", thumbnail: "🌶", image: nil),
             ModelItem(name: "Chinese Money Plant", fileName: "chinese_moneyplant", thumbnail: "🌿", image: nil),
             ModelItem(name: "Rose",           fileName: "crimson_roses", thumbnail: "🌹", image: nil),
+            ModelItem(name: "Croton",         fileName: "croton", thumbnail: "🪴", image: nil),
+            ModelItem(name: "Curry Leaf",     fileName: "curry_leaf", thumbnail: "🍃", image: nil),
+            ModelItem(name: "Desert Rose",    fileName: "dessert_rose", thumbnail: "🌸", image: nil),
+            ModelItem(name: "Geranium",       fileName: "geranium", thumbnail: "🌺", image: nil),
+            ModelItem(name: "Hibiscus",       fileName: "hibiscus", thumbnail: "🌺", image: nil),
+            ModelItem(name: "Lavender",       fileName: "lavender", thumbnail: "🪻", image: nil),
             ModelItem(name: "Lemongrass",     fileName: "lemongrass", thumbnail: "🌾", image: nil),
+            ModelItem(name: "Lemon Tree",     fileName: "lemontree", thumbnail: "🍋", image: nil),
             ModelItem(name: "Marigold",       fileName: "marigold", thumbnail: "🌼", image: nil),
+            ModelItem(name: "Mint",           fileName: "mint", thumbnail: "🍃", image: nil),
+            ModelItem(name: "Mogra",          fileName: "mogra", thumbnail: "🌼", image: nil),
+            ModelItem(name: "Monstera",       fileName: "monstera", thumbnail: "🌿", image: nil),
+            ModelItem(name: "Neem",           fileName: "neem", thumbnail: "🌳", image: nil),
+            ModelItem(name: "Peace Lily",     fileName: "peace_lily", thumbnail: "🪴", image: nil),
             ModelItem(name: "Portulaca",      fileName: "portulaca", thumbnail: "🌸", image: nil),
             ModelItem(name: "Tulsi",          fileName: "tulsi", thumbnail: "🌱", image: nil),
-            ModelItem(name: "Jasmine",        fileName: "white_jasmine", thumbnail: "🏵", image: nil),
-            ModelItem(name: "Monstera",       fileName: "monstera", thumbnail: "🌿", image: nil)
-            
-            
-
+            ModelItem(name: "Jasmine",        fileName: "white_jasmine", thumbnail: "🏵", image: nil)
         ]
     }
 

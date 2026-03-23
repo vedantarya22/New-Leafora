@@ -6,7 +6,7 @@ enum CareTask {
 
 struct TaskDueEngine {
 
-    static func isDue(_ userPlant: UserPlant, task: CareTask) -> Bool {
+    static func isDue(_ userPlant: UserPlant, task: CareTask, targetDate: Date = Date()) -> Bool {
 
         //  Load plants using your proven method
 //        let allPlants = JSONLoader.loadPlants(from: "plantData")
@@ -40,12 +40,12 @@ struct TaskDueEngine {
             lastDate = userPlant.lastRepotted
         }
 
-        let daysPassed = daysSince(lastDate)
+        let daysPassed = daysSince(lastDate, to: targetDate)
         return daysPassed >= frequency
     }
 
-    private static func daysSince(_ date: Date?) -> Int {
+    private static func daysSince(_ date: Date?, to targetDate: Date) -> Int {
         guard let date else { return Int.max }
-        return Calendar.current.dateComponents([.day], from: date, to: Date()).day ?? Int.max
+        return Calendar.current.dateComponents([.day], from: date, to: targetDate).day ?? Int.max
     }
 }

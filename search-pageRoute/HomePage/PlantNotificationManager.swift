@@ -51,43 +51,45 @@ final class PlantNotificationManager {
         let allPlants = PlantStore.shared.allPlants()
         print("[Notifications] Total plants in store: \(allPlants.count)")
         
-        // Count how many plants currently need care
-        var dueCount = 0
-        for plant in allPlants {
-            if TaskDueEngine.isDue(plant, task: .watering) { dueCount += plant.quantity }
-            if TaskDueEngine.isDue(plant, task: .pruning) { dueCount += plant.quantity }
-            if TaskDueEngine.isDue(plant, task: .fertilizing) { dueCount += plant.quantity }
-            if TaskDueEngine.isDue(plant, task: .repotting) { dueCount += plant.quantity }
-        }
+        let calendar = Calendar.current
+        let today = Date()
         
-        print("[Notifications] Due task count: \(dueCount)")
+        var scheduledCount = 0
         
-        // Only schedule if there are pending tasks
-        guard dueCount > 0 else {
-            print("[Notifications] No pending care tasks, skipping daily reminder")
-            return
-        }
-        
-        let content = UNMutableNotificationContent()
-        content.title = "Your plants need you!"
-        content.body = "You have \(dueCount) care \(dueCount == 1 ? "task" : "tasks") waiting. Open Leafora to keep your plants happy."
-        content.sound = .default
-        
-        // Daily repeating at 8:00 AM
-        var dateComponents = DateComponents()
-        dateComponents.hour = 8
-        dateComponents.minute = 0
-        
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        let request = UNNotificationRequest(identifier: "plantCare_dailyReminder", content: content, trigger: trigger)
-        
-        notificationCenter.add(request) { error in
-            if let error = error {
-                print("[Notifications] Failed to schedule daily reminder: \(error.localizedDescription)")
-            } else {
-                print("[Notifications] Daily 8 AM reminder scheduled (\(dueCount) tasks pending)")
+        // Pre-calculate due counts for the next 14 days so the notification string is always accurate
+        for dayOffset in 0..<14 {
+            guard let targetDate = calendar.date(byAdding: .day, value: dayOffset, to: today) else { continue }
+            
+            var dueCount = 0
+            for plant in allPlants {
+                if TaskDueEngine.isDue(plant, task: .watering, targetDate: targetDate) { dueCount += plant.quantity }
+                if TaskDueEngine.isDue(plant, task: .pruning, targetDate: targetDate) { dueCount += plant.quantity }
+                if TaskDueEngine.isDue(plant, task: .fertilizing, targetDate: targetDate) { dueCount += plant.quantity }
+                if TaskDueEngine.isDue(plant, task: .repotting, targetDate: targetDate) { dueCount += plant.quantity }
+            }
+            
+            if dueCount > 0 {
+                let content = UNMutableNotificationContent()
+                content.title = "Your plants need you!"
+                content.body = "You have \(dueCount) care \(dueCount == 1 ? "task" : "tasks") waiting. Open Leafora to keep your plants happy."
+                content.sound = .default
+                
+                var dateComponents = calendar.dateComponents([.year, .month, .day], from: targetDate)
+                dateComponents.hour = 8
+                dateComponents.minute = 0
+                
+                // If today and it's already past 8 AM, iOS handles skipping it gracefully since it's in the past
+                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                let id = "plantCare_dailyReminder_day\(dayOffset)"
+                
+                let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+                notificationCenter.add(request)
+                
+                scheduledCount += 1
             }
         }
+        
+        print("[Notifications] Pre-scheduled \(scheduledCount) daily reminders for the upcoming 14 days.")
     }
 
     // MARK: - Cancel All
