@@ -14,16 +14,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		19D1293C2F288EB200B6F32B /* search-pageRoute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "search-pageRoute.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		19D1293C2F288EB200B6F32B /* Leafora.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Leafora.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		19D1294E2F288EB300B6F32B /* Exceptions for "Leafora" folder in "search-pageRoute" target */ = {
+		19D1294E2F288EB300B6F32B /* Exceptions for "Leafora" folder in "Leafora" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 19D1293B2F288EB200B6F32B /* search-pageRoute */;
+			target = 19D1293B2F288EB200B6F32B /* Leafora */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -31,7 +31,7 @@
 		19D1293E2F288EB200B6F32B /* Leafora */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				19D1294E2F288EB300B6F32B /* Exceptions for "Leafora" folder in "search-pageRoute" target */,
+				19D1294E2F288EB300B6F32B /* Exceptions for "Leafora" folder in "Leafora" target */,
 			);
 			path = Leafora;
 			sourceTree = "<group>";
@@ -64,7 +64,7 @@
 		19D1293D2F288EB200B6F32B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				19D1293C2F288EB200B6F32B /* search-pageRoute.app */,
+				19D1293C2F288EB200B6F32B /* Leafora.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,9 +72,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		19D1293B2F288EB200B6F32B /* search-pageRoute */ = {
+		19D1293B2F288EB200B6F32B /* Leafora */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 19D1294F2F288EB300B6F32B /* Build configuration list for PBXNativeTarget "search-pageRoute" */;
+			buildConfigurationList = 19D1294F2F288EB300B6F32B /* Build configuration list for PBXNativeTarget "Leafora" */;
 			buildPhases = (
 				19D129382F288EB200B6F32B /* Sources */,
 				19D129392F288EB200B6F32B /* Frameworks */,
@@ -87,7 +87,7 @@
 			fileSystemSynchronizedGroups = (
 				19D1293E2F288EB200B6F32B /* Leafora */,
 			);
-			name = "search-pageRoute";
+			name = Leafora;
 			packageProductDependencies = (
 				19BB146E2F55708B002E872D /* MessageKit */,
 				1920066C2F584476008AB1EC /* SDWebImage */,
@@ -95,7 +95,7 @@
 				195F56F42F655DE200E2F2C5 /* SocketIO */,
 			);
 			productName = "search-pageRoute";
-			productReference = 19D1293C2F288EB200B6F32B /* search-pageRoute.app */;
+			productReference = 19D1293C2F288EB200B6F32B /* Leafora.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -132,7 +132,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				19D1293B2F288EB200B6F32B /* search-pageRoute */,
+				19D1293B2F288EB200B6F32B /* Leafora */,
 			);
 		};
 /* End PBXProject section */
@@ -168,7 +168,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "search-pageRoute/Info.plist";
+				INFOPLIST_FILE = Leafora/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Leafora;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "we use camera fo memories";
@@ -206,7 +206,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 638HMB96TT;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "search-pageRoute/Info.plist";
+				INFOPLIST_FILE = Leafora/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Leafora;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "we use camera fo memories";
@@ -365,7 +365,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		19D1294F2F288EB300B6F32B /* Build configuration list for PBXNativeTarget "search-pageRoute" */ = {
+		19D1294F2F288EB300B6F32B /* Build configuration list for PBXNativeTarget "Leafora" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				19D129502F288EB300B6F32B /* Debug */,

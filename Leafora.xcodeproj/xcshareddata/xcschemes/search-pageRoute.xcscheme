@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "19D1293B2F288EB200B6F32B"
-               BuildableName = "search-pageRoute.app"
-               BlueprintName = "search-pageRoute"
+               BuildableName = "Leafora.app"
+               BlueprintName = "Leafora"
                ReferencedContainer = "container:Leafora.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "19D1293B2F288EB200B6F32B"
-            BuildableName = "search-pageRoute.app"
-            BlueprintName = "search-pageRoute"
+            BuildableName = "Leafora.app"
+            BlueprintName = "Leafora"
             ReferencedContainer = "container:Leafora.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "19D1293B2F288EB200B6F32B"
-            BuildableName = "search-pageRoute.app"
-            BlueprintName = "search-pageRoute"
+            BuildableName = "Leafora.app"
+            BlueprintName = "Leafora"
             ReferencedContainer = "container:Leafora.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
