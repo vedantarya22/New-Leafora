@@ -18,7 +18,7 @@ extension UIImageView {
             return
         }
 
-        // ✅ Remote URL — download asynchronously
+        //  Remote URL — download asynchronously
         if string.hasPrefix("http://") || string.hasPrefix("https://") {
             loadRemoteImage(from: string)
             return

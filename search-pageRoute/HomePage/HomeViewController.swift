@@ -11,7 +11,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     private let refreshControl = UIRefreshControl()
     
-    // Original Colors
+    
     //clay colors
     // Natural, Earthy Plant Care Colors
     let wateringBlue = UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)      // Soft water blue
@@ -105,9 +105,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         collectionView.reloadData()
     }
     @objc private func updateGardenTip() {
-        // We only want to reload Section 0 (the Garden Tip section)
-        // The cellForItemAt logic already calls GardenTip.randomTip(),
-        // so reloading the section will naturally pick a new one.
+        //reload section 0
         
         UIView.transition(with: collectionView, duration: 0.5, options: .transitionCrossDissolve, animations: {
             self.collectionView.reloadSections(IndexSet(integer: 0))
@@ -241,7 +239,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
 
         let section = NSCollectionLayoutSection(group: group)
 
-        section.interGroupSpacing = 16   // ✅ THIS is the gap between cards
+        section.interGroupSpacing = 16   //   gap between cards
         section.contentInsets = .init(top: 0, leading: 0, bottom: 20, trailing: 0)
 
         // Removed the empty header that was adding extra top space
@@ -265,43 +263,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         section.boundarySupplementaryItems = [header]
         return section
     }
-    
-//    func gridLayout() -> NSCollectionLayoutSection {
-//        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(100)))
-//        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 12)
-//        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(100)), subitems: [item])
-//        let section = NSCollectionLayoutSection(group: group)
-//        section.contentInsets = .init(top: 8, leading: 20, bottom: 20, trailing: 8)
-//        
-//        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
-//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-//        section.boundarySupplementaryItems = [header]
-//        return section
-//    }
-    
-//    func scrollLayout() -> NSCollectionLayoutSection {
-//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-//        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-//        item.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 15)
-//        
-//        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(160), heightDimension: .absolute(200))
-//        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        
-//        let section = NSCollectionLayoutSection(group: group)
-//        section.orthogonalScrollingBehavior = .continuous
-//        section.contentInsets = .init(top: 15, leading: 20, bottom: 30, trailing: 20)
-//        
-//        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
-//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-//        section.boundarySupplementaryItems = [header]
-//        
-//        return section
-//    }
-    
-    
-    
-   
-
     
     // MARK: - Data Source
     func numberOfSections(in collectionView: UICollectionView) -> Int {

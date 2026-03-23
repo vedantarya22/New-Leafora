@@ -397,11 +397,11 @@ class PlantIdentificationResultsViewController: UIViewController {
         
         if let foundPlant = matchingPlant {
             // Plant exists in Catalogue - navigate to PlantDetailViewController
-            print("✅ Plant found in Catalogue: \(foundPlant.plantName)")
+            print(" Plant found in Catalogue: \(foundPlant.plantName)")
             navigateToPlantDetail(plantId: foundPlant.plantId)
         } else {
             // Plant not found in Catalogue
-            print("❌ Plant not found in Catalogue: \(topSuggestion.plantName)")
+            print(" Plant not found in Catalogue: \(topSuggestion.plantName)")
             showPlantNotFoundAlert()
         }
     }
@@ -442,7 +442,7 @@ class PlantIdentificationResultsViewController: UIViewController {
                    let window = windowScene.windows.first,
                    let rootVC = window.rootViewController {
                     
-                    // Dismiss all presented view controllers to go back to root
+                    // Dismiss  to go back to root
                     rootVC.dismiss(animated: true)
                 }
             }

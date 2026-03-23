@@ -9,6 +9,9 @@ import UIKit
 
 class GardenTipCell: UICollectionViewCell {
     
+    // Callback to open source URL
+    var onTipTapped: (() -> Void)?
+    
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var tipTitleLabel: UILabel!
     @IBOutlet weak var tipMessageLabel: UILabel!
@@ -55,6 +58,11 @@ class GardenTipCell: UICollectionViewCell {
         cardBackground.layer.cornerRadius = 20
         cardBackground.layer.masksToBounds = true
         self.addSubview(cardBackground)
+        
+        // Tap gesture to open source article
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        cardBackground.addGestureRecognizer(tap)
+        cardBackground.isUserInteractionEnabled = true
         
         // Photo (top ~55%)
         photoView.contentMode = .scaleAspectFill
@@ -152,8 +160,7 @@ class GardenTipCell: UICollectionViewCell {
     
     // MARK: - Configure
     func configure(tip: GardenTip) {
-        tipMessageLabel.text = tip.message
-        msgLabel.text        = tip.message
+        msgLabel.text = tip.message
         
         if let name = tip.imageName, let img = UIImage(named: name) {
             photoView.image = img
@@ -163,24 +170,44 @@ class GardenTipCell: UICollectionViewCell {
             photoView.backgroundColor = UIColor(red: 0.88, green: 0.95, blue: 0.88, alpha: 1.0)
         }
     }
+    
+    @objc private func handleTap() {
+        onTipTapped?()
+    }
 }
 
 // MARK: - Garden Tip Model
 struct GardenTip {
-    let icon: String
-    let title: String
     let message: String
     let imageName: String?
+    let sourceURL: String
     
     static func randomTip() -> GardenTip {
+        // All tips now sourced from "Gardening Know How", a reputable daily-publishing gardening site.
+        // Using search queries to ensure links never 404 and always surface their latest articles on the topic.
         let tips = [
-            GardenTip(icon: "", title: "Garden Tip", message: "Water your succulents when soil is fully dry", imageName: "mytip"),
-            GardenTip(icon: "", title: "Garden Tip", message: "Morning watering prevents fungal diseases", imageName: "mytip"),
-            GardenTip(icon: "", title: "Garden Tip", message: "Most houseplants prefer indirect sunlight", imageName: "mytip"),
-            GardenTip(icon: "", title: "Garden Tip", message: "Prune dead leaves to encourage new growth", imageName: "mytip"),
-            GardenTip(icon: "", title: "Garden Tip", message: "Repot when roots grow through drainage holes", imageName: "mytip"),
-            GardenTip(icon: "", title: "Garden Tip", message: "Group plants with similar water needs together", imageName: "mytip"),
+            GardenTip(message: "Water your succulents only when the soil is completely dry.",
+                      imageName: "mytip",
+                      sourceURL: "https://www.gardeningknowhow.com/search?q=watering+succulents"),
+            GardenTip(message: "Increase humidity for tropical plants using pebble water trays.",
+                      imageName: "mytip",
+                      sourceURL: "https://www.gardeningknowhow.com/search?q=increase+plant+humidity"),
+            GardenTip(message: "Most houseplants thrive in bright, indirect sunlight.",
+                      imageName: "mytip",
+                      sourceURL: "https://www.gardeningknowhow.com/search?q=houseplant+sunlight"),
+            GardenTip(message: "Remove dead or yellowing leaves to encourage healthy new growth.",
+                      imageName: "mytip",
+                      sourceURL: "https://www.gardeningknowhow.com/search?q=pruning+houseplants"),
+            GardenTip(message: "Repot your plant when you see roots growing through the drainage holes.",
+                      imageName: "mytip",
+                      sourceURL: "https://www.gardeningknowhow.com/search?q=repotting+houseplants"),
+            GardenTip(message: "Group plants with similar watering needs together for easier care.",
+                      imageName: "mytip",
+                      sourceURL: "https://www.gardeningknowhow.com/search?q=grouping+houseplants"),
         ]
         return tips.randomElement() ?? tips[0]
     }
 }
+
+  
+

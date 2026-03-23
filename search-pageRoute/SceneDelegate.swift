@@ -69,6 +69,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             PlantStore.shared.setPlants(userPlants)
             print("✅ Loaded \(userPlants.count) user plants from MongoDB")
+            
+            // Schedule smart care notifications based on loaded data
+            PlantNotificationManager.shared.scheduleAllCareNotifications()
         }
 
         // 4. User's sites — always replace local with MongoDB

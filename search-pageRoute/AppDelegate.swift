@@ -6,14 +6,20 @@
 //
 
 import UIKit
+import UserNotifications
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
+        // Request notification permission
+        PlantNotificationManager.shared.requestPermission()
+        
+        // Allow notifications to show while app is in foreground
+        UNUserNotificationCenter.current().delegate = self
            
 //        UIViewController.swizzlePresent()
         // Override point for customization after application launch.
@@ -21,14 +27,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    // MARK: - Foreground Notification
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        // Show notification banner even when app is open
+        completionHandler([.banner, .list, .sound])
+    }
     
-    // ✅ Temp until auth — creates or reuses test user
+    
+    //  Temp until auth — creates or reuses test user
 //       private func setupTestUser() {
 //           
 //           // check if we already saved a userId locally
 //           if let savedId = UserDefaults.standard.string(forKey: "currentUserId") {
 //               NetworkManager O.shared.currentUserId = savedId
-//               print("✅ Loaded userId from local: \(savedId)")
+//               print(" Loaded userId from local: \(savedId)")
 //               loadAppData()
 //               return
 //           }
@@ -40,47 +54,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //               email: "vedant@test.com"
 //           ) { userId in
 //               guard let userId = userId else {
-//                   print("❌ Failed to create user")
+//                   print(" Failed to create user")
 //                   return
 //               }
 //               // save locally so we don't create duplicates on relaunch
 //               UserDefaults.standard.set(userId, forKey: "currentUserId")
 //               NetworkManager.shared.currentUserId = userId
-//               print("✅ Test user created: \(userId)")
+//               print(" Test user created: \(userId)")
 //               self.loadAppData()
 //           }
 //       }
     
 //    private func loadAppData() {
 //          
-//          // ✅ Load plant catalogue from MongoDB (replaces JSONLoader)
+//          //  Load plant catalogue from MongoDB (replaces JSONLoader)
 //          NetworkManager.shared.fetchAllPlants { plants in
 //              guard let plants = plants else {
-//                  print("❌ Failed to load plants")
+//                  print(" Failed to load plants")
 //                  return
 //              }
 //              PlantCatalogueCache.shared.setPlants(plants)
-//              print("✅ Loaded \(plants.count) plants from backend")
+//              print(" Loaded \(plants.count) plants from backend")
 //          }
 //          
-//          // ✅ Load user's garden plants
+//          //  Load user's garden plants
 //        NetworkManager.shared.fetchUserPlants { userPlants in
 //            if let userPlants = userPlants {
 //                PlantStore.shared.setPlants(userPlants)
-//                print("✅ Loaded \(userPlants.count) user plants")
+//                print(" Loaded \(userPlants.count) user plants")
 //            } else {
-//                print("❌ Failed to load user plants")
+//                print(" Failed to load user plants")
 //            }
 //        }
 //          
-//          // ✅ Load user's sites
+//          // Load user's sites
 //          NetworkManager.shared.getUserSites { sites in
 //              guard let sites = sites else {
-//                  print("❌ Failed to load sites")
+//                  print(" Failed to load sites")
 //                  return
 //              }
-//              SiteStore.shared.setSites(sites)           // ✅ was .sites = sites
-//              print("✅ Loaded \(sites.count) sites")
+//              SiteStore.shared.setSites(sites)           // was .sites = sites
+//              print(" Loaded \(sites.count) sites")
 //          }
 //      }
 

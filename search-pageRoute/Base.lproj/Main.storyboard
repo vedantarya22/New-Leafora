@@ -430,6 +430,21 @@
             </objects>
             <point key="canvasLocation" x="2121" y="227"/>
         </scene>
+        <!--Tip Article View Controller-->
+        <scene sceneID="cxS-7E-eON">
+            <objects>
+                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="YxJ-pE-3oi" customClass="TipArticleViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uFE-yg-hcF">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="zOD-Aa-3FN"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VUF-8I-RuX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2125" y="846"/>
+        </scene>
         <!--communityScreens-->
         <scene sceneID="UVm-Tz-QEn">
             <objects>
@@ -806,7 +821,7 @@
     <resources>
         <image name="Apple" width="28" height="28"/>
         <image name="Google" width="28" height="28"/>
-        <image name="appIconHD" width="512" height="126"/>
+        <image name="appIconHD" width="512" height="143"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="leaf.fill" catalog="system" width="128" height="109"/>
         <image name="person.circle" catalog="system" width="128" height="123"/>

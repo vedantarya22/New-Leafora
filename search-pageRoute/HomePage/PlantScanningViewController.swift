@@ -120,25 +120,25 @@ class PlantScanningViewController: UIViewController {
         PlantIdentificationService.shared.identifyPlant(image: imageToScan) { [weak self] result in
             guard let self = self else { return }
             
-            print("✅ Received identification result")
+            print(" Received identification result")
             self.activityIndicator.stopAnimating()
             
             switch result {
             case .success(let suggestions):
-                print("✅ Found \(suggestions.count) suggestions")
+                print(" Found \(suggestions.count) suggestions")
                 if let first = suggestions.first {
-                    print("✅ Top match: \(first.plantName) (\(Int(first.probability * 100))%)")
+                    print(" Top match: \(first.plantName) (\(Int(first.probability * 100))%)")
                 }
                 self.showResults(suggestions)
             case .failure(let error):
-                print("❌ Identification error: \(error.localizedDescription)")
+                print(" Identification error: \(error.localizedDescription)")
                 self.showError(error)
             }
         }
     }
     
     private func showResults(_ suggestions: [PlantSuggestion]) {
-        print("📱 Preparing to show results screen...")
+        print(" Preparing to show results screen...")
 
         // If top suggestion confidence is below 20%, treat as not a plant
         if let top = suggestions.first, top.probability < 0.20 {
@@ -160,9 +160,9 @@ class PlantScanningViewController: UIViewController {
         )
         resultsVC.modalPresentationStyle = .fullScreen
         
-        print("📱 Dismissing scanning view and presenting results...")
+        print(" Dismissing scanning view and presenting results...")
         dismiss(animated: true) { [weak self] in
-            print("📱 Scanning view dismissed, now presenting results")
+            print(" Scanning view dismissed, now presenting results")
             // Get the root view controller to present from
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first,
@@ -174,12 +174,12 @@ class PlantScanningViewController: UIViewController {
                     topVC = presented
                 }
                 
-                print("📱 Presenting from: \(type(of: topVC))")
+                print(" Presenting from: \(type(of: topVC))")
                 topVC.present(resultsVC, animated: true) {
-                    print("✅ Results view controller presented successfully")
+                    print(" Results view controller presented successfully")
                 }
             } else {
-                print("❌ ERROR: Could not find window or root view controller")
+                print(" ERROR: Could not find window or root view controller")
             }
         }
     }

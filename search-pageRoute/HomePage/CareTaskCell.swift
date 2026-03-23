@@ -12,7 +12,7 @@ class CareTaskCell: UICollectionViewCell {
    
     @IBOutlet weak var unitLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var countLabel: UILabel! // Kept for safety if it was linked, though titleLabel acts as name now in XIB
+    @IBOutlet weak var countLabel: UILabel!
     @IBOutlet weak var taskIconImageView: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -32,7 +32,7 @@ class CareTaskCell: UICollectionViewCell {
         // 3. Performance Optimization
         self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: 16).cgPath
         self.layer.shouldRasterize = true
-        self.layer.rasterizationScale = UIScreen.main.scale
+        self.layer.rasterizationScale = self.traitCollection.displayScale
     }
     
     func configure(title: String, count: Int, color: UIColor) {
@@ -58,5 +58,5 @@ class CareTaskCell: UICollectionViewCell {
             taskIconImageView.tintColor = .black
         }
     }
-// hellloooo
+
 }

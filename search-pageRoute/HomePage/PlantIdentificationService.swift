@@ -59,17 +59,16 @@ class PlantIdentificationService {
     static let shared = PlantIdentificationService()
     
     // Using Plant.id Free API - No API key required for basic identification
-    // Note: For production, you should get a free API key from https://web.plant.id/
     private let baseURL = "https://api.plant.id/v2/identify"
     
     // Optional: Add your API key here for better rate limits
-    // You can get a free key at https://web.plant.id/
-    private let apiKey: String? = "zslTh0EOdnrRJ3OvmBoMnUQ0d5TPxsp24H8PrXtFZdNyRSjwH6" // Replace with your API key if you have one
+   
+    private let apiKey: String? = "zslTh0EOdnrRJ3OvmBoMnUQ0d5TPxsp24H8PrXtFZdNyRSjwH6" //
     
     private init() {}
     
     func identifyPlant(image: UIImage, completion: @escaping (Result<[PlantSuggestion], Error>) -> Void) {
-        // Convert image to base64
+        //conversion into base64
         guard let imageData = image.jpegData(compressionQuality: 0.7) else {
             completion(.failure(NSError(domain: "PlantID", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to process image"])))
             return

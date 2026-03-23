@@ -99,10 +99,10 @@ class PlantDetailViewController_New: UIViewController {
         ]
         
         careItems = [
-            (icon: "drop.fill",    title: "Watering",    steps: buildWateringSteps(from: plant),    color: UIColor.systemBlue),
-            (icon: "leaf.fill",    title: "Fertilizing", steps: buildFertilizingSteps(from: plant), color: UIColor.systemGreen),
-            (icon: "arrow.up.bin.fill", title: "Repotting", steps: buildRepottingSteps(from: plant), color: UIColor.systemOrange),
-            (icon: "scissors",     title: "Pruning",     steps: buildPruningSteps(from: plant),     color: UIColor.systemPurple)
+            (icon: "drop.fill",         title: "Watering",    steps: buildWateringSteps(from: plant),    color: UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)),
+            (icon: "leaf.fill",          title: "Fertilizing", steps: buildFertilizingSteps(from: plant), color: UIColor(red: 0.52, green: 0.71, blue: 0.42, alpha: 1.0)),
+            (icon: "arrow.up.bin.fill",  title: "Repotting",   steps: buildRepottingSteps(from: plant),  color: UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0)),
+            (icon: "scissors",           title: "Pruning",     steps: buildPruningSteps(from: plant),     color: UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0))
         ]
     }
 
@@ -439,12 +439,22 @@ extension PlantDetailViewController_New: UICollectionViewDelegate {
     }
     
     private func toggleCareCard(at indexPath: IndexPath) {
+        var indexPathsToReload: [IndexPath] = [indexPath]
+        
+        // If there's already an expanded card and it's different from the tapped one,
+        // add it to the reload list so it collapses visually
+        if let previouslyExpanded = expandedCareIndex, previouslyExpanded != indexPath {
+            indexPathsToReload.append(previouslyExpanded)
+        }
+        
+        // Toggle: collapse if tapping same card, expand if new card
         expandedCareIndex = (expandedCareIndex == indexPath) ? nil : indexPath
+        
         collectionView.performBatchUpdates({
-            collectionView.reloadItems(at: [indexPath])
+            collectionView.reloadItems(at: indexPathsToReload)
         }, completion: { _ in
-            if self.expandedCareIndex != nil {
-                self.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+            if let expanded = self.expandedCareIndex {
+                self.collectionView.scrollToItem(at: expanded, at: .centeredVertically, animated: true)
             }
         })
     }

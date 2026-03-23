@@ -8,7 +8,7 @@ class CareTaskCell1: UICollectionViewCell {
     @IBOutlet weak var stepsLabel: UILabel!
     @IBOutlet weak var chevronImageView: UIImageView!
     
-    @IBOutlet weak var stepsLabelHeightConstraint: NSLayoutConstraint?
+    @IBOutlet var stepsLabelHeightConstraint: NSLayoutConstraint?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -115,30 +115,35 @@ class CareTaskCell1: UICollectionViewCell {
     
     // MARK: - SF Symbols & Colors
     private func getSymbolForTitle(_ title: String) -> (symbol: String, color: UIColor, borderColor: UIColor) {
+        let baseColor = getColorForTitle(title)
+        let symbolName: String
         switch title.lowercased() {
         case "watering":
-            return ("drop.fill", UIColor.systemBlue, UIColor.systemBlue.withAlphaComponent(0.3))
+            symbolName = "drop.fill"
         case "fertilizing":
-            return ("leaf.fill", UIColor.systemGreen, UIColor.systemGreen.withAlphaComponent(0.3))
+            symbolName = "leaf.fill"
         case "repotting":
-            return ("arrow.up.bin.fill", UIColor.systemOrange, UIColor.systemOrange.withAlphaComponent(0.3))
+            symbolName = "arrow.up.bin.fill"
         case "pruning":
-            return ("scissors", UIColor.systemPurple, UIColor.systemPurple.withAlphaComponent(0.3))
+            symbolName = "scissors"
         default:
-            return ("info.circle.fill", UIColor.systemPurple, UIColor.systemPurple.withAlphaComponent(0.3))
+            symbolName = "info.circle.fill"
         }
+        return (symbolName, baseColor, baseColor.withAlphaComponent(0.3))
     }
     
     private func getColorForTitle(_ title: String) -> UIColor {
         switch title.lowercased() {
         case "watering":
-            return UIColor.systemBlue
+            return UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)
         case "fertilizing":
-            return UIColor.systemGreen
+            return UIColor(red: 0.52, green: 0.71, blue: 0.42, alpha: 1.0)
         case "repotting":
-            return UIColor.systemOrange
+            return UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0)
+        case "pruning":
+            return UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0)
         default:
-            return UIColor.systemIndigo
+            return UIColor.systemGray
         }
     }
     
@@ -154,10 +159,6 @@ class CareTaskCell1: UICollectionViewCell {
         paragraphStyle.lineSpacing = 6
         paragraphStyle.paragraphSpacing = 4
         
-        let bulletSymbolConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
-        let checkImage = UIImage(systemName: "checkmark.circle.fill", withConfiguration: bulletSymbolConfig)?
-            .withTintColor(isExpanded ? .white : color, renderingMode: .alwaysOriginal)
-        
         for (index, line) in lines.enumerated() {
             let cleanLine = line.trimmingCharacters(in: .whitespaces)
             
@@ -170,28 +171,8 @@ class CareTaskCell1: UICollectionViewCell {
                 ]
                 result.append(NSAttributedString(string: cleanLine + "\n\n", attributes: scheduleAttrs))
                 
-            } else if cleanLine.hasPrefix("•") {
-                // Bullet step — replace text bullet with SF Symbol image
-                let stepText = cleanLine.replacingOccurrences(of: "•", with: "").trimmingCharacters(in: .whitespaces)
-                
-                if let img = checkImage {
-                    let attachment = NSTextAttachment()
-                    attachment.image = img
-                    attachment.bounds = CGRect(x: 0, y: -2, width: 16, height: 16)
-                    result.append(NSAttributedString(attachment: attachment))
-                    result.append(NSAttributedString(string: "  "))
-                }
-                
-                let stepAttrs: [NSAttributedString.Key: Any] = [
-                    .font: UIFont.systemFont(ofSize: 15, weight: .regular),
-                    .foregroundColor: textColor,
-                    .paragraphStyle: paragraphStyle
-                ]
-                let suffix = (index < lines.count - 1) ? "\n" : ""
-                result.append(NSAttributedString(string: stepText + suffix, attributes: stepAttrs))
-                
             } else {
-                // Any other line
+                // Any other line (including standard text bullets)
                 let attrs: [NSAttributedString.Key: Any] = [
                     .font: UIFont.systemFont(ofSize: 15, weight: .regular),
                     .foregroundColor: textColor,

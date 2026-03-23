@@ -32,6 +32,9 @@ final class PlantStore: ObservableObject {
         print("➡️ ADD REQUEST: plantId=\(plant.plantId), siteID=\(plant.siteID), qty=\(plant.quantity)")
         plants.append(plant)
         print("🆕 NEW ENTRY CREATED: ID=\(plant.id), qty=\(plant.quantity)")
+        
+        // Schedule notifications for the newly added plant
+        PlantNotificationManager.shared.scheduleAllCareNotifications()
     }
 
     // MARK: - Stats
@@ -161,6 +164,9 @@ final class PlantStore: ObservableObject {
         case "repotting":   plants[index].lastRepotted   = Date()
         default: print("⚠️ Unknown task type:", taskType)
         }
+        
+        // Reschedule notifications with updated due dates
+        PlantNotificationManager.shared.scheduleAllCareNotifications()
     }
 
     // MARK: - Remove Plants
