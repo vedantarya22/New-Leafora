@@ -72,7 +72,7 @@ class PlantInfoCardCell: UICollectionViewCell {
         let lightChip = makeInfoChip(icon: "sun.max.fill", text: light, tint: .systemYellow)
         let difficultyChip = makeInfoChip(icon: "chart.bar.fill", text: difficulty, tint: .systemGreen)
         let petChip = makeInfoChip(
-            icon: isPetFriendly ? "leaf.circle.fill" : "exclamationmark.triangle.fill",
+            icon: isPetFriendly ? "pawprint.fill" : "exclamationmark.triangle.fill",
             text: petStatus,
             tint: isPetFriendly ? .systemGreen : .systemRed
         )

@@ -11,6 +11,11 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var scientificLabel: UILabel!
     @IBOutlet weak var difficultyLabel: UILabel!
     @IBOutlet weak var lightLabel: UILabel!
+    
+    // MARK: - Quick Add Callback
+    var onQuickAddTapped: (() -> Void)?
+    
+    @IBOutlet weak var quickAddButton: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,6 +31,23 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
             label?.layer.cornerRadius = 10
             label?.layer.masksToBounds = true
             label?.textAlignment = .center
+        }
+        
+        quickAddButton.addTarget(self, action: #selector(quickAddPressed), for: .touchUpInside)
+    }
+    
+    @objc private func quickAddPressed() {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            self.quickAddButton.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
+        }) { _ in
+            UIView.animate(withDuration: 0.15, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+                self.quickAddButton.transform = .identity
+            }) { _ in
+                self.onQuickAddTapped?()
+            }
         }
     }
     
@@ -69,6 +91,9 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
         
         applyTag(difficultyLabel, tag: plant.tags.indices.contains(0) ? plant.tags[0] : "-")
         applyTag(lightLabel, tag: plant.tags.indices.contains(1) ? plant.tags[1] : "-")
+        
+        // Show quick add button for catalog
+        quickAddButton.isHidden = false
     }
 
     // MARK: - Configure with UserPlant
@@ -102,5 +127,8 @@ class SearchPageCollectionViewCell: UICollectionViewCell {
         
         applyTag(difficultyLabel, tag: plant.tags.indices.contains(0) ? plant.tags[0] : "-")
         applyTag(lightLabel, tag: plant.tags.indices.contains(1) ? plant.tags[1] : "-")
+        
+        // Hide quick add button in My Garden context
+        quickAddButton.isHidden = true
     }
 }

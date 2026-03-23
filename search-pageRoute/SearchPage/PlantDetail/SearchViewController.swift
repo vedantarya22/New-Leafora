@@ -450,6 +450,13 @@ extension SearchViewController: UICollectionViewDataSource {
         
         let plant = filteredPlants[indexPath.row]
         cell.configure(with: plant)
+        
+        // Wire up quick add
+        cell.onQuickAddTapped = { [weak self] in
+            guard let self = self else { return }
+            self.showSitePickerForQuickAdd(plant: plant)
+        }
+        
         return cell
     }
 }

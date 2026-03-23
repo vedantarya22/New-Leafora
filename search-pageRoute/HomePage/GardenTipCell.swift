@@ -79,7 +79,7 @@ class GardenTipCell: UICollectionViewCell {
         textBg.tag = 99
         cardBackground.addSubview(textBg)
         
-        // Solid green pill: 🌿 GARDEN TIP
+        // Solid green pill:  GARDEN TIP
         pillView.backgroundColor    = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
         pillView.layer.cornerRadius = 11
         pillView.clipsToBounds      = true

@@ -99,9 +99,23 @@
                                     </label>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="quickAdd-btn">
+                                <rect key="frame" x="558" y="10" width="28" height="28"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="28" id="quickAdd-w"/>
+                                    <constraint firstAttribute="height" constant="28" id="quickAdd-h"/>
+                                </constraints>
+                                <color key="tintColor" red="0.1803921568627451" green="0.5490196078431373" blue="0.30196078431372547" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="plus.circle" catalog="system">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="pointSize" pointSize="18" weight="light"/>
+                                </buttonConfiguration>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="quickAdd-btn" secondAttribute="trailing" constant="14" id="quickAdd-trail"/>
+                            <constraint firstItem="quickAdd-btn" firstAttribute="top" secondItem="z9g-Mg-hNl" secondAttribute="top" constant="14" id="quickAdd-top"/>
                             <constraint firstItem="ql6-Qr-PQ9" firstAttribute="top" secondItem="z9g-Mg-hNl" secondAttribute="top" constant="13" id="89L-Ux-uih"/>
                             <constraint firstAttribute="bottom" secondItem="Bqk-Li-PEQ" secondAttribute="bottom" id="KZl-Wr-ccF"/>
                             <constraint firstItem="3GN-vW-zbF" firstAttribute="leading" secondItem="z9g-Mg-hNl" secondAttribute="leading" constant="10" id="RyX-lY-obS"/>
@@ -124,6 +138,7 @@
             </constraints>
             <size key="customSize" width="602" height="111"/>
             <connections>
+                <outlet property="quickAddButton" destination="quickAdd-btn" id="oDV-Zz-qab"/>
                 <outlet property="containerView" destination="z9g-Mg-hNl" id="oDV-Zz-3tg"/>
                 <outlet property="difficultyLabel" destination="s7Z-my-MII" id="CKL-7l-eP5"/>
                 <outlet property="lightLabel" destination="tFC-Et-xjx" id="95f-vt-WDh"/>

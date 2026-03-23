@@ -39,6 +39,7 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
         
         // must match storyboard id
         if let arVC = storyboard.instantiateViewController(withIdentifier: "ARViewController") as? ARViewController {
+            arVC.targetPlantName = currentPlant?.plantName
             arVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(arVC, animated: true)
         }

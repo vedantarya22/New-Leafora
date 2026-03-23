@@ -46,6 +46,9 @@ class ARViewController: UIViewController {
     // ── Private state ────────────────────────────────────────────────────────
     private var models: [ModelItem] = []
     private var selectedModel: ModelItem?
+    
+    /// Pass a plant name here to auto-select its corresponding AR model
+    var targetPlantName: String?
 
     /// All currently placed plants — supports unlimited multi-placement.
     private var placedPlants: [PlacedPlant] = []
@@ -55,20 +58,20 @@ class ARViewController: UIViewController {
         didSet { updatePlacementBadge() }
     }
 
-    // ── Loading spinner ──────────────────────────────────────────────────────
+    //  Loading spinner
     private let loadingSpinner    = UIActivityIndicatorView(style: .large)
     private let spinnerContainer  = UIView()
 
-    // ── Compact light meter ──────────────────────────────────────────────────
+    //  Compact light meter
     private let compactLightPanel = UIView()
     private let compactLightLabel = UILabel()
     private var isLightPanelVisible = false
 
-    // ── Placement badge ──────────────────────────────────────────────────────
+    // Placement badge
     private let placementBadge      = UIView()
     private let placementBadgeLabel = UILabel()
 
-    // ── Instruction auto-hide timer ──────────────────────────────────────────
+    // Instruction auto-hide timer
     private var instructionHideTimer: DispatchWorkItem?
 
     // MARK: - Lifecycle
@@ -90,7 +93,15 @@ class ARViewController: UIViewController {
         setupNavigationBar()
         setupPlacementBadge()
 
-        showInstruction("Select a plant below, then tap a surface to place it")
+        setupPlacementBadge()
+
+        if let target = targetPlantName, let match = models.first(where: { $0.name.lowercased() == target.lowercased() || target.lowercased().contains($0.name.lowercased()) }) {
+            selectedModel = match
+            showInstruction("Tap a surface to place \(match.name)")
+        } else {
+            selectedModel = models.first
+            showInstruction("Select a plant below, then tap a surface to place it")
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -114,10 +125,17 @@ class ARViewController: UIViewController {
 
         let coaching                    = ARCoachingOverlayView()
         coaching.session                = arView.session
-        coaching.autoresizingMask       = [.flexibleWidth, .flexibleHeight]
         coaching.goal                   = .horizontalPlane
         coaching.activatesAutomatically = true
         arView.addSubview(coaching)
+        
+        coaching.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            coaching.topAnchor.constraint(equalTo: arView.topAnchor),
+            coaching.bottomAnchor.constraint(equalTo: arView.bottomAnchor),
+            coaching.leadingAnchor.constraint(equalTo: arView.leadingAnchor),
+            coaching.trailingAnchor.constraint(equalTo: arView.trailingAnchor)
+        ])
     }
 
     // MARK: - Navigation Bar
@@ -292,11 +310,18 @@ class ARViewController: UIViewController {
 
     private func loadModels() {
         models = [
-            ModelItem(name: "Monstera",       fileName: "krishna", thumbnail: "🌿", image: nil),
-            ModelItem(name: "Rose",           fileName: "pop",      thumbnail: "🌹", image: nil),
-            ModelItem(name: "Snake Plant",    fileName: "krishna2", thumbnail: "🪴", image: nil),
-            ModelItem(name: "Potted Plant 1", fileName: "krishna3",   thumbnail: "🌵", image: nil),
-            ModelItem(name: "Potted Plant 2", fileName: "temp 3",   thumbnail: "🎋", image: "extracted_image_0 3"),
+            // Newly added 7 models mapped to their real plant names
+            ModelItem(name: "Chinese Money Plant", fileName: "chinese_moneyplant", thumbnail: "🌿", image: nil),
+            ModelItem(name: "Rose",           fileName: "crimson_roses", thumbnail: "🌹", image: nil),
+            ModelItem(name: "Lemongrass",     fileName: "lemongrass", thumbnail: "🌾", image: nil),
+            ModelItem(name: "Marigold",       fileName: "marigold", thumbnail: "🌼", image: nil),
+            ModelItem(name: "Portulaca",      fileName: "portulaca", thumbnail: "🌸", image: nil),
+            ModelItem(name: "Tulsi",          fileName: "tulsi", thumbnail: "🌱", image: nil),
+            ModelItem(name: "Jasmine",        fileName: "white_jasmine", thumbnail: "🏵", image: nil),
+            ModelItem(name: "Monstera",       fileName: "monstera", thumbnail: "🌿", image: nil)
+            
+            
+
         ]
     }
 

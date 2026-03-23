@@ -82,12 +82,12 @@ class PlantDetailViewController_New: UIViewController {
              value: plant.careCycle.watering.display,
              color: UIColor.systemBlue),
             
-            (icon: "leaf",
+            (icon: "leaf.fill",
              title: "Quantity",
              value: "\(count) plant\(count > 1 ? "s" : "")",
              color: UIColor.systemYellow),
             
-            (icon: "leaf.fill",
+            (icon: "chart.bar.fill",
              title: "Difficulty",
              value: plant.difficulty.displayName,
              color: UIColor.systemGreen),
