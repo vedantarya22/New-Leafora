@@ -407,10 +407,13 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 
                 // Small delay to ensure smooth transition
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    let scanningVC = PlantScanningViewController(image: image)
-                    scanningVC.modalPresentationStyle = .overFullScreen
-                    self.present(scanningVC, animated: true) {
-                        print(" Scanning view controller presented")
+                    let storyboard = UIStoryboard(name: "PlantIdentification", bundle: nil)
+                    if let scanningVC = storyboard.instantiateViewController(withIdentifier: "PlantScanningViewController") as? PlantScanningViewController {
+                        scanningVC.imageToScan = image
+                        scanningVC.modalPresentationStyle = .overFullScreen
+                        self.present(scanningVC, animated: true) {
+                            print(" Scanning view controller presented")
+                        }
                     }
                 }
             }

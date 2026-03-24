@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PlantResultButtonCell" id="cell-1" customClass="PlantResultButtonCell" customModule="search_pageRoute" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="281" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="281" height="100"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" pointerInteraction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="btn-1">
+                        <rect key="frame" x="0.0" y="25" width="281" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="50" id="h1"/>
+                        </constraints>
+                        <state key="normal" title="Go to Plant"/>
+                        <buttonConfiguration key="configuration" style="filled" title="Go to Plant">
+                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </buttonConfiguration>
+                    </button>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="safe-1"/>
+            <constraints>
+                <constraint firstItem="btn-1" firstAttribute="centerY" secondItem="cell-1" secondAttribute="centerY" id="c1"/>
+                <constraint firstItem="btn-1" firstAttribute="leading" secondItem="cell-1" secondAttribute="leading" id="c2"/>
+                <constraint firstAttribute="trailing" secondItem="btn-1" secondAttribute="trailing" id="c3"/>
+            </constraints>
+            <connections>
+                <outlet property="actionButton" destination="btn-1" id="o1"/>
+            </connections>
+            <point key="canvasLocation" x="315" y="161"/>
+        </collectionViewCell>
+    </objects>
+</document>
