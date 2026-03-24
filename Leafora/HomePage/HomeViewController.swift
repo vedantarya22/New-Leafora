@@ -186,8 +186,16 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     private func fetchWeatherData() {
         isLoadingWeather = true
-        // Reload just section 0 to show loading state if desired (or rely on initial load)
         collectionView.reloadSections(IndexSet(integer: 0))
+        
+        // Timeout: if weather doesn't load in 5 seconds, fall back to generic tips
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            guard let self = self, self.isLoadingWeather else { return }
+            print("⏰ Weather timeout — showing generic tips")
+            self.isLoadingWeather = false
+            self.currentWeather = nil
+            self.collectionView.reloadSections(IndexSet(integer: 0))
+        }
         
         LocationService.shared.requestLocation { [weak self] location in
             guard let self = self else { return }

@@ -35,6 +35,22 @@ class SignUpViewController: UIViewController {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
+    
+    @IBAction func googleButtonTapped(_ sender: UIButton) {
+        errorLabel.isHidden = true
+           sender.isEnabled = false
+
+           GoogleAuthManager.shared.signIn(presenting: self) { [weak self] success, message in
+               guard let self = self else { return }
+               sender.isEnabled = true
+               if success {
+                   self.navigateToMainApp()
+               } else {
+                   self.showError(message ?? "Google sign-in failed")
+               }
+           }
+    }
+    
 
     // MARK: - Setup
     private func setupUI() {

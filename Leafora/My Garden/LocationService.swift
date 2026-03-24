@@ -26,10 +26,25 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         
         if status == .notDetermined {
             manager.requestWhenInUseAuthorization()
+            // completion will be called from locationManagerDidChangeAuthorization
         } else if status == .authorizedWhenInUse || status == .authorizedAlways {
             manager.requestLocation()
         } else {
             completion(nil)
+        }
+    }
+    
+    // Called after user responds to the permission dialog
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        guard completion != nil else { return }
+        
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            manager.requestLocation()
+        } else if status != .notDetermined {
+            // User denied or restricted — fall back immediately
+            completion?(nil)
+            completion = nil
         }
     }
     

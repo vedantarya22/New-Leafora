@@ -626,3 +626,59 @@ extension NetworkManager {
         }.resume()
     }
 }
+
+
+
+extension NetworkManager {
+ 
+    // MARK: - Google Auth
+    func googleAuth(idToken: String,
+                    completion: @escaping (_ success: Bool, _ message: String?) -> Void) {
+ 
+        guard let url = URL(string: "\(baseURL)/auth/google") else {
+            completion(false, "Invalid URL")
+            return
+        }
+ 
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+ 
+        let body = ["idToken": idToken]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+ 
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Google auth network error: \(error)")
+                    completion(false, "Network error")
+                    return
+                }
+ 
+                guard let data = data,
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+                else {
+                    completion(false, "Invalid response")
+                    return
+                }
+ 
+                let httpResponse = response as? HTTPURLResponse
+                let statusCode   = httpResponse?.statusCode ?? 0
+ 
+                if statusCode == 200, let token = json["token"] as? String {
+                    // Save token + userId to Keychain (same as regular login)
+                    if let userDict = json["user"] as? [String: Any],
+                       let userId   = userDict["_id"] as? String {
+                        KeychainManager.shared.saveToken(token)
+                        KeychainManager.shared.saveUserId(userId)
+                        print("✅ Google auth success — userId: \(userId)")
+                    }
+                    completion(true, nil)
+                } else {
+                    let message = json["message"] as? String ?? "Google auth failed"
+                    completion(false, message)
+                }
+            }
+        }.resume()
+    }
+}
