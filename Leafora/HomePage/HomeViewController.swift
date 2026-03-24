@@ -12,6 +12,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     private let refreshControl = UIRefreshControl()
     
+    // Loading state for initial data load
+    private var isLoadingData = true
+    private var loadingSpinner: UIActivityIndicatorView?
+    
     // Weather states
     private var currentWeather: PlantWeatherInfo?
     private var isLoadingWeather = true
@@ -41,12 +45,21 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         // Fetch weather data for contextual tips
         fetchWeatherData()
         
+        // Observe task updates
         NotificationCenter.default.addObserver(
               self,
               selector: #selector(handleTaskUpdate),
               name: .plantTaskDidUpdate,
               object: nil
           )
+        
+        // Observe plant data changes for reactive loading
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePlantsDidChange),
+            name: .plantsDidChange,
+            object: nil
+        )
         func viewDidAppear(_ animated: Bool) {
             super.viewDidAppear(animated)
             // Start timer: 30 seconds, repeats indefinitely
@@ -83,6 +96,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refreshControl
         
+        // Setup loading spinner
+        setupLoadingSpinner()
+        
         // DEBUG: List all JSON files in bundle
         JSONLoader.debugListBundleJSONFiles()
     }
@@ -98,6 +114,42 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     @objc private func handleTaskUpdate() {
         // refresh UI
         collectionView.reloadSections(IndexSet(integer: 0))
+    }
+    
+    // MARK: - Loading State Management
+    
+    private func setupLoadingSpinner() {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = fertilizingGreen
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(spinner)
+        
+        NSLayoutConstraint.activate([
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50)
+        ])
+        
+        loadingSpinner = spinner
+        
+        // Show spinner if data hasn't loaded yet
+        if isLoadingData && PlantStore.shared.allPlants().isEmpty {
+            spinner.startAnimating()
+        }
+    }
+    
+    @objc private func handlePlantsDidChange() {
+        print("🔄 Plants data changed - reloading Home screen")
+        
+        // Hide loading spinner
+        isLoadingData = false
+        loadingSpinner?.stopAnimating()
+        
+        // Reload UI with new data
+        collectionView.reloadData()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     

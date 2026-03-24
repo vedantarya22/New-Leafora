@@ -154,9 +154,12 @@ extension NetworkManager {
             if let httpResponse = response as? HTTPURLResponse {
                 print("📡 Status code: \(httpResponse.statusCode)")
             }
-            if let data = data, let raw = String(data: data, encoding: .utf8) {
-                print("📦 Raw response: \(raw)")
-            }
+            #if DEBUG
+            // Verbose logging disabled - can cause performance issues with large payloads
+            // if let data = data, let raw = String(data: data, encoding: .utf8) {
+            //     print("📦 Raw response: \(raw)")
+            // }
+            #endif
 
             guard let data = data, error == nil else {
                 DispatchQueue.main.async { completion(nil) }

@@ -2,18 +2,30 @@ import Foundation
 internal import Combine
 import UIKit
 
+// MARK: - Notification Names
+extension Notification.Name {
+    static let plantsDidChange = Notification.Name("plantsDidChange")
+}
+
 final class PlantStore: ObservableObject {
 
     static let shared = PlantStore()
 
     func setPlants(_ newPlants: [UserPlant]) {
         plants = newPlants
+        
+        // Notify observers that plant data has changed
+        NotificationCenter.default.post(name: .plantsDidChange, object: nil)
+        print("📢 Posted plantsDidChange notification")
     }
 
     // MARK: - Published Data
     @Published private(set) var plants: [UserPlant] = [] {
-        didSet { savePlants() }
+        didSet { savePlantsAsync() }  // ✅ Now async to prevent main thread blocking
     }
+    
+    // MARK: - Async Save Debouncing
+    private var saveWorkItem: DispatchWorkItem?
 
     // MARK: - File Storage URL
     private var fileURL: URL {
@@ -25,6 +37,40 @@ final class PlantStore: ObservableObject {
     // MARK: - Init
     private init() {
         loadPlants()
+        performMigrationIfNeeded()
+    }
+    
+    // MARK: - One-time Migration
+    private func performMigrationIfNeeded() {
+        let migrationKey = "didMigrateImageDataToCloudinary_v1"
+        
+        // Check if migration already done
+        guard !UserDefaults.standard.bool(forKey: migrationKey) else {
+            print("✅ Migration already completed")
+            return
+        }
+        
+        print("🔄 Starting one-time migration: Cleaning up local imageData...")
+        
+        // Clear all imageData from plants (they're already transient now)
+        var didChange = false
+        for i in 0..<plants.count {
+            if plants[i].imageData != nil {
+                plants[i].imageData = nil
+                didChange = true
+            }
+        }
+        
+        if didChange {
+            // Force immediate synchronous save to persist migration
+            savePlants()
+            print("✅ Migration complete: Removed imageData from \(plants.count) plants")
+        } else {
+            print("✅ Migration complete: No imageData found")
+        }
+        
+        // Mark migration as done
+        UserDefaults.standard.set(true, forKey: migrationKey)
     }
 
     // MARK: - Add / Update Plant
@@ -33,8 +79,8 @@ final class PlantStore: ObservableObject {
         plants.append(plant)
         print("🆕 NEW ENTRY CREATED: ID=\(plant.id), qty=\(plant.quantity)")
         
-        // Schedule notifications for the newly added plant
-        PlantNotificationManager.shared.scheduleAllCareNotifications()
+        // Schedule notifications for the newly added plant (debounced)
+        PlantNotificationManager.shared.scheduleAllCareNotificationsDebounced()
     }
 
     // MARK: - Stats
@@ -136,6 +182,25 @@ final class PlantStore: ObservableObject {
             print("❌ Failed to save plants:", error)
         }
     }
+    
+    // MARK: - Async Save with Debouncing
+    private func savePlantsAsync() {
+        // Cancel any pending save to debounce rapid changes
+        saveWorkItem?.cancel()
+        
+        // Schedule new save after 0.5 second delay
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            // Perform actual save on background thread
+            DispatchQueue.global(qos: .utility).async {
+                self.savePlants()
+            }
+        }
+        saveWorkItem = workItem
+        
+        // Execute after delay (debounce window)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
 
     private func loadPlants() {
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
@@ -165,8 +230,8 @@ final class PlantStore: ObservableObject {
         default: print("⚠️ Unknown task type:", taskType)
         }
         
-        // Reschedule notifications with updated due dates
-        PlantNotificationManager.shared.scheduleAllCareNotifications()
+        // Reschedule notifications with updated due dates (debounced)
+        PlantNotificationManager.shared.scheduleAllCareNotificationsDebounced()
     }
 
     // MARK: - Remove Plants
