@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import UIKit
 
 final class PlantNotificationManager {
 
@@ -8,6 +9,9 @@ final class PlantNotificationManager {
 
     private let notificationCenter = UNUserNotificationCenter.current()
     private let categoryPrefix = "plantCare_"
+    
+    // MARK: - Debouncing
+    private var scheduleWorkItem: DispatchWorkItem?
 
     // MARK: - Permission
 
@@ -24,8 +28,32 @@ final class PlantNotificationManager {
     }
 
     // MARK: - Schedule All
+    
+    /// Public debounced entry point - batches rapid calls to reduce redundant work
+    func scheduleAllCareNotificationsDebounced() {
+        // Cancel any pending schedule to debounce rapid changes
+        scheduleWorkItem?.cancel()
+        
+        // Schedule new run after 1 second delay
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.scheduleAllCareNotifications()
+        }
+        scheduleWorkItem = workItem
+        
+        // Execute after delay (debounce window)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: workItem)
+    }
 
-    func scheduleAllCareNotifications() {
+    /// Internal immediate scheduling - called after debounce or for urgent updates
+    private func scheduleAllCareNotifications() {
+        // Skip if app is backgrounding to avoid freeze
+        guard UIApplication.shared.applicationState == .active else {
+            print("⏸️ Skipping notification scheduling - app not active")
+            return
+        }
+        
+        print("📅 Scheduling all care notifications...")
+        
         // Clear existing plant-care notifications first
         notificationCenter.getPendingNotificationRequests { [weak self] requests in
             guard let self = self else { return }

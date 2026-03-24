@@ -116,6 +116,7 @@ class AddPlantImageViewController: UIViewController,
         plantImageView.image = image
         plantImageView.contentMode = .scaleAspectFill
         borderLayer.isHidden = true
+        // Keep temporary in-memory data for Cloudinary upload in this flow
         session.imageData = image.jpegData(compressionQuality: 0.8)
         print("Image saved in session")
     }
@@ -174,7 +175,8 @@ class AddPlantImageViewController: UIViewController,
                         updatedPlant.siteID = newSite.id
                     }
                 }
-                updatedPlant.imageData        = session.imageData
+                // ⚠️ REMOVED: Local imageData storage - now using Cloudinary imageUrl only
+                // updatedPlant.imageData        = session.imageData
                 updatedPlant.lightRequirement = session.plantLight
                 updatedPlant.watering         = session.wateringAnswer
                 updatedPlant.repotting        = session.repottingAnswer
@@ -242,7 +244,8 @@ class AddPlantImageViewController: UIViewController,
                         plantId: plantMongoId,
                         siteName: siteName,
                         siteID: savedSite.id,
-                        imageData: self.session.imageData,
+                        imageData: nil,
+                        imageUrl: imageUrl,
                         lightRequirement: self.session.plantLight,
                         watering: self.session.wateringAnswer,
                         repotting: self.session.repottingAnswer,
@@ -282,10 +285,14 @@ class AddPlantImageViewController: UIViewController,
                 // ✅ After the loop finishes saving all plants
                 print("✅ All \(plantCountToAdd) plants saved for: \(self.session.plantId)")
 
+                // Release temporary upload bytes from memory after successful flow
+                self.session.imageData = nil
+
                 // ✅ Refresh from MongoDB so local store is up to date
-                if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                    sceneDelegate.loadAppData()
-                }
+                // REMOVED: loadAppData() call - PlantStore notification will trigger UI refresh
+                // if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                //     sceneDelegate.loadAppData()
+                // }
 
                 DispatchQueue.main.async {
                     self.performSegue(withIdentifier: "showPlantAddedSuccess", sender: self)
