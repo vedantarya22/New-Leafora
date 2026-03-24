@@ -7,7 +7,15 @@ import Foundation
 
 class UserSession {
     static let shared = UserSession()
-    private init() {}
+    
+    private let userCacheKey = "cached_current_user"
+    
+    private init() {
+        if let data = UserDefaults.standard.data(forKey: userCacheKey),
+           let decoded = try? JSONDecoder().decode(User.self, from: data) {
+            self.cachedCurrentUser = decoded
+        }
+    }
 
     // MARK: - Identity
     var token:   String? { KeychainManager.shared.getToken() }
@@ -60,12 +68,20 @@ class UserSession {
                 return
             }
             self?.cachedCurrentUser = user
+            self?.saveUserToCache(user)
             DispatchQueue.main.async { completion(user) }
         }.resume()
+    }
+
+    private func saveUserToCache(_ user: User) {
+        if let encoded = try? JSONEncoder().encode(user) {
+            UserDefaults.standard.set(encoded, forKey: userCacheKey)
+        }
     }
 
     // MARK: - Clear on Logout
     func clearSession() {
         cachedCurrentUser = nil
+        UserDefaults.standard.removeObject(forKey: userCacheKey)
     }
 }

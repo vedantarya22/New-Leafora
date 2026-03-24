@@ -3,6 +3,9 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    // MARK: - Loading State Gate
+    private var isLoadingData = false
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let ws = (scene as? UIWindowScene) else { return }
@@ -41,6 +44,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MARK: - Load App Data
     // Called after login/signup (from those VCs) AND on cold launch when token exists.
     func loadAppData() {
+        // Prevent concurrent loads
+        guard !isLoadingData else {
+            print("⏸️ Data load already in progress, skipping duplicate request")
+            return
+        }
+        
+        isLoadingData = true
+        print("🔄 Starting app data load...")
 
         // 1. Current user profile — needed by PostRepository, NewPostVC, ProfileVC, etc.
         UserSession.shared.fetchCurrentUser { user in
@@ -62,16 +73,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         // 3. User's plants — always replace local with MongoDB to prevent duplicates
-        NetworkManager.shared.fetchUserPlants { userPlants in
+        NetworkManager.shared.fetchUserPlants { [weak self] userPlants in
             guard let userPlants = userPlants else {
                 print("❌ Failed to load user plants")
+                self?.isLoadingData = false
                 return
             }
             PlantStore.shared.setPlants(userPlants)
             print("✅ Loaded \(userPlants.count) user plants from MongoDB")
             
-            // Schedule smart care notifications based on loaded data
-            PlantNotificationManager.shared.scheduleAllCareNotifications()
+            // Schedule smart care notifications based on loaded data (debounced)
+            PlantNotificationManager.shared.scheduleAllCareNotificationsDebounced()
+            
+            // Reset loading flag after plants load (primary data source)
+            self?.isLoadingData = false
         }
 
         // 4. User's sites — always replace local with MongoDB

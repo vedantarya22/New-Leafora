@@ -20,18 +20,37 @@ class HomeDataStore {
     ]
 
     
-    var gardeningPreferences: GardeningPreferences = GardeningPreferences(
-        preferences: [
-            GardeningPreferenceItem(type: .plantTypes, value: "Not Set"),
-            GardeningPreferenceItem(type: .experienceLevel, value: "Not Set"),
-            GardeningPreferenceItem(type: .checkRoutine, value: "Not Set"),
-            GardeningPreferenceItem(type: .careSkills, value: "Not Set"),
-            GardeningPreferenceItem(type: .localClimate, value: "Not Set"),
-            GardeningPreferenceItem(type: .sunlightExposure, value: "Not Set")
-        ]
-    )
+    private let preferencesKey = "cached_gardening_preferences"
 
-    private init() {}
+    var gardeningPreferences: GardeningPreferences {
+        didSet {
+            savePreferences()
+        }
+    }
+
+    private init() {
+        if let data = UserDefaults.standard.data(forKey: "cached_gardening_preferences"),
+           let decoded = try? JSONDecoder().decode(GardeningPreferences.self, from: data) {
+            self.gardeningPreferences = decoded
+        } else {
+            self.gardeningPreferences = GardeningPreferences(
+                preferences: [
+                    GardeningPreferenceItem(type: .plantTypes, value: "Not Set"),
+                    GardeningPreferenceItem(type: .experienceLevel, value: "Not Set"),
+                    GardeningPreferenceItem(type: .checkRoutine, value: "Not Set"),
+                    GardeningPreferenceItem(type: .careSkills, value: "Not Set"),
+                    GardeningPreferenceItem(type: .localClimate, value: "Not Set"),
+                    GardeningPreferenceItem(type: .sunlightExposure, value: "Not Set")
+                ]
+            )
+        }
+    }
+    
+    private func savePreferences() {
+        if let encoded = try? JSONEncoder().encode(gardeningPreferences) {
+            UserDefaults.standard.set(encoded, forKey: preferencesKey)
+        }
+    }
     
     func arePreferencesSet() -> Bool {
         // true when at least one preference is set
@@ -64,11 +83,11 @@ struct PersonalInfoItem {
     let showsChevron: Bool
 }
 
-struct GardeningPreferences: Equatable {
+struct GardeningPreferences: Equatable, Codable {
     var preferences: [GardeningPreferenceItem]
 }
 
-struct GardeningPreferenceItem: Equatable {
+struct GardeningPreferenceItem: Equatable, Codable {
     let type: GardeningPreferenceType
     var value: String
     
@@ -81,7 +100,7 @@ struct GardeningPreferenceItem: Equatable {
     }
 }
 
-enum GardeningPreferenceType: String {
+enum GardeningPreferenceType: String, Codable {
     case plantTypes = "Plant Types"
     case experienceLevel = "Experience Level"
     case checkRoutine = "Plant Check Routine"
