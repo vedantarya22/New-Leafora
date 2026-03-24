@@ -63,7 +63,7 @@ class PlantIdentificationService {
     
     // Optional: Add your API key here for better rate limits
    
-    private let apiKey: String? = "zslTh0EOdnrRJ3OvmBoMnUQ0d5TPxsp24H8PrXtFZdNyRSjwH6" //
+    private let apiKey: String? = "uu9Hv3qyqoDvU3ZAyOotIvaPQkluCoTewAxwFtFws5urpIfpaT" //
     
     private init() {}
     

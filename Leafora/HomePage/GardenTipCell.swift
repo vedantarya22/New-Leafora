@@ -81,7 +81,7 @@ class GardenTipCell: UICollectionViewCell {
         
         // Solid green pill:  GARDEN TIP
         pillView.backgroundColor    = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
-        pillView.layer.cornerRadius = 11
+        pillView.layer.cornerRadius = 14
         pillView.clipsToBounds      = true
         cardBackground.addSubview(pillView)
         
@@ -91,7 +91,7 @@ class GardenTipCell: UICollectionViewCell {
         pillView.addSubview(pillIcon)
         
         pillLabel.text      = "GARDEN TIP"
-        pillLabel.font      = .systemFont(ofSize: 10, weight: .bold)
+        pillLabel.font      = .systemFont(ofSize: 12, weight: .bold)
         pillLabel.textColor = .white
         pillView.addSubview(pillLabel)
         
@@ -113,8 +113,8 @@ class GardenTipCell: UICollectionViewCell {
         
         let photoH   = h * 0.48
         let pad: CGFloat = 14
-        let pillH: CGFloat = 22
-        let pillIconW: CGFloat = 11
+        let pillH: CGFloat = 28
+        let pillIconW: CGFloat = 14
         let pillLabelSize = pillLabel.sizeThatFits(CGSize(width: 200, height: pillH))
         let pillW = pad + pillIconW + 5 + pillLabelSize.width + pad
         
@@ -161,6 +161,9 @@ class GardenTipCell: UICollectionViewCell {
     // MARK: - Configure
     func configure(tip: GardenTip) {
         msgLabel.text = tip.message
+        pillLabel.text = "GARDEN TIP"
+        pillView.backgroundColor = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
+        pillIcon.image = UIImage(systemName: "leaf.fill")
         
         if let name = tip.imageName, let img = UIImage(named: name) {
             photoView.image = img
@@ -169,6 +172,24 @@ class GardenTipCell: UICollectionViewCell {
             photoView.tintColor    = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
             photoView.backgroundColor = UIColor(red: 0.88, green: 0.95, blue: 0.88, alpha: 1.0)
         }
+    }
+    
+    func showLoading() {
+        msgLabel.text = "Fetching weather-based tips..."
+        pillLabel.text = "LOADING"
+        pillView.backgroundColor = .systemGray
+        pillIcon.image = UIImage(systemName: "arrow.triangle.2.circlepath")
+        photoView.image = nil
+        photoView.backgroundColor = UIColor(red: 0.94, green: 0.98, blue: 0.94, alpha: 1.0)
+    }
+    
+    func showError() {
+        msgLabel.text = "Could not fetch weather tips. Check your connection."
+        pillLabel.text = "ERROR"
+        pillView.backgroundColor = .systemOrange
+        pillIcon.image = UIImage(systemName: "exclamationmark.triangle.fill")
+        photoView.image = nil
+        photoView.backgroundColor = UIColor(red: 0.98, green: 0.94, blue: 0.94, alpha: 1.0)
     }
     
     @objc private func handleTap() {
@@ -182,10 +203,9 @@ struct GardenTip {
     let imageName: String?
     let sourceURL: String
     
-    static func randomTip() -> GardenTip {
-        // All tips now sourced from "Gardening Know How", a reputable daily-publishing gardening site.
-        // Using search queries to ensure links never 404 and always surface their latest articles on the topic.
-        let tips = [
+    static func randomTip(for weather: PlantWeatherInfo? = nil) -> GardenTip {
+        // Fallback or generic tips
+        let genericTips = [
             GardenTip(message: "Water your succulents only when the soil is completely dry.",
                       imageName: "mytip",
                       sourceURL: "https://www.gardeningknowhow.com/search?q=watering+succulents"),
@@ -205,9 +225,78 @@ struct GardenTip {
                       imageName: "mytip",
                       sourceURL: "https://www.gardeningknowhow.com/search?q=grouping+houseplants"),
         ]
-        return tips.randomElement() ?? tips[0]
+        
+        guard let weather = weather else {
+            return genericTips.randomElement() ?? genericTips[0]
+        }
+        
+        let condition = weather.condition.lowercased()
+        let temp = weather.temperature
+        
+        var specificTips: [GardenTip] = []
+        
+        // Context 1: Hot or Clear/Sunny
+        if temp >= 30 || condition.contains("clear") {
+            specificTips.append(contentsOf: [
+                GardenTip(message: "Hot weather! Water your plants deeply in the early morning to reduce evaporation.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=watering+plants+in+heat"),
+                GardenTip(message: "Apply a layer of mulch to keep the roots cool and retain soil moisture.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=mulching+for+heat+protection"),
+                GardenTip(message: "Strong sun can scorch leaves. Consider moving sensitive potted plants to partial shade.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=sun+scorch+on+plants")
+            ])
+        }
+        
+        // Context 2: Rainy or Humid
+        if condition.contains("rain") || condition.contains("drizzle") || condition.contains("thunder") {
+            specificTips.append(contentsOf: [
+                GardenTip(message: "Rainy days! Skip your current watering schedule to avoid root rot.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=overwatering+rainy+days"),
+                GardenTip(message: "High humidity during rain is great for tropicals, but watch out for fungal diseases.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=preventing+fungal+disease+in+plants"),
+                GardenTip(message: "Ensure outdoor pots have proper drainage so they don't get waterlogged.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=potted+plant+drainage")
+            ])
+        }
+        
+        // Context 3: Cold or Snowy
+        if temp <= 15 || condition.contains("snow") || condition.contains("ice") {
+            specificTips.append(contentsOf: [
+                GardenTip(message: "Cold snap incoming! Move delicate potted outdoor plants indoors.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=protecting+plants+from+frost"),
+                GardenTip(message: "Reduce watering as plant growth slows during colder temperatures.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=winter+watering+plants"),
+                GardenTip(message: "Keep indoor plants away from cold, drafty windows and heating vents.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=indoor+plants+winter+care")
+            ])
+        }
+        
+        // Context 4: Cloudy/Mist/Fog
+        if condition.contains("cloud") || condition.contains("fog") || condition.contains("mist") {
+            specificTips.append(contentsOf: [
+                GardenTip(message: "Cloudy days are perfect for transplanting or repotting, as it reduces plant shock.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=transplanting+cloudy+day"),
+                GardenTip(message: "Indoor plants might need to be moved closer to windows to maximize the available weak light.",
+                          imageName: "mytip",
+                          sourceURL: "https://www.gardeningknowhow.com/search?q=low+light+indoor+plants")
+            ])
+        }
+        
+        // If we found specific weather tips, pick one. Otherwise fallback to generic.
+        if !specificTips.isEmpty {
+            return specificTips.randomElement()!
+        }
+        
+        return genericTips.randomElement() ?? genericTips[0]
     }
 }
-
-  
-

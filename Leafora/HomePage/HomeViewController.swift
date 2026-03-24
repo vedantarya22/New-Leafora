@@ -1,4 +1,5 @@
 import UIKit
+internal import _LocationEssentials
 
 //struct GardenMemory {
 //    let image: UIImage
@@ -11,6 +12,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     private let refreshControl = UIRefreshControl()
     
+    // Weather states
+    private var currentWeather: PlantWeatherInfo?
+    private var isLoadingWeather = true
     
     //clay colors
     // Natural, Earthy Plant Care Colors
@@ -33,6 +37,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         setupBotanicalBackground()
         navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.title = "Home"
+        
+        // Fetch weather data for contextual tips
+        fetchWeatherData()
         
         NotificationCenter.default.addObserver(
               self,
@@ -125,6 +132,46 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
+    private func fetchWeatherData() {
+        isLoadingWeather = true
+        // Reload just section 0 to show loading state if desired (or rely on initial load)
+        collectionView.reloadSections(IndexSet(integer: 0))
+        
+        LocationService.shared.requestLocation { [weak self] location in
+            guard let self = self else { return }
+            
+            if let location = location {
+                WeatherService.shared.fetchWeather(
+                    latitude: location.coordinate.latitude,
+                    longitude: location.coordinate.longitude
+                ) { result in
+                    self.handleWeatherResult(result)
+                }
+            } else {
+                WeatherService.shared.fetchWeather(city: "Pune") { result in
+                    self.handleWeatherResult(result)
+                }
+            }
+        }
+    }
+    
+    private func handleWeatherResult(_ result: Result<PlantWeatherInfo, Error>) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.isLoadingWeather = false
+            
+            switch result {
+            case .success(let weather):
+                self.currentWeather = weather
+            case .failure(let error):
+                print("Weather error in Home: \(error)")
+                self.currentWeather = nil
+            }
+            
+            self.collectionView.reloadSections(IndexSet(integer: 0))
+        }
+    }
+    
     private func taskInsightsForHome() -> [TaskOverviewInsight] {
         let allPlants = PlantStore.shared.allPlants()
         let insights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
@@ -199,14 +246,14 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     func gardenTipLayout() -> NSCollectionLayoutSection {
           let itemSize = NSCollectionLayoutSize(
              widthDimension: .fractionalWidth(1.0),
-              heightDimension: .absolute(150)  // Fixed height instead of estimated
+              heightDimension: .absolute(220)
          )
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
           item.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
    
           let groupSize = NSCollectionLayoutSize(
                widthDimension: .fractionalWidth(1.0),
-               heightDimension: .absolute(150)
+               heightDimension: .absolute(220)
            )
            let group = NSCollectionLayoutGroup.vertical(
                layoutSize: groupSize,
@@ -283,7 +330,16 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         switch indexPath.section {
         case 0: // Garden Tip
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GardenTipCell", for: indexPath) as! GardenTipCell
-            cell.configure(tip: GardenTip.randomTip())
+            
+            if isLoadingWeather {
+                cell.showLoading()
+            } else if let weather = currentWeather {
+                cell.configure(tip: GardenTip.randomTip(for: weather))
+            } else {
+                // If weather failed to fetch, show generic tips, or showError()
+                // Let's fallback to generic tips since it's better than an error here
+                cell.configure(tip: GardenTip.randomTip(for: nil))
+            }
             return cell
             
         case 1: // Scan Your Plant

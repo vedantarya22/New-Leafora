@@ -26,7 +26,7 @@ class PlantResultButtonCell: UICollectionViewCell {
         config.baseBackgroundColor = UIColor(red: 0.18, green: 0.55, blue: 0.30, alpha: 1.0)
         config.baseForegroundColor = .white
         
-//        config.image = UIImage(systemName: "arrow.right.circle.fill")
+
         config.imagePadding = 2
         
         actionButton.configuration = config
