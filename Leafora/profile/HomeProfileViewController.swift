@@ -85,6 +85,8 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
         
         if item.title == "Sign Out" {
             cell.textLabel?.textColor = .systemRed
+        } else if item.title == "Delete Account" {
+            cell.textLabel?.textColor = .systemRed
         } else {
             cell.textLabel?.textColor = .label
         }
@@ -140,6 +142,74 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
                                   options: .transitionCrossDissolve,
                                   animations: nil,
                                   completion: nil)
+            }
+        }
+        
+        if item.title == "Delete Account" {
+            showDeleteAccountConfirmation()
+        }
+    }
+    
+    // MARK: - Delete Account
+    private func showDeleteAccountConfirmation() {
+        let alert = UIAlertController(
+            title: "Delete Account",
+            message: "Are you sure you want to delete your account? All your data, plants, and posts will be permanently removed. This action cannot be undone.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            self?.performAccountDeletion()
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    private func performAccountDeletion() {
+        // Show a loading indicator
+        let loadingAlert = UIAlertController(title: nil, message: "Deleting account...", preferredStyle: .alert)
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.startAnimating()
+        loadingAlert.view.addSubview(indicator)
+        NSLayoutConstraint.activate([
+            indicator.centerYAnchor.constraint(equalTo: loadingAlert.view.centerYAnchor),
+            indicator.leadingAnchor.constraint(equalTo: loadingAlert.view.leadingAnchor, constant: 20)
+        ])
+        present(loadingAlert, animated: true)
+        
+        NetworkManager.shared.deleteAccount { [weak self] success in
+            loadingAlert.dismiss(animated: true) {
+                if success {
+                    // Navigate to login
+                    self?.dismiss(animated: true) {
+                        guard let window = UIApplication.shared.connectedScenes
+                                .compactMap({ $0 as? UIWindowScene })
+                                .first?.windows.first else { return }
+                        
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let loginVC = storyboard.instantiateViewController(withIdentifier: "loginViewController")
+                        let navVC = UINavigationController(rootViewController: loginVC)
+                        navVC.isNavigationBarHidden = true
+                        window.rootViewController = navVC
+                        
+                        UIView.transition(with: window,
+                                          duration: 0.3,
+                                          options: .transitionCrossDissolve,
+                                          animations: nil,
+                                          completion: nil)
+                    }
+                } else {
+                    let errorAlert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to delete account. Please try again later.",
+                        preferredStyle: .alert
+                    )
+                    errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self?.present(errorAlert, animated: true)
+                }
             }
         }
     }

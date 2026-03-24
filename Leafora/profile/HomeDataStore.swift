@@ -14,7 +14,8 @@ class HomeDataStore {
             ProfileItem(title: "Privacy", showsChevron: true)
         ]),
         ProfileSection(title: "Account Actions", items: [
-            ProfileItem(title: "Sign Out", showsChevron: false)
+            ProfileItem(title: "Sign Out", showsChevron: false),
+            ProfileItem(title: "Delete Account", showsChevron: false)
         ])
     ]
 

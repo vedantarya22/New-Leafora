@@ -69,8 +69,11 @@ class PlantInfoCardCell: UICollectionViewCell {
         descriptionLabel.text = description
         descriptionLabel.isHidden = false
 
-        let lightChip = makeInfoChip(icon: "sun.max.fill", text: light, tint: .systemYellow)
-        let difficultyChip = makeInfoChip(icon: "chart.bar.fill", text: difficulty, tint: .systemGreen)
+        let lightColor = colorForLight(light)
+        let difficultyColor = colorForDifficulty(difficulty)
+        
+        let lightChip = makeInfoChip(icon: "sun.max.fill", text: light, tint: lightColor)
+        let difficultyChip = makeInfoChip(icon: "chart.bar.fill", text: difficulty, tint: difficultyColor)
         let petChip = makeInfoChip(
             icon: isPetFriendly ? "pawprint.fill" : "exclamationmark.triangle.fill",
             text: petStatus,
@@ -91,7 +94,7 @@ class PlantInfoCardCell: UICollectionViewCell {
     }
 
     // MARK: - Detail Rows
-    func configureDetailRows(title: String, iconName: String, iconColor: UIColor, rows: [(icon: String, label: String, value: String)]) {
+    func configureDetailRows(title: String, iconName: String, iconColor: UIColor, rows: [(icon: String, label: String, value: String, tintColor: UIColor?)]) {
         titleLabel.text = title
         iconImageView.image = UIImage(systemName: iconName)
         iconImageView.tintColor = iconColor
@@ -100,7 +103,8 @@ class PlantInfoCardCell: UICollectionViewCell {
 
         var rowViews: [UIView] = []
         for (index, row) in rows.enumerated() {
-            let rowView = makeDetailRow(icon: row.icon, label: row.label, value: row.value)
+            let rowColor = row.tintColor ?? .systemGreen
+            let rowView = makeDetailRow(icon: row.icon, label: row.label, value: row.value, customColor: rowColor)
             rowViews.append(rowView)
 
             if index < rows.count - 1 {
@@ -208,17 +212,45 @@ class PlantInfoCardCell: UICollectionViewCell {
 
         return container
     }
+    
+    // MARK: - Color Helpers
+    private func colorForLight(_ light: String) -> UIColor {
+        let text = light.lowercased()
+        
+        // Intense bright yellow for Full Sun
+        if text.contains("full") { return UIColor(red: 1.0, green: 0.84, blue: 0.0, alpha: 1.0) }
+        // Golden yellow for Partial Sun
+        if text.contains("partial") { return UIColor(red: 0.95, green: 0.77, blue: 0.06, alpha: 1.0) }
+        // Classic system yellow for Bright Indirect
+        if text.contains("bright indirect") { return .systemYellow }
+        // Soft yellow for Medium
+        if text.contains("medium light") { return UIColor(red: 0.89, green: 0.85, blue: 0.35, alpha: 1.0) }
+        // Pale/Muted yellow for Low to Bright
+        if text.contains("low to bright") { return UIColor(red: 0.85, green: 0.82, blue: 0.40, alpha: 1.0) }
+        // Dim yellow for Low/Medium
+        if text.contains("low") { return UIColor(red: 0.78, green: 0.75, blue: 0.45, alpha: 1.0) }
+        
+        return .systemYellow // fallback
+    }
+    
+    private func colorForDifficulty(_ difficulty: String) -> UIColor {
+        let text = difficulty.lowercased()
+        if text.contains("easy") { return .systemGreen }
+        if text.contains("moderate") { return .systemOrange }
+        if text.contains("hard") || text.contains("advanced") { return .systemRed }
+        return .systemGreen // fallback
+    }
 
-    private func makeDetailRow(icon: String, label: String, value: String) -> UIView {
+    private func makeDetailRow(icon: String, label: String, value: String, customColor: UIColor = .systemGreen) -> UIView {
         let row = UIView()
         
         let iconBg = UIView()
-        iconBg.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.12)
+        iconBg.backgroundColor = customColor.withAlphaComponent(0.12)
         iconBg.layer.cornerRadius = 8
         iconBg.translatesAutoresizingMaskIntoConstraints = false
 
         let iconView = UIImageView(image: UIImage(systemName: icon))
-        iconView.tintColor = .systemGreen
+        iconView.tintColor = customColor
         iconView.contentMode = .scaleAspectFit
         iconView.translatesAutoresizingMaskIntoConstraints = false
 

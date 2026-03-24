@@ -600,3 +600,26 @@ extension NetworkManager {
         }.resume()
     }
 }
+
+// MARK: - Delete Account
+extension NetworkManager {
+    
+    func deleteAccount(completion: @escaping (Bool) -> Void) {
+        guard let userId = KeychainManager.shared.getUserId(),
+              let url = URL(string: baseURL + "/users/" + userId)
+        else {
+            DispatchQueue.main.async { completion(false) }
+            return
+        }
+        
+        let request = makeRequest(url: url, method: "DELETE")
+        session.dataTask(with: request) { _, response, _ in
+            let success = (response as? HTTPURLResponse)?.statusCode == 200
+            if success {
+                // Clear all local data
+                self.logout()
+            }
+            DispatchQueue.main.async { completion(success) }
+        }.resume()
+    }
+}

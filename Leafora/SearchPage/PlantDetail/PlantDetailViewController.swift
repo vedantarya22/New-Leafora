@@ -165,15 +165,21 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
                 for: indexPath
             ) as! PlantInfoCardCell
 
+            // Natural, Earthy Plant Care Colors from Home screen
+            let wateringBlue = UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)
+            let fertilizingGreen = UIColor(red: 0.52, green: 0.71, blue: 0.42, alpha: 1.0)
+            let repottingOrange = UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0)
+            let pruningRed = UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0)
+
             cell.configureDetailRows(
                 title: "Care Cycle",
                 iconName: "arrow.2.circlepath",
                 iconColor: .systemCyan,
                 rows: [
-                    (icon: "drop.fill",             label: "Water",      value: plant.careCycle.watering.display),
-                    (icon: "leaf.fill",             label: "Fertilizer", value: plant.careCycle.fertilizing.display),
-                    (icon: "arrow.up.bin.fill",           label: "Repotting",  value: plant.careCycle.repotting.display),
-                    (icon: "scissors",              label: "Pruning",    value: plant.careCycle.pruning.display)
+                    (icon: "drop.fill",             label: "Water",      value: plant.careCycle.watering.display, tintColor: wateringBlue),
+                    (icon: "leaf.fill",             label: "Fertilizer", value: plant.careCycle.fertilizing.display, tintColor: fertilizingGreen),
+                    (icon: "arrow.up.bin.fill",           label: "Repotting",  value: plant.careCycle.repotting.display, tintColor: repottingOrange),
+                    (icon: "scissors",              label: "Pruning",    value: plant.careCycle.pruning.display, tintColor: pruningRed)
                 ]
             )
 
@@ -187,11 +193,11 @@ class PlantDetailViewController: UIViewController, UICollectionViewDataSource, U
 
             cell.configureDetailRows(
                 title: "Soil Type",
-                iconName: "circle.grid.cross.fill",
+                iconName: "mountain.2.fill",
                 iconColor: .systemBrown,
                 rows: [
-                    (icon: "bag.fill", label: "Mix",      value: plant.soilType.soilUsed),
-                    (icon: "star.fill",            label: "Features", value: plant.soilType.characteristics)
+                    (icon: "bag.fill", label: "Mix",      value: plant.soilType.soilUsed, tintColor: .systemBrown),
+                    (icon: "star.fill",            label: "Features", value: plant.soilType.characteristics, tintColor: .systemBrown)
                 ]
             )
 
