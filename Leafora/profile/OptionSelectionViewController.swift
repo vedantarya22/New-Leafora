@@ -10,6 +10,8 @@ class OptionSelectionViewController: UIViewController, UITableViewDelegate, UITa
     var currentValue: String?
 
     var onSelectionChanged: ((String) -> Void)?
+    
+    private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     private var options: [String] {
         return preferenceType?.options ?? []
@@ -19,10 +21,18 @@ class OptionSelectionViewController: UIViewController, UITableViewDelegate, UITa
         super.viewDidLoad()
         title = preferenceType?.rawValue ?? "Select Option"
         
+        view.layer.insertSublayer(gradientLayer, at: 0)
+        
         // hide reused header for simple single-select list
         Table.tableHeaderView = nil
+        Table.backgroundColor = .clear
         
         setupTableView()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
     }
 
     private func setupTableView() {
