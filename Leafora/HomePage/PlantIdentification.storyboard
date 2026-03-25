@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Plant Scanning View Controller-->
+        <scene sceneID="aXQ-kZ-v01">
+            <objects>
+                <viewController storyboardIdentifier="PlantScanningViewController" id="bYR-lW-u02" customClass="PlantScanningViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cZS-mX-w03">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dAT-nY-x04">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <blurEffect style="systemUltraThinMaterialDark"/>
+                            </visualEffectView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eBU-oZ-y05" userLabel="ContainerView">
+                                <rect key="frame" x="30" y="256" width="333" height="340"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fCV-pA-z06">
+                                        <rect key="frame" x="66.5" y="30" width="200" height="200"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="200" id="gDW-qB-A07"/>
+                                            <constraint firstAttribute="height" constant="200" id="hEX-rC-B08"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="24"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Identifying your plant..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iFY-sD-C09">
+                                        <rect key="frame" x="20" y="260" width="293" height="29"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Analyzing foliage and colors" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jGZ-tE-D10">
+                                        <rect key="frame" x="20" y="297" width="293" height="20"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="kHA-uF-E11">
+                                        <rect key="frame" x="149.5" y="342" width="37" height="37"/>
+                                        <color key="color" red="0.52" green="0.71" blue="0.42" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="fCV-pA-z06" firstAttribute="top" secondItem="eBU-oZ-y05" secondAttribute="top" constant="30" id="lIB-vG-F12"/>
+                                    <constraint firstItem="fCV-pA-z06" firstAttribute="centerX" secondItem="eBU-oZ-y05" secondAttribute="centerX" id="mJC-wH-G13"/>
+                                    <constraint firstItem="iFY-sD-C09" firstAttribute="top" secondItem="fCV-pA-z06" secondAttribute="bottom" constant="30" id="nKD-xI-H14"/>
+                                    <constraint firstItem="iFY-sD-C09" firstAttribute="leading" secondItem="eBU-oZ-y05" secondAttribute="leading" constant="20" id="oLE-yJ-I15"/>
+                                    <constraint firstAttribute="trailing" secondItem="iFY-sD-C09" secondAttribute="trailing" constant="20" id="pMF-zK-J16"/>
+                                    <constraint firstItem="jGZ-tE-D10" firstAttribute="top" secondItem="iFY-sD-C09" secondAttribute="bottom" constant="8" id="qNG-AL-K17"/>
+                                    <constraint firstItem="jGZ-tE-D10" firstAttribute="leading" secondItem="eBU-oZ-y05" secondAttribute="leading" constant="20" id="rOH-BM-L18"/>
+                                    <constraint firstAttribute="trailing" secondItem="jGZ-tE-D10" secondAttribute="trailing" constant="20" id="sPI-CN-M19"/>
+                                    <constraint firstItem="kHA-uF-E11" firstAttribute="top" secondItem="jGZ-tE-D10" secondAttribute="bottom" constant="25" id="tQJ-DO-N20"/>
+                                    <constraint firstItem="kHA-uF-E11" firstAttribute="centerX" secondItem="eBU-oZ-y05" secondAttribute="centerX" id="uRK-EP-O21"/>
+                                    <constraint firstAttribute="bottom" secondItem="kHA-uF-E11" secondAttribute="bottom" constant="30" id="vSL-FQ-P22"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="32"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="dAT-nY-x04" firstAttribute="top" secondItem="cZS-mX-w03" secondAttribute="top" id="wTM-GR-Q23"/>
+                            <constraint firstItem="dAT-nY-x04" firstAttribute="leading" secondItem="cZS-mX-w03" secondAttribute="leading" id="xUN-HS-R24"/>
+                            <constraint firstAttribute="trailing" secondItem="dAT-nY-x04" secondAttribute="trailing" id="yVO-IT-S25"/>
+                            <constraint firstAttribute="bottom" secondItem="dAT-nY-x04" secondAttribute="bottom" id="zWP-JU-T26"/>
+                            <constraint firstItem="eBU-oZ-y05" firstAttribute="centerY" secondItem="cZS-mX-w03" secondAttribute="centerY" id="AXQ-KV-U27"/>
+                            <constraint firstItem="eBU-oZ-y05" firstAttribute="leading" secondItem="cZS-mX-w03" secondAttribute="leading" constant="30" id="BYR-LW-V28"/>
+                            <constraint firstAttribute="trailing" secondItem="eBU-oZ-y05" secondAttribute="trailing" constant="30" id="CZS-MX-W29"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="DaT-NY-X30"/>
+                    </view>
+                    <connections>
+                        <outlet property="previewImageView" destination="fCV-pA-z06" id="EbU-OZ-Y31"/>
+                        <outlet property="scanningLabel" destination="iFY-sD-C09" id="FcV-PA-Z32"/>
+                        <outlet property="statusLabel" destination="jGZ-tE-D10" id="GdW-QB-a33"/>
+                        <outlet property="activityIndicator" destination="kHA-uF-E11" id="HeX-RC-b34"/>
+                        <outlet property="containerView" destination="eBU-oZ-y05" id="IfY-SD-c35"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JgZ-TE-d36" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-37" y="29"/>
+        </scene>
+        <!--Plant Identification Results View Controller-->
+        <scene sceneID="KhA-UF-e37">
+            <objects>
+                <viewController storyboardIdentifier="PlantIdentificationResultsViewController" id="LiB-VG-f38" customClass="PlantIdentificationResultsViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MjC-WH-g39">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="NkD-XI-h40">
+                                <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="OlE-YJ-i41">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="NkD-XI-h40" firstAttribute="top" secondItem="PmF-ZK-j42" secondAttribute="top" id="QnG-aL-k43"/>
+                            <constraint firstItem="NkD-XI-h40" firstAttribute="leading" secondItem="MjC-WH-g39" secondAttribute="leading" id="RoH-bM-l44"/>
+                            <constraint firstAttribute="trailing" secondItem="NkD-XI-h40" secondAttribute="trailing" id="SpI-cN-m45"/>
+                            <constraint firstAttribute="bottom" secondItem="NkD-XI-h40" secondAttribute="bottom" id="TqJ-dO-n46"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="PmF-ZK-j42"/>
+                    </view>
+                    <connections>
+                        <outlet property="collectionView" destination="NkD-XI-h40" id="UrK-eP-o47"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VsL-fQ-p48" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="589" y="29"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
