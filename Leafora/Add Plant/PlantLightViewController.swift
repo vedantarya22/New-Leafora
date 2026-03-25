@@ -29,19 +29,19 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
         PlantLightCollectionView.dataSource = self
         PlantLightCollectionView.delegate = self
         registerCell()
-        print("✅ PlantLightViewController loaded with session for plantID:", session.plantId)
+        print(" PlantLightViewController loaded with session for plantID:", session.plantId)
         
-        // ✅ Load options into buttonData
+        //  Load options into buttonData
         buttonData = dataStore.getPlantLightOptions()
 
-        // ✏️ Pre-select existing light in edit mode
+        //  Pre-select existing light in edit mode
         if session.isEditMode, let existingLight = session.plantLight {
             if let index = buttonData.firstIndex(where: { $0.light == existingLight }) {
                 selectedIndex = IndexPath(row: index, section: 0)
             }
         }
 
-           // ✅ Reload collection view
+           //  Reload collection view
            PlantLightCollectionView.reloadData()
 
         
@@ -112,7 +112,7 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
         let item = buttonData[indexPath.row]
         
         var config = UIButton.Configuration.plain()
-        config.title = item.displayName  // ✅ was item.light, now shows "Full Sun" etc
+        config.title = item.displayName  //  was item.light, now shows "Full Sun" etc
         config.image = UIImage(systemName: item.image)
         config.imagePadding = 12
         config.baseForegroundColor = .label
@@ -158,7 +158,7 @@ class PlantLightViewController: UIViewController,UICollectionViewDelegateFlowLay
         }
         
         // 3. Keep logic intact
-        print("✅ Selected light:", buttonData[indexPath.row].light)
+        print(" Selected light:", buttonData[indexPath.row].light)
     }
 
     

@@ -59,7 +59,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             print("⚠️ [UrgentMissedVC] No plant data loaded from Cache/JSON!")
             showAlert(title: "Error", message: "Could not load plant data. Please wait for the catalog to load.")
         } else {
-            print("✅ [UrgentMissedVC] Loaded \(allPlantData.count) plant types")
+            print(" [UrgentMissedVC] Loaded \(allPlantData.count) plant types")
         }
     }
     

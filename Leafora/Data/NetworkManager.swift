@@ -116,7 +116,7 @@ extension NetworkManager {
         SiteStore.shared.setSites([])
         PlantCatalogueCache.shared.invalidate()
         UserDefaults.standard.removeObject(forKey: "currentUserId")
-        print("✅ Logged out")
+        print(" Logged out")
     }
 }
 
@@ -152,14 +152,14 @@ extension NetworkManager {
                 print(" Network error: \(error.localizedDescription)")
             }
             if let httpResponse = response as? HTTPURLResponse {
-                print("📡 Status code: \(httpResponse.statusCode)")
+                print(" Status code: \(httpResponse.statusCode)")
             }
-            #if DEBUG
-            // Verbose logging disabled - can cause performance issues with large payloads
-            // if let data = data, let raw = String(data: data, encoding: .utf8) {
-            //     print("📦 Raw response: \(raw)")
-            // }
-            #endif
+//            #if DEBUG
+//            // Verbose logging disabled - can cause performance issues with large payloads
+//            // if let data = data, let raw = String(data: data, encoding: .utf8) {
+//            //     print("Raw response: \(raw)")
+//            // }
+//            #endif
 
             guard let data = data, error == nil else {
                 DispatchQueue.main.async { completion(nil) }
@@ -259,15 +259,15 @@ extension NetworkManager {
         if let lastWatered      = lastWatered      { body["lastWatered"]      = ISO8601DateFormatter().string(from: lastWatered) }
         if let lastRepotted     = lastRepotted     { body["lastRepotted"]     = ISO8601DateFormatter().string(from: lastRepotted) }
 
-        print("📤 Sending userPlant body: \(body)")
+        print(" Sending userPlant body: \(body)")
 
         let request = makeRequest(url: url, method: "POST", body: body)
         session.dataTask(with: request) { data, response, error in
             if let httpResponse = response as? HTTPURLResponse {
-                print("📡 userPlant status: \(httpResponse.statusCode)")
+                print("userPlant status: \(httpResponse.statusCode)")
             }
             if let data = data, let raw = String(data: data, encoding: .utf8) {
-                print("📦 userPlant response: \(raw)")
+                print(" userPlant response: \(raw)")
             }
             if let error = error {
                 print(" userPlant network error: \(error.localizedDescription)")
@@ -374,7 +374,7 @@ extension NetworkManager {
                 return
             }
 
-            print("✅ Image uploaded to Cloudinary: \(imageUrl)")
+            print(" Image uploaded to Cloudinary: \(imageUrl)")
             DispatchQueue.main.async { completion(imageUrl) }
         }.resume()
     }
@@ -411,7 +411,7 @@ extension NetworkManager {
                return
            }
            if let http = response as? HTTPURLResponse {
-               print("📡 createPost status: \(http.statusCode)")
+               print(" createPost status: \(http.statusCode)")
            }
            guard let data = data else {
                print(" createPost: no data returned")
@@ -419,11 +419,11 @@ extension NetworkManager {
                return
            }
            if let raw = String(data: data, encoding: .utf8) {
-               print("📦 createPost raw response: \(raw)")
+               print(" createPost raw response: \(raw)")
            }
            do {
                let post = try JSONDecoder().decode(Post.self, from: data)
-               print("✅ createPost decoded successfully: \(post.id)")
+               print(" createPost decoded successfully: \(post.id)")
                DispatchQueue.main.async { completion(post) }
            } catch {
                print(" createPost decode error: \(error)")
@@ -536,7 +536,7 @@ extension NetworkManager {
         let request = makeRequest(url: url, method: "GET")
         session.dataTask(with: request) { data, response, _ in
             if let http = response as? HTTPURLResponse {
-                print("📡 fetchAllUsers status: \(http.statusCode)")
+                print(" fetchAllUsers status: \(http.statusCode)")
             }
             guard let data = data,
                   let users = try? JSONDecoder().decode([User].self, from: data)
@@ -573,8 +573,8 @@ extension NetworkManager {
                            completion: @escaping (Bool) -> Void) {
  
         guard let url = URL(string: baseURL + "/users/\(userId)") else { return }
-           print("📡 PATCH URL: \(url)")
-           print("📦 body: name=\(name), username=\(username), image=\(profileImageString ?? "nil")")
+           print(" PATCH URL: \(url)")
+           print(" body: name=\(name), username=\(username), image=\(profileImageString ?? "nil")")
  
         var body: [String: Any] = [
             "name":     name,
@@ -671,7 +671,7 @@ extension NetworkManager {
                        let userId   = userDict["_id"] as? String {
                         KeychainManager.shared.saveToken(token)
                         KeychainManager.shared.saveUserId(userId)
-                        print("✅ Google auth success — userId: \(userId)")
+                        print(" Google auth success — userId: \(userId)")
                     }
                     completion(true, nil)
                 } else {

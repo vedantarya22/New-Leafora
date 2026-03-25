@@ -46,7 +46,7 @@ final class PlantStore: ObservableObject {
         
         // Check if migration already done
         guard !UserDefaults.standard.bool(forKey: migrationKey) else {
-            print("✅ Migration already completed")
+            print(" Migration already completed")
             return
         }
         
@@ -64,9 +64,9 @@ final class PlantStore: ObservableObject {
         if didChange {
             // Force immediate synchronous save to persist migration
             savePlants()
-            print("✅ Migration complete: Removed imageData from \(plants.count) plants")
+            print(" Migration complete: Removed imageData from \(plants.count) plants")
         } else {
-            print("✅ Migration complete: No imageData found")
+            print(" Migration complete: No imageData found")
         }
         
         // Mark migration as done
@@ -169,7 +169,7 @@ final class PlantStore: ObservableObject {
             return
         }
         plants[index] = updatedPlant
-        print("✅ Plant updated: ID=\(updatedPlant.id)")
+        print(" Plant updated: ID=\(updatedPlant.id)")
     }
 
     // MARK: - Persistence
@@ -210,7 +210,7 @@ final class PlantStore: ObservableObject {
         do {
             let data = try Data(contentsOf: fileURL)
             plants = try JSONDecoder().decode([UserPlant].self, from: data)
-            print("✅ Loaded \(plants.count) plant entries")
+            print(" Loaded \(plants.count) plant entries")
         } catch {
             print(" Failed to load plants:", error)
         }

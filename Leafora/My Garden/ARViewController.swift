@@ -285,7 +285,7 @@ class ARViewController: UIViewController {
             placementBadge.isHidden = true
         } else {
             placementBadge.isHidden = false
-            placementBadgeLabel.text = "🌱 \(placementCount) placed"
+            placementBadgeLabel.text = " \(placementCount) placed"
         }
     }
 
@@ -310,31 +310,30 @@ class ARViewController: UIViewController {
 
     private func loadModels() {
         models = [
-            // Newly added list of 24 models mapped to their real plant names
-            ModelItem(name: "Aloe Vera",      fileName: "aloe_vera", thumbnail: "🌵", image: nil),
-            ModelItem(name: "Areca Palm",     fileName: "arcea_palm", thumbnail: "🌴", image: nil),
-            ModelItem(name: "Bougainvillea",  fileName: "bougainvillea", thumbnail: "🌺", image: nil),
-            ModelItem(name: "Brahmi",         fileName: "brahmi", thumbnail: "🌿", image: nil),
-            ModelItem(name: "Chilli Pepper",  fileName: "chilli_pepper", thumbnail: "🌶", image: nil),
-            ModelItem(name: "Chinese Money Plant", fileName: "chinese_moneyplant", thumbnail: "🌿", image: nil),
-            ModelItem(name: "Rose",           fileName: "crimson_roses", thumbnail: "🌹", image: nil),
-            ModelItem(name: "Croton",         fileName: "croton", thumbnail: "🪴", image: nil),
-            ModelItem(name: "Curry Leaf",     fileName: "curry_leaf", thumbnail: "🍃", image: nil),
-            ModelItem(name: "Desert Rose",    fileName: "dessert_rose", thumbnail: "🌸", image: nil),
-            ModelItem(name: "Geranium",       fileName: "geranium", thumbnail: "🌺", image: nil),
-            ModelItem(name: "Hibiscus",       fileName: "hibiscus", thumbnail: "🌺", image: nil),
-            ModelItem(name: "Lavender",       fileName: "lavender", thumbnail: "🪻", image: nil),
-            ModelItem(name: "Lemongrass",     fileName: "lemongrass", thumbnail: "🌾", image: nil),
-            ModelItem(name: "Lemon Tree",     fileName: "lemontree", thumbnail: "🍋", image: nil),
-            ModelItem(name: "Marigold",       fileName: "marigold", thumbnail: "🌼", image: nil),
-            ModelItem(name: "Mint",           fileName: "mint", thumbnail: "🍃", image: nil),
-            ModelItem(name: "Mogra",          fileName: "mogra", thumbnail: "🌼", image: nil),
-            ModelItem(name: "Monstera",       fileName: "monstera", thumbnail: "🌿", image: nil),
-            ModelItem(name: "Neem",           fileName: "neem", thumbnail: "🌳", image: nil),
-            ModelItem(name: "Peace Lily",     fileName: "peace_lily", thumbnail: "🪴", image: nil),
-            ModelItem(name: "Portulaca",      fileName: "portulaca", thumbnail: "🌸", image: nil),
-            ModelItem(name: "Tulsi",          fileName: "tulsi", thumbnail: "🌱", image: nil),
-            ModelItem(name: "Jasmine",        fileName: "white_jasmine", thumbnail: "🏵", image: nil)
+            ModelItem(name: "Aloe Vera",           fileName: "aloe_vera",          thumbnail: "", image: "aloe_vera"),
+            ModelItem(name: "Areca Palm",           fileName: "arcea_palm",         thumbnail: "", image: "areca_palm"),
+            ModelItem(name: "Bougainvillea",        fileName: "bougainvillea",      thumbnail: "", image: "bougainvillea"),
+            ModelItem(name: "Brahmi",               fileName: "brahmi",             thumbnail: "", image: "brahmi"),
+            ModelItem(name: "Chilli Pepper",         fileName: "chilli_pepper",      thumbnail: "", image: "chilli_pepper"),
+            ModelItem(name: "Chinese Money Plant",  fileName: "chinese_moneyplant", thumbnail: "", image: "money_plant"),
+            ModelItem(name: "Rose",                 fileName: "crimson_roses",      thumbnail: "", image: "rose"),
+            ModelItem(name: "Croton",               fileName: "croton",             thumbnail: "", image: "croton"),
+            ModelItem(name: "Curry Leaf",            fileName: "curry_leaf",         thumbnail: "", image: "curry_leaf"),
+            ModelItem(name: "Desert Rose",          fileName: "dessert_rose",       thumbnail: "", image: "desert_rose"),
+            ModelItem(name: "Geranium",             fileName: "geranium",           thumbnail: "", image: "geranium"),
+            ModelItem(name: "Hibiscus",             fileName: "hibiscus",           thumbnail: "", image: "Hibiscus"),
+            ModelItem(name: "Lavender",             fileName: "lavender",           thumbnail: "", image: "lavender"),
+            ModelItem(name: "Lemongrass",           fileName: "lemongrass",         thumbnail: "", image: "lemongrass"),
+            ModelItem(name: "Lemon Tree",           fileName: "lemontree",          thumbnail: "", image: "lemon"),
+            ModelItem(name: "Marigold",             fileName: "marigold",           thumbnail: "", image: "marigold"),
+            ModelItem(name: "Mint",                 fileName: "mint",               thumbnail: "", image: "mint"),
+            ModelItem(name: "Mogra",                fileName: "mogra",              thumbnail: "", image: "mogra"),
+            ModelItem(name: "Monstera",             fileName: "monstera",           thumbnail: "", image: "money_plant"),
+            ModelItem(name: "Neem",                 fileName: "neem",               thumbnail: "", image: "neem"),
+            ModelItem(name: "Peace Lily",            fileName: "peace_lily",         thumbnail: "", image: "peace_lily"),
+            ModelItem(name: "Portulaca",            fileName: "portulaca",          thumbnail: "", image: "portulaca"),
+            ModelItem(name: "Tulsi",                fileName: "tulsi",              thumbnail: "", image: "tulsi"),
+            ModelItem(name: "Jasmine",              fileName: "white_jasmine",      thumbnail: "", image: "jasmine")
         ]
     }
 
@@ -353,7 +352,7 @@ class ARViewController: UIViewController {
 
     @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
         guard let model = selectedModel else {
-            showInstruction("Select a plant first ☝️")
+            showInstruction("Select a plant first ")
             return
         }
         let loc     = gesture.location(in: arView)
@@ -537,7 +536,6 @@ class ModelCell: UICollectionViewCell {
         layer.borderWidth  = 2
         layer.borderColor  = UIColor.clear.cgColor
 
-        // Emoji thumbnail
         thumbnailLabel.font          = .systemFont(ofSize: 28)
         thumbnailLabel.textAlignment = .center
         thumbnailLabel.translatesAutoresizingMaskIntoConstraints = false

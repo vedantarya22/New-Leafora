@@ -29,7 +29,7 @@ class PlantCatalogueCache {
             }
             self.plants = fetchedPlants
             self.isFetched = true
-            print("✅ Fetched \(fetchedPlants.count) plants from MongoDB, cached")
+            print(" Fetched \(fetchedPlants.count) plants from MongoDB, cached")
             completion(fetchedPlants)
         }
     }
