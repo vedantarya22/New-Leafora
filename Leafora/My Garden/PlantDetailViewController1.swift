@@ -80,22 +80,22 @@ class PlantDetailViewController_New: UIViewController {
             (icon: "drop.fill",
              title: "Water",
              value: plant.careCycle.watering.display,
-             color: UIColor.systemBlue),
+             color: UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)),     // Soft water blue
             
             (icon: "leaf.fill",
              title: "Quantity",
              value: "\(count) plant\(count > 1 ? "s" : "")",
-             color: UIColor.systemYellow),
+             color: UIColor(red: 0.52, green: 0.71, blue: 0.42, alpha: 1.0)),     // Sage green
             
             (icon: "chart.bar.fill",
              title: "Difficulty",
              value: plant.difficulty.displayName,
-             color: UIColor.systemGreen),
+             color: UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0)),     // Terracotta
             
             (icon: "calendar",
              title: "Date Added",
              value: dateStr,
-             color: UIColor.systemTeal)
+             color: UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0))      // Warm sand 
         ]
         
         careItems = [
