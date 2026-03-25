@@ -142,7 +142,7 @@ class AddPlantImageViewController: UIViewController,
             return
         }
         
-        // ✏️ EDIT MODE
+        // EDIT MODE
         if session.isEditMode,
            let editingBatchSiteID = session.editingBatchSiteID,
            let editingBatchCreatedAt = session.editingBatchCreatedAt,
@@ -175,7 +175,7 @@ class AddPlantImageViewController: UIViewController,
                         updatedPlant.siteID = newSite.id
                     }
                 }
-                // ⚠️ REMOVED: Local imageData storage - now using Cloudinary imageUrl only
+                //  REMOVED: Local imageData storage - now using Cloudinary imageUrl only
                 // updatedPlant.imageData        = session.imageData
                 updatedPlant.lightRequirement = session.plantLight
                 updatedPlant.watering         = session.wateringAnswer
@@ -187,7 +187,7 @@ class AddPlantImageViewController: UIViewController,
                 PlantStore.shared.updatePlant(updatedPlant)
             }
             
-            print("✅ Batch edit complete. Edited \(plantsToEdit.count) plants.")
+            print(" Batch edit complete. Edited \(plantsToEdit.count) plants.")
             if let navController = navigationController {
                 for vc in navController.viewControllers {
                     if vc is PlantDetailViewController_New {
@@ -210,14 +210,14 @@ class AddPlantImageViewController: UIViewController,
             return
         }
         
-        // ✅ Get plant name from cache
+        //  Get plant name from cache
         let plantName = cachedPlant.plantName
-        print("✅ Found plant: \(plantName), mongoId: \(plantMongoId)")
+        print(" Found plant: \(plantName), mongoId: \(plantMongoId)")
         
         uploadImageIfNeeded(session.imageData) { [weak self] imageUrl in
             guard let self = self else { return }
             
-            print("🖼️ Image URL to save: \(imageUrl ?? "nil")")
+            print(" Image URL to save: \(imageUrl ?? "nil")")
             
             NetworkManager.shared.addSite(name: siteName, icon: siteIcon) { siteMongoId in
                 guard let siteMongoId = siteMongoId else {
@@ -225,7 +225,7 @@ class AddPlantImageViewController: UIViewController,
                     return
                 }
                 
-                print("✅ Site mongoId: \(siteMongoId)")
+                print(" Site mongoId: \(siteMongoId)")
                 
                 if !self.siteStore.sites.contains(where: {
                     $0.name.lowercased() == siteName.lowercased()
@@ -259,11 +259,11 @@ class AddPlantImageViewController: UIViewController,
                     )
                     
                     PlantStore.shared.addPlant(userPlant)
-                    print("✅ Plant \(index)/\(plantCountToAdd) saved locally")
+                    print(" Plant \(index)/\(plantCountToAdd) saved locally")
                     
                     NetworkManager.shared.addUserPlant(
                         plantId:          plantMongoId,
-                        plantName:        plantName,          // ✅ pass plant name
+                        plantName:        plantName,          //  pass plant name
                         siteId:           siteMongoId,
                         siteName:         siteName,
                         imageData:        imageUrl,
@@ -275,24 +275,20 @@ class AddPlantImageViewController: UIViewController,
                         lastRepotted:     self.session.lastRepottedDate
                     ) { mongoId in
                         if let mongoId = mongoId {
-                            print("✅ Plant \(index) synced to MongoDB: \(mongoId)")
+                            print(" Plant \(index) synced to MongoDB: \(mongoId)")
                         } else {
                             print(" Failed to sync plant \(index)")
                         }
                     }
                 }
                 
-                // ✅ After the loop finishes saving all plants
-                print("✅ All \(plantCountToAdd) plants saved for: \(self.session.plantId)")
+                // After the loop finishes saving all plants
+                print(" All \(plantCountToAdd) plants saved for: \(self.session.plantId)")
 
                 // Release temporary upload bytes from memory after successful flow
                 self.session.imageData = nil
 
-                // ✅ Refresh from MongoDB so local store is up to date
-                // REMOVED: loadAppData() call - PlantStore notification will trigger UI refresh
-                // if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                //     sceneDelegate.loadAppData()
-                // }
+              
 
                 DispatchQueue.main.async {
                     self.performSegue(withIdentifier: "showPlantAddedSuccess", sender: self)

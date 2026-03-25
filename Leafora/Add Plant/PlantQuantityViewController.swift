@@ -58,7 +58,7 @@ class PlantQuantityViewController: UIViewController {
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.selectRow(quantity - 1, inComponent: 0, animated: false)
 
-        // ✅ Remove the default grey ellipse selection overlay
+        //  Remove the default grey ellipse selection overlay
         pickerView.subviews.forEach { subview in
             if subview.frame.height < 2 {
                 subview.backgroundColor = .clear

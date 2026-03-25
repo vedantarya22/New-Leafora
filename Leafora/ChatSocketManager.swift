@@ -27,11 +27,11 @@ final class ChatSocketManager {
     private var manager: SocketManager?
     private var socket:  SocketIOClient?
 
-    // Called when a message arrives — ChatViewController subscribes to this
+  
     var onMessageReceived: ((SocketMessage) -> Void)?
 
     // MARK: - Connect
-    // Call this after login, passing the logged-in user's MongoDB _id
+    
     func connect(userId: String) {
         let serverURL = URL(string: "https://plantappbackend-933m.onrender.com")!
 
@@ -44,7 +44,7 @@ final class ChatSocketManager {
 
         socket = manager?.defaultSocket
 
-        // ── Event handlers ───────────────────────────────────
+        //MARK: Event handlers
         socket?.on(clientEvent: .connect) { [weak self] _, _ in
             print(" Socket connected")
             // Tell server who we are so it can route messages to us

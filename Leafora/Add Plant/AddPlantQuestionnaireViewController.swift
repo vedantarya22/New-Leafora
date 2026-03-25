@@ -167,9 +167,9 @@ class AddPlantQuestionnaireViewController: UIViewController,
         }
     }
 
-    // ────────────────────────────────────────────
+    
     // MARK: - Update UI
-    // ────────────────────────────────────────────
+
 
     private func updateUI() {
         guard currentIndex < questions.count else { return }
@@ -201,9 +201,9 @@ class AddPlantQuestionnaireViewController: UIViewController,
         }
     }
 
-    // ────────────────────────────────────────────
+    
     // MARK: - Next Button
-    // ────────────────────────────────────────────
+   
 
     @IBAction func nextButtonTapped(_ sender: UIBarButtonItem) {
         let q = questions[currentIndex]
@@ -278,9 +278,9 @@ class AddPlantQuestionnaireViewController: UIViewController,
         }
     }
 
-    // ────────────────────────────────────────────
+    
     // MARK: - Date Converters (moved from individual VCs)
-    // ────────────────────────────────────────────
+  
 
     private func dateFromRepottingOptionText(_ text: String) -> Date? {
         let today = Date()
@@ -324,9 +324,9 @@ class AddPlantQuestionnaireViewController: UIViewController,
         }
     }
 
-    // ────────────────────────────────────────────
+    
     // MARK: - Segue
-    // ────────────────────────────────────────────
+   
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toNextScreen" {
@@ -336,9 +336,9 @@ class AddPlantQuestionnaireViewController: UIViewController,
         }
     }
 
-    // ────────────────────────────────────────────
+    
     // MARK: - CollectionView DataSource
-    // ────────────────────────────────────────────
+    
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard currentIndex < questions.count else { return 0 }
@@ -383,7 +383,7 @@ class AddPlantQuestionnaireViewController: UIViewController,
         let feedbackGenerator = UISelectionFeedbackGenerator()
         feedbackGenerator.selectionChanged()
 
-        print("✅ Selected \(q.id):", q.options[indexPath.row])
+        print(" Selected \(q.id):", q.options[indexPath.row])
     }
 
     // MARK: - CollectionView FlowLayout

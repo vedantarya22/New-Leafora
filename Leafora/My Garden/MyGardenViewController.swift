@@ -114,8 +114,7 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         let backgroundContainer = UIView(frame: view.bounds)
         backgroundContainer.layer.insertSublayer(gradientLayer, at: 0)
         
-        // Assign this to the collection view's backgroundView
-        // This ensures the gradient is ALWAYS behind the cells
+      
         myGardenCollectionView.backgroundView = backgroundContainer
     }
     

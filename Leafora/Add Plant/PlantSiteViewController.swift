@@ -185,7 +185,7 @@ class PlantSiteViewController: UIViewController,UICollectionViewDataSource,UICol
           if let cell = collectionView.cellForItem(at: indexPath) as? PlantLightCollectionViewCell{
               cell.animateSelection()
           }
-        print("✅ Selected site:", selectedSite ?? "None")
+        print(" Selected site:", selectedSite ?? "None")
     }
     
     func presentCustomSiteModal() {
@@ -210,7 +210,7 @@ class PlantSiteViewController: UIViewController,UICollectionViewDataSource,UICol
                   // Reload UI
                   self.siteOptionsCollectionView.reloadData()
                   
-                  print("✅ Custom site selected:", customName)
+                  print(" Custom site selected:", customName)
               }
               
               present(vc, animated: true)
