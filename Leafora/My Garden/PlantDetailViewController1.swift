@@ -90,7 +90,7 @@ class PlantDetailViewController_New: UIViewController {
             (icon: "chart.bar.fill",
              title: "Difficulty",
              value: plant.difficulty.displayName,
-             color: UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0)),     // Terracotta
+             color: colorForDifficulty(plant.difficulty.displayName)),
             
             (icon: "calendar",
              title: "Date Added",
@@ -104,6 +104,15 @@ class PlantDetailViewController_New: UIViewController {
             (icon: "arrow.up.bin.fill",  title: "Repotting",   steps: buildRepottingSteps(from: plant),  color: UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0)),
             (icon: "scissors",           title: "Pruning",     steps: buildPruningSteps(from: plant),     color: UIColor(red: 0.82, green: 0.47, blue: 0.38, alpha: 1.0))
         ]
+    }
+    
+    // MARK: - Color Helpers (matching Add Plant page)
+    private func colorForDifficulty(_ difficulty: String) -> UIColor {
+        let text = difficulty.lowercased()
+        if text.contains("easy") { return .systemGreen }
+        if text.contains("moderate") { return .systemOrange }
+        if text.contains("hard") || text.contains("advanced") { return .systemRed }
+        return .systemGreen
     }
 
     // MARK: - Build Care Steps
@@ -209,7 +218,7 @@ class PlantDetailViewController_New: UIViewController {
         title = plantData?.plantName ?? "Plant Details"
         navigationController?.navigationBar.prefersLargeTitles = false
         let editButton = UIBarButtonItem(
-            image: UIImage(systemName: "square.and.pencil"),
+            title: "Edit",
             style: .plain,
             target: self,
             action: #selector(editButtonTapped)

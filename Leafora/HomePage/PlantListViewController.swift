@@ -11,7 +11,7 @@ class PlantListViewController: UIViewController,
     var allPlants: [Plant] = []
     
     // App green accent
-    private let appGreen = UIColor(red: 0.45, green: 0.70, blue: 0.55, alpha: 1.0)
+    private let appGreen = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0) 
     
     private let refreshControl = UIRefreshControl()
     
@@ -44,6 +44,9 @@ class PlantListViewController: UIViewController,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let botanicalGreen = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
+        view.backgroundColor = botanicalGreen
         
         self.title = taskType
         
@@ -88,6 +91,7 @@ class PlantListViewController: UIViewController,
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
         
         //  load from cache
         allPlants = PlantCatalogueCache.shared.plants

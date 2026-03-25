@@ -26,6 +26,11 @@ class PlantRowCell: UICollectionViewCell {
     
     
     private func setupUI() {
+        let botanicalGreen = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
+        backgroundColor = botanicalGreen
+        contentView.backgroundColor = botanicalGreen
+        mainContainerView.backgroundColor = botanicalGreen
+        
         // Round the corners of the foreground card
         mainContainerView.layer.cornerRadius = 16
         mainContainerView.layer.masksToBounds = true
