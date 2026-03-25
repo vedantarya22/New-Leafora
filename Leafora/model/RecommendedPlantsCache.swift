@@ -29,7 +29,7 @@ final class RecommendedPlantsCache {
     // Clears the cache
     func clear() {
         UserDefaults.standard.removeObject(forKey: key)
-        print("🗑️ RecommendedPlantsCache: Cache cleared.")
+        print(" RecommendedPlantsCache: Cache cleared.")
     }
     
     // Checks if cache exists

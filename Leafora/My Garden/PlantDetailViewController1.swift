@@ -95,7 +95,7 @@ class PlantDetailViewController_New: UIViewController {
             (icon: "calendar",
              title: "Date Added",
              value: dateStr,
-             color: UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0))      // Warm sand 
+             color: UIColor(red: 0.85, green: 0.65, blue: 0.38, alpha: 1.0))      // Warm sand
         ]
         
         careItems = [

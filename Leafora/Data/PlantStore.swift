@@ -16,7 +16,7 @@ final class PlantStore: ObservableObject {
         
         // Notify observers that plant data has changed
         NotificationCenter.default.post(name: .plantsDidChange, object: nil)
-        print("📢 Posted plantsDidChange notification")
+        print(" Posted plantsDidChange notification")
     }
 
     // MARK: - Published Data
@@ -50,7 +50,7 @@ final class PlantStore: ObservableObject {
             return
         }
         
-        print("🔄 Starting one-time migration: Cleaning up local imageData...")
+        print(" Starting one-time migration: Cleaning up local imageData...")
         
         // Clear all imageData from plants (they're already transient now)
         var didChange = false
@@ -75,9 +75,9 @@ final class PlantStore: ObservableObject {
 
     // MARK: - Add / Update Plant
     func addPlant(_ plant: UserPlant) {
-        print("➡️ ADD REQUEST: plantId=\(plant.plantId), siteID=\(plant.siteID), qty=\(plant.quantity)")
+        print(" ADD REQUEST: plantId=\(plant.plantId), siteID=\(plant.siteID), qty=\(plant.quantity)")
         plants.append(plant)
-        print("🆕 NEW ENTRY CREATED: ID=\(plant.id), qty=\(plant.quantity)")
+        print(" NEW ENTRY CREATED: ID=\(plant.id), qty=\(plant.quantity)")
         
         // Schedule notifications for the newly added plant (debounced)
         PlantNotificationManager.shared.scheduleAllCareNotificationsDebounced()
@@ -177,7 +177,7 @@ final class PlantStore: ObservableObject {
         do {
             let data = try JSONEncoder().encode(plants)
             try data.write(to: fileURL, options: [.atomic])
-            print("💾 Saved \(plants.count) plant entries")
+            print(" Saved \(plants.count) plant entries")
         } catch {
             print(" Failed to save plants:", error)
         }
@@ -204,7 +204,7 @@ final class PlantStore: ObservableObject {
 
     private func loadPlants() {
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
-            print("📂 No saved plants file found")
+            print(" No saved plants file found")
             return
         }
         do {
@@ -227,7 +227,7 @@ final class PlantStore: ObservableObject {
         case "pruning":     plants[index].lastPruned     = Date()
         case "fertilizing": plants[index].lastFertilized = Date()
         case "repotting":   plants[index].lastRepotted   = Date()
-        default: print("⚠️ Unknown task type:", taskType)
+        default: print(" Unknown task type:", taskType)
         }
         
         // Reschedule notifications with updated due dates (debounced)
@@ -283,7 +283,7 @@ extension PlantStore {
             $0.plantId == plantId && $0.siteID == siteID
         }) {
             plants.remove(at: index)
-            print("🗑️ Removed one plant of type:", plantId)
+            print(" Removed one plant of type:", plantId)
         }
     }
 }
