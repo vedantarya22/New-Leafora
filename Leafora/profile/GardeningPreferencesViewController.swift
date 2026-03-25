@@ -174,6 +174,7 @@ class GardeningPreferencesViewController: UIViewController, UITableViewDelegate,
         // open option picker
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         if let vc = storyboard.instantiateViewController(withIdentifier: "OptionSelectionViewController") as? OptionSelectionViewController {
+            vc.hidesBottomBarWhenPushed = true
             vc.preferenceType = item.type
             vc.currentValue = item.value
             
