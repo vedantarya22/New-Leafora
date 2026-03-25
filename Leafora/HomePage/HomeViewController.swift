@@ -557,8 +557,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             header.titleLabel.text = ""
         case 3: // Care Tasks
             header.titleLabel.text = "Today's Plant Care"
-            header.chevronButton.isHidden = false
-            header.didTapSeeAll = { [weak self] in self?.openCareTasksDetail() }
         default:
             header.titleLabel.text = ""
         }

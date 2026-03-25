@@ -11,7 +11,7 @@ class PlantListViewController: UIViewController,
     var allPlants: [Plant] = []
     
     // App green accent
-    private let appGreen = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0) 
+    private let appGreen = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0)
     
     private let refreshControl = UIRefreshControl()
     
