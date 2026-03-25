@@ -132,8 +132,8 @@ class SignUpViewController: UIViewController {
         ) { [weak self] success, message in
             sender.isEnabled = true
             if success {
-                print("✅ Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
-                // ✅ Navigate straight to main app — no need to log in again,
+                print(" Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
+                //  Navigate straight to main app — no need to log in again,
                 //    token + userId are already in Keychain from NetworkManager.signup
                 self?.navigateToMainApp()
             } else {
@@ -149,16 +149,16 @@ class SignUpViewController: UIViewController {
               let window = sceneDelegate.window
         else { return }
 
-        // ✅ New user — mark onboarding as seen so they go straight to main on next launch
+        //  New user — mark onboarding as seen so they go straight to main on next launch
         // Remove this line if you want new users to see onboarding after signup
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
 
-        // ✅ 1. Switch UI to main app
+        //  1. Switch UI to main app
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateInitialViewController()
         UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
 
-        // ✅ 2. Load all data (plants, sites, current user profile) in background
+        //  2. Load all data (plants, sites, current user profile) in background
         sceneDelegate.loadAppData()
     }
 

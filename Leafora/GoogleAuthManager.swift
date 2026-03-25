@@ -20,7 +20,7 @@ class GoogleAuthManager {
 
         GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
             if let error = error {
-                print("❌ Google Sign-In error: \(error.localizedDescription)")
+                print(" Google Sign-In error: \(error.localizedDescription)")
                 completion(false, "Google Sign-In cancelled or failed")
                 return
             }
@@ -31,7 +31,7 @@ class GoogleAuthManager {
                 return
             }
 
-            print("✅ Google token received, sending to backend...")
+            print(" Google token received, sending to backend...")
 
             // MARK: Send ID token to your backend
             NetworkManager.shared.googleAuth(idToken: idToken) { success, message in

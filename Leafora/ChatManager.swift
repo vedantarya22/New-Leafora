@@ -15,7 +15,7 @@ final class ChatManager {
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ChatModel")
         container.loadPersistentStores { _, error in
-            if let error = error { fatalError("❌ CoreData failed: \(error)") }
+            if let error = error { fatalError(" CoreData failed: \(error)") }
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
         return container

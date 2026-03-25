@@ -57,19 +57,19 @@ class PlantDetailViewController_New: UIViewController {
         let allPlants = PlantCatalogueCache.shared.plants
         
         guard let userPlant = userPlant else {
-            print("⚠️ No userPlant provided")
+            print(" No userPlant provided")
             return
         }
         
-        // ✅ Match by mongoId — userPlant.plantId stores MongoDB ObjectId
+        //  Match by mongoId — userPlant.plantId stores MongoDB ObjectId
         plantData = allPlants.first(where: { $0.mongoId == userPlant.plantId })
         
         guard let plant = plantData else {
-            print("⚠️ Could not find plant data for plantId: \(userPlant.plantId)")
+            print(" Could not find plant data for plantId: \(userPlant.plantId)")
             return
         }
         
-        print("✅ Loaded plant data for: \(plant.plantName)")
+        print(" Loaded plant data for: \(plant.plantName)")
         
         let count = countPlantsOfType(plantId: userPlant.plantId)
         let displayFormatter = DateFormatter()
@@ -282,7 +282,7 @@ class PlantDetailViewController_New: UIViewController {
             alert.addAction(UIAlertAction(title: "Remove", style: .destructive) { [weak self] _ in
                 guard let mongoId = userPlant.mongoId else { return }
                 NetworkManager.shared.removePlant(mongoId: mongoId) { success in
-                    guard success else { print("❌ Failed to delete plant"); return }
+                    guard success else { print(" Failed to delete plant"); return }
                     PlantStore.shared.removePlant(by: userPlant.id)
                     DispatchQueue.main.async { self?.navigationController?.popViewController(animated: true) }
                 }
@@ -295,7 +295,7 @@ class PlantDetailViewController_New: UIViewController {
             alert.addAction(UIAlertAction(title: "Remove 1 Plant", style: .default) { [weak self] _ in
                 guard let mongoId = userPlant.mongoId else { return }
                 NetworkManager.shared.removePlant(mongoId: mongoId) { success in
-                    guard success else { print("❌ Failed to delete plant"); return }
+                    guard success else { print(" Failed to delete plant"); return }
                     PlantStore.shared.removePlant(by: userPlant.id)
                     DispatchQueue.main.async { self?.navigationController?.popViewController(animated: true) }
                 }
@@ -303,7 +303,7 @@ class PlantDetailViewController_New: UIViewController {
             alert.addAction(UIAlertAction(title: "Remove All (\(count))", style: .destructive) { [weak self] _ in
                 guard let mongoSiteId = userPlant.mongoSiteId else { return }
                 NetworkManager.shared.removeAllPlantsOfType(plantId: userPlant.plantId, siteId: mongoSiteId) { success in
-                    guard success else { print("❌ Failed to delete all plants"); return }
+                    guard success else { print(" Failed to delete all plants"); return }
                     PlantStore.shared.removeAllPlants(plantId: userPlant.plantId, siteName: userPlant.siteName)
                     DispatchQueue.main.async { self?.navigationController?.popViewController(animated: true) }
                 }
@@ -385,10 +385,10 @@ extension PlantDetailViewController_New: UICollectionViewDataSource {
             if let data = userPlant?.imageData, let customImage = UIImage(data: data) {
                 cell.plantImageView.image = customImage
             } else if let urlString = userPlant?.imageUrl, let url = URL(string: urlString) {
-                // ✅ Cloudinary URL from userPlant
+                //  Cloudinary URL from userPlant
                 cell.plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
             } else if let plant = plantData, let url = URL(string: plant.imageName) {
-                // ✅ Fallback to catalogue image
+                //  Fallback to catalogue image
                 cell.plantImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "leaf.fill"))
             } else {
                 cell.plantImageView.image = UIImage(systemName: "leaf.fill")

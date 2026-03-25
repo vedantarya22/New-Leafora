@@ -90,7 +90,7 @@ struct CareFrequency: Codable {
     let display: String
     let days: Int
     let method: String?
-    let steps: [String]? // ✅ Changed to array of strings
+    let steps: [String]? //  Changed to array of strings
 }
 
 struct SoilType: Codable {

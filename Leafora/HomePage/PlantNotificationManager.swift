@@ -48,11 +48,11 @@ final class PlantNotificationManager {
     private func scheduleAllCareNotifications() {
         // Skip if app is backgrounding to avoid freeze
         guard UIApplication.shared.applicationState == .active else {
-            print("⏸️ Skipping notification scheduling - app not active")
+            print("Skipping notification scheduling - app not active")
             return
         }
         
-        print("📅 Scheduling all care notifications...")
+        print("Scheduling all care notifications...")
         
         // Clear existing plant-care notifications first
         notificationCenter.getPendingNotificationRequests { [weak self] requests in

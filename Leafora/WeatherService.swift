@@ -24,16 +24,16 @@ class WeatherService {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("❌ Network Error: \(error.localizedDescription)")
+                print(" Network Error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             // Debugging: Print the status code
             if let httpResponse = response as? HTTPURLResponse {
-                print("🌐 API Response Code: \(httpResponse.statusCode)")
+                print(" API Response Code: \(httpResponse.statusCode)")
                 if httpResponse.statusCode == 401 {
-                    print("⚠️ Warning: Your API Key is either invalid or not yet activated by OpenWeatherMap. (Wait 1-2 hours)")
+                    print(" Warning: Your API Key is either invalid or not yet activated by OpenWeatherMap. (Wait 1-2 hours)")
                 }
             }
 
@@ -41,7 +41,7 @@ class WeatherService {
             
             // Debugging: Print the raw JSON to see if it's empty
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("📦 Received JSON: \(jsonString)")
+                print(" Received JSON: \(jsonString)")
             }
             
             do {
@@ -53,7 +53,7 @@ class WeatherService {
                 )
                 completion(.success(weatherInfo))
             } catch {
-                print("❌ Decoding Error: \(error)")
+                print(" Decoding Error: \(error)")
                 completion(.failure(error))
             }
         }.resume()
