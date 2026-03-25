@@ -61,12 +61,12 @@ extension NetworkManager {
 
                 KeychainManager.shared.saveToken(token)
                 KeychainManager.shared.saveUserId(userId)
-                print("✅ Signup success, userId: \(userId)")
+                print(" Signup success, userId: \(userId)")
                 DispatchQueue.main.async { completion(true, nil) }
 
             } else {
                 let message = json["message"] as? String ?? "Signup failed"
-                print("❌ Signup error: \(message)")
+                print(" Signup error: \(message)")
                 DispatchQueue.main.async { completion(false, message) }
             }
         }.resume()
@@ -97,12 +97,12 @@ extension NetworkManager {
                 SiteStore.shared.setSites([])
                 PlantCatalogueCache.shared.invalidate()
 
-                print("✅ Login success, userId: \(userId)")
+                print(" Login success, userId: \(userId)")
                 DispatchQueue.main.async { completion(true, nil) }
 
             } else {
                 let message = json["message"] as? String ?? "Login failed"
-                print("❌ Login error: \(message)")
+                print(" Login error: \(message)")
                 DispatchQueue.main.async { completion(false, message) }
             }
         }.resume()
@@ -149,7 +149,7 @@ extension NetworkManager {
         guard let url = URL(string: "\(baseURL)/plants") else { return }
         session.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("❌ Network error: \(error.localizedDescription)")
+                print(" Network error: \(error.localizedDescription)")
             }
             if let httpResponse = response as? HTTPURLResponse {
                 print("📡 Status code: \(httpResponse.statusCode)")
@@ -270,7 +270,7 @@ extension NetworkManager {
                 print("📦 userPlant response: \(raw)")
             }
             if let error = error {
-                print("❌ userPlant network error: \(error.localizedDescription)")
+                print(" userPlant network error: \(error.localizedDescription)")
             }
 
             guard let data = data,
@@ -347,7 +347,7 @@ extension NetworkManager {
 
         let urlString = baseURL + "/upload"
         guard let url = URL(string: urlString) else {
-            print("❌ Invalid upload URL: \(urlString)")
+            print(" Invalid upload URL: \(urlString)")
             completion(nil)
             return
         }
@@ -360,7 +360,7 @@ extension NetworkManager {
 
         session.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("❌ Upload error: \(error.localizedDescription)")
+                print(" Upload error: \(error.localizedDescription)")
                 DispatchQueue.main.async { completion(nil) }
                 return
             }
@@ -369,7 +369,7 @@ extension NetworkManager {
                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let imageUrl = json["url"] as? String
             else {
-                print("❌ Failed to parse upload response")
+                print(" Failed to parse upload response")
                 DispatchQueue.main.async { completion(nil) }
                 return
             }
@@ -390,7 +390,7 @@ extension NetworkManager {
        guard let url = URL(string: baseURL + "/posts/feed?page=\(page)") else { return }
        let request = makeRequest(url: url, method: "GET")
        session.dataTask(with: request) { data, response, error in
-           if let error = error { print("❌ fetchFeed error: \(error.localizedDescription)") }
+           if let error = error { print(" fetchFeed error: \(error.localizedDescription)") }
            guard let data = data else { DispatchQueue.main.async { completion(nil) }; return }
            let feed = try? JSONDecoder().decode(FeedResponse.self, from: data)
            DispatchQueue.main.async { completion(feed) }
@@ -406,7 +406,7 @@ extension NetworkManager {
        ])
        session.dataTask(with: request) { data, response, error in
            if let error = error {
-               print("❌ createPost network error: \(error.localizedDescription)")
+               print(" createPost network error: \(error.localizedDescription)")
                DispatchQueue.main.async { completion(nil) }
                return
            }
@@ -414,7 +414,7 @@ extension NetworkManager {
                print("📡 createPost status: \(http.statusCode)")
            }
            guard let data = data else {
-               print("❌ createPost: no data returned")
+               print(" createPost: no data returned")
                DispatchQueue.main.async { completion(nil) }
                return
            }
@@ -426,7 +426,7 @@ extension NetworkManager {
                print("✅ createPost decoded successfully: \(post.id)")
                DispatchQueue.main.async { completion(post) }
            } catch {
-               print("❌ createPost decode error: \(error)")
+               print(" createPost decode error: \(error)")
                DispatchQueue.main.async { completion(nil) }
            }
        }.resume()
@@ -447,7 +447,7 @@ extension NetworkManager {
        guard let url = URL(string: baseURL + "/posts/\(postId)/like") else { return }
        let request = makeRequest(url: url, method: "POST")
        session.dataTask(with: request) { data, _, error in
-           if let error = error { print("❌ toggleLike error: \(error.localizedDescription)") }
+           if let error = error { print(" toggleLike error: \(error.localizedDescription)") }
            guard let data = data,
                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
            else { DispatchQueue.main.async { completion(nil, nil) }; return }
@@ -462,7 +462,7 @@ extension NetworkManager {
        guard let url = URL(string: baseURL + "/posts/\(postId)/save") else { return }
        let request = makeRequest(url: url, method: "POST")
        session.dataTask(with: request) { data, _, error in
-           if let error = error { print("❌ toggleSave error: \(error.localizedDescription)") }
+           if let error = error { print(" toggleSave error: \(error.localizedDescription)") }
            guard let data = data,
                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
            else { DispatchQueue.main.async { completion(nil) }; return }
@@ -650,7 +650,7 @@ extension NetworkManager {
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    print("❌ Google auth network error: \(error)")
+                    print(" Google auth network error: \(error)")
                     completion(false, "Network error")
                     return
                 }

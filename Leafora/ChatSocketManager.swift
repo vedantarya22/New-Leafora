@@ -46,17 +46,17 @@ final class ChatSocketManager {
 
         // ── Event handlers ───────────────────────────────────
         socket?.on(clientEvent: .connect) { [weak self] _, _ in
-            print("✅ Socket connected")
+            print(" Socket connected")
             // Tell server who we are so it can route messages to us
             self?.socket?.emit("register", userId)
         }
 
         socket?.on(clientEvent: .disconnect) { _, _ in
-            print("❌ Socket disconnected")
+            print(" Socket disconnected")
         }
 
         socket?.on(clientEvent: .error) { data, _ in
-            print("⚠️ Socket error: \(data)")
+            print(" Socket error: \(data)")
         }
 
         // Incoming message from another user
@@ -69,7 +69,7 @@ final class ChatSocketManager {
                 let text       = payload["text"]       as? String,
                 let tsString   = payload["timestamp"]  as? String
             else {
-                print("⚠️ Failed to parse incoming message: \(payload)")
+                print(" Failed to parse incoming message: \(payload)")
                 return
             }
 
@@ -92,7 +92,7 @@ final class ChatSocketManager {
     // MARK: - Send
     func sendMessage(to receiverId: String, text: String, messageId: String) {
         guard socket?.status == .connected else {
-            print("⚠️ Socket not connected — cannot send")
+            print(" Socket not connected — cannot send")
             return
         }
         let payload: [String: Any] = [

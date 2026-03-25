@@ -13,7 +13,7 @@ class PlantCatalogueCache {
            self.plants = plants
            self.isFetched = true
        }
-    // ✅ Fetches once, returns cached after that
+    //  Fetches once, returns cached after that
     func getPlants(completion: @escaping ([Plant]) -> Void) {
         if isFetched && !plants.isEmpty {
             print("📦 Returning \(plants.count) plants from cache")
@@ -23,7 +23,7 @@ class PlantCatalogueCache {
         
         NetworkManager.shared.fetchAllPlants { [weak self] fetchedPlants in
             guard let self = self, let fetchedPlants = fetchedPlants else {
-                print("❌ Failed to fetch plants from backend")
+                print(" Failed to fetch plants from backend")
                 completion([])
                 return
             }
@@ -34,12 +34,12 @@ class PlantCatalogueCache {
         }
     }
     
-    // ✅ Same as JSONLoader.plant(by:) — used by TaskDueEngine etc
+    //  Same as JSONLoader.plant(by:) — used by TaskDueEngine etc
     func getPlant(byMongoId mongoId: String) -> Plant? {
         return plants.first { $0.mongoId == mongoId }
     }
     
-    // ✅ Call this to force refresh if needed
+    //  Call this to force refresh if needed
     func invalidate() {
         isFetched = false
         plants = []

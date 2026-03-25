@@ -16,22 +16,22 @@ struct PlantQuestionSession {
     var pruningAnswer: String?
     var lastPrunedDate: Date?
 
-    // 🔹 direct mappings (user choices)
+    //  direct mappings (user choices)
     var siteName: String?
     var siteIcon: String?
     var plantCount: Int?
     var plantLight: String?
     var imageData: Data?
 
-    // 🔹 answers shown to user
+    //  answers shown to user
     var wateringAnswer: String?
     var repottingAnswer: String?
 
-    // 🌱 smart timestamps (NEW — for reminders & insights)
+    //  smart timestamps (NEW — for reminders & insights)
     var lastWateredDate: Date?
     var lastRepottedDate: Date?
 
-    // ✏️ Edit mode support
+    //  Edit mode support
     var isEditMode: Bool = false
     var editingBatchSiteID: UUID? = nil
     var editingBatchCreatedAt: Date? = nil

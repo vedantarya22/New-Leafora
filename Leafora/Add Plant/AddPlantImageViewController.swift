@@ -159,7 +159,7 @@ class AddPlantImageViewController: UIViewController,
             }
             
             if originalBatch.isEmpty {
-                print("❌ Could not find original batch to edit.")
+                print(" Could not find original batch to edit.")
                 return
             }
             
@@ -206,7 +206,7 @@ class AddPlantImageViewController: UIViewController,
         guard let cachedPlant = PlantCatalogueCache.shared.plants.first(where: {
             $0.plantId == session.plantId
         }), let plantMongoId = cachedPlant.mongoId else {
-            print("❌ Plant not found in cache or missing mongoId")
+            print(" Plant not found in cache or missing mongoId")
             return
         }
         
@@ -221,7 +221,7 @@ class AddPlantImageViewController: UIViewController,
             
             NetworkManager.shared.addSite(name: siteName, icon: siteIcon) { siteMongoId in
                 guard let siteMongoId = siteMongoId else {
-                    print("❌ Failed to create/get site")
+                    print(" Failed to create/get site")
                     return
                 }
                 
@@ -277,7 +277,7 @@ class AddPlantImageViewController: UIViewController,
                         if let mongoId = mongoId {
                             print("✅ Plant \(index) synced to MongoDB: \(mongoId)")
                         } else {
-                            print("❌ Failed to sync plant \(index)")
+                            print(" Failed to sync plant \(index)")
                         }
                     }
                 }

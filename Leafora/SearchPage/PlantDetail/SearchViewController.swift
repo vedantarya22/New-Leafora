@@ -125,19 +125,7 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         gradientLayer.frame = view.bounds
     }
     
-//    private func setupGradient() {
-//        // 1. Define the Colors
-//        let topColor = UIColor(red: 0.80, green: 0.93, blue: 0.80, alpha: 1.0).cgColor
-//        let bottomColor = UIColor.white.cgColor
-//
-//        // 2. Setup the Layer
-//        gradientLayer.colors = [topColor, bottomColor]
-//        gradientLayer.locations = [0.0, 0.6] // Green stops at 60%, rest is white
-//        gradientLayer.frame = view.bounds
-//
-//        // 3. Add it behind everything
-//        view.layer.insertSublayer(gradientLayer, at: 0)
-//    }
+
     
     private func loadData() {
         isLoading = true
@@ -569,7 +557,7 @@ extension SearchViewController {
 
     private func showQuickAddSuccess(plantName: String, siteName: String) {
         let alert = UIAlertController(
-            title: "🌿 Plant Added!",
+            title: " Plant Added!",
             message: "\(plantName) has been added to \(siteName).\n\nVisit the plant in My Garden to answer care questions.",
             preferredStyle: .alert
         )

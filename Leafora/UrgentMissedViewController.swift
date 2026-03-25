@@ -80,10 +80,10 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             
         default:
             filteredPlants = []
-            print("⚠️ Unknown urgency level: \(urgencyLevel)")
+            print(" Unknown urgency level: \(urgencyLevel)")
         }
         
-        print("✅ [UrgentMissedVC] Filtered \(filteredPlants.count) \(urgencyLevel) plants")
+        print(" [UrgentMissedVC] Filtered \(filteredPlants.count) \(urgencyLevel) plants")
         collectionView.reloadData()
     }
     
@@ -121,7 +121,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         guard let lastDate = lastDate else { return false }
         
         if DEBUG_FORCE_OVERDUE {
-            return true   // 👈 force urgent for testing
+            return true   //  force urgent for testing
         }
 
         
@@ -137,7 +137,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         guard let lastDate = lastDate else { return false }
         
         if DEBUG_FORCE_OVERDUE {
-                return true   // 👈 force missed for testing
+                return true   //  force missed for testing
             }
 
         
@@ -253,13 +253,13 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             
             let completedPlant = self.filteredPlants[currentIndexPath.row]
             
-            // ✅ Mark task completed in PlantStore
+            //  Mark task completed in PlantStore
             self.markTaskDone(for: completedPlant)
             
-            // ✅ Remove from list instantly
+            //  Remove from list instantly
             self.filteredPlants.remove(at: currentIndexPath.row)
             
-            // ✅ Animate deletion
+            //  Animate deletion
             self.collectionView.performBatchUpdates({
                 self.collectionView.deleteItems(at: [currentIndexPath])
             })
@@ -294,7 +294,7 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     //             }
     //         })
     //
-    //          print("✅ Completed \(taskToComplete) for \(completedPlant.plantId)")
+    //          print("Completed \(taskToComplete) for \(completedPlant.plantId)")
     //      }
     //
     private func showSwipeHint() {

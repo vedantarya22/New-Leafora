@@ -21,7 +21,7 @@ final class PlantStore: ObservableObject {
 
     // MARK: - Published Data
     @Published private(set) var plants: [UserPlant] = [] {
-        didSet { savePlantsAsync() }  // ✅ Now async to prevent main thread blocking
+        didSet { savePlantsAsync() }  //  Now async to prevent main thread blocking
     }
     
     // MARK: - Async Save Debouncing
@@ -109,7 +109,7 @@ final class PlantStore: ObservableObject {
         plants.filter { $0.siteName == siteName }
     }
 
-    // ✅ Smart fetch — mongoSiteId first, siteName fallback
+    //  Smart fetch — mongoSiteId first, siteName fallback
     func plants(for site: MyGardenSite) -> [UserPlant] {
         if let mongoId = site.mongoId {
             let result = plants.filter { $0.mongoSiteId == mongoId }
@@ -120,7 +120,7 @@ final class PlantStore: ObservableObject {
 
     // MARK: - Grouped Plants
 
-    // ✅ Smart grouped — uses site object
+    //  Smart grouped — uses site object
     func groupedPlants(for site: MyGardenSite) -> [(plant: UserPlant, count: Int)] {
         return makeGrouped(from: plants(for: site))
     }
@@ -165,7 +165,7 @@ final class PlantStore: ObservableObject {
     // MARK: - Update Plant
     func updatePlant(_ updatedPlant: UserPlant) {
         guard let index = plants.firstIndex(where: { $0.id == updatedPlant.id }) else {
-            print("❌ Plant not found for update")
+            print(" Plant not found for update")
             return
         }
         plants[index] = updatedPlant
@@ -179,7 +179,7 @@ final class PlantStore: ObservableObject {
             try data.write(to: fileURL, options: [.atomic])
             print("💾 Saved \(plants.count) plant entries")
         } catch {
-            print("❌ Failed to save plants:", error)
+            print(" Failed to save plants:", error)
         }
     }
     
@@ -212,14 +212,14 @@ final class PlantStore: ObservableObject {
             plants = try JSONDecoder().decode([UserPlant].self, from: data)
             print("✅ Loaded \(plants.count) plant entries")
         } catch {
-            print("❌ Failed to load plants:", error)
+            print(" Failed to load plants:", error)
         }
     }
 
     // MARK: - Task Completion
     func markTaskDone(userPlantID: UUID, taskType: String) {
         guard let index = plants.firstIndex(where: { $0.id == userPlantID }) else {
-            print("❌ Plant not found with ID:", userPlantID)
+            print(" Plant not found with ID:", userPlantID)
             return
         }
         switch taskType.lowercased() {
@@ -240,7 +240,7 @@ final class PlantStore: ObservableObject {
         plants.removeAll { $0.id == id }
     }
 
-    // ✅ Smart remove — mongoSiteId first, siteName fallback
+    //  mongoSiteId first, siteName fallback
     func removeAllPlants(for site: MyGardenSite) {
         if let mongoId = site.mongoId {
             plants.removeAll { $0.mongoSiteId == mongoId }

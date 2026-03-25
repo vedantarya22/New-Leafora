@@ -14,7 +14,7 @@ struct UserPlant: Codable, Identifiable {
     var siteID: UUID = UUID()       // local only
 
     var imageData: Data?            // local only
-    var imageUrl: String?           // ✅ Cloudinary URL from MongoDB
+    var imageUrl: String?           //  Cloudinary URL from MongoDB
 
     var lightRequirement: String?
     var watering: String?
@@ -30,11 +30,11 @@ struct UserPlant: Codable, Identifiable {
 
     enum CodingKeys: String, CodingKey {
         case mongoId        = "_id"
-        case plantId        = "plantId"       // ✅ matches JSON
+        case plantId        = "plantId"       //  matches JSON
         case plantName      = "plantName"  
-        case mongoSiteId    = "siteId"        // ✅ matches JSON
-        case siteName       = "siteName"      // ✅ matches JSON
-        case imageUrl       = "imageData"     // ✅ Cloudinary URL stored as imageData in MongoDB
+        case mongoSiteId    = "siteId"        //  matches JSON
+        case siteName       = "siteName"      //  matches JSON
+        case imageUrl       = "imageData"     //  Cloudinary URL stored as imageData in MongoDB
         case lightRequirement
         case watering
         case repotting
@@ -45,6 +45,6 @@ struct UserPlant: Codable, Identifiable {
         case lastPruned
         case lastFertilized
         case lastRepotted
-        // ✅ id, siteID, imageData (Data) excluded — local only
+        //  id, siteID, imageData (Data) excluded — local only
     }
 }

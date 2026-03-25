@@ -7,11 +7,11 @@ import UIKit
 
 extension UIImageView {
 
-    /// Loads an image from a remote URL string or a local asset/SF Symbol name.
-    /// - Handles Cloudinary URLs (https://...)
-    /// - Falls back to UIImage(named:) for local assets
-    /// - Falls back to UIImage(systemName:) for SF Symbols
-    /// - Shows a placeholder if everything fails
+    // Loads an image from a remote URL string or a local asset/SF Symbol name.
+    
+    // - Falls back to UIImage(named:) for local assets
+    // - Falls back to UIImage(systemName:) for SF Symbols
+    // - Shows a placeholder if everything fails
     func configureImage(with string: String?) {
         guard let string = string, !string.isEmpty else {
             setPlaceholder()
@@ -67,7 +67,7 @@ extension UIImageView {
             // Cache the raw image
             ImageCache.shared.set(image, for: urlString)
 
-            // ✅ iOS 15+: Decode the heavy image on a background thread before touching the UI
+            
             if #available(iOS 15.0, *) {
                 image.prepareForDisplay { preparedImage in
                     DispatchQueue.main.async {

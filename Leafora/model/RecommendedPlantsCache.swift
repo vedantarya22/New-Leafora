@@ -15,24 +15,24 @@ final class RecommendedPlantsCache {
     
     private init() {}
     
-    /// Savess a list of plant IDs to UserDefaults
+    // Savess a list of plant IDs to UserDefaults
     func save(plantIDs: [String]) {
         UserDefaults.standard.set(plantIDs, forKey: key)
-        print("✅ RecommendedPlantsCache: Saved \(plantIDs.count) plant IDs.")
+        print(" RecommendedPlantsCache: Saved \(plantIDs.count) plant IDs.")
     }
     
-    /// Retrieves the cached list of plant IDs
+    // Retrieves the cached list of plant IDs
     func get() -> [String]? {
         return UserDefaults.standard.stringArray(forKey: key)
     }
-    
-    /// Clears the cache
+
+    // Clears the cache
     func clear() {
         UserDefaults.standard.removeObject(forKey: key)
         print("🗑️ RecommendedPlantsCache: Cache cleared.")
     }
     
-    /// Checks if cache exists
+    // Checks if cache exists
     var hasCache: Bool {
         return UserDefaults.standard.stringArray(forKey: key) != nil
     }

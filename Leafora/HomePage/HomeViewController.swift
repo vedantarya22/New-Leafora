@@ -138,10 +138,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc private func handlePlantsDidChange() {
-        print("🔄 Plants data changed - reloading Home screen")
+        print(" Plants data changed - reloading Home screen")
         
         // Hide loading spinner
         isLoadingData = false
+        
         loadingSpinner?.stopAnimating()
         
         // Reload UI with new data
@@ -191,7 +192,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         // Timeout: if weather doesn't load in 5 seconds, fall back to generic tips
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
             guard let self = self, self.isLoadingWeather else { return }
-            print("⏰ Weather timeout — showing generic tips")
+            print(" Weather timeout — showing generic tips")
             self.isLoadingWeather = false
             self.currentWeather = nil
             self.collectionView.reloadSections(IndexSet(integer: 0))

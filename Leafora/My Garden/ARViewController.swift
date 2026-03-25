@@ -47,13 +47,13 @@ class ARViewController: UIViewController {
     private var models: [ModelItem] = []
     private var selectedModel: ModelItem?
     
-    /// Pass a plant name here to auto-select its corresponding AR model
+    // Pass a plant name here to auto-select its corresponding AR model
     var targetPlantName: String?
 
-    /// All currently placed plants — supports unlimited multi-placement.
+    // All currently placed plants — supports unlimited multi-placement.
     private var placedPlants: [PlacedPlant] = []
 
-    /// Running total for the placement counter badge.
+    // Running total for the placement counter badge.
     private var placementCount: Int = 0 {
         didSet { updatePlacementBadge() }
     }
@@ -615,17 +615,23 @@ extension ARViewController: ARSessionDelegate {
             guard self.isLightPanelVisible else { return }
 
             switch intensity {
-            case ..<300:
-                self.compactLightLabel.text      = "🌙 Too Dark"
+            case ..<100:
+                self.compactLightLabel.text      = " Too Dark for any plant"
+                self.compactLightLabel.textColor = .systemRed
+            case 100..<500:
+                self.compactLightLabel.text      = " Low Light "
                 self.compactLightLabel.textColor = .systemOrange
-            case 300..<800:
-                self.compactLightLabel.text      = "🌤 Low Light"
+            case 500..<1000:
+                self.compactLightLabel.text      = " Medium Light "
                 self.compactLightLabel.textColor = .systemYellow
-            case 800...2000:
-                self.compactLightLabel.text      = "✨ Perfect Light"
+            case 1000..<2500:
+                self.compactLightLabel.text      = " Bright Indirect "
                 self.compactLightLabel.textColor = .systemGreen
+            case 2500..<5000:
+                self.compactLightLabel.text      = " Bright Direct"
+                self.compactLightLabel.textColor = .systemMint
             default:
-                self.compactLightLabel.text      = "☀️ Too Bright"
+                self.compactLightLabel.text      = " Too Bright "
                 self.compactLightLabel.textColor = .systemRed
             }
         }

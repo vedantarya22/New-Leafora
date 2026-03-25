@@ -44,7 +44,7 @@ class SiteDetailCollectionViewCell: UICollectionViewCell {
             if let imageData = userPlant.imageData,
                let userImage = UIImage(data: imageData) {
                 plantImageView.image = userImage
-                print("✅ Using user-uploaded image for:", plant?.plantName ?? "plant")
+                print(" Using user-uploaded image for:", plant?.plantName ?? "plant")
             }
             // PRIORITY 2: Fall back to Cloudinary URL (remote)
             else if let urlString = userPlant.imageUrl,
@@ -54,19 +54,19 @@ class SiteDetailCollectionViewCell: UICollectionViewCell {
                     placeholderImage: UIImage(systemName: "leaf.fill"),
                     options: [.retryFailed, .scaleDownLargeImages]
                 )
-                print("🌐 Loading Cloudinary image for:", plant?.plantName ?? "plant")
+                print(" Loading Cloudinary image for:", plant?.plantName ?? "plant")
             }
             // PRIORITY 3: Fall back to default plant catalogue image
             else if let plant = plant {
                 plantImageView.image = UIImage(named: plant.imageName)
-                print("📁 Using default catalogue image for:", plant.plantName)
+                print(" Using default catalogue image for:", plant.plantName)
             }
             // PRIORITY 4: Placeholder if no image available
             else {
                 let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
                 plantImageView.image = UIImage(systemName: "leaf.fill", withConfiguration: config)
                 plantImageView.tintColor = .systemGray3
-                print("⚠️ No image available, using placeholder")
+                print(" No image available, using placeholder")
             }
             
             // Optional: Show quantity badge if > 1
