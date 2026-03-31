@@ -16,12 +16,16 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var likesCountLabel: UILabel!
     @IBOutlet weak var commentsCountLabel: UILabel!
-    @IBOutlet weak var captionLabel: UILabel!
+    @IBOutlet weak var captionLabel: UITextView!
     @IBOutlet weak var bottomUsernameLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var menuButton: UIButton!
     @IBOutlet weak var seeMoreButton: UIButton!
     @IBOutlet weak var viewAllCommentsButton: UIButton!
+    
+    @IBOutlet weak var badgeStackView: UIStackView!
+    @IBOutlet weak var badgeDateLabel: UILabel!
+    @IBOutlet weak var badgeLocationButton: UIButton!
 
     // MARK: - Identity
     static let identifier = "CommunityPostCollectionViewCell"
@@ -35,6 +39,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     var onProfileTapped: (() -> Void)?
     var onMenuTapped:    (() -> Void)?
     var onSeeMoreTapped: (() -> Void)?
+    var onLocationTapped: (() -> Void)?
 
     // MARK: - Local UI State
     private var isExpanded: Bool = false
@@ -72,8 +77,16 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         profileImageView.addGestureRecognizer(profileTap)
 
         let captionTap = UITapGestureRecognizer(target: self, action: #selector(captionLabelTapped))
+        captionTap.cancelsTouchesInView = false
         captionLabel.isUserInteractionEnabled = true
         captionLabel.addGestureRecognizer(captionTap)
+        
+        captionLabel.linkTextAttributes = [
+            .foregroundColor: UIColor.brandGreen,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        captionLabel.textContainerInset = .zero
+        captionLabel.textContainer.lineFragmentPadding = 0
     }
 
     private func setupDoubleTapGesture() {
@@ -92,7 +105,9 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
         self.isExpanded    = isExpanded
         self.canExpand     = post.caption.count > 45
 
-        captionLabel.numberOfLines = isExpanded ? 0 : 1
+        captionLabel.textContainer.maximumNumberOfLines = isExpanded ? 0 : 1
+        captionLabel.textContainer.lineBreakMode = isExpanded ? .byWordWrapping : .byTruncatingTail
+        
         seeMoreButton.isHidden     = isExpanded ? true : !canExpand
 
         // counts come from current post
@@ -113,6 +128,28 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
 
         // save state from post model
         setSaveButton(saved: post.isSaved)
+        
+        if post.isPlantationDrive == true {
+            contentView.backgroundColor = UIColor(red: 0.90, green: 0.97, blue: 0.90, alpha: 1.0)
+            contentView.layer.borderColor = UIColor.brandGreen.cgColor
+            contentView.layer.borderWidth = 2.0
+            contentView.layer.cornerRadius = 12
+            badgeStackView.isHidden = false
+            
+            if let dateString = post.plantationDate, let date = ISO8601DateFormatter().date(from: dateString) {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "MMM d, h:mm a"
+                badgeDateLabel.text = "🌱 \(formatter.string(from: date))"
+            } else {
+                badgeDateLabel.text = "🌱 TBA"
+            }
+            badgeLocationButton.setTitle("📍 \(post.locationName ?? "Unknown")", for: .normal)
+        } else {
+            contentView.backgroundColor = .systemBackground
+            contentView.layer.borderWidth = 0
+            contentView.layer.cornerRadius = 0
+            badgeStackView.isHidden = true
+        }
     }
 
     // MARK: - Button State Helpers
@@ -152,6 +189,7 @@ class CommunityPostCollectionViewCell: UICollectionViewCell {
     @IBAction func menuButtonTapped(_ sender: UIButton) { onMenuTapped?() }
     @IBAction func seeMoreTapped(_ sender: UIButton)    { onSeeMoreTapped?() }
     @IBAction func viewAllCommentsTapped(_ sender: UIButton) { onCommentTapped?() }
+    @IBAction func locationButtonTapped(_ sender: UIButton) { onLocationTapped?() }
 
     @objc private func profileImageTapped() { onProfileTapped?() }
     @objc private func captionLabelTapped() { if canExpand { onSeeMoreTapped?() } }

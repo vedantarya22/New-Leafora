@@ -108,7 +108,7 @@ class PostRepository {
     }
 
     // MARK: - Create New Post
-    func addNewPost(caption: String, image: UIImage, completion: @escaping (Bool) -> Void) {
+    func addNewPost(caption: String, image: UIImage, isPlantationDrive: Bool = false, plantationDate: String? = nil, locationName: String? = nil, locationLat: Double? = nil, locationLng: Double? = nil, completion: @escaping (Bool) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             print("Could not compress image")
             completion(false)
@@ -122,7 +122,7 @@ class PostRepository {
                 return
             }
 
-            NetworkManager.shared.createPost(imageUrl: imageUrl, caption: caption) { post in
+            NetworkManager.shared.createPost(imageUrl: imageUrl, caption: caption, isPlantationDrive: isPlantationDrive, plantationDate: plantationDate, locationName: locationName, locationLat: locationLat, locationLng: locationLng) { post in
                 guard let post = post else {
                     print("createPost failed")
                     DispatchQueue.main.async { completion(false) }

@@ -398,12 +398,19 @@ extension NetworkManager {
    }
 
    // MARK: - Create Post
-   func createPost(imageUrl: String, caption: String, completion: @escaping (Post?) -> Void) {
+   func createPost(imageUrl: String, caption: String, isPlantationDrive: Bool? = false, plantationDate: String? = nil, locationName: String? = nil, locationLat: Double? = nil, locationLng: Double? = nil, completion: @escaping (Post?) -> Void) {
        guard let url = URL(string: baseURL + "/posts") else { return }
-       let request = makeRequest(url: url, method: "POST", body: [
+       var body: [String: Any] = [
            "postImageString": imageUrl,
            "caption":         caption
-       ])
+       ]
+       if let isPlantationDrive = isPlantationDrive { body["isPlantationDrive"] = isPlantationDrive }
+       if let plantationDate = plantationDate { body["plantationDate"] = plantationDate }
+       if let locationName = locationName { body["locationName"] = locationName }
+       if let locationLat = locationLat { body["locationLat"] = locationLat }
+       if let locationLng = locationLng { body["locationLng"] = locationLng }
+       
+       let request = makeRequest(url: url, method: "POST", body: body)
        session.dataTask(with: request) { data, response, error in
            if let error = error {
                print(" createPost network error: \(error.localizedDescription)")

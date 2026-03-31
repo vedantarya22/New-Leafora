@@ -183,12 +183,26 @@ extension CommunityViewController: UICollectionViewDataSource {
             self.postsCollectionView.reloadItems(at: [indexPath])
         }
 
+        cell.onLocationTapped = { [weak self] in
+            guard let lat = post.locationLat, let lng = post.locationLng, let name = post.locationName else { return }
+            self?.openMapApp(latitude: lat, longitude: lng, name: name)
+        }
+
         return cell
     }
 }
 
 // MARK: - Post Menu
 extension CommunityViewController {
+    
+    private func openMapApp(latitude: Double, longitude: Double, name: String) {
+        let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "Plantation"
+        let urlStr = "http://maps.apple.com/?ll=\(latitude),\(longitude)&q=\(encodedName)"
+        if let url = URL(string: urlStr) {
+            UIApplication.shared.open(url)
+        }
+    }
+
     func showPostMenu(for post: Post) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 

@@ -49,6 +49,13 @@ struct Post: Codable {
     var commentsCount: Int
     var isLikedByMe: Bool
     var isSaved: Bool
+    
+    // Plantation Drive New Fields
+    let isPlantationDrive: Bool?
+    let plantationDate: String?
+    let locationName: String?
+    let locationLat: Double?
+    let locationLng: Double?
 
     var userId: String { author?.id ?? "" }
     var isLiked: Bool  { isLikedByMe }
@@ -68,6 +75,12 @@ struct Post: Codable {
         commentsCount   = try c.decodeIfPresent(Int.self,      forKey: .commentsCount) ?? 0
         isLikedByMe     = try c.decodeIfPresent(Bool.self,     forKey: .isLikedByMe)  ?? false
         isSaved         = try c.decodeIfPresent(Bool.self,     forKey: .isSaved)       ?? false
+        
+        isPlantationDrive = try c.decodeIfPresent(Bool.self,   forKey: .isPlantationDrive) ?? false
+        plantationDate    = try c.decodeIfPresent(String.self, forKey: .plantationDate)
+        locationName      = try c.decodeIfPresent(String.self, forKey: .locationName)
+        locationLat       = try c.decodeIfPresent(Double.self, forKey: .locationLat)
+        locationLng       = try c.decodeIfPresent(Double.self, forKey: .locationLng)
     }
 
     enum CodingKeys: String, CodingKey {
@@ -75,6 +88,7 @@ struct Post: Codable {
         case author = "userId"
         case postImageString, caption, createdAt
         case likesCount, commentsCount, isLikedByMe, isSaved
+        case isPlantationDrive, plantationDate, locationName, locationLat, locationLng
     }
 }
 

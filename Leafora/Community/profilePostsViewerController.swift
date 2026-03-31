@@ -151,12 +151,25 @@ extension profilePostsViewerController: UICollectionViewDataSource {
             self.collectionView.reloadItems(at: [indexPath])
         }
 
+        cell.onLocationTapped = { [weak self] in
+            guard let lat = currentPost.locationLat, let lng = currentPost.locationLng, let name = currentPost.locationName else { return }
+            self?.openMapApp(latitude: lat, longitude: lng, name: name)
+        }
+
         return cell
     }
 }
 
 // MARK: - Post Menu
 extension profilePostsViewerController {
+
+    private func openMapApp(latitude: Double, longitude: Double, name: String) {
+        let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "Plantation"
+        let urlStr = "http://maps.apple.com/?ll=\(latitude),\(longitude)&q=\(encodedName)"
+        if let url = URL(string: urlStr) {
+            UIApplication.shared.open(url)
+        }
+    }
 
     func showPostMenu(for post: Post) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
