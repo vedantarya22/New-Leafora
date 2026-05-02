@@ -16,7 +16,6 @@ final class PlantStore: ObservableObject {
         
         // Notify observers that plant data has changed
         NotificationCenter.default.post(name: .plantsDidChange, object: nil)
-        print(" Posted plantsDidChange notification")
     }
 
     // MARK: - Published Data
@@ -46,7 +45,6 @@ final class PlantStore: ObservableObject {
         
         // Check if migration already done
         guard !UserDefaults.standard.bool(forKey: migrationKey) else {
-            print(" Migration already completed")
             return
         }
         
@@ -177,7 +175,6 @@ final class PlantStore: ObservableObject {
         do {
             let data = try JSONEncoder().encode(plants)
             try data.write(to: fileURL, options: [.atomic])
-            print(" Saved \(plants.count) plant entries")
         } catch {
             print(" Failed to save plants:", error)
         }
@@ -210,7 +207,6 @@ final class PlantStore: ObservableObject {
         do {
             let data = try Data(contentsOf: fileURL)
             plants = try JSONDecoder().decode([UserPlant].self, from: data)
-            print(" Loaded \(plants.count) plant entries")
         } catch {
             print(" Failed to load plants:", error)
         }

@@ -9,7 +9,7 @@ import UIKit
 
 class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
-    private let DEBUG_FORCE_OVERDUE = true
+    private let DEBUG_FORCE_OVERDUE = false
 
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -89,27 +89,33 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     /// Get plants that are 3+ days overdue on ANY task
     private func getUrgentPlants(from plants: [UserPlant]) -> [UserPlant] {
-        // --- SIMPLE MOCK DATA FOR TESTING ---
-        guard allPlantData.count >= 3 else { return [] }
-        
-        let mock1 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[0].plantId, siteID: UUID(), quantity: 1, lastWatered: Calendar.current.date(byAdding: .day, value: -5, to: Date()), lastPruned: nil, lastFertilized: nil, lastRepotted: nil)
-        let mock2 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[1].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: nil, lastFertilized: Calendar.current.date(byAdding: .day, value: -6, to: Date()), lastRepotted: nil)
-        let mock3 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[2].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: Calendar.current.date(byAdding: .day, value: -4, to: Date()), lastFertilized: nil, lastRepotted: nil)
-        
-        return [mock1, mock2, mock3]
+        return plants.filter { plant in
+            guard let plantData = getPlantData(for: plant) else { return false }
+            
+            // Check all tasks for 3+ days overdue
+            let w = isTaskUrgent(lastDate: plant.lastWatered, cycleDays: plantData.careCycle.watering.days)
+            let p = isTaskUrgent(lastDate: plant.lastPruned, cycleDays: plantData.careCycle.pruning.days)
+            let f = isTaskUrgent(lastDate: plant.lastFertilized, cycleDays: plantData.careCycle.fertilizing.days)
+            let r = isTaskUrgent(lastDate: plant.lastRepotted, cycleDays: plantData.careCycle.repotting.days)
+            
+            return w || p || f || r
+        }
     }
     
     
     /// Get plants that are 1-2 days overdue on ANY task
     private func getMissedPlants(from plants: [UserPlant]) -> [UserPlant] {
-        // --- SIMPLE MOCK DATA FOR TESTING ---
-        guard allPlantData.count >= 3 else { return [] }
-        
-        let mock1 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[0].plantId, siteID: UUID(), quantity: 1, lastWatered: Calendar.current.date(byAdding: .day, value: -2, to: Date()), lastPruned: nil, lastFertilized: nil, lastRepotted: nil)
-        let mock2 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[1].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: nil, lastFertilized: Calendar.current.date(byAdding: .day, value: -1, to: Date()), lastRepotted: nil)
-        let mock3 = UserPlant(id: UUID(), mongoId: nil, plantId: allPlantData[2].plantId, siteID: UUID(), quantity: 1, lastWatered: nil, lastPruned: Calendar.current.date(byAdding: .day, value: -2, to: Date()), lastFertilized: nil, lastRepotted: nil)
-        
-        return [mock1, mock2, mock3]
+        return plants.filter { plant in
+            guard let plantData = getPlantData(for: plant) else { return false }
+            
+            // Check all tasks for 1-2 days overdue
+            let w = isTaskMissed(lastDate: plant.lastWatered, cycleDays: plantData.careCycle.watering.days)
+            let p = isTaskMissed(lastDate: plant.lastPruned, cycleDays: plantData.careCycle.pruning.days)
+            let f = isTaskMissed(lastDate: plant.lastFertilized, cycleDays: plantData.careCycle.fertilizing.days)
+            let r = isTaskMissed(lastDate: plant.lastRepotted, cycleDays: plantData.careCycle.repotting.days)
+            
+            return w || p || f || r
+        }
     }
     
     private func getPlantData(for userPlant: UserPlant) -> Plant? {
@@ -119,11 +125,6 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     /// Check if a single task is 3+ days overdue
     private func isTaskUrgent(lastDate: Date?, cycleDays: Int) -> Bool {
         guard let lastDate = lastDate else { return false }
-        
-        if DEBUG_FORCE_OVERDUE {
-            return true   //  force urgent for testing
-        }
-
         
         let daysSince = daysBetween(from: lastDate, to: Date())
         let daysOverdue = daysSince - cycleDays
@@ -135,11 +136,6 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     /// Check if a single task is 1-2 days overdue
     private func isTaskMissed(lastDate: Date?, cycleDays: Int) -> Bool {
         guard let lastDate = lastDate else { return false }
-        
-        if DEBUG_FORCE_OVERDUE {
-                return true   //  force missed for testing
-            }
-
         
         let daysSince = daysBetween(from: lastDate, to: Date())
         let daysOverdue = daysSince - cycleDays

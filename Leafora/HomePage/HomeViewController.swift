@@ -60,22 +60,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             name: .plantsDidChange,
             object: nil
         )
-        func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            // Start timer: 30 seconds, repeats indefinitely
-            tipTimer = Timer.scheduledTimer(timeInterval: 30.0,
-                                           target: self,
-                                           selector: #selector(updateGardenTip),
-                                           userInfo: nil,
-                                           repeats: true)
-        }
-
-        func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            // Invalidate timer to prevent memory leaks and background processing
-            tipTimer?.invalidate()
-            tipTimer = nil
-        }
         // Register XIB's
         let cells = ["CareTaskCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
         cells.forEach { name in
@@ -163,6 +147,23 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         super.viewWillAppear(animated)
         // Fixed: Use reloadData to prevent section mismatch crashes on first load
         collectionView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Start timer: 30 seconds, repeats indefinitely
+        tipTimer = Timer.scheduledTimer(timeInterval: 30.0,
+                                       target: self,
+                                       selector: #selector(updateGardenTip),
+                                       userInfo: nil,
+                                       repeats: true)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Invalidate timer to prevent memory leaks and background processing
+        tipTimer?.invalidate()
+        tipTimer = nil
     }
     @objc private func updateGardenTip() {
         //reload section 0
@@ -272,105 +273,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     // MARK: - Layout Logic
     
-    //order of UI
-    func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, env in
-            switch sectionIndex {
-            case 0: return self.gardenTipLayout()      // 1st: Tip (conditionally shown)
-            case 1: return self.scanSectionLayout()    // 2nd: Scan
-            case 2: return self.urgentCardsLayout()    // 3rd: Urgent Cards
-            case 3: return self.careGridLayout()       // 4th: Care Tasks
-            default: return nil
-            }
-        }
-    }
+    // MARK: - Layout Logic moved to HomeViewController+Layout.swift
     
-    func scanSectionLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(100)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(100)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 10, leading: 0, bottom: 20, trailing: 0)
-        return section
-    }
-    
-    func gardenTipLayout() -> NSCollectionLayoutSection {
-          let itemSize = NSCollectionLayoutSize(
-             widthDimension: .fractionalWidth(1.0),
-              heightDimension: .absolute(220)
-         )
-           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-          item.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-   
-          let groupSize = NSCollectionLayoutSize(
-               widthDimension: .fractionalWidth(1.0),
-               heightDimension: .absolute(220)
-           )
-           let group = NSCollectionLayoutGroup.vertical(
-               layoutSize: groupSize,
-              subitems: [item]
-           )
-   
-          let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = .init(top: 12, leading: 0, bottom: 8, trailing: 0)
-   
-           return section
-       }
-    
-    func urgentCardsLayout() -> NSCollectionLayoutSection {
-
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(80)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(80)
-        )
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: groupSize,
-            subitems: [item]
-        )
-
-        let section = NSCollectionLayoutSection(group: group)
-
-        section.interGroupSpacing = 16   //   gap between cards
-        section.contentInsets = .init(top: 0, leading: 0, bottom: 20, trailing: 0)
-
-        // Removed the empty header that was adding extra top space
-        
-        return section
-    }
-
-    func careGridLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6)
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(85))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 14, bottom: 20, trailing: 14)
-        
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
-        section.boundarySupplementaryItems = [header]
-        return section
-    }
     
     // MARK: - Data Source
     func numberOfSections(in collectionView: UICollectionView) -> Int {

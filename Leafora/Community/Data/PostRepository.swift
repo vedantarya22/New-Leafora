@@ -204,8 +204,4 @@ class PostRepository {
                                         userInfo: ["postId": postId])
     }
 }
-    private func notifyPostUpdate(postId: String) {
-        NotificationCenter.default.post(name: .didUpdatePost, object: nil,
-                                        userInfo: ["postId": postId])
-    }
 
