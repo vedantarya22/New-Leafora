@@ -30,7 +30,17 @@ class UserSession {
 
     // MARK: - Cached Profile
     // set by fetchCurrentUser()
-    var cachedCurrentUser: User?
+    var cachedCurrentUser: User? {
+        didSet {
+            guard let user = cachedCurrentUser else { return }
+            saveUserToCache(user)
+            
+            // Notify observers that the profile has changed (e.g. refresh UI)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .userProfileDidChange, object: nil)
+            }
+        }
+    }
 
     // may be nil until fetchCurrentUser completes
     var currentUser: User? { cachedCurrentUser }

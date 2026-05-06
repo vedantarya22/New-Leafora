@@ -139,6 +139,9 @@ class Personal_InfoViewController: UIViewController,
                 if let newImage = finalUser.profileImageString {
                     PostRepository.shared.updateAuthorImage(userId: userId, newImageUrl: newImage)
                 }
+                
+                // notify observers that profile has changed (e.g. Home screen)
+                NotificationCenter.default.post(name: .userProfileDidChange, object: nil)
 
                 // refresh header image
                 self.setupHeader()
@@ -229,6 +232,9 @@ class Personal_InfoViewController: UIViewController,
 
                 // store URL in draft for next save
                 self.draftUser?.profileImageString = imageUrl
+
+                // Update cache with the new image locally
+                ImageCache.shared.set(selectedImage, for: imageUrl)
 
                 // show selected image right away
                 DispatchQueue.main.async {

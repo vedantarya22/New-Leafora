@@ -118,6 +118,12 @@ class ProfilePicturePromptViewController: UIViewController {
                 username: username,
                 profileImageString: url
             ) { _ in
+                // Update local cache for the image immediately
+                ImageCache.shared.set(image, for: url)
+                
+                // notify observers
+                NotificationCenter.default.post(name: .userProfileDidChange, object: nil)
+
                 // Force a refresh of the user session so the new photo is available everywhere in the app
                 UserSession.shared.fetchCurrentUser { _ in
                     DispatchQueue.main.async { self.navigateToMainApp() }

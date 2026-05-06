@@ -5,6 +5,7 @@ import UIKit
 // MARK: - Notification Names
 extension Notification.Name {
     static let plantsDidChange = Notification.Name("plantsDidChange")
+    static let userProfileDidChange = Notification.Name("userProfileDidChange")
 }
 
 final class PlantStore: ObservableObject {

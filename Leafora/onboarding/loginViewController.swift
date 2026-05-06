@@ -102,6 +102,7 @@ class loginViewController: UIViewController {
         // dismiss keyboard on outside tap
         let dismissTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissTap.cancelsTouchesInView = false
+        dismissTap.delegate = self
         view.addGestureRecognizer(dismissTap)
     }
 
@@ -227,5 +228,17 @@ class loginViewController: UIViewController {
             appleButton.backgroundColor = .black
             appleButton.setTitleColor(.white, for: .normal)
         }
+    }
+}
+
+extension loginViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view == signUpLabel {
+            return false
+        }
+        if touch.view is UIControl {
+            return false
+        }
+        return true
     }
 }

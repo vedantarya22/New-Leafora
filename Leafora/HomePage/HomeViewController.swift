@@ -60,6 +60,15 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             name: .plantsDidChange,
             object: nil
         )
+        
+        // Observe profile changes to refresh the bar button photo
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleProfileUpdate),
+            name: .userProfileDidChange,
+            object: nil
+        )
+        
         // Register XIB's
         let cells = ["CareTaskCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
         cells.forEach { name in
@@ -133,6 +142,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         collectionView.reloadData()
     }
     
+    @objc private func handleProfileUpdate() {
+        print(" Profile changed - refreshing bar button photo")
+        setupProfileButton()
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -147,6 +161,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         super.viewWillAppear(animated)
         // Fixed: Use reloadData to prevent section mismatch crashes on first load
         collectionView.reloadData()
+        setupProfileButton()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -164,6 +179,51 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         // Invalidate timer to prevent memory leaks and background processing
         tipTimer?.invalidate()
         tipTimer = nil
+    }
+    
+    private func setupProfileButton() {
+        let size: CGFloat = 38
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: size, height: size))
+        containerView.backgroundColor = .clear
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let profileImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: size, height: size))
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.layer.cornerRadius = size / 2
+        profileImageView.layer.masksToBounds = true
+        profileImageView.clipsToBounds = true
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        containerView.addSubview(profileImageView)
+        
+        NSLayoutConstraint.activate([
+            containerView.widthAnchor.constraint(equalToConstant: size),
+            containerView.heightAnchor.constraint(equalToConstant: size),
+            
+            profileImageView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            profileImageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            profileImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            profileImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+        ])
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(openProfile))
+        containerView.addGestureRecognizer(tap)
+        
+        if let user = UserSession.shared.currentUser, let profileImageStr = user.profileImageString, !profileImageStr.isEmpty {
+            profileImageView.configureImage(with: profileImageStr)
+        } else {
+            profileImageView.image = UIImage(systemName: "person.circle")
+            profileImageView.tintColor = .black
+        }
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: containerView)
+    }
+
+    @objc private func openProfile() {
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        if let navVC = storyboard.instantiateInitialViewController() {
+            present(navVC, animated: true)
+        }
     }
     @objc private func updateGardenTip() {
         //reload section 0
