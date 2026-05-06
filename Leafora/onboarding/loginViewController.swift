@@ -66,6 +66,7 @@ class loginViewController: UIViewController {
         usernameTextField.autocorrectionType = .no
         styleTextField(usernameTextField)
         styleTextField(passwordTextField)
+        passwordTextField.enablePasswordToggle()
         loginButton.layer.cornerRadius = 10
         loginButton.clipsToBounds = true
         styleButtons()
@@ -143,17 +144,42 @@ class loginViewController: UIViewController {
 
     // MARK: - Navigation
     private func navigateToMainApp() {
+        // Fetch the user profile first to check if they already have a photo
+        UserSession.shared.fetchCurrentUser { [weak self] user in
+            guard let self = self else { return }
+            
+            let hasProfilePhoto = !(user?.profileImageString ?? "").isEmpty
+            
+            if hasProfilePhoto {
+                // Existing user with photo — go straight to main
+                self.goToMainApp()
+            } else {
+                // No profile photo yet — show the prompt
+                self.showProfilePicturePrompt()
+            }
+        }
+    }
+    
+    private func showProfilePicturePrompt() {
+        let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
+        guard let promptVC = storyboard.instantiateViewController(
+            withIdentifier: "ProfilePicturePromptVC"
+        ) as? ProfilePicturePromptViewController else {
+            goToMainApp(); return
+        }
+        promptVC.modalPresentationStyle = .fullScreen
+        promptVC.modalTransitionStyle   = .crossDissolve
+        present(promptVC, animated: true)
+    }
+    
+    private func goToMainApp() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes
                 .first?.delegate as? SceneDelegate,
-              let window = sceneDelegate.window
-        else { return }
-
-        // switch to main app UI
+              let window = sceneDelegate.window else { return }
+        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateInitialViewController()
         UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
-
-        // load data after navigation
         sceneDelegate.loadAppData()
     }
 

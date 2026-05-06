@@ -29,11 +29,34 @@ class SignUpViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
         setupUI()
         setupErrorLabel()
+        addBypassButton()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
+    }
+    
+    // MARK: - Debug Bypass
+    private func addBypassButton() {
+        let btn = UIButton(type: .system)
+        btn.setTitle("Bypass to Profile Pic", for: .normal)
+        btn.backgroundColor = .red.withAlphaComponent(0.8)
+        btn.setTitleColor(.white, for: .normal)
+        btn.layer.cornerRadius = 8
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.addTarget(self, action: #selector(forceProfilePicPrompt), for: .touchUpInside)
+        view.addSubview(btn)
+        NSLayoutConstraint.activate([
+            btn.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            btn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            btn.heightAnchor.constraint(equalToConstant: 40),
+            btn.widthAnchor.constraint(equalToConstant: 180)
+        ])
+    }
+    
+    @objc private func forceProfilePicPrompt() {
+        navigateToMainApp()
     }
     
     @IBAction func googleButtonTapped(_ sender: UIButton) {
@@ -55,6 +78,7 @@ class SignUpViewController: UIViewController {
     // MARK: - Setup
     private func setupUI() {
         passwordTextField.isSecureTextEntry = true
+        passwordTextField.enablePasswordToggle()
         emailTextField.keyboardType         = .emailAddress
         [nameTextField, usernameTextField, emailTextField, passwordTextField].forEach {
             $0?.autocapitalizationType = .none
@@ -114,6 +138,9 @@ class SignUpViewController: UIViewController {
     }
 
     // MARK: - Signup
+    /// Storyboard action alias — forwards to signupButtonTapped
+    @IBAction func signupButton(_ sender: UIButton) { signupButtonTapped(sender) }
+    
     @IBAction func signupButtonTapped(_ sender: UIButton) {
         guard let name     = nameTextField.text,     !name.isEmpty,
               let username = usernameTextField.text, !username.isEmpty,
@@ -130,35 +157,46 @@ class SignUpViewController: UIViewController {
             name: name, username: username,
             email: email, password: password
         ) { [weak self] success, message in
-            sender.isEnabled = true
-            if success {
-                print(" Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
-                //  Navigate straight to main app — no need to log in again,
-                //    token + userId are already in Keychain from NetworkManager.signup
-                self?.navigateToMainApp()
-            } else {
-                self?.showError(message ?? "Signup failed")
+            DispatchQueue.main.async {
+                sender.isEnabled = true
+                if success {
+                    print(" Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
+                    self?.navigateToMainApp()
+                } else {
+                    self?.showError(message ?? "Signup failed")
+                }
             }
         }
     }
 
     // MARK: - Navigation
     private func navigateToMainApp() {
+        DispatchQueue.main.async {
+            print("✅ navigateToMainApp called on main thread: \(Thread.isMainThread)")
+            let onboardingStoryboard = UIStoryboard(name: "onboarding", bundle: nil)
+            let vc = onboardingStoryboard.instantiateViewController(withIdentifier: "ProfilePicturePromptVC")
+            print("✅ Instantiated VC: \(vc)")
+            guard let promptVC = vc as? ProfilePicturePromptViewController else {
+                print("⚠️ Cast failed, falling back to direct main navigation")
+                self.navigateDirectlyToMain()
+                return
+            }
+            promptVC.modalPresentationStyle = .fullScreen
+            promptVC.modalTransitionStyle   = .crossDissolve
+            self.present(promptVC, animated: true) {
+                print("✅ ProfilePicturePromptVC presented successfully")
+            }
+        }
+    }
+
+    private func navigateDirectlyToMain() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes
                 .first?.delegate as? SceneDelegate,
-              let window = sceneDelegate.window
-        else { return }
-
-        //  New user — mark onboarding as seen so they go straight to main on next launch
-        // Remove this line if you want new users to see onboarding after signup
+              let window = sceneDelegate.window else { return }
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
-
-        //  1. Switch UI to main app
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateInitialViewController()
         UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
-
-        //  2. Load all data (plants, sites, current user profile) in background
         sceneDelegate.loadAppData()
     }
 
