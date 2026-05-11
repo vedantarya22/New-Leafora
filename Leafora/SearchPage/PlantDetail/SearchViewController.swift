@@ -522,7 +522,7 @@ extension SearchViewController {
     private func showSitePickerForQuickAdd(plant: Plant) {
         let sites = SiteStore.shared.sites
         let sheet = UIAlertController(
-            title: "Add \(plant.plantName) to...",
+            title: "Add \(plant.plantName) toh",
             message: nil,
             preferredStyle: .actionSheet
         )

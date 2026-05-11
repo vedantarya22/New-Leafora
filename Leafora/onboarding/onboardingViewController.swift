@@ -129,6 +129,16 @@ class onboardingViewController: UIViewController {
         
         pageControl.currentPage = currentPage
         
+        // Force black text for screen 1 (index 0) and screen 3 (index 2) as requested
+        if currentPage == 0 || currentPage == 2 {
+            functionalityTitle.textColor = .black
+            functionalityDesc.textColor = .black
+        } else {
+            // Default colors for other screens
+            functionalityTitle.textColor = .label
+            functionalityDesc.textColor = .secondaryLabel
+        }
+        
         let buttonTitle = (currentPage == slides.count - 1) ? "Get Started" : "Next"
         UIView.transition(with: nextButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
             self.nextButton.setTitle(buttonTitle, for: .normal)

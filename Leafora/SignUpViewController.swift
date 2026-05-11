@@ -29,34 +29,11 @@ class SignUpViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
         setupUI()
         setupErrorLabel()
-        addBypassButton()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
-    }
-    
-    // MARK: - Debug Bypass
-    private func addBypassButton() {
-        let btn = UIButton(type: .system)
-        btn.setTitle("Bypass to Profile Pic", for: .normal)
-        btn.backgroundColor = .red.withAlphaComponent(0.8)
-        btn.setTitleColor(.white, for: .normal)
-        btn.layer.cornerRadius = 8
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.addTarget(self, action: #selector(forceProfilePicPrompt), for: .touchUpInside)
-        view.addSubview(btn)
-        NSLayoutConstraint.activate([
-            btn.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            btn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            btn.heightAnchor.constraint(equalToConstant: 40),
-            btn.widthAnchor.constraint(equalToConstant: 180)
-        ])
-    }
-    
-    @objc private func forceProfilePicPrompt() {
-        navigateToMainApp()
     }
     
     @IBAction func googleButtonTapped(_ sender: UIButton) {
@@ -103,7 +80,7 @@ class SignUpViewController: UIViewController {
                     let fullText = "Already have an account? Log in"
                     let attr     = NSMutableAttributedString(string: fullText)
                     let range    = (fullText as NSString).range(of: "Log in")
-                    attr.addAttribute(.foregroundColor, value: UIColor.secondaryLabel,
+                    attr.addAttribute(.foregroundColor, value: UIColor.systemGray2,
                                       range: NSRange(location: 0, length: fullText.count))
                     attr.addAttribute(.foregroundColor,
                                       value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0),
@@ -212,6 +189,15 @@ class SignUpViewController: UIViewController {
         textField.layer.masksToBounds = true
         textField.layer.borderWidth   = 1
         textField.layer.borderColor   = UIColor.systemGray5.cgColor
+        
+        // Set placeholder color to systemGray2 for better visibility
+        if let placeholder = textField.placeholder {
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [.foregroundColor: UIColor.systemGray2]
+            )
+        }
+        
         let pad = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
         textField.leftView     = pad
         textField.leftViewMode = .always

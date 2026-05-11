@@ -66,6 +66,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             collectionView.register(UINib(nibName: name, bundle: nil), forCellWithReuseIdentifier: name)
         }
         
+        // Register Streak Calendar Cell (code-driven, no XIB)
+        collectionView.register(StreakCalendarCell.self, forCellWithReuseIdentifier: StreakCalendarCell.reuseIdentifier)
+        
         collectionView.register(UINib(nibName: "HomeSectionHeaderView", bundle: nil),
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: "HomeSectionHeaderView")
@@ -151,6 +154,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        // Record daily streak activity
+        StreakManager.shared.recordActivity()
+        // Reload streak cell to reflect today's activity
+        collectionView.reloadSections(IndexSet(integer: 0))
         // Start timer: 30 seconds, repeats indefinitely
         tipTimer = Timer.scheduledTimer(timeInterval: 30.0,
                                        target: self,
@@ -278,22 +285,28 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     // MARK: - Data Source
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 4
+        return 5
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: return PlantStore.shared.allPlants().count > 0 ? 1 : 0 // Garden Tip conditionally
-        case 1: return 1 // Scan Your Plant
-        case 2: return taskInsightsForHome().count // Urgent
-        case 3: return getCareTasks().count // Care Tasks
+        case 0: return 1 // Streak Calendar (always shown)
+        case 1: return PlantStore.shared.allPlants().count > 0 ? 1 : 0 // Garden Tip conditionally
+        case 2: return 1 // Scan Your Plant
+        case 3: return taskInsightsForHome().count // Urgent
+        case 4: return getCareTasks().count // Care Tasks
         default: return 0
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
-        case 0: // Garden Tip
+        case 0: // Streak Calendar
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StreakCalendarCell.reuseIdentifier, for: indexPath) as! StreakCalendarCell
+            cell.configure()
+            return cell
+
+        case 1: // Garden Tip
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GardenTipCell", for: indexPath) as! GardenTipCell
             
             if isLoadingWeather {
@@ -301,17 +314,15 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             } else if let weather = currentWeather {
                 cell.configure(tip: GardenTip.randomTip(for: weather))
             } else {
-                // If weather failed to fetch, show generic tips, or showError()
-                // Let's fallback to generic tips since it's better than an error here
                 cell.configure(tip: GardenTip.randomTip(for: nil))
             }
             return cell
             
-        case 1: // Scan Your Plant
+        case 2: // Scan Your Plant
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanPlantCell", for: indexPath) as! ScanPlantCell
             return cell
             
-        case 2: // Urgent Care
+        case 3: // Urgent Care
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UrgentCareCell", for: indexPath) as! UrgentCareCell
             let insights = taskInsightsForHome()
             let insight = insights[indexPath.row]
@@ -319,7 +330,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             cell.setChevronHidden(insight.level == .good)
             return cell
             
-        case 3: // Care Tasks
+        case 4: // Care Tasks
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell", for: indexPath) as! CareTaskCell
             let task = getCareTasks()[indexPath.row]
             
@@ -348,14 +359,18 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         switch indexPath.section {
         case 0:
+            // Streak Calendar tapped — no action needed
+            break
+
+        case 1:
             // Garden Tip tapped
             print("Garden tip tapped")
             
-        case 1:
+        case 2:
             //scan feature
             self.openCameraForPlantScan()
             
-        case 2:
+        case 3:
             // Tapped Urgent or Missed card
             let taskInsights = self.taskInsightsForHome()
             
@@ -371,7 +386,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
                 }
             }
             
-        case 3: // Care Tasks
+        case 4: // Care Tasks
             let taskName = getCareTasks()[indexPath.row].name
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let plantListVC = storyboard.instantiateViewController(withIdentifier: "PlantListViewController") as? PlantListViewController {
@@ -453,13 +468,15 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         header.chevronButton.isHidden = true
 
         switch indexPath.section {
-        case 0://garden tip
+        case 0: // Streak Calendar
             header.titleLabel.text = ""
-        case 1://scan plant
+        case 1: // Garden Tip
             header.titleLabel.text = ""
-        case 2://urgent/missed
+        case 2: // Scan plant
             header.titleLabel.text = ""
-        case 3: // Care Tasks
+        case 3: // Urgent/missed
+            header.titleLabel.text = ""
+        case 4: // Care Tasks
             header.titleLabel.text = "Today's Plant Care"
         default:
             header.titleLabel.text = ""

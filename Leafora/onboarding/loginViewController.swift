@@ -74,7 +74,7 @@ class loginViewController: UIViewController {
         let fullText = "Don't have an account? Sign Up"
         let attr     = NSMutableAttributedString(string: fullText)
         let range    = (fullText as NSString).range(of: "Sign Up")
-        attr.addAttribute(.foregroundColor, value: UIColor.secondaryLabel,
+        attr.addAttribute(.foregroundColor, value: UIColor.systemGray2,
                           range: NSRange(location: 0, length: fullText.count))
         attr.addAttribute(.foregroundColor,
                           value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0),
@@ -195,6 +195,15 @@ class loginViewController: UIViewController {
         textField.layer.masksToBounds = true
         textField.layer.borderWidth  = 1
         textField.layer.borderColor  = UIColor.systemGray5.cgColor
+        
+        // Set placeholder color to systemGray2 for better visibility
+        if let placeholder = textField.placeholder {
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [.foregroundColor: UIColor.systemGray2]
+            )
+        }
+        
         let pad = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
         textField.leftView     = pad
         textField.leftViewMode = .always

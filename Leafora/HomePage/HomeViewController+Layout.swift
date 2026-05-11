@@ -8,13 +8,32 @@ extension HomeViewController {
         return UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
             guard let self = self else { return nil }
             switch sectionIndex {
-            case 0: return self.gardenTipLayout()      // 1st: Tip (conditionally shown)
-            case 1: return self.scanSectionLayout()    // 2nd: Scan
-            case 2: return self.urgentCardsLayout()    // 3rd: Urgent Cards
-            case 3: return self.careGridLayout()       // 4th: Care Tasks
+            case 0: return self.streakCalendarLayout()   // 0: Streak Calendar
+            case 1: return self.gardenTipLayout()        // 1: Tip (conditionally shown)
+            case 2: return self.scanSectionLayout()      // 2: Scan
+            case 3: return self.urgentCardsLayout()      // 3: Urgent Cards
+            case 4: return self.careGridLayout()         // 4: Care Tasks
             default: return nil
             }
         }
+    }
+    
+    func streakCalendarLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(120)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(120)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 8, leading: 0, bottom: 8, trailing: 0)
+        return section
     }
     
     func scanSectionLayout() -> NSCollectionLayoutSection {
