@@ -430,6 +430,162 @@
             </objects>
             <point key="canvasLocation" x="1750" y="820"/>
         </scene>
+        <!--Profile Picture Prompt-->
+        <scene sceneID="pfp-sc-001">
+            <objects>
+                <viewController storyboardIdentifier="ProfilePicturePromptVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pfp-vc-001" customClass="ProfilePicturePromptViewController" customModule="Leafora" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pfp-vw-001">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <!-- Leafora logo at top -->
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="appLogo" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-lg-img">
+                                <rect key="frame" x="136.5" y="72" width="120" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="pfp-lg-w"/>
+                                    <constraint firstAttribute="height" constant="40" id="pfp-lg-h"/>
+                                </constraints>
+                            </imageView>
+
+                            <!-- Avatar circle container -->
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-av-container">
+                                <rect key="frame" x="121.5" y="168" width="150" height="150"/>
+                                <subviews>
+                                    <!-- Person SF symbol (placeholder) -->
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-av-person">
+                                        <rect key="frame" x="37.5" y="37.5" width="75" height="75"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="75" id="pfp-av-pw"/>
+                                            <constraint firstAttribute="height" constant="75" id="pfp-av-ph"/>
+                                        </constraints>
+                                    </imageView>
+                                    
+                                    <!-- The actual profile photo that user picks -->
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-av-photo">
+                                        <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="75"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="pfp-av-cw"/>
+                                    <constraint firstAttribute="height" constant="150" id="pfp-av-ch"/>
+                                    <constraint firstItem="pfp-av-photo" firstAttribute="leading" secondItem="pfp-av-container" secondAttribute="leading" id="pfp-av-ph-ld"/>
+                                    <constraint firstItem="pfp-av-photo" firstAttribute="top" secondItem="pfp-av-container" secondAttribute="top" id="pfp-av-ph-tp"/>
+                                    <constraint firstItem="pfp-av-container" firstAttribute="trailing" secondItem="pfp-av-photo" secondAttribute="trailing" id="pfp-av-ph-tr"/>
+                                    <constraint firstItem="pfp-av-container" firstAttribute="bottom" secondItem="pfp-av-photo" secondAttribute="bottom" id="pfp-av-ph-bt"/>
+                                    
+                                    <constraint firstItem="pfp-av-person" firstAttribute="centerX" secondItem="pfp-av-container" secondAttribute="centerX" id="pfp-av-px"/>
+                                    <constraint firstItem="pfp-av-person" firstAttribute="centerY" secondItem="pfp-av-container" secondAttribute="centerY" id="pfp-av-py"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="75"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                        <real key="value" value="3"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+
+                            <!-- Headline -->
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add a profile photo" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-title-lbl">
+                                <rect key="frame" x="24" y="346" width="345" height="36"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+
+                            <!-- Subtitle -->
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Help your garden community recognise you. You can always change this later." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-sub-lbl">
+                                <rect key="frame" x="32" y="396" width="329" height="52"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+
+                            <!-- Add Photo button -->
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-add-btn">
+                                <rect key="frame" x="24" y="700" width="345" height="54"/>
+                                <color key="backgroundColor" red="0.22" green="0.49" blue="0.16" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="pfp-add-h"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Add Photo" subtitle="" image="camera.fill" imagePlacement="leading" imagePadding="8">
+                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="baseBackgroundColor" red="0.22" green="0.49" blue="0.16" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </buttonConfiguration>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="16"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addPhotoTapped:" destination="pfp-vc-001" eventType="touchUpInside" id="pfp-add-act"/>
+                                </connections>
+                            </button>
+
+                            <!-- Skip button -->
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pfp-skip-btn">
+                                <rect key="frame" x="24" y="768" width="345" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="pfp-skip-h"/>
+                                </constraints>
+                                <color key="tintColor" red="0.22" green="0.49" blue="0.16" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Skip for now">
+                                    <color key="baseForegroundColor" red="0.22" green="0.49" blue="0.16" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="skipTapped:" destination="pfp-vc-001" eventType="touchUpInside" id="pfp-skip-act"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="pfp-sa-001"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <!-- Logo -->
+                            <constraint firstItem="pfp-lg-img" firstAttribute="centerX" secondItem="pfp-vw-001" secondAttribute="centerX" id="pfp-lg-cx"/>
+                            <constraint firstItem="pfp-lg-img" firstAttribute="top" secondItem="pfp-sa-001" secondAttribute="top" constant="20" id="pfp-lg-tp"/>
+                            <!-- Avatar -->
+                            <constraint firstItem="pfp-av-container" firstAttribute="centerX" secondItem="pfp-vw-001" secondAttribute="centerX" id="pfp-av-cx"/>
+                            <constraint firstItem="pfp-av-container" firstAttribute="top" secondItem="pfp-lg-img" secondAttribute="bottom" constant="56" id="pfp-av-tp"/>
+                            <!-- Title -->
+                            <constraint firstItem="pfp-title-lbl" firstAttribute="top" secondItem="pfp-av-container" secondAttribute="bottom" constant="28" id="pfp-tit-tp"/>
+                            <constraint firstItem="pfp-title-lbl" firstAttribute="leading" secondItem="pfp-sa-001" secondAttribute="leading" constant="24" id="pfp-tit-ld"/>
+                            <constraint firstItem="pfp-sa-001" firstAttribute="trailing" secondItem="pfp-title-lbl" secondAttribute="trailing" constant="24" id="pfp-tit-tr"/>
+                            <!-- Subtitle -->
+                            <constraint firstItem="pfp-sub-lbl" firstAttribute="top" secondItem="pfp-title-lbl" secondAttribute="bottom" constant="12" id="pfp-sub-tp"/>
+                            <constraint firstItem="pfp-sub-lbl" firstAttribute="leading" secondItem="pfp-sa-001" secondAttribute="leading" constant="32" id="pfp-sub-ld"/>
+                            <constraint firstItem="pfp-sa-001" firstAttribute="trailing" secondItem="pfp-sub-lbl" secondAttribute="trailing" constant="32" id="pfp-sub-tr"/>
+                            <!-- Add Photo button -->
+                            <constraint firstItem="pfp-add-btn" firstAttribute="leading" secondItem="pfp-sa-001" secondAttribute="leading" constant="24" id="pfp-add-ld"/>
+                            <constraint firstItem="pfp-sa-001" firstAttribute="trailing" secondItem="pfp-add-btn" secondAttribute="trailing" constant="24" id="pfp-add-tr"/>
+                            <constraint firstItem="pfp-sa-001" firstAttribute="bottom" secondItem="pfp-skip-btn" secondAttribute="bottom" constant="24" id="pfp-skip-bt"/>
+                            <!-- Skip button -->
+                            <constraint firstItem="pfp-skip-btn" firstAttribute="leading" secondItem="pfp-sa-001" secondAttribute="leading" constant="24" id="pfp-skip-ld"/>
+                            <constraint firstItem="pfp-sa-001" firstAttribute="trailing" secondItem="pfp-skip-btn" secondAttribute="trailing" constant="24" id="pfp-skip-tr"/>
+                            <constraint firstItem="pfp-skip-btn" firstAttribute="top" secondItem="pfp-add-btn" secondAttribute="bottom" constant="10" id="pfp-skip-tp"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="pfp-ni-001"/>
+                    <connections>
+                        <outlet property="avatarContainerView" destination="pfp-av-container" id="pfp-out-av"/>
+                        <outlet property="avatarImageView" destination="pfp-av-photo" id="pfp-out-avimg"/>
+                        <outlet property="addPhotoButton" destination="pfp-add-btn" id="pfp-out-add"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pfp-fr-001" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2800" y="91"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Apple" width="28" height="28"/>

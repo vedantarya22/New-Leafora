@@ -10,18 +10,18 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         let label = UILabel()
         label.text = "Hold & press a site to remove it"
         label.textAlignment = .center
-        label.textColor = .secondaryLabel
+        label.textColor = UIColor(red: 0.15, green: 0.35, blue: 0.15, alpha: 0.6)
         label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     private let emptyStateLabel: UILabel = {
         let label = UILabel()
-        label.text = "No sites yet.\nAdd plants to get started "
+        label.text = "No sites yet.\nAdd plants to get started"
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.textColor = .secondaryLabel
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = UIColor(red: 0.15, green: 0.35, blue: 0.15, alpha: 0.8)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.isHidden = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -45,6 +45,33 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         super.viewWillAppear(animated)
         myGardenCollectionView.reloadData()
         updateEmptyState()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        checkAndShowTutorial()
+    }
+    
+    private func checkAndShowTutorial() {
+        let hasSeenTutorial = UserDefaults.standard.bool(forKey: "hasSeenGardenTutorial")
+        let isGardenEmpty = siteStore.sites.isEmpty
+        
+        if !hasSeenTutorial && isGardenEmpty {
+            showTutorialOverlay()
+        }
+    }
+    
+    private func showTutorialOverlay() {
+        // Create overlay
+        let overlay = TutorialOverlayView(frame: view.bounds) {
+            UserDefaults.standard.set(true, forKey: "hasSeenGardenTutorial")
+        }
+        
+        // Add to the window so it covers the tab bar too
+        if let window = view.window {
+            window.addSubview(overlay)
+            overlay.show()
+        }
     }
     private func setupHoldTipLabel() {
         view.addSubview(holdTipLabel)
@@ -100,22 +127,9 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     
     private func setupBotanicalBackground() {
-        let topColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0).cgColor
-        let bottomColor = UIColor(red: 0.88, green: 0.94, blue: 0.89, alpha: 1.0).cgColor
-        
-        gradientLayer.colors = [topColor, bottomColor]
-        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
-        
-        // Set the frame immediately
-        gradientLayer.frame = view.bounds
-        
-        // Create a container view for the gradient to act as the background
-        let backgroundContainer = UIView(frame: view.bounds)
-        backgroundContainer.layer.insertSublayer(gradientLayer, at: 0)
-        
-      
-        myGardenCollectionView.backgroundView = backgroundContainer
+        // The gradientLayer is already inserted in view.layer in viewDidLoad
+        // We just need to make sure the view's background doesn't interfere
+        view.backgroundColor = .white // Fallback
     }
     
     private func setupCollectionView() {
@@ -150,7 +164,9 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     private func updateEmptyState() {
         let isEmpty = siteStore.sites.isEmpty
         emptyStateLabel.isHidden = !isEmpty
-        myGardenCollectionView.isHidden = isEmpty
+        holdTipLabel.isHidden = isEmpty
+        // Keep collection view visible so the weather section or background stays
+        myGardenCollectionView.isHidden = false 
     }
     
     // MARK: - Data Source
@@ -203,8 +219,6 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         if plantCount == 0 {
             let alert = UIAlertController(title: "Delete \(site.name)?", message: "Are you sure?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                guard let mongoId = site.mongoId else { return }
-                
                 //  1. Remove locally instantly
                 PlantStore.shared.removeAllPlants(for: site)
                 self?.siteStore.sites.removeAll { $0.id == site.id }
@@ -213,9 +227,11 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                     self?.updateEmptyState()
                 }
                 
-                //  2. Delete from MongoDB in background
-                NetworkManager.shared.deleteSite(siteId: mongoId) { success in
-                    if !success { print(" Failed to delete site on backend") }
+                //  2. Delete from MongoDB in background (if it exists there)
+                if let mongoId = site.mongoId {
+                    NetworkManager.shared.deleteSite(siteId: mongoId) { success in
+                        if !success { print(" Failed to delete site on backend") }
+                    }
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -228,8 +244,6 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: "Delete Anyway", style: .destructive) { [weak self] _ in
-                guard let mongoId = site.mongoId else { return }
-                
                 //  1. Remove locally instantly
                 PlantStore.shared.removeAllPlants(for: site)
                 self?.siteStore.sites.removeAll { $0.id == site.id }
@@ -239,8 +253,10 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 }
                 
                 //  2. Delete site + all its plants from MongoDB in background
-                NetworkManager.shared.removeSiteWithPlants(siteId: mongoId) { success in
-                    if !success { print(" Failed to delete site and plants on backend") }
+                if let mongoId = site.mongoId {
+                    NetworkManager.shared.removeSiteWithPlants(siteId: mongoId) { success in
+                        if !success { print(" Failed to delete site and plants on backend") }
+                    }
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))

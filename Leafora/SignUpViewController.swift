@@ -55,6 +55,7 @@ class SignUpViewController: UIViewController {
     // MARK: - Setup
     private func setupUI() {
         passwordTextField.isSecureTextEntry = true
+        passwordTextField.enablePasswordToggle()
         emailTextField.keyboardType         = .emailAddress
         [nameTextField, usernameTextField, emailTextField, passwordTextField].forEach {
             $0?.autocapitalizationType = .none
@@ -79,7 +80,7 @@ class SignUpViewController: UIViewController {
                     let fullText = "Already have an account? Log in"
                     let attr     = NSMutableAttributedString(string: fullText)
                     let range    = (fullText as NSString).range(of: "Log in")
-                    attr.addAttribute(.foregroundColor, value: UIColor.secondaryLabel,
+                    attr.addAttribute(.foregroundColor, value: UIColor.systemGray2,
                                       range: NSRange(location: 0, length: fullText.count))
                     attr.addAttribute(.foregroundColor,
                                       value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0),
@@ -114,6 +115,9 @@ class SignUpViewController: UIViewController {
     }
 
     // MARK: - Signup
+    /// Storyboard action alias — forwards to signupButtonTapped
+    @IBAction func signupButton(_ sender: UIButton) { signupButtonTapped(sender) }
+    
     @IBAction func signupButtonTapped(_ sender: UIButton) {
         guard let name     = nameTextField.text,     !name.isEmpty,
               let username = usernameTextField.text, !username.isEmpty,
@@ -130,35 +134,46 @@ class SignUpViewController: UIViewController {
             name: name, username: username,
             email: email, password: password
         ) { [weak self] success, message in
-            sender.isEnabled = true
-            if success {
-                print(" Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
-                //  Navigate straight to main app — no need to log in again,
-                //    token + userId are already in Keychain from NetworkManager.signup
-                self?.navigateToMainApp()
-            } else {
-                self?.showError(message ?? "Signup failed")
+            DispatchQueue.main.async {
+                sender.isEnabled = true
+                if success {
+                    print(" Signup success, userId: \(UserSession.shared.currentLoggedInUserID)")
+                    self?.navigateToMainApp()
+                } else {
+                    self?.showError(message ?? "Signup failed")
+                }
             }
         }
     }
 
     // MARK: - Navigation
     private func navigateToMainApp() {
+        DispatchQueue.main.async {
+            print("✅ navigateToMainApp called on main thread: \(Thread.isMainThread)")
+            let onboardingStoryboard = UIStoryboard(name: "onboarding", bundle: nil)
+            let vc = onboardingStoryboard.instantiateViewController(withIdentifier: "ProfilePicturePromptVC")
+            print("✅ Instantiated VC: \(vc)")
+            guard let promptVC = vc as? ProfilePicturePromptViewController else {
+                print("⚠️ Cast failed, falling back to direct main navigation")
+                self.navigateDirectlyToMain()
+                return
+            }
+            promptVC.modalPresentationStyle = .fullScreen
+            promptVC.modalTransitionStyle   = .crossDissolve
+            self.present(promptVC, animated: true) {
+                print("✅ ProfilePicturePromptVC presented successfully")
+            }
+        }
+    }
+
+    private func navigateDirectlyToMain() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes
                 .first?.delegate as? SceneDelegate,
-              let window = sceneDelegate.window
-        else { return }
-
-        //  New user — mark onboarding as seen so they go straight to main on next launch
-        // Remove this line if you want new users to see onboarding after signup
+              let window = sceneDelegate.window else { return }
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
-
-        //  1. Switch UI to main app
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateInitialViewController()
         UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
-
-        //  2. Load all data (plants, sites, current user profile) in background
         sceneDelegate.loadAppData()
     }
 
@@ -174,6 +189,15 @@ class SignUpViewController: UIViewController {
         textField.layer.masksToBounds = true
         textField.layer.borderWidth   = 1
         textField.layer.borderColor   = UIColor.systemGray5.cgColor
+        
+        // Set placeholder color to systemGray2 for better visibility
+        if let placeholder = textField.placeholder {
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [.foregroundColor: UIColor.systemGray2]
+            )
+        }
+        
         let pad = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
         textField.leftView     = pad
         textField.leftViewMode = .always

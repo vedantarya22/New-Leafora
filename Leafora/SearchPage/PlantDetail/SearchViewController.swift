@@ -71,6 +71,10 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
     private var isLoading: Bool = true
     
     private let refreshControl = UIRefreshControl()
+    
+    // MARK: - Load More
+    private let plantsPerBatch = 10
+    private var displayedCount = 10
 
     // MARK: - Lifecycle
 
@@ -195,6 +199,9 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         let nib = UINib(nibName: "SearchPageCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: SearchPageCollectionViewCell.identifier)
         collectionView.register(ShimmerSearchCell.self, forCellWithReuseIdentifier: ShimmerSearchCell.identifier)
+        collectionView.register(SpinnerFooterView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                                withReuseIdentifier: SpinnerFooterView.identifier)
     }
     
     @objc private func handleRefresh() {
@@ -227,6 +234,15 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
         
         // section padding
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        
+        // spinner footer
+        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(56))
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: footerSize,
+            elementKind: UICollectionView.elementKindSectionFooter,
+            alignment: .bottom
+        )
+        section.boundarySupplementaryItems = [footer]
         
         return UICollectionViewCompositionalLayout(section: section)
     }
@@ -378,8 +394,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
             }
         }
         
-        // keep strict filtering behavior
-        
+        // Reset load-more batch on filter change
+        displayedCount = plantsPerBatch
         collectionView.reloadData()
     }
     
@@ -393,6 +409,8 @@ class SearchViewController: UIViewController, UICollectionViewDelegate {
                 return plant.plantName.lowercased().contains(searchText.lowercased())
             }
         }
+        // Reset load-more batch on search change
+        displayedCount = plantsPerBatch
         collectionView.reloadData()
     }
     
@@ -423,7 +441,8 @@ extension SearchViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return isLoading ? 6 : filteredPlants.count
+        if isLoading { return 6 }
+        return min(displayedCount, filteredPlants.count)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -446,6 +465,32 @@ extension SearchViewController: UICollectionViewDataSource {
         }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+        let footer = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: SpinnerFooterView.identifier,
+            for: indexPath
+        ) as! SpinnerFooterView
+        let hasMore = !isLoading && displayedCount < filteredPlants.count
+        hasMore ? footer.startAnimating() : footer.stopAnimating()
+        return footer
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        // Trigger load-more when last visible cell appears
+        guard !isLoading, displayedCount < filteredPlants.count else { return }
+        if indexPath.row == displayedCount - 1 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.displayedCount = min(self.displayedCount + self.plantsPerBatch, self.filteredPlants.count)
+                self.collectionView.reloadData()
+            }
+        }
     }
 }
 // MARK: - Helper Methods
@@ -477,7 +522,7 @@ extension SearchViewController {
     private func showSitePickerForQuickAdd(plant: Plant) {
         let sites = SiteStore.shared.sites
         let sheet = UIAlertController(
-            title: "Add \(plant.plantName) to...",
+            title: "Add \(plant.plantName) toh",
             message: nil,
             preferredStyle: .actionSheet
         )

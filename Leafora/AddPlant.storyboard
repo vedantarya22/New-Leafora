@@ -12,7 +12,7 @@
         <!--PlantSite-->
         <scene sceneID="RWX-O6-Lxy">
             <objects>
-                <viewController storyboardIdentifier="PlantSiteView" title="PlantSite" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qOz-6i-Rrm" customClass="PlantSiteViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PlantSiteView" title="PlantSite" hidesBottomBarWhenPushed="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="qOz-6i-Rrm" customClass="PlantSiteViewController" customModule="Leafora" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="k2h-mn-RxK">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -27,7 +27,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KKq-hA-fu6" customClass="addplantbuttonCollectionViewCell" customModule="search_pageRoute" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KKq-hA-fu6" customClass="addplantbuttonCollectionViewCell" customModule="Leafora" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="RdB-4Q-9zF">
@@ -92,7 +92,7 @@
         <!--AddPlantQuestionnaire-->
         <scene sceneID="APQ-SC-001">
             <objects>
-                <viewController storyboardIdentifier="AddPlantQuestionnaire" title="AddPlantQuestionnaire" id="APQ-VC-001" customClass="AddPlantQuestionnaireViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AddPlantQuestionnaire" title="AddPlantQuestionnaire" id="APQ-VC-001" customClass="AddPlantQuestionnaireViewController" customModule="Leafora" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="APQ-VW-001">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -175,7 +175,7 @@
         <!--PlantImage-->
         <scene sceneID="ZIE-Gl-ArG">
             <objects>
-                <viewController title="PlantImage" id="fIg-u3-lFd" customClass="AddPlantImageViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="PlantImage" id="fIg-u3-lFd" customClass="AddPlantImageViewController" customModule="Leafora" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="lXH-LK-Uhx">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -258,7 +258,7 @@
         <!--Plant Added Success View Controller-->
         <scene sceneID="OZk-r6-b8S">
             <objects>
-                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="YZF-IA-Jke" customClass="PlantAddedSuccessViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="YZF-IA-Jke" customClass="PlantAddedSuccessViewController" customModule="Leafora" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OFi-E0-cTp">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

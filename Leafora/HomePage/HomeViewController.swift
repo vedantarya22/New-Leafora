@@ -15,6 +15,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     // Loading state for initial data load
     private var isLoadingData = true
     private var loadingSpinner: UIActivityIndicatorView?
+    private var streakBadgeButton: UIButton?
     
     // Weather states
     private var currentWeather: PlantWeatherInfo?
@@ -82,6 +83,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         // Setup loading spinner
         setupLoadingSpinner()
+        
+        setupNavigationBarButtons()
+        updateStreakBadge()
         
         // DEBUG: List all JSON files in bundle
         JSONLoader.debugListBundleJSONFiles()
@@ -151,6 +155,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        // Record daily streak activity
+        StreakManager.shared.recordActivity()
+        updateStreakBadge()
         // Start timer: 30 seconds, repeats indefinitely
         tipTimer = Timer.scheduledTimer(timeInterval: 30.0,
                                        target: self,
@@ -301,8 +308,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             } else if let weather = currentWeather {
                 cell.configure(tip: GardenTip.randomTip(for: weather))
             } else {
-                // If weather failed to fetch, show generic tips, or showError()
-                // Let's fallback to generic tips since it's better than an error here
                 cell.configure(tip: GardenTip.randomTip(for: nil))
             }
             return cell
@@ -453,11 +458,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         header.chevronButton.isHidden = true
 
         switch indexPath.section {
-        case 0://garden tip
+        case 0: // Garden Tip
             header.titleLabel.text = ""
-        case 1://scan plant
+        case 1: // Scan plant
             header.titleLabel.text = ""
-        case 2://urgent/missed
+        case 2: // Urgent/missed
             header.titleLabel.text = ""
         case 3: // Care Tasks
             header.titleLabel.text = "Today's Plant Care"
@@ -474,5 +479,76 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             navigationController?.pushViewController(plantListVC, animated: true)
         }
     }
-   
+    
+    // MARK: - Navigation Bar Customization
+    private func setupNavigationBarButtons() {
+        // Create Streak Badge Button
+        let streakBtn = UIButton(type: .system)
+        streakBtn.backgroundColor = fertilizingGreen.withAlphaComponent(0.1)
+        streakBtn.layer.cornerRadius = 15
+        streakBtn.translatesAutoresizingMaskIntoConstraints = false
+        streakBtn.addTarget(self, action: #selector(showStreakCalendar), for: .touchUpInside)
+        
+        let boltIcon = UIImageView(image: UIImage(systemName: "bolt.fill"))
+        boltIcon.tintColor = fertilizingGreen
+        boltIcon.contentMode = .scaleAspectFit
+        boltIcon.translatesAutoresizingMaskIntoConstraints = false
+        streakBtn.addSubview(boltIcon)
+        
+        let countLbl = UILabel()
+        countLbl.font = .systemFont(ofSize: 14, weight: .bold)
+        countLbl.textColor = fertilizingGreen
+        countLbl.translatesAutoresizingMaskIntoConstraints = false
+        streakBtn.addSubview(countLbl)
+        
+        NSLayoutConstraint.activate([
+            streakBtn.heightAnchor.constraint(equalToConstant: 30),
+            
+            boltIcon.leadingAnchor.constraint(equalTo: streakBtn.leadingAnchor, constant: 8),
+            boltIcon.centerYAnchor.constraint(equalTo: streakBtn.centerYAnchor),
+            boltIcon.widthAnchor.constraint(equalToConstant: 14),
+            boltIcon.heightAnchor.constraint(equalToConstant: 14),
+            
+            countLbl.leadingAnchor.constraint(equalTo: boltIcon.trailingAnchor, constant: 4),
+            countLbl.trailingAnchor.constraint(equalTo: streakBtn.trailingAnchor, constant: -10),
+            countLbl.centerYAnchor.constraint(equalTo: streakBtn.centerYAnchor)
+        ])
+        
+        self.streakBadgeButton = streakBtn
+        let streakItem = UIBarButtonItem(customView: streakBtn)
+        
+        // Profile Button
+        let profileImage = UIImage(systemName: "person.circle")
+        let profileButton = UIBarButtonItem(image: profileImage, style: .plain, target: self, action: #selector(showProfile))
+        profileButton.tintColor = fertilizingGreen
+        
+        navigationItem.rightBarButtonItems = [profileButton, streakItem]
+    }
+    
+    private func updateStreakBadge() {
+        guard let streakBtn = streakBadgeButton else { return }
+        if let countLabel = streakBtn.subviews.compactMap({ $0 as? UILabel }).first {
+            countLabel.text = "\(StreakManager.shared.currentStreak)"
+        }
+    }
+    
+    @objc private func showStreakCalendar() {
+        let streakVC = StreakCalendarViewController()
+        let nav = UINavigationController(rootViewController: streakVC)
+        nav.modalPresentationStyle = .pageSheet
+        if #available(iOS 15.0, *) {
+            if let sheet = nav.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+            }
+        }
+        present(nav, animated: true)
+    }
+    
+    @objc private func showProfile() {
+        let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+        if let profileVC = storyboard.instantiateInitialViewController() {
+            navigationController?.pushViewController(profileVC, animated: true)
+        }
+    }
 }

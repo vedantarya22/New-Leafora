@@ -66,6 +66,7 @@ class loginViewController: UIViewController {
         usernameTextField.autocorrectionType = .no
         styleTextField(usernameTextField)
         styleTextField(passwordTextField)
+        passwordTextField.enablePasswordToggle()
         loginButton.layer.cornerRadius = 10
         loginButton.clipsToBounds = true
         styleButtons()
@@ -73,7 +74,7 @@ class loginViewController: UIViewController {
         let fullText = "Don't have an account? Sign Up"
         let attr     = NSMutableAttributedString(string: fullText)
         let range    = (fullText as NSString).range(of: "Sign Up")
-        attr.addAttribute(.foregroundColor, value: UIColor.secondaryLabel,
+        attr.addAttribute(.foregroundColor, value: UIColor.systemGray2,
                           range: NSRange(location: 0, length: fullText.count))
         attr.addAttribute(.foregroundColor,
                           value: UIColor(red: 0.22, green: 0.49, blue: 0.16, alpha: 1.0),
@@ -143,17 +144,42 @@ class loginViewController: UIViewController {
 
     // MARK: - Navigation
     private func navigateToMainApp() {
+        // Fetch the user profile first to check if they already have a photo
+        UserSession.shared.fetchCurrentUser { [weak self] user in
+            guard let self = self else { return }
+            
+            let hasProfilePhoto = !(user?.profileImageString ?? "").isEmpty
+            
+            if hasProfilePhoto {
+                // Existing user with photo — go straight to main
+                self.goToMainApp()
+            } else {
+                // No profile photo yet — show the prompt
+                self.showProfilePicturePrompt()
+            }
+        }
+    }
+    
+    private func showProfilePicturePrompt() {
+        let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
+        guard let promptVC = storyboard.instantiateViewController(
+            withIdentifier: "ProfilePicturePromptVC"
+        ) as? ProfilePicturePromptViewController else {
+            goToMainApp(); return
+        }
+        promptVC.modalPresentationStyle = .fullScreen
+        promptVC.modalTransitionStyle   = .crossDissolve
+        present(promptVC, animated: true)
+    }
+    
+    private func goToMainApp() {
         guard let sceneDelegate = UIApplication.shared.connectedScenes
                 .first?.delegate as? SceneDelegate,
-              let window = sceneDelegate.window
-        else { return }
-
-        // switch to main app UI
+              let window = sceneDelegate.window else { return }
+        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         window.rootViewController = storyboard.instantiateInitialViewController()
         UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve, animations: nil)
-
-        // load data after navigation
         sceneDelegate.loadAppData()
     }
 
@@ -169,6 +195,15 @@ class loginViewController: UIViewController {
         textField.layer.masksToBounds = true
         textField.layer.borderWidth  = 1
         textField.layer.borderColor  = UIColor.systemGray5.cgColor
+        
+        // Set placeholder color to systemGray2 for better visibility
+        if let placeholder = textField.placeholder {
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholder,
+                attributes: [.foregroundColor: UIColor.systemGray2]
+            )
+        }
+        
         let pad = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
         textField.leftView     = pad
         textField.leftViewMode = .always

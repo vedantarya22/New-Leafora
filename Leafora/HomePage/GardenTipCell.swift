@@ -95,8 +95,8 @@ class GardenTipCell: UICollectionViewCell {
         pillLabel.textColor = .white
         pillView.addSubview(pillLabel)
         
-        // Tip message — dark, bold, readable
-        msgLabel.font          = .systemFont(ofSize: 16, weight: .semibold)
+        // Tip message — dark, elegant, readable
+        msgLabel.font          = .systemFont(ofSize: 16, weight: .medium)
         msgLabel.textColor     = UIColor(red: 0.10, green: 0.18, blue: 0.10, alpha: 1.0)
         msgLabel.numberOfLines = 0
         msgLabel.lineBreakMode = .byWordWrapping
