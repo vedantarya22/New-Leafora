@@ -14,7 +14,7 @@ class CommentsViewController: UIViewController,
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var commentTextField: UITextField!
     @IBOutlet weak var inputBottomConstraint: NSLayoutConstraint!
-
+ 
     // MARK: - Data
     var post: Post!                      // set by CommunityViewController before pushing
     private var comments: [Comment] = [] // local copy that is grabbed from postrepo/backend
@@ -32,12 +32,34 @@ class CommentsViewController: UIViewController,
         tableView.dataSource = self
         tableView.keyboardDismissMode = .onDrag
         tableView.tableFooterView = UIView()
+        tableView.separatorStyle = .none
 
         commentTextField.delegate = self
         setupKeyboardObservers()
-
+        setupInputStyling()
+ 
         // comments from backend
         loadComments()
+    }
+    
+    private func setupInputStyling() {
+        // AUTHENTIC iOS 17 iMESSAGE STYLE (Layout in Storyboard)
+        let container = commentTextField.superview
+        
+        // 1. Pill-shaped text field
+        commentTextField.placeholder = "Add a comment..."
+        commentTextField.font = .systemFont(ofSize: 16)
+        commentTextField.backgroundColor = .systemGray6
+        commentTextField.layer.cornerRadius = 20
+        commentTextField.layer.masksToBounds = true
+        commentTextField.borderStyle = .none
+        
+        // Internal padding
+        let leftPad = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 1))
+        commentTextField.leftView = leftPad
+        commentTextField.leftViewMode = .always
+        
+        container?.backgroundColor = .systemBackground
     }
 
     // MARK: - Load Comments
