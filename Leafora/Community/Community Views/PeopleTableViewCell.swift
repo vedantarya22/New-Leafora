@@ -20,9 +20,12 @@ class PeopleTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // setup
         
-        avatarImageView.layer.cornerRadius = 25 // half of 50
         avatarImageView.clipsToBounds = true
-        
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        avatarImageView.layer.cornerRadius = avatarImageView.frame.width / 2
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
