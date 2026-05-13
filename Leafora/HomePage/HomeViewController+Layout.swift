@@ -9,8 +9,8 @@ extension HomeViewController {
             guard let self = self else { return nil }
             switch sectionIndex {
             case 0: return self.gardenTipLayout()      // 1st: Tip (conditionally shown)
-            case 1: return self.scanSectionLayout()    // 2nd: Scan
-            case 2: return self.urgentCardsLayout()    // 3rd: Urgent Cards
+            case 1: return self.urgentCardsLayout()    // 2nd: Urgent Cards
+            case 2: return self.scanSectionLayout()    // 3rd: Scan
             case 3: return self.careGridLayout()       // 4th: Care Tasks
             default: return nil
             }

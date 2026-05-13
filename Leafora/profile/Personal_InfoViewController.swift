@@ -257,8 +257,12 @@ class Personal_InfoViewController: UIViewController,
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell",
                                                   for: indexPath) as! PersonalInfoTableViewCell
         let item = sections[indexPath.section].items[indexPath.row]
+        
+        // Email is not editable in production/profile edit
+        let canEditItem = (item.title == "Email") ? false : isEditingProfile
+        
         cell.configure(title: item.title, value: item.value,
-                       isEditing: isEditingProfile, showsChevron: item.showsChevron)
+                       isEditing: canEditItem, showsChevron: item.showsChevron)
         cell.selectionStyle = .none
         return cell
     }

@@ -636,8 +636,8 @@
                                         <rect key="frame" x="313" y="11.999999999999998" width="51.333333333333314" height="28.333333333333329"/>
                                         <color key="tintColor" systemColor="systemBackgroundColor"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" title="Post">
-                                            <fontDescription key="titleFontDescription" type="boldSystem" pointSize="0.0"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Post">
+                                            <fontDescription key="titleFontDescription" type="boldSystem" pointSize="16"/>
                                             <color key="baseForegroundColor" red="0.2141113281" green="0.490234375" blue="0.1589355469" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -647,12 +647,13 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="yZV-kK-wpA" secondAttribute="trailing" constant="28.666666666666686" id="752-nx-EvQ"/>
-                                    <constraint firstAttribute="height" constant="60" id="Cu6-WN-xeX"/>
-                                    <constraint firstItem="yZV-kK-wpA" firstAttribute="leading" secondItem="gos-Dc-JJR" secondAttribute="trailing" constant="7.3333333333333144" id="HFI-yE-3h4"/>
+                                    <constraint firstAttribute="trailing" secondItem="yZV-kK-wpA" secondAttribute="trailing" constant="12" id="752-nx-EvQ"/>
+                                    <constraint firstAttribute="height" constant="80" id="Cu6-WN-xeX"/>
+                                    <constraint firstItem="yZV-kK-wpA" firstAttribute="leading" secondItem="gos-Dc-JJR" secondAttribute="trailing" constant="8" id="HFI-yE-3h4"/>
                                     <constraint firstItem="gos-Dc-JJR" firstAttribute="leading" secondItem="svZ-nC-3Bw" secondAttribute="leading" constant="16" id="kjN-67-Ncy"/>
-                                    <constraint firstItem="yZV-kK-wpA" firstAttribute="centerY" secondItem="svZ-nC-3Bw" secondAttribute="centerY" constant="-3.8333333333333357" id="qhu-HY-Npc"/>
-                                    <constraint firstAttribute="bottom" secondItem="gos-Dc-JJR" secondAttribute="bottom" constant="26" id="tcB-DJ-qrv"/>
+                                    <constraint firstItem="yZV-kK-wpA" firstAttribute="centerY" secondItem="svZ-nC-3Bw" secondAttribute="centerY" constant="18" id="qhu-HY-Npc"/>
+                                    <constraint firstItem="gos-Dc-JJR" firstAttribute="centerY" secondItem="svZ-nC-3Bw" secondAttribute="centerY" constant="18" id="tcB-DJ-qrv"/>
+                                    <constraint firstItem="gos-Dc-JJR" firstAttribute="height" constant="40" id="hgt-42-imH"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="wDb-dL-ZWf">
