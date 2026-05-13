@@ -1,14 +1,16 @@
+//  SceneDelegate.swift
+
+
 import UIKit
 import GoogleSignIn
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    
-    // MARK: - Loading State Gate
     private var isLoadingData = false
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
         guard let ws = (scene as? UIWindowScene) else { return }
 
         let win = UIWindow(windowScene: ws)
@@ -17,24 +19,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
 
         if !hasSeenOnboarding {
-            print(" First launch, showing onboarding")
-            let storyboard = UIStoryboard(name: "onboarding", bundle: nil)
-            win.rootViewController = storyboard.instantiateInitialViewController()
+            print("First launch, showing onboarding")
+            let sb = UIStoryboard(name: "onboarding", bundle: nil)
+            win.rootViewController = sb.instantiateInitialViewController()
 
         } else if KeychainManager.shared.getToken() != nil,
                   KeychainManager.shared.getUserId() != nil {
-            //  Token exists — identity is read from Keychain by UserSession automatically.
-            //    No need to set currentUserId anywhere.
-            print(" Token found, userId: \(UserSession.shared.currentLoggedInUserID)")
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            win.rootViewController = storyboard.instantiateInitialViewController()
+            print("Token found, userId: \(UserSession.shared.currentLoggedInUserID)")
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            win.rootViewController = sb.instantiateInitialViewController()
             loadAppData()
 
         } else {
-            print(" No token, showing login")
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let loginVC = storyboard.instantiateViewController(withIdentifier: "loginViewController")
-            let navVC = UINavigationController(rootViewController: loginVC)
+            print("No token, showing login")
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let loginVC = sb.instantiateViewController(withIdentifier: "loginViewController")
+            let navVC   = UINavigationController(rootViewController: loginVC)
             navVC.isNavigationBarHidden = true
             win.rootViewController = navVC
         }
@@ -43,72 +43,70 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     // MARK: - Load App Data
-    // Called after login/signup (from those VCs) AND on cold launch when token exists.
+    // Called after login/signup AND on cold launch when token exists.
     func loadAppData() {
-        // Prevent concurrent loads
         guard !isLoadingData else {
-            print(" Data load already in progress, skipping duplicate request")
+            print("Data load already in progress, skipping")
             return
         }
-        
         isLoadingData = true
-        print(" Starting app data load...")
+        print("Starting app data load...")
 
-        // 1. Current user profile — needed by PostRepository, NewPostVC, ProfileVC, etc.
+        let userId = UserSession.shared.currentLoggedInUserID
+
+        // 1. Current user profile
         UserSession.shared.fetchCurrentUser { user in
             if let user = user {
-                print(" Current user loaded: \(user.username)")
-            } else {
-                print(" Could not load current user profile")
+                print("Current user loaded: \(user.username)")
             }
         }
-        
-        // Connect socket with logged-in user's ID
 
-        ChatSocketManager.shared.connect(userId: UserSession.shared.currentLoggedInUserID)
+        // 2. Connect socket — server will flush offline messages on "register"
+        ChatSocketManager.shared.connect(userId: userId)
 
+        // 3. E2EE setup — generate key pair if this is first launch,
+        //    then always register the public key (idempotent on the server).
+        //    getOrCreatePrivateKey reads from Keychain or generates and stores a new key.
+        _ = E2EEManager.shared.getOrCreatePrivateKey(for: userId)
+        ChatManager.shared.registerPublicKey { success in
+            print("E2EE public key registered: \(success)")
+        }
 
-        // 2. Plant catalogue
+        // 4. Plant catalogue
         PlantCatalogueCache.shared.getPlants { plants in
             print("Loaded \(plants.count) catalogue plants")
         }
 
-        // 3. User's plants — always replace local with MongoDB to prevent duplicates
+        // 5. User's plants
         NetworkManager.shared.fetchUserPlants { [weak self] userPlants in
             guard let userPlants = userPlants else {
-                print(" Failed to load user plants")
+                print("Failed to load user plants")
                 self?.isLoadingData = false
                 return
             }
             PlantStore.shared.setPlants(userPlants)
-            print(" Loaded \(userPlants.count) user plants from MongoDB")
-            
-            // Schedule smart care notifications based on loaded data (debounced)
+            print("Loaded \(userPlants.count) user plants from MongoDB")
             PlantNotificationManager.shared.scheduleAllCareNotificationsDebounced()
-            
-            // Reset loading flag after plants load (primary data source)
             self?.isLoadingData = false
         }
 
-        // 4. User's sites — always replace local with MongoDB
+        // 6. Sites
         NetworkManager.shared.getUserSites { sites in
-            guard let sites = sites else {
-                print(" Failed to load sites")
-                return
-            }
+            guard let sites = sites else { print("Failed to load sites"); return }
             SiteStore.shared.setSites(sites)
-            print(" Loaded \(sites.count) sites from MongoDB")
+            print("Loaded \(sites.count) sites from MongoDB")
         }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
-    // MARK: - Google Sign-In URL Handler
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
         GIDSignIn.sharedInstance.handle(url)
     }
-    func sceneDidBecomeActive(_ scene: UIScene) {}
-    func sceneWillResignActive(_ scene: UIScene) {}
+
+    func sceneDidBecomeActive(_ scene: UIScene)    {}
+    func sceneWillResignActive(_ scene: UIScene)   {}
     func sceneWillEnterForeground(_ scene: UIScene) {}
     func sceneDidEnterBackground(_ scene: UIScene) {}
 }

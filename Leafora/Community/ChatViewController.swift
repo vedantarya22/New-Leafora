@@ -1,7 +1,5 @@
-//
 //  ChatViewController.swift
 //  Leafora
-//
 
 import UIKit
 import MessageKit
@@ -24,10 +22,10 @@ struct Message: MessageType {
 // MARK: - ChatViewController
 class ChatViewController: MessagesViewController {
 
-    // set before opening this screen
     var user: User!
 
     private var messages:     [Message] = []
+    private var roomId:       String?       // set after openConversation succeeds
     private let gradientLayer = CAGradientLayer.backgroundGreen()
 
     private var mySender: Sender {
@@ -59,47 +57,59 @@ class ChatViewController: MessagesViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // stop socket callback when leaving chat
-        ChatSocketManager.shared.onMessageReceived = nil
+        ChatManager.shared.closeConversation()
     }
 
-    // MARK: - Load History from CoreData
+    // MARK: - Load History from MongoDB (decrypted by ChatManager)
     private func loadMessages() {
-        let stored = ChatManager.shared.fetchMessages(with: user.id)
-        messages = stored.map { entity in
-            let isMe   = entity.senderId == UserSession.shared.currentLoggedInUserID
-            return Message(
-                sender:    isMe ? mySender : otherSender,
-                messageId: entity.id ?? UUID().uuidString,
-                sentDate:  entity.timestamp ?? Date(),
-                kind:      .text(entity.text ?? "")
-            )
+        ChatManager.shared.openConversation(with: user.id) { [weak self] roomId, chatMessages in
+            guard let self = self else { return }
+            self.roomId   = roomId
+            self.messages = chatMessages.map { self.toMessageKitMessage($0) }
+            self.messagesCollectionView.reloadData()
+            self.scrollToBottom(animated: false)
+
+            // Tell server we've seen these messages
+            if let roomId = roomId {
+                ChatSocketManager.shared.markRead(roomId: roomId)
+            }
         }
-        messagesCollectionView.reloadData()
-        scrollToBottom(animated: false)
     }
 
-    // MARK: - Subscribe to Incoming Socket Messages
+    // MARK: - Subscribe to Incoming Messages
+    // ChatManager decrypts before calling this — we get plaintext ChatMessage.
     private func subscribeToIncomingMessages() {
-        ChatSocketManager.shared.onMessageReceived = { [weak self] socketMsg in
-            guard let self = self else { return }
+        ChatManager.shared.onNewMessage = { [weak self] chatMsg in
+            guard let self = self, chatMsg.senderId == self.user.id else { return }
 
-            // only messages from this user
-            guard socketMsg.senderId == self.user.id else { return }
-
-            let msg = Message(
-                sender:    self.otherSender,
-                messageId: socketMsg.messageId,
-                sentDate:  socketMsg.timestamp,
-                kind:      .text(socketMsg.text)
-            )
-            self.messages.append(msg)
+            self.messages.append(self.toMessageKitMessage(chatMsg))
             self.messagesCollectionView.reloadData()
             self.scrollToBottom(animated: true)
 
-            // refresh chat preview list
+            if let roomId = self.roomId {
+                ChatSocketManager.shared.markRead(roomId: roomId)
+            }
+
             NotificationCenter.default.post(name: .didSendMessage, object: nil,
-                                            userInfo: ["userId": socketMsg.senderId])
+                                            userInfo: ["userId": chatMsg.senderId])
+        }
+    }
+
+    // MARK: - Helpers
+    private func toMessageKitMessage(_ chatMsg: ChatMessage) -> Message {
+        let isMe = chatMsg.senderId == UserSession.shared.currentLoggedInUserID
+        return Message(
+            sender:    isMe ? mySender : otherSender,
+            messageId: chatMsg.id,
+            sentDate:  chatMsg.timestamp,
+            kind:      .text(chatMsg.text)
+        )
+    }
+
+    private func scrollToBottom(animated: Bool) {
+        guard !messages.isEmpty else { return }
+        DispatchQueue.main.async {
+            self.messagesCollectionView.scrollToLastItem(animated: animated)
         }
     }
 
@@ -110,22 +120,21 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate                       = self
 
-        // input text view
         let inputTV = messageInputBar.inputTextView
-        inputTV.placeholder      = "Type a message..."
+        inputTV.placeholder          = "Type a message..."
         inputTV.placeholderTextColor = UIColor.systemGray3
-        inputTV.font             = .systemFont(ofSize: 15, weight: .regular)
-        inputTV.textContainerInset  = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
-        inputTV.layer.cornerRadius  = 20
-        inputTV.layer.borderWidth   = 1
-        inputTV.layer.borderColor   = UIColor.systemGray5.cgColor
-        inputTV.backgroundColor     = .white
+        inputTV.font                 = .systemFont(ofSize: 15, weight: .regular)
+        inputTV.textContainerInset   = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
+        inputTV.layer.cornerRadius   = 20
+        inputTV.layer.borderWidth    = 1
+        inputTV.layer.borderColor    = UIColor.systemGray5.cgColor
+        inputTV.backgroundColor      = .white
 
-        // send button
         let sendButton = messageInputBar.sendButton
         sendButton.setTitle(nil, for: .normal)
         let sendConfig = UIImage.SymbolConfiguration(pointSize: 22, weight: .semibold)
-        sendButton.setImage(UIImage(systemName: "arrow.up.circle.fill", withConfiguration: sendConfig), for: .normal)
+        sendButton.setImage(UIImage(systemName: "arrow.up.circle.fill",
+                                    withConfiguration: sendConfig), for: .normal)
         sendButton.tintColor = .brandGreen
         sendButton.setSize(CGSize(width: 36, height: 36), animated: false)
         sendButton.contentEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
@@ -136,9 +145,8 @@ class ChatViewController: MessagesViewController {
         messageInputBar.padding = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 8)
         messageInputBar.setLeftStackViewWidthConstant(to: 0, animated: false)
         messageInputBar.leftStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
         messageInputBar.contentView.backgroundColor    = .clear
-        messageInputBar.contentView.layer.cornerRadius  = 0
+        messageInputBar.contentView.layer.cornerRadius = 0
         messageInputBar.contentView.layer.masksToBounds = false
     }
 
@@ -150,8 +158,7 @@ class ChatViewController: MessagesViewController {
         let spacing: CGFloat        = 3
         let totalHeight             = avatarSize + spacing + labelHeight
 
-        let container  = UIView(frame: CGRect(x: 0, y: 0,
-                                              width: containerWidth, height: totalHeight))
+        let container  = UIView(frame: CGRect(x: 0, y: 0, width: containerWidth, height: totalHeight))
         let avatarX    = (containerWidth - avatarSize) / 2
         let avatarView = UIImageView(frame: CGRect(x: avatarX, y: 0,
                                                    width: avatarSize, height: avatarSize))
@@ -163,8 +170,7 @@ class ChatViewController: MessagesViewController {
             avatarView.configureImage(with: img)
         } else {
             let config = UIImage.SymbolConfiguration(paletteColors: [.systemGray3, .white])
-            avatarView.image       = UIImage(systemName: "person.circle.fill",
-                                             withConfiguration: config)
+            avatarView.image       = UIImage(systemName: "person.circle.fill", withConfiguration: config)
             avatarView.contentMode = .scaleAspectFit
         }
 
@@ -180,17 +186,10 @@ class ChatViewController: MessagesViewController {
         navigationItem.rightBarButtonItem = nil
     }
 
-    // MARK: - Helpers
-    private func scrollToBottom(animated: Bool) {
-        guard !messages.isEmpty else { return }
-        DispatchQueue.main.async {
-            self.messagesCollectionView.scrollToLastItem(animated: animated)
-        }
-    }
-
-    // MARK: - Long Press to Delete
+    // MARK: - Long Press to Delete (local only — removes from UI, not from MongoDB)
     private func setupLongPressToDelete() {
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        let longPress = UILongPressGestureRecognizer(target: self,
+                                                     action: #selector(handleLongPress(_:)))
         longPress.minimumPressDuration = 0.5
         messagesCollectionView.addGestureRecognizer(longPress)
     }
@@ -199,30 +198,30 @@ class ChatViewController: MessagesViewController {
         guard gesture.state == .began else { return }
 
         let point = gesture.location(in: messagesCollectionView)
-
-        // find pressed message section
         var targetSection: Int?
-        for cell in messagesCollectionView.visibleCells {
-            if let ip = messagesCollectionView.indexPath(for: cell),
-               cell.frame.contains(point) {
-                targetSection = ip.section
-                break
+
+        if let ip = messagesCollectionView.indexPathForItem(at: point) {
+            targetSection = ip.section
+        } else {
+            // Check section headers/footers
+            for section in 0..<messages.count {
+                let headerAttrs = messagesCollectionView.layoutAttributesForSupplementaryElement(
+                    ofKind: UICollectionView.elementKindSectionHeader,
+                    at: IndexPath(item: 0, section: section))
+                if let frame = headerAttrs?.frame, frame.contains(point) {
+                    targetSection = section; break
+                }
             }
         }
 
-        if targetSection == nil,
-           let ip = messagesCollectionView.indexPathForItem(at: point) {
-            targetSection = ip.section
-        }
-
         guard let section = targetSection, section < messages.count else { return }
-
         let message = messages[section]
 
-        let alert = UIAlertController(title: nil, message: "Delete this message?", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: "Delete this message?",
+                                      preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
-            ChatManager.shared.deleteMessage(byId: message.messageId)
+            // Removes from local UI only — persisted in MongoDB
             self.messages.remove(at: section)
             self.messagesCollectionView.reloadData()
         })
@@ -230,7 +229,7 @@ class ChatViewController: MessagesViewController {
         present(alert, animated: true)
     }
 
-    // MARK: - Date Header Helper
+    // MARK: - Date Header Helpers
     private func shouldShowDateHeader(at indexPath: IndexPath) -> Bool {
         guard indexPath.section > 0 else { return true }
         let current  = messages[indexPath.section].sentDate
@@ -240,20 +239,14 @@ class ChatViewController: MessagesViewController {
 
     private func dateHeaderString(for date: Date) -> String {
         let cal = Calendar.current
-        if cal.isDateInToday(date) {
-            return "Today"
-        } else if cal.isDateInYesterday(date) {
-            return "Yesterday"
-        } else {
-            let f = DateFormatter()
-            f.dateFormat = "MMM d, yyyy"
-            return f.string(from: date)
-        }
+        if cal.isDateInToday(date)     { return "Today" }
+        if cal.isDateInYesterday(date) { return "Yesterday" }
+        let f = DateFormatter(); f.dateFormat = "MMM d, yyyy"
+        return f.string(from: date)
     }
 
     private func timeString(for date: Date) -> String {
-        let f = DateFormatter()
-        f.dateFormat = "h:mm a"
+        let f = DateFormatter(); f.dateFormat = "h:mm a"
         return f.string(from: date)
     }
 }
@@ -272,27 +265,24 @@ extension ChatViewController: MessagesDataSource {
         messages.count
     }
 
-    // date header for first message of each day
-    func cellTopLabelAttributedText(for message: any MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+    func cellTopLabelAttributedText(for message: any MessageType,
+                                    at indexPath: IndexPath) -> NSAttributedString? {
         guard shouldShowDateHeader(at: indexPath) else { return nil }
-
-        let dateText = dateHeaderString(for: message.sentDate)
         return NSAttributedString(
-            string: dateText,
+            string: dateHeaderString(for: message.sentDate),
             attributes: [
-                .font: UIFont.systemFont(ofSize: 11, weight: .semibold),
+                .font:            UIFont.systemFont(ofSize: 11, weight: .semibold),
                 .foregroundColor: UIColor.secondaryLabel
             ]
         )
     }
 
-    // time below each message
-    func messageBottomLabelAttributedText(for message: any MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        let time = timeString(for: message.sentDate)
-        return NSAttributedString(
-            string: time,
+    func messageBottomLabelAttributedText(for message: any MessageType,
+                                          at indexPath: IndexPath) -> NSAttributedString? {
+        NSAttributedString(
+            string: timeString(for: message.sentDate),
             attributes: [
-                .font: UIFont.systemFont(ofSize: 10, weight: .regular),
+                .font:            UIFont.systemFont(ofSize: 10, weight: .regular),
                 .foregroundColor: UIColor.tertiaryLabel
             ]
         )
@@ -304,20 +294,19 @@ extension ChatViewController: MessagesDisplayDelegate {
 
     func backgroundColor(for message: any MessageType, at indexPath: IndexPath,
                          in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        if isFromCurrentSender(message: message) {
-            return .brandGreen
-        } else {
-            return UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1.0)
-        }
+        isFromCurrentSender(message: message)
+            ? .brandGreen
+            : UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1.0)
     }
 
     func textColor(for message: any MessageType, at indexPath: IndexPath,
                    in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        isFromCurrentSender(message: message) ? .white : UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
+        isFromCurrentSender(message: message)
+            ? .white
+            : UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
     }
 
-    func configureAvatarView(_ avatarView: AvatarView,
-                             for message: any MessageType,
+    func configureAvatarView(_ avatarView: AvatarView, for message: any MessageType,
                              at indexPath: IndexPath,
                              in messagesCollectionView: MessagesCollectionView) {
         if isFromCurrentSender(message: message) {
@@ -350,7 +339,6 @@ extension ChatViewController: MessagesLayoutDelegate {
         isFromCurrentSender(message: message) ? .zero : CGSize(width: 32, height: 32)
     }
 
-    // space between message groups
     func headerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         .zero
     }
@@ -359,26 +347,21 @@ extension ChatViewController: MessagesLayoutDelegate {
         CGSize(width: 0, height: 4)
     }
 
-    // date header height
     func cellTopLabelHeight(for message: any MessageType, at indexPath: IndexPath,
                             in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         shouldShowDateHeader(at: indexPath) ? 32 : 0
     }
 
     func messageBottomLabelHeight(for message: any MessageType, at indexPath: IndexPath,
-                                  in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-        16
-    }
+                                  in messagesCollectionView: MessagesCollectionView) -> CGFloat { 16 }
 
-    // bottom time alignment
     func messageBottomLabelAlignment(for message: any MessageType, at indexPath: IndexPath,
                                      in messagesCollectionView: MessagesCollectionView) -> LabelAlignment? {
         isFromCurrentSender(message: message)
-            ? LabelAlignment(textAlignment: .right, textInsets: UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 16))
-            : LabelAlignment(textAlignment: .left, textInsets: UIEdgeInsets(top: 2, left: 48, bottom: 0, right: 0))
+            ? LabelAlignment(textAlignment: .right,  textInsets: UIEdgeInsets(top: 2, left: 0,  bottom: 0, right: 16))
+            : LabelAlignment(textAlignment: .left,   textInsets: UIEdgeInsets(top: 2, left: 48, bottom: 0, right: 0))
     }
 
-    // date header alignment
     func cellTopLabelAlignment(for message: any MessageType, at indexPath: IndexPath,
                                in messagesCollectionView: MessagesCollectionView) -> LabelAlignment? {
         LabelAlignment(textAlignment: .center, textInsets: .zero)
@@ -392,24 +375,21 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        // save locally and send via socket
-        ChatManager.shared.sendMessage(to: user.id, text: trimmed)
-
-        // append immediately for fast UI update
+        // 1. Optimistically show plaintext in UI immediately
         messages.append(Message(
             sender:    mySender,
             messageId: UUID().uuidString,
             sentDate:  Date(),
             kind:      .text(trimmed)
         ))
-
-        // update chat UI
         inputBar.inputTextView.text = ""
         inputBar.invalidatePlugins()
         messagesCollectionView.reloadData()
         scrollToBottom(animated: true)
 
-        // refresh chat preview list
+        // 2. ChatManager encrypts and sends via socket
+        ChatManager.shared.sendMessage(to: user.id, text: trimmed, roomId: roomId)
+
         NotificationCenter.default.post(name: .didSendMessage, object: nil,
                                         userInfo: ["userId": user.id])
     }

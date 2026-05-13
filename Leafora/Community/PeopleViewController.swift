@@ -1,3 +1,5 @@
+//  PeopleViewController.swift
+
 import UIKit
 
 extension Notification.Name {
@@ -27,14 +29,17 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         setupSearchController()
         loadData()
 
-        // preview refresh if sm1 sent a new msg
         NotificationCenter.default.addObserver(
-            self, selector: #selector(refreshPreviews),
-            name: .didSendMessage, object: nil
+            self,
+            selector: #selector(refreshPreviews),
+            name: .didSendMessage,
+            object: nil
         )
     }
 
-    deinit { NotificationCenter.default.removeObserver(self) }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -44,111 +49,204 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationItem.hidesSearchBarWhenScrolling = false
-        // refresh preview when coming from a chat
+        sortUsersByLatestMessage()
         tableView.reloadData()
-        loadData()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // Must be here (not viewWillAppear) — nav bar animation resets the color after appear;
-        // dispatching to next run loop ensures we win that race
+
         DispatchQueue.main.async {
             self.searchController.searchBar.searchTextField.backgroundColor = .white
         }
     }
 
+    // MARK: - Refresh Inbox Ordering
     @objc private func refreshPreviews() {
+        sortUsersByLatestMessage()
         tableView.reloadData()
+    }
+
+    // MARK: - Sorting
+    private func sortUsersByLatestMessage() {
+
+        allUsers.sort { a, b in
+            let previewA = ChatManager.shared.lastPreview(with: a.id)
+            let previewB = ChatManager.shared.lastPreview(with: b.id)
+
+            let timeA = previewA?.timestamp ?? .distantPast
+            let timeB = previewB?.timestamp ?? .distantPast
+
+            // Latest message first
+            if timeA != timeB {
+                return timeA > timeB
+            }
+
+            // Fallback alphabetical sort
+            return a.name.lowercased() < b.name.lowercased()
+        }
+
+        filteredUsers.sort { a, b in
+            let previewA = ChatManager.shared.lastPreview(with: a.id)
+            let previewB = ChatManager.shared.lastPreview(with: b.id)
+
+            let timeA = previewA?.timestamp ?? .distantPast
+            let timeB = previewB?.timestamp ?? .distantPast
+
+            if timeA != timeB {
+                return timeA > timeB
+            }
+
+            return a.name.lowercased() < b.name.lowercased()
+        }
     }
 
     // MARK: - Data
     func loadData() {
+
+        // Load users and rooms in parallel
+        let group = DispatchGroup()
+
+        group.enter()
         NetworkManager.shared.fetchAllUsers { [weak self] users in
-            guard let self = self else { return }
+            guard let self = self else {
+                group.leave()
+                return
+            }
+
             let currentId = UserSession.shared.currentLoggedInUserID
-            // Sort: users with recent messages first, then alphabetical
-            self.allUsers = users
-                .filter { $0.id != currentId }
-                .sorted { a, b in
-                    let lastA = ChatManager.shared.lastMessage(with: a.id)?.timestamp ?? .distantPast
-                    let lastB = ChatManager.shared.lastMessage(with: b.id)?.timestamp ?? .distantPast
-                    return lastA > lastB
-                }
+
+            self.allUsers = users.filter {
+                $0.id != currentId
+            }
+
+            group.leave()
+        }
+
+        group.enter()
+
+        // Loads decrypted previews into ChatManager cache
+        ChatManager.shared.loadRooms {
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+
+            self.sortUsersByLatestMessage()
             self.tableView.reloadData()
         }
     }
 
     // MARK: - Setup
     func setupTableView() {
-        tableView.delegate        = self
-        tableView.dataSource      = self
-        tableView.rowHeight       = 80
+
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = 80
         tableView.tableFooterView = UIView()
         tableView.keyboardDismissMode = .onDrag
         tableView.backgroundColor = .clear
-        let nib = UINib(nibName: "PeopleTableViewCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "PeopleTableViewCell")
+
+        let nib = UINib(
+            nibName: "PeopleTableViewCell",
+            bundle: nil
+        )
+
+        tableView.register(
+            nib,
+            forCellReuseIdentifier: "PeopleTableViewCell"
+        )
     }
 
     func setupSearchController() {
-        searchController.searchResultsUpdater                 = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder                = "Search friends..."
-        navigationItem.searchController                       = searchController
-        navigationItem.hidesSearchBarWhenScrolling            = false
-        definesPresentationContext                            = true
 
-        // white background for contrast against green gradient
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search friends..."
+
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+
+        definesPresentationContext = true
+
         searchController.searchBar.searchTextField.backgroundColor = .white
     }
 
     // MARK: - Search
     func updateSearchResults(for searchController: UISearchController) {
-        filterContentForSearchText(searchController.searchBar.text ?? "")
+        filterContentForSearchText(
+            searchController.searchBar.text ?? ""
+        )
     }
 
     func filterContentForSearchText(_ text: String) {
+
         filteredUsers = allUsers.filter {
             $0.name.lowercased().contains(text.lowercased()) ||
             $0.username.lowercased().contains(text.lowercased())
         }
+
+        // Keep filtered results sorted too
+        sortUsersByLatestMessage()
+
         tableView.reloadData()
     }
 
     // MARK: - TableView
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        isSearching ? filteredUsers.count : allUsers.count
+
+        return isSearching
+            ? filteredUsers.count
+            : allUsers.count
     }
 
     func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
+
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "PeopleTableViewCell",
-            for: indexPath) as! PeopleTableViewCell
+            for: indexPath
+        ) as! PeopleTableViewCell
 
-        let user = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
+        let user = isSearching
+            ? filteredUsers[indexPath.row]
+            : allUsers[indexPath.row]
 
-        // Name
         cell.nameLabel.text = user.name
 
-        // Last message preview
-        if let last = ChatManager.shared.lastMessage(with: user.id) {
-            let myId   = UserSession.shared.currentLoggedInUserID
-            let prefix = last.senderId == myId ? "You: " : ""
-            cell.messageLabel.text  = "\(prefix)\(last.text ?? "")"
-            cell.timeLabel.text     = ChatManager.shared.formattedTime(for: last.timestamp)
+        // Decrypted preview from ChatManager cache
+        if let preview = ChatManager.shared.lastPreview(with: user.id) {
+
+            let myId = UserSession.shared.currentLoggedInUserID
+
+            let prefix = preview.senderId == myId
+                ? "You: "
+                : ""
+
+            cell.messageLabel.text = "\(prefix)\(preview.text)"
+
+            cell.timeLabel.text = ChatManager.shared.formattedTime(
+                for: preview.timestamp
+            )
+
             cell.timeLabel.isHidden = false
+
         } else {
-            cell.messageLabel.text  = user.searchSubtitle
+
+            cell.messageLabel.text = user.searchSubtitle
             cell.timeLabel.isHidden = true
         }
 
-        // Avatar
-        cell.avatarImageView.configureImage(with: user.profileImageString ?? "person.circle.fill")
-        cell.avatarImageView.tintColor   = .label
-        cell.backgroundColor             = .clear
+        cell.avatarImageView.configureImage(
+            with: user.profileImageString ?? "person.circle.fill"
+        )
+
+        cell.avatarImageView.tintColor = .label
+
+        cell.backgroundColor = .clear
         cell.contentView.backgroundColor = .clear
 
         return cell
@@ -156,28 +254,57 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
 
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let selectedUser = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
 
-        let storyboard = UIStoryboard(name: "communityScreens", bundle: nil)
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let selectedUser = isSearching
+            ? filteredUsers[indexPath.row]
+            : allUsers[indexPath.row]
+
+        let storyboard = UIStoryboard(
+            name: "communityScreens",
+            bundle: nil
+        )
+
         let chatVC = storyboard.instantiateViewController(
-            withIdentifier: "ChatViewController") as! ChatViewController
+            withIdentifier: "ChatViewController"
+        ) as! ChatViewController
+
         chatVC.user = selectedUser
-        navigationController?.pushViewController(chatVC, animated: true)
+
+        navigationController?.pushViewController(
+            chatVC,
+            animated: true
+        )
     }
 
-    // swipe to delete conversation b/w ppl
+    // MARK: - Swipe Actions
+    // Cosmetic only — does not delete MongoDB messages
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
-        let user = isSearching ? filteredUsers[indexPath.row] : allUsers[indexPath.row]
-        let delete = UIContextualAction(style: .destructive,
-                                        title: "Delete Chat") { [weak self] _, _, done in
-            ChatManager.shared.deleteConversation(with: user.id)
+
+        let user = isSearching
+            ? filteredUsers[indexPath.row]
+            : allUsers[indexPath.row]
+
+        let clear = UIContextualAction(
+            style: .destructive,
+            title: "Clear Chat"
+        ) { [weak self] _, _, done in
+
+            ChatManager.shared.clearPreview(for: user.id)
+
+            self?.sortUsersByLatestMessage()
             self?.tableView.reloadData()
+
             done(true)
         }
-        delete.image = UIImage(systemName: "trash")
-        return UISwipeActionsConfiguration(actions: [delete])
+
+        clear.image = UIImage(systemName: "trash")
+
+        return UISwipeActionsConfiguration(
+            actions: [clear]
+        )
     }
 }
