@@ -16,6 +16,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
 
     private var allUsers:      [User] = []
     private var filteredUsers: [User] = []
+    private var emptyStateView: UIView!
 
     var isSearchBarEmpty: Bool { searchController.searchBar.text?.isEmpty ?? true }
     var isSearching: Bool { searchController.isActive && !isSearchBarEmpty }
@@ -27,6 +28,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         navigationController?.navigationBar.tintColor = .brandGreen
         setupTableView()
         setupSearchController()
+        setupEmptyStateView()
         loadData()
 
         NotificationCenter.default.addObserver(
@@ -65,6 +67,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
     @objc private func refreshPreviews() {
         sortUsersByLatestMessage()
         tableView.reloadData()
+        updateEmptyState()
     }
 
     // MARK: - Sorting
@@ -133,8 +136,13 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         group.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
 
+            self.allUsers = self.allUsers.filter {
+                ChatManager.shared.lastPreview(with: $0.id) != nil
+            }
+
             self.sortUsersByLatestMessage()
             self.tableView.reloadData()
+            self.updateEmptyState()
         }
     }
 
@@ -191,6 +199,7 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         sortUsersByLatestMessage()
 
         tableView.reloadData()
+        updateEmptyState()
     }
 
     // MARK: - TableView
@@ -295,8 +304,12 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
 
             ChatManager.shared.clearPreview(for: user.id)
 
+            self?.allUsers.removeAll { $0.id == user.id }
+            self?.filteredUsers.removeAll { $0.id == user.id }
+
             self?.sortUsersByLatestMessage()
             self?.tableView.reloadData()
+            self?.updateEmptyState()
 
             done(true)
         }
@@ -306,5 +319,60 @@ class PeopleViewController: UIViewController, UITableViewDelegate,
         return UISwipeActionsConfiguration(
             actions: [clear]
         )
+    }
+
+    // MARK: - Empty State
+    func setupEmptyStateView() {
+        emptyStateView = UIView()
+        emptyStateView.translatesAutoresizingMaskIntoConstraints = false
+        emptyStateView.isHidden = true
+        view.addSubview(emptyStateView)
+
+        let label = UILabel()
+        label.text = "Connect with plant owners!"
+        label.textColor = .darkGray
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        let button = UIButton(type: .system)
+        button.setTitle("Find People", for: .normal)
+        button.backgroundColor = .brandGreen
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 20
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(didTapFindPeople), for: .touchUpInside)
+
+        emptyStateView.addSubview(label)
+        emptyStateView.addSubview(button)
+
+        NSLayoutConstraint.activate([
+            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
+            emptyStateView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -40),
+
+            label.topAnchor.constraint(equalTo: emptyStateView.topAnchor),
+            label.leadingAnchor.constraint(equalTo: emptyStateView.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: emptyStateView.trailingAnchor),
+
+            button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 20),
+            button.centerXAnchor.constraint(equalTo: emptyStateView.centerXAnchor),
+            button.widthAnchor.constraint(equalToConstant: 140),
+            button.heightAnchor.constraint(equalToConstant: 44),
+            button.bottomAnchor.constraint(equalTo: emptyStateView.bottomAnchor)
+        ])
+    }
+
+    func updateEmptyState() {
+        let isEmpty = isSearching ? filteredUsers.isEmpty : allUsers.isEmpty
+        emptyStateView.isHidden = !isEmpty
+        tableView.isHidden = isEmpty
+    }
+
+    @objc private func didTapFindPeople() {
+        let storyboard = UIStoryboard(name: "communityScreens", bundle: nil)
+        let searchVC = storyboard.instantiateViewController(withIdentifier: "SearchPeopleViewController") as! SearchPeopleViewController
+        navigationController?.pushViewController(searchVC, animated: true)
     }
 }

@@ -210,7 +210,7 @@
         <!--People-->
         <scene sceneID="qDt-rQ-y51">
             <objects>
-                <viewController id="gbI-Nl-zMU" customClass="SearchPeopleViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SearchPeopleViewController" id="gbI-Nl-zMU" customClass="SearchPeopleViewController" customModule="search_pageRoute" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nJe-uW-bJn">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
