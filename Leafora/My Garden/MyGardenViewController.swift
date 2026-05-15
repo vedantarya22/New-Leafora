@@ -219,8 +219,6 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         if plantCount == 0 {
             let alert = UIAlertController(title: "Delete \(site.name)?", message: "Are you sure?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-                guard let mongoId = site.mongoId else { return }
-                
                 //  1. Remove locally instantly
                 PlantStore.shared.removeAllPlants(for: site)
                 self?.siteStore.sites.removeAll { $0.id == site.id }
@@ -229,9 +227,11 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                     self?.updateEmptyState()
                 }
                 
-                //  2. Delete from MongoDB in background
-                NetworkManager.shared.deleteSite(siteId: mongoId) { success in
-                    if !success { print(" Failed to delete site on backend") }
+                //  2. Delete from MongoDB in background (if it exists there)
+                if let mongoId = site.mongoId {
+                    NetworkManager.shared.deleteSite(siteId: mongoId) { success in
+                        if !success { print(" Failed to delete site on backend") }
+                    }
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -244,8 +244,6 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: "Delete Anyway", style: .destructive) { [weak self] _ in
-                guard let mongoId = site.mongoId else { return }
-                
                 //  1. Remove locally instantly
                 PlantStore.shared.removeAllPlants(for: site)
                 self?.siteStore.sites.removeAll { $0.id == site.id }
@@ -255,8 +253,10 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 }
                 
                 //  2. Delete site + all its plants from MongoDB in background
-                NetworkManager.shared.removeSiteWithPlants(siteId: mongoId) { success in
-                    if !success { print(" Failed to delete site and plants on backend") }
+                if let mongoId = site.mongoId {
+                    NetworkManager.shared.removeSiteWithPlants(siteId: mongoId) { success in
+                        if !success { print(" Failed to delete site and plants on backend") }
+                    }
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
