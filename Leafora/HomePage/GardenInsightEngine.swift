@@ -26,45 +26,37 @@ final class GardenInsightEngine {
       
       private func generateUrgentTaskInsight(userPlants: [UserPlant], insights: inout [TaskOverviewInsight]) {
           var urgentCount = 0
-          var maxOverdue = 0
+          let catalogue = PlantCatalogueCache.shared.plants
           
           for plant in userPlants {
-              guard let plantData = JSONLoader.plant(by: plant.plantId) else { continue }
+              // Try to find plant in cache first, then fallback to JSONLoader
+              let plantData = catalogue.first { $0.mongoId == plant.plantId || $0.plantId == plant.plantId }
+                            ?? JSONLoader.plant(by: plant.plantId)
               
-              // Check watering
-              if let lastWatered = plant.lastWatered {
-                  let daysOverdue = daysSince(lastWatered) - plantData.careCycle.watering.days
+              guard let data = plantData else {
+                  print("DEBUG: GardenInsightEngine - Skip plant \(plant.plantId): No plant data found in cache or JSON")
+                  continue
+              }
+              
+              var isUrgent = false
+              let tasks: [(Date?, Int)] = [
+                  (plant.lastWatered, data.careCycle.watering.days),
+                  (plant.lastFertilized, data.careCycle.fertilizing.days),
+                  (plant.lastPruned, data.careCycle.pruning.days),
+                  (plant.lastRepotted, data.careCycle.repotting.days)
+              ]
+              
+              for (lastDate, cycleDays) in tasks {
+                  let effectiveDate = lastDate ?? plant.createdAt
+                  let daysOverdue = daysSince(effectiveDate) - cycleDays
                   if daysOverdue >= urgentThresholdDays {
-                      urgentCount += plant.quantity
-                      maxOverdue = max(maxOverdue, daysOverdue)
+                      isUrgent = true
+                      break
                   }
               }
               
-              // Check fertilizing
-              if let lastFertilized = plant.lastFertilized {
-                  let daysOverdue = daysSince(lastFertilized) - plantData.careCycle.fertilizing.days
-                  if daysOverdue >= urgentThresholdDays {
-                      urgentCount += plant.quantity
-                      maxOverdue = max(maxOverdue, daysOverdue)
-                  }
-              }
-              
-              // Check pruning
-              if let lastPruned = plant.lastPruned {
-                  let daysOverdue = daysSince(lastPruned) - plantData.careCycle.pruning.days
-                  if daysOverdue >= urgentThresholdDays {
-                      urgentCount += plant.quantity
-                      maxOverdue = max(maxOverdue, daysOverdue)
-                  }
-              }
-              
-              // Check repotting
-              if let lastRepotted = plant.lastRepotted {
-                  let daysOverdue = daysSince(lastRepotted) - plantData.careCycle.repotting.days
-                  if daysOverdue >= urgentThresholdDays {
-                      urgentCount += plant.quantity
-                      maxOverdue = max(maxOverdue, daysOverdue)
-                  }
+              if isUrgent {
+                  urgentCount += plant.quantity
               }
           }
           
@@ -72,10 +64,10 @@ final class GardenInsightEngine {
               insights.append(TaskOverviewInsight(
                   icon: "exclamationmark.triangle.fill",
                   title: "Urgent Care Needed",
-                  message: "\(urgentCount) plant\(urgentCount == 1 ? "" : "s") are past their schedule",
+                  message: "\(urgentCount) \(urgentCount == 1 ? "plant is" : "plants are") significantly past schedule",
                   level: .critical,
                   route: "Urgent"
-              ))// plant or plants
+              ))
           }
       }
       
@@ -84,45 +76,37 @@ final class GardenInsightEngine {
         
         private func generateMissedTaskInsight(userPlants: [UserPlant], insights: inout [TaskOverviewInsight]) {
             var missedCount = 0
+            let catalogue = PlantCatalogueCache.shared.plants
             
             for plant in userPlants {
-                guard let plantData = JSONLoader.plant(by: plant.plantId) else { continue }
+                let plantData = catalogue.first { $0.mongoId == plant.plantId || $0.plantId == plant.plantId }
+                              ?? JSONLoader.plant(by: plant.plantId)
                 
-                var hasMissedTask = false
+                guard let data = plantData else { continue }
                 
-                // Check watering
-                if let lastWatered = plant.lastWatered {
-                    let daysOverdue = daysSince(lastWatered) - plantData.careCycle.watering.days
-                    if daysOverdue > 0 && daysOverdue < urgentThresholdDays {
-                        hasMissedTask = true
+                var isMissed = false
+                var isAlreadyUrgent = false
+                
+                let tasks: [(Date?, Int)] = [
+                    (plant.lastWatered, data.careCycle.watering.days),
+                    (plant.lastFertilized, data.careCycle.fertilizing.days),
+                    (plant.lastPruned, data.careCycle.pruning.days),
+                    (plant.lastRepotted, data.careCycle.repotting.days)
+                ]
+                
+                for (lastDate, cycleDays) in tasks {
+                    let effectiveDate = lastDate ?? plant.createdAt
+                    let daysOverdue = daysSince(effectiveDate) - cycleDays
+                    
+                    if daysOverdue >= urgentThresholdDays {
+                        isAlreadyUrgent = true
+                        break
+                    } else if daysOverdue > 0 {
+                        isMissed = true
                     }
                 }
                 
-                // Check fertilizing
-                if !hasMissedTask, let lastFertilized = plant.lastFertilized {
-                    let daysOverdue = daysSince(lastFertilized) - plantData.careCycle.fertilizing.days
-                    if daysOverdue > 0 && daysOverdue < urgentThresholdDays {
-                        hasMissedTask = true
-                    }
-                }
-                
-                // Check pruning
-                if !hasMissedTask, let lastPruned = plant.lastPruned {
-                    let daysOverdue = daysSince(lastPruned) - plantData.careCycle.pruning.days
-                    if daysOverdue > 0 && daysOverdue < urgentThresholdDays {
-                        hasMissedTask = true
-                    }
-                }
-                
-                // Check repotting
-                if !hasMissedTask, let lastRepotted = plant.lastRepotted {
-                    let daysOverdue = daysSince(lastRepotted) - plantData.careCycle.repotting.days
-                    if daysOverdue > 0 && daysOverdue < urgentThresholdDays {
-                        hasMissedTask = true
-                    }
-                }
-                
-                if hasMissedTask {
+                if isMissed && !isAlreadyUrgent {
                     missedCount += plant.quantity
                 }
             }
@@ -131,7 +115,7 @@ final class GardenInsightEngine {
                 insights.append(TaskOverviewInsight(
                     icon: "clock.badge.exclamationmark.fill",
                     title: "Missed Tasks",
-                    message: "\(missedCount) plant\(missedCount == 1 ? "" : "s") need attention soon",
+                    message: "\(missedCount) \(missedCount == 1 ? "plant needs" : "plants need") attention soon",
                     level: .warning,
                     route: "Missed"
                 ))

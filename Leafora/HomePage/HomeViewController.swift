@@ -7,6 +7,7 @@ internal import _LocationEssentials
 //}
 
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     var tipTimer: Timer?
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -21,6 +22,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     private var currentWeather: PlantWeatherInfo?
     private var isLoadingWeather = true
     
+    private var currentOverdueInsights: [TaskOverviewInsight] = []
+    private var currentCareTasks: [HomeTask] = []
+    
     //clay colors
     // Natural, Earthy Plant Care Colors
     let wateringBlue = UIColor(red: 0.42, green: 0.71, blue: 0.84, alpha: 1.0)      // Soft water blue
@@ -30,12 +34,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     let gradientLayer = CAGradientLayer()
 //    var memories: [GardenMemory] = []
-    
-    struct Task {
-        let name: String
-        let icon: String
-        let count: Int
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,7 +60,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             object: nil
         )
         // Register XIB's
-        let cells = ["CareTaskCell", "UrgentCareCell","GardenTipCell","ScanPlantCell"]
+        let cells = ["CareTaskCell", "UrgentCareCell","GardenTipCell","ScanPlantCell", "PlantRowCell"]
         cells.forEach { name in
             collectionView.register(UINib(nibName: name, bundle: nil), forCellWithReuseIdentifier: name)
         }
@@ -80,6 +78,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         refreshControl.tintColor = fertilizingGreen
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refreshControl
+        collectionView.alwaysBounceVertical = true
         
         // Setup loading spinner
         setupLoadingSpinner()
@@ -92,6 +91,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc private func handleRefresh() {
+        refreshHomeData()
         collectionView.reloadData()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
@@ -100,8 +100,14 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     @objc private func handleTaskUpdate() {
-        // refresh UI
-        collectionView.reloadSections(IndexSet(integer: 0))
+        refreshHomeData()
+        collectionView.reloadData()
+    }
+    
+    private func refreshHomeData() {
+        let allPlants = PlantStore.shared.allPlants()
+        self.currentOverdueInsights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
+        self.currentCareTasks = getCareTasks()
     }
     
     // MARK: - Loading State Management
@@ -149,8 +155,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Fixed: Use reloadData to prevent section mismatch crashes on first load
+        refreshHomeData()
         collectionView.reloadData()
+        updateStreakBadge()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -241,17 +248,45 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
-    private func taskInsightsForHome() -> [TaskOverviewInsight] {
-        let allPlants = PlantStore.shared.allPlants()
-        let insights = GardenInsightEngine.shared.generateTaskOverview(from: allPlants)
+    private func getOverduePlants() -> [OverdueTask] {
+        let allUserPlants = PlantStore.shared.allPlants()
+        let catalogue = PlantCatalogueCache.shared.plants
+        var results: [OverdueTask] = []
         
-        return insights
+        let urgentThreshold = 3
+        
+        for userPlant in allUserPlants {
+            let plantData = catalogue.first { $0.mongoId == userPlant.plantId || $0.plantId == userPlant.plantId }
+                          ?? JSONLoader.plant(by: userPlant.plantId)
+            
+            guard let data = plantData else { continue }
+            
+            let tasks: [(name: String, lastDate: Date?, cycleDays: Int)] = [
+                ("Watering", userPlant.lastWatered, data.careCycle.watering.days),
+                ("Fertilizing", userPlant.lastFertilized, data.careCycle.fertilizing.days),
+                ("Pruning", userPlant.lastPruned, data.careCycle.pruning.days),
+                ("Repotting", userPlant.lastRepotted, data.careCycle.repotting.days)
+            ]
+            
+            for taskInfo in tasks {
+                let effectiveDate = taskInfo.lastDate ?? userPlant.createdAt
+                let daysOverdue = Calendar.current.dateComponents([.day], from: effectiveDate, to: Date()).day ?? 0
+                let overdueCount = daysOverdue - taskInfo.cycleDays
+                
+                if overdueCount > 0 {
+                    let level: InsightLevel = overdueCount >= urgentThreshold ? .critical : .warning
+                    results.append(OverdueTask(plant: userPlant, task: taskInfo.name, level: level))
+                    break
+                }
+            }
+        }
+        
+        return results.sorted(by: { a, b in
+            return a.level.priority > b.level.priority
+        })
     }
     
-    
-    
-    
-    func getCareTasks() -> [Task] {
+    func getCareTasks() -> [HomeTask] {
         let allPlants = PlantStore.shared.plants
         
         let wateringCount = allPlants
@@ -271,10 +306,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             .reduce(0) { $0 + $1.quantity }
         
         return [
-            Task(name: "Watering", icon: "drop.fill", count: wateringCount),
-            Task(name: "Pruning", icon: "scissors", count: pruningCount),
-            Task(name: "Fertilizing", icon: "leaf.fill", count: fertilizingCount),
-            Task(name: "Repotting", icon: "arrow.up.bin.fill", count: repottingCount)
+            HomeTask(name: "Watering", icon: "drop.fill", count: wateringCount),
+            HomeTask(name: "Pruning", icon: "scissors", count: pruningCount),
+            HomeTask(name: "Fertilizing", icon: "leaf.fill", count: fertilizingCount),
+            HomeTask(name: "Repotting", icon: "arrow.up.bin.fill", count: repottingCount)
         ]
     }
     
@@ -287,13 +322,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 4
     }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0: return PlantStore.shared.allPlants().count > 0 ? 1 : 0 // Garden Tip conditionally
-        case 1: return 1 // Scan Your Plant
-        case 2: return taskInsightsForHome().count // Urgent
-        case 3: return getCareTasks().count // Care Tasks
+        case 1: return currentOverdueInsights.count // Urgent Summary Cards
+        case 2: return 1 // Scan Your Plant
+        case 3: return currentCareTasks.count // Care Tasks
         default: return 0
         }
     }
@@ -312,21 +346,20 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             }
             return cell
             
-        case 1: // Scan Your Plant
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanPlantCell", for: indexPath) as! ScanPlantCell
-            return cell
-            
-        case 2: // Urgent Care
+        case 1: // Urgent Summary Alerts
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UrgentCareCell", for: indexPath) as! UrgentCareCell
-            let insights = taskInsightsForHome()
-            let insight = insights[indexPath.row]
+            let insight = currentOverdueInsights[indexPath.row]
             cell.configure(with: insight)
             cell.setChevronHidden(insight.level == .good)
             return cell
             
+        case 2: // Scan Your Plant
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ScanPlantCell", for: indexPath) as! ScanPlantCell
+            return cell
+            
         case 3: // Care Tasks
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CareTaskCell", for: indexPath) as! CareTaskCell
-            let task = getCareTasks()[indexPath.row]
+            let task = currentCareTasks[indexPath.row]
             
             let taskColor: UIColor
             switch task.name {
@@ -357,24 +390,18 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             print("Garden tip tapped")
             
         case 1:
-            //scan feature
-            self.openCameraForPlantScan()
+            // Tapped an Alert Summary Card (Urgent or Missed)
+            let insight = currentOverdueInsights[indexPath.row]
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let urgentMissedVC = storyboard.instantiateViewController(withIdentifier: "UrgentMissedView") as? UrgentMissedViewController {
+                urgentMissedVC.urgencyLevel = insight.route // "Urgent" or "Missed"
+                navigationController?.pushViewController(urgentMissedVC, animated: true)
+            }
             
         case 2:
-            // Tapped Urgent or Missed card
-            let taskInsights = self.taskInsightsForHome()
-            
-            if indexPath.row < taskInsights.count {
-                let insight = taskInsights[indexPath.row]
-                
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                if let urgentMissedVC = storyboard.instantiateViewController(
-                    withIdentifier: "UrgentMissedView"
-                ) as? UrgentMissedViewController {
-                    urgentMissedVC.urgencyLevel = insight.route  // "Urgent" or "Missed"
-                    navigationController?.pushViewController(urgentMissedVC, animated: true)
-                }
-            }
+            //scan feature
+            self.openCameraForPlantScan()
             
         case 3: // Care Tasks
             let taskName = getCareTasks()[indexPath.row].name
@@ -483,9 +510,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     // MARK: - Navigation Bar Customization
     private func setupNavigationBarButtons() {
         // Create Streak Badge Button
-        let streakBtn = UIButton(type: .system)
-        streakBtn.backgroundColor = fertilizingGreen.withAlphaComponent(0.1)
+        let streakBtn = UIButton(type: .custom)
+        streakBtn.backgroundColor = .clear
         streakBtn.layer.cornerRadius = 15
+        streakBtn.layer.borderWidth = 0
+        streakBtn.clipsToBounds = true
         streakBtn.translatesAutoresizingMaskIntoConstraints = false
         streakBtn.addTarget(self, action: #selector(showStreakCalendar), for: .touchUpInside)
         
@@ -494,6 +523,23 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         boltIcon.contentMode = .scaleAspectFit
         boltIcon.translatesAutoresizingMaskIntoConstraints = false
         streakBtn.addSubview(boltIcon)
+        
+        // Charged animation: Pulsing opacity and subtle scale
+        let pulse = CABasicAnimation(keyPath: "opacity")
+        pulse.duration = 0.8
+        pulse.fromValue = 0.7
+        pulse.toValue = 1.0
+        pulse.autoreverses = true
+        pulse.repeatCount = .infinity
+        boltIcon.layer.add(pulse, forKey: "pulse")
+        
+        let scale = CABasicAnimation(keyPath: "transform.scale")
+        scale.duration = 0.8
+        scale.fromValue = 0.92
+        scale.toValue = 1.08
+        scale.autoreverses = true
+        scale.repeatCount = .infinity
+        boltIcon.layer.add(scale, forKey: "scale")
         
         let countLbl = UILabel()
         countLbl.font = .systemFont(ofSize: 14, weight: .bold)
@@ -522,7 +568,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         let profileButton = UIBarButtonItem(image: profileImage, style: .plain, target: self, action: #selector(showProfile))
         profileButton.tintColor = fertilizingGreen
         
-        navigationItem.rightBarButtonItems = [profileButton, streakItem]
+        let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        spacer.width = 12
+        
+        navigationItem.rightBarButtonItems = [profileButton, spacer, streakItem]
     }
     
     private func updateStreakBadge() {
@@ -548,7 +597,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     @objc private func showProfile() {
         let storyboard = UIStoryboard(name: "Profile", bundle: nil)
         if let profileVC = storyboard.instantiateInitialViewController() {
-            navigationController?.pushViewController(profileVC, animated: true)
+            profileVC.modalPresentationStyle = .pageSheet
+            present(profileVC, animated: true)
         }
     }
 }

@@ -46,7 +46,9 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     private func setupUI() {
         self.title = urgencyLevel
-//        collectionView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
+        let botanicalGreen = UIColor(red: 0.96, green: 0.98, blue: 0.96, alpha: 1.0)
+        view.backgroundColor = botanicalGreen
+        collectionView.backgroundColor = botanicalGreen
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -93,10 +95,10 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             guard let plantData = getPlantData(for: plant) else { return false }
             
             // Check all tasks for 3+ days overdue
-            let w = isTaskUrgent(lastDate: plant.lastWatered, cycleDays: plantData.careCycle.watering.days)
-            let p = isTaskUrgent(lastDate: plant.lastPruned, cycleDays: plantData.careCycle.pruning.days)
-            let f = isTaskUrgent(lastDate: plant.lastFertilized, cycleDays: plantData.careCycle.fertilizing.days)
-            let r = isTaskUrgent(lastDate: plant.lastRepotted, cycleDays: plantData.careCycle.repotting.days)
+            let w = isTaskUrgent(lastDate: plant.lastWatered, cycleDays: plantData.careCycle.watering.days, createdAt: plant.createdAt)
+            let p = isTaskUrgent(lastDate: plant.lastPruned, cycleDays: plantData.careCycle.pruning.days, createdAt: plant.createdAt)
+            let f = isTaskUrgent(lastDate: plant.lastFertilized, cycleDays: plantData.careCycle.fertilizing.days, createdAt: plant.createdAt)
+            let r = isTaskUrgent(lastDate: plant.lastRepotted, cycleDays: plantData.careCycle.repotting.days, createdAt: plant.createdAt)
             
             return w || p || f || r
         }
@@ -109,24 +111,23 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
             guard let plantData = getPlantData(for: plant) else { return false }
             
             // Check all tasks for 1-2 days overdue
-            let w = isTaskMissed(lastDate: plant.lastWatered, cycleDays: plantData.careCycle.watering.days)
-            let p = isTaskMissed(lastDate: plant.lastPruned, cycleDays: plantData.careCycle.pruning.days)
-            let f = isTaskMissed(lastDate: plant.lastFertilized, cycleDays: plantData.careCycle.fertilizing.days)
-            let r = isTaskMissed(lastDate: plant.lastRepotted, cycleDays: plantData.careCycle.repotting.days)
+            let w = isTaskMissed(lastDate: plant.lastWatered, cycleDays: plantData.careCycle.watering.days, createdAt: plant.createdAt)
+            let p = isTaskMissed(lastDate: plant.lastPruned, cycleDays: plantData.careCycle.pruning.days, createdAt: plant.createdAt)
+            let f = isTaskMissed(lastDate: plant.lastFertilized, cycleDays: plantData.careCycle.fertilizing.days, createdAt: plant.createdAt)
+            let r = isTaskMissed(lastDate: plant.lastRepotted, cycleDays: plantData.careCycle.repotting.days, createdAt: plant.createdAt)
             
             return w || p || f || r
         }
     }
     
     private func getPlantData(for userPlant: UserPlant) -> Plant? {
-        return allPlantData.first { $0.plantId == userPlant.plantId }
+        return allPlantData.first { $0.mongoId == userPlant.plantId || $0.plantId == userPlant.plantId }
     }
     
     /// Check if a single task is 3+ days overdue
-    private func isTaskUrgent(lastDate: Date?, cycleDays: Int) -> Bool {
-        guard let lastDate = lastDate else { return false }
-        
-        let daysSince = daysBetween(from: lastDate, to: Date())
+    private func isTaskUrgent(lastDate: Date?, cycleDays: Int, createdAt: Date) -> Bool {
+        let effectiveDate = lastDate ?? createdAt
+        let daysSince = daysBetween(from: effectiveDate, to: Date())
         let daysOverdue = daysSince - cycleDays
         
         return daysOverdue >= 3
@@ -134,10 +135,9 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
     
     
     /// Check if a single task is 1-2 days overdue
-    private func isTaskMissed(lastDate: Date?, cycleDays: Int) -> Bool {
-        guard let lastDate = lastDate else { return false }
-        
-        let daysSince = daysBetween(from: lastDate, to: Date())
+    private func isTaskMissed(lastDate: Date?, cycleDays: Int, createdAt: Date) -> Bool {
+        let effectiveDate = lastDate ?? createdAt
+        let daysSince = daysBetween(from: effectiveDate, to: Date())
         let daysOverdue = daysSince - cycleDays
         
         return daysOverdue >= 1 && daysOverdue < 3
@@ -156,43 +156,35 @@ class UrgentMissedViewController: UIViewController, UICollectionViewDataSource,U
         var maxOverdue = 0
         
         // Check watering
-        if let lastWatered = userPlant.lastWatered {
-            let daysSince = daysBetween(from: lastWatered, to: Date())
-            let overdue = daysSince - plantData.careCycle.watering.days
-            if overdue > maxOverdue {
-                maxOverdue = overdue
-                mostOverdueTask = "Watering"
-            }
+        let lastWateredDate = userPlant.lastWatered ?? userPlant.createdAt
+        let waterOverdue = daysBetween(from: lastWateredDate, to: Date()) - plantData.careCycle.watering.days
+        if waterOverdue > maxOverdue {
+            maxOverdue = waterOverdue
+            mostOverdueTask = "Watering"
         }
         
         // Check fertilizing
-        if let lastFertilized = userPlant.lastFertilized {
-            let daysSince = daysBetween(from: lastFertilized, to: Date())
-            let overdue = daysSince - plantData.careCycle.fertilizing.days
-            if overdue > maxOverdue {
-                maxOverdue = overdue
-                mostOverdueTask = "Fertilizing"
-            }
+        let lastFertilizedDate = userPlant.lastFertilized ?? userPlant.createdAt
+        let fertOverdue = daysBetween(from: lastFertilizedDate, to: Date()) - plantData.careCycle.fertilizing.days
+        if fertOverdue > maxOverdue {
+            maxOverdue = fertOverdue
+            mostOverdueTask = "Fertilizing"
         }
         
         // Check pruning
-        if let lastPruned = userPlant.lastPruned {
-            let daysSince = daysBetween(from: lastPruned, to: Date())
-            let overdue = daysSince - plantData.careCycle.pruning.days
-            if overdue > maxOverdue {
-                maxOverdue = overdue
-                mostOverdueTask = "Pruning"
-            }
+        let lastPrunedDate = userPlant.lastPruned ?? userPlant.createdAt
+        let pruneOverdue = daysBetween(from: lastPrunedDate, to: Date()) - plantData.careCycle.pruning.days
+        if pruneOverdue > maxOverdue {
+            maxOverdue = pruneOverdue
+            mostOverdueTask = "Pruning"
         }
         
         // Check repotting
-        if let lastRepotted = userPlant.lastRepotted {
-            let daysSince = daysBetween(from: lastRepotted, to: Date())
-            let overdue = daysSince - plantData.careCycle.repotting.days
-            if overdue > maxOverdue {
-                maxOverdue = overdue
-                mostOverdueTask = "Repotting"
-            }
+        let lastRepottedDate = userPlant.lastRepotted ?? userPlant.createdAt
+        let repotOverdue = daysBetween(from: lastRepottedDate, to: Date()) - plantData.careCycle.repotting.days
+        if repotOverdue > maxOverdue {
+            maxOverdue = repotOverdue
+            mostOverdueTask = "Repotting"
         }
         
         return mostOverdueTask
