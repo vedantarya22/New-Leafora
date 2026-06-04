@@ -15,9 +15,18 @@ class HomeProfileViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        user = UserSession.shared.currentUser
-        setupUI()
+
+        if let cached = UserSession.shared.currentUser {
+            // Fast path: use what's already in memory
+            user = cached
+            setupUI()
+        } else {
+            // Cache is empty (fresh login) — fetch from API then populate
+            UserSession.shared.fetchCurrentUser { [weak self] fetched in
+                self?.user = fetched
+                self?.setupUI()
+            }
+        }
     }
     
     override func viewDidLoad() {

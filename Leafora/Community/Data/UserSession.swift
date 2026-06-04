@@ -52,7 +52,8 @@ class UserSession {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, _ in
+        // Use NetworkManager.shared.session so TLS 1.2 config applies here too
+        NetworkManager.shared.session.dataTask(with: request) { [weak self] data, response, _ in
             if let http = response as? HTTPURLResponse {
                 print("fetchCurrentUser status: \(http.statusCode)")
             }
