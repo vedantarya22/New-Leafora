@@ -61,9 +61,11 @@ class PlantIdentificationService {
     // Using Plant.id Free API - No API key required for basic identification
     private let baseURL = "https://api.plant.id/v2/identify"
     
-    // Optional: Add your API key here for better rate limits
-   
-    private let apiKey: String? = "uu9Hv3qyqoDvU3ZAyOotIvaPQkluCoTewAxwFtFws5urpIfpaT" //
+    // API key loaded securely from Secrets
+    private var apiKey: String? {
+        let key = Secrets.plantIDAPIKey
+        return key.isEmpty ? nil : key
+    }
     
     private init() {}
     

@@ -70,15 +70,28 @@ class CommunityViewController: UIViewController, UICollectionViewDelegate {
     }
 
     private func createLayout() -> UICollectionViewLayout {
-        // keep estimated height close to post size for smoother scroll
-        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(450))
+        let isIPad = iPadLayoutHelper.isIPad
+        let estimatedHeight: CGFloat = isIPad ? 520 : 450
+
+        let itemSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(estimatedHeight))
         let item      = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(450))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(estimatedHeight))
         let group     = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         let section   = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 16
         section.contentInsets     = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
-        return UICollectionViewCompositionalLayout(section: section)
+
+        return UICollectionViewCompositionalLayout { [weak self] _, layoutEnvironment in
+            // Recompute every time so rotation works correctly on iPad
+            let containerWidth = layoutEnvironment.container.effectiveContentSize.width
+            var sideInset: CGFloat = 0
+            if isIPad, let cv = self?.postsCollectionView {
+                let readableWidth = cv.readableContentGuide.layoutFrame.width
+                sideInset = max(0, (containerWidth - readableWidth) / 2)
+            }
+            section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: sideInset, bottom: 8, trailing: sideInset)
+            return section
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -207,6 +220,10 @@ extension CommunityViewController {
         }
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        // iPad requires a popover source for .actionSheet
+        iPadLayoutHelper.configurePopover(alert, from: postsCollectionView)
+
         present(alert, animated: true)
     }
 }

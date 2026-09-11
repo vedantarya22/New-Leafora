@@ -152,6 +152,13 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
     }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -435,6 +442,17 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         })
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // iPad requires a popover source for .actionSheet — prevents crash
+        if let popover = alert.popoverPresentationController {
+            if let rightItem = navigationItem.rightBarButtonItems?.first {
+                popover.barButtonItem = rightItem
+            } else {
+                popover.sourceView = view
+                popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+            }
+            popover.permittedArrowDirections = [.any]
+        }
         
         present(alert, animated: true)
     }

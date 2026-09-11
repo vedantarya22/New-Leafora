@@ -40,6 +40,13 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
         updateEmptyState()
         fetchWeatherData()
     }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.myGardenCollectionView.collectionViewLayout.invalidateLayout()
+        })
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -235,6 +242,9 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            if let cell = myGardenCollectionView.cellForItem(at: indexPath) {
+                iPadLayoutHelper.configurePopover(alert, from: cell)
+            }
             present(alert, animated: true)
             
         } else {
@@ -260,6 +270,9 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
                 }
             })
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            if let cell = myGardenCollectionView.cellForItem(at: indexPath) {
+                iPadLayoutHelper.configurePopover(alert, from: cell)
+            }
             present(alert, animated: true)
         }
     }
@@ -267,36 +280,42 @@ class MyGardenViewController: UIViewController, UICollectionViewDelegate, UIColl
     // MARK: - Layout Delegate
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
-            // Full Width Weather Card
-            let width = collectionView.bounds.width - 32 // 16pt padding on each side
+            // Full readable-width Weather Card
+            let inset = iPadLayoutHelper.horizontalInset
+            let width: CGFloat
+            if iPadLayoutHelper.isIPad {
+                width = collectionView.readableContentGuide.layoutFrame.width
+            } else {
+                width = collectionView.bounds.width - inset * 2
+            }
             return CGSize(width: width, height: 100)
         } else {
-            // 3-Column Garden Tiles
-            let numberOfColumns: CGFloat = 3
-            let totalHorizontalPadding: CGFloat = 32
-            let interItemSpacing: CGFloat = 12 * (numberOfColumns - 1)
-            let availableWidth = collectionView.bounds.width - totalHorizontalPadding - interItemSpacing
-            let itemWidth = floor(availableWidth / numberOfColumns)
+            // Adaptive garden tiles
+            let numberOfColumns = iPadLayoutHelper.gardenColumns(in: collectionView)
+            let totalHorizontalPadding = iPadLayoutHelper.horizontalInset * 2
+            let spacing               = iPadLayoutHelper.interItemSpacing
+            let interItemTotal        = spacing * (numberOfColumns - 1)
+            let availableWidth        = collectionView.bounds.width - totalHorizontalPadding - interItemTotal
+            let itemWidth             = floor(availableWidth / numberOfColumns)
             return CGSize(width: itemWidth, height: itemWidth)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let h = iPadLayoutHelper.horizontalInset
         if section == 0 {
-            // Padding for the weather card
-            return UIEdgeInsets(top: 20, left: 16, bottom: 10, right: 16)
+            return UIEdgeInsets(top: 20, left: h, bottom: 10, right: h)
         } else {
-            // Padding for the boxes section (immediately following weather)
-            return UIEdgeInsets(top: 10, left: 16, bottom: 20, right: 16)
+            return UIEdgeInsets(top: 10, left: h, bottom: 20, right: h)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return section == 0 ? 0 : 12
+        return section == 0 ? 0 : iPadLayoutHelper.interItemSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return section == 0 ? 0 : 12
+        return section == 0 ? 0 : iPadLayoutHelper.interItemSpacing
     }
     
     // MARK: - Navigation

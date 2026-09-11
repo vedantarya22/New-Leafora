@@ -129,6 +129,13 @@ class PlantListViewController: UIViewController,
         super.viewWillAppear(animated)
         loadAndFilterData()
     }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
+    }
     
     
     
@@ -138,8 +145,13 @@ class PlantListViewController: UIViewController,
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        return CGSize(width: collectionView.frame.width, height: 90)
+        let width: CGFloat
+        if iPadLayoutHelper.isIPad {
+            width = collectionView.readableContentGuide.layoutFrame.width
+        } else {
+            width = collectionView.frame.width
+        }
+        return CGSize(width: width, height: 90)
     }
     
     // MARK: - DataSource
@@ -295,6 +307,11 @@ class PlantListViewController: UIViewController,
         })
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // iPad requires a popover source for .actionSheet
+        if let barItem = navigationItem.rightBarButtonItem {
+            iPadLayoutHelper.configurePopover(alert, from: nil, barButtonItem: barItem)
+        }
         
         present(alert, animated: true)
     }

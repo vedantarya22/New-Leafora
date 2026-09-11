@@ -3,7 +3,9 @@ import CoreLocation
 
 class WeatherService {
     static let shared = WeatherService()
-    private let apiKey = "4c250c5b1fc964502cbbc9b6cae203a3"
+    private var apiKey: String {
+        return Secrets.weatherAPIKey
+    }
     
     // 1. Fetch weather using Coordinates (GPS)
     func fetchWeather(latitude: Double, longitude: Double, completion: @escaping (Result<PlantWeatherInfo, Error>) -> Void) {
