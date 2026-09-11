@@ -4,6 +4,7 @@ Node.js/Express backend powering **Leafora**, an iOS plant care app with AR plan
 
 📱 **iOS Frontend Repo:** [New-Leafora](https://github.com/vedantarya22/New-Leafora)
 🎥 **Demo Video:** [Google Drive Link](https://drive.google.com/file/d/1UF9qnF0tDAf0xEs3vRYrnkJOAWbgtYly/view?usp=sharing)
+🛟 **Support & Privacy Policy:** [care-flora-support.vercel.app](https://care-flora-support.vercel.app/)
 
 ---
 
@@ -16,6 +17,19 @@ Node.js/Express backend powering **Leafora**, an iOS plant care app with AR plan
 | Task Overview | Plants Page |
 |---------------|------|
 | ![Tasks](./screenshots/tasks.png) | ![Chat](./screenshots/garden.png)
+
+---
+
+## Features
+
+- 🌿 **AR Plant Visualization** — Preview plants in your own space using RealityKit before you commit, with USDZ models streamed from Cloudinary and cached on-device (LRU) for fast reloads.
+- ✅ **Smart Task Overview** — A dedicated task screen (UIKit/UICollectionView) surfaces urgent and missed care tasks like watering, feeding, and repotting so nothing gets forgotten.
+- 🔍 **Plant Search & Recommendations** — Look up plants and get care recommendations tailored to the plant type.
+- 🌱 **Garden Tips Module** — Bite-sized care guidance and tips to help users grow healthier plants.
+- 👥 **Community Feed** — Share posts, like, comment, and save favorites, backed by dedicated MongoDB collections.
+- 🔒 **Private, End-to-End Encrypted Chat** — Real-time messaging over Socket.io, secured client-side with X25519 ECDH key exchange + AES-256-GCM (CryptoKit on iOS); the server only ever relays ciphertext.
+- 🔐 **Secure Auth** — JWT-based authentication with an OTP forgot-password flow (SHA-256 hashed, rate-limited against brute-force attempts).
+- 📬 **Transactional Email** — Account and OTP emails delivered via the Brevo REST API.
 
 ---
 
